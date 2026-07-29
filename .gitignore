@@ -1,0 +1,5 @@
+config.php
+data/
+public/assets/photos/
+*.log
+.DS_Store
