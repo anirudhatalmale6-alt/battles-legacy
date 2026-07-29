@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/../src/bootstrap.php';
+require_once __DIR__ . '/../src/install.php';
 require_role('admin');
 $me = current_user();
 
@@ -25,6 +26,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($act === 'restore') {
         q("UPDATE users SET status='active' WHERE id=?", [(int)$_POST['uid']]);
         flash('Member restored.');
+    } elseif ($act === 'importphotos') {
+        $dir = trim($_POST['photo_dir'] ?? '');
+        $r = install_photos($dir);
+        if (!$r['ok']) flash('Photos: ' . $r['error']);
+        else {
+            $s = $r['stats'];
+            flash("Photos imported — matched {$s['matched']}, newly added {$s['copied']}, already present {$s['skipped']}, unmatched {$s['unmatched']}.");
+            if ($r['unmatched']) flash('Could not match (need a name): ' . implode(', ', array_slice($r['unmatched'], 0, 30)) . (count($r['unmatched']) > 30 ? ' …and ' . (count($r['unmatched']) - 30) . ' more' : ''));
+        }
+    } elseif ($act === 'refreshtree') {
+        $path = trim($_POST['ged_path'] ?? '');
+        $r = install_gedcom($path);
+        flash($r['ok'] ? "Tree refreshed — {$r['individuals']} people, {$r['families']} families ({$r['living']} living kept private)." : ('Tree: ' . $r['error']));
     }
     header('Location: admin.php'); exit;
 }
@@ -46,6 +60,28 @@ page_head('Members');
     <div><label>Email (optional)</label><input type="email" name="email"></div>
     <div><label>Role</label><select name="role"><option value="member">Member</option><option value="moderator">Moderator</option><option value="admin">Admin</option></select></div>
     <button class="btn gold" style="margin:0">Create invite</button>
+  </form>
+</div>
+
+<div class="panel" style="margin-top:18px">
+  <h2>Photos &amp; tree</h2>
+  <p class="muted">Point these at files already on your server — the tools do the rest.</p>
+  <form method="post" style="margin-top:12px">
+    <?= csrf_field() ?><input type="hidden" name="action" value="importphotos">
+    <label>Auto-pin photos from a server folder</label>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <input type="text" name="photo_dir" placeholder="e.g. /home/thebattl/public_html/photos" style="flex:1;min-width:260px">
+      <button class="btn" style="margin:0">Import photos</button>
+    </div>
+    <p class="muted" style="margin-top:6px">Reads every photo's filename and pins it to the right person. Safe to run again — it skips ones already added.</p>
+  </form>
+  <form method="post" style="margin-top:14px">
+    <?= csrf_field() ?><input type="hidden" name="action" value="refreshtree">
+    <label>Refresh the tree from an updated GEDCOM</label>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <input type="text" name="ged_path" value="<?= e(dirname(__DIR__) . '/battlesfamily.ged') ?>" style="flex:1;min-width:260px">
+      <button class="btn" style="margin:0">Refresh tree</button>
+    </div>
   </form>
 </div>
 

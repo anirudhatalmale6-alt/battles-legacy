@@ -1,0 +1,8002 @@
+0 HEAD 
+1 SOUR TribalPages
+2 VERS TribalPages GEDCOM Generator (2.0)
+2 CORP TribalPages, Inc
+1 DEST TribalPages.com
+1 DATE Jul 27 2026
+1 SUBM @S1@
+1 FILE battlesfamily
+1 GEDC 
+2 VERS 5.5
+1 CHAR UTF-8
+0 @I194@ INDI
+1 NAME D`Vonte /Aery/
+1 SEX F
+1 BIRT
+2 DATE Sep 17 1994
+1 FAMC @F1@
+0 @I193@ INDI
+1 NAME Kendrick /Aery/
+1 SEX M
+1 BIRT
+1 NOTE DIVORCED
+1 FAMS @F1@
+0 @I426@ INDI
+1 NAME Williams /Alex/
+1 SEX M
+1 BIRT
+1 FAMS @F2@
+0 @I603@ INDI
+1 NAME Josephine /Alexander/
+1 SEX F
+1 BIRT
+2 DATE Jun 10 1924
+2 PLAC Smith County,Texas
+1 DEAT
+2 DATE Jan 24 2016
+2 PLAC Tyler, Texas
+1 BURI
+2 DATE Jan 30 2016
+2 PLACE Lee Springs Cementery, Flint, Tx
+1 FAMS @F3@
+0 @I604@ INDI
+1 NAME Opal Faye /Alexander/
+1 SEX F
+1 BIRT
+2 DATE Apr 18 1940
+2 PLAC Tyler, Texas
+1 FAMC @F3@
+0 @I624@ INDI
+1 NAME Bennie /Arnold/
+1 SEX M
+1 BIRT
+2 DATE ABT  1890
+1 DEAT
+1 FAMC @F4@
+0 @I622@ INDI
+1 NAME Charley /Arnold/
+1 SEX M
+1 BIRT
+2 DATE ABT  1883
+1 DEAT
+1 FAMC @F4@
+0 @I615@ INDI
+1 NAME Dan /Arnold/
+1 SEX M
+1 BIRT
+2 DATE ABT Jan 1836
+2 PLAC Tennessee
+1 DEAT
+1 FAMS @F4@
+0 @I625@ INDI
+1 NAME Ida /Arnold/
+1 SEX F
+1 BIRT
+2 DATE ABT  1892
+1 DEAT
+1 FAMC @F4@
+0 @I623@ INDI
+1 NAME Lefaire /Arnold/
+1 SEX M
+1 BIRT
+2 DATE ABT  1888
+1 DEAT
+1 FAMC @F4@
+0 @I616@ INDI
+1 NAME Mary /Arnold/
+1 SEX F
+1 BIRT
+2 DATE ABT  1856
+2 PLAC Tennessee
+1 DEAT
+1 FAMS @F4@
+0 @I626@ INDI
+1 NAME Morison /Arnold/
+1 SEX M
+1 BIRT
+2 DATE ABT  1893
+1 DEAT
+1 FAMC @F4@
+0 @I503@ INDI
+1 NAME Parthenia /Arnold/
+1 SEX F
+1 BIRT
+2 DATE Sep 10 1886
+2 PLAC Texas
+1 DEAT
+2 DATE Aug 23 1946
+2 PLAC Smith County, Texas
+1 FAMS @F5@
+1 FAMC @F4@
+0 @I628@ INDI
+1 NAME Prince /Arnold/
+1 SEX M
+1 BIRT
+2 DATE ABT  1897
+1 DEAT
+2 DATE Jun 1978
+1 FAMC @F4@
+0 @I627@ INDI
+1 NAME Torine /Arnold/
+1 SEX M
+1 BIRT
+2 DATE ABT  1895
+1 DEAT
+1 FAMC @F4@
+0 @I407@ INDI
+1 NAME Feleta /Arthur/
+1 SEX F
+1 BIRT
+1 FAMC @F6@
+0 @I404@ INDI
+1 NAME William /Arthur/
+1 SEX M
+1 BIRT
+1 FAMS @F6@
+0 @I406@ INDI
+1 NAME William /Arthur/ Jr.
+1 SEX M
+1 BIRT
+1 FAMC @F6@
+0 @I768@ INDI
+1 NAME Karsyn Anthony /Austin/
+1 SEX M
+1 BIRT
+2 DATE Feb 03 2010
+2 PLAC Fort Worth,  TX
+1 FAMC @F7@
+0 @I270@ INDI
+1 NAME Codero /Badger/
+1 SEX M
+1 BIRT
+1 FAMC @F8@
+0 @I271@ INDI
+1 NAME Dorothia /Badger/
+1 SEX F
+1 BIRT
+1 FAMC @F8@
+0 @I259@ INDI
+1 NAME Raschell /Badger/
+1 SEX F
+1 BIRT
+1 FAMC @F9@
+0 @I581@ INDI
+1 NAME Kailen Mikeal /Bailey-Gross/
+1 SEX M
+1 BIRT
+2 DATE Dec 13 2001
+2 PLAC Dallas, TX
+1 FAMC @F10@
+0 @I762@ INDI
+1 NAME Kelli /Ballard/
+1 SEX F
+1 BIRT
+2 DATE Dec 18 2002
+2 PLAC Houston, TX
+1 FAMC @F11@
+0 @I249@ INDI
+1 NAME Dominic /Bass/
+1 SEX M
+1 BIRT
+2 DATE Aug 08 1984
+1 FAMC @F12@
+0 @I492@ INDI
+1 NAME Vera /Bass/
+1 SEX F
+1 BIRT
+1 FAMC @F13@
+0 @I713@ INDI
+1 NAME Cindy /Bates/
+1 SEX F
+1 BIRT
+1 FAMS @F14@
+0 @I218@ INDI
+1 NAME Alafane /Battles/
+1 SEX F
+1 BIRT
+2 DATE Jul 08 1963
+2 PLAC Overton, TX
+1 FAMS @F15@
+1 FAMC @F16@
+0 @I699@ INDI
+1 NAME Amy /Battles/
+1 SEX F
+1 BIRT
+2 DATE Jan 27 1977
+1 FAMS @F17@
+1 FAMS @F18@
+1 FAMC @F19@
+0 @I224@ INDI
+1 NAME Andeidra Lafaye /Battles/
+1 SEX F
+1 BIRT
+2 DATE Nov 07 1988
+2 PLAC Tyler, TX
+1 FAMS @F20@
+1 FAMC @F21@
+0 @I225@ INDI
+1 NAME Andira Kathryn /Battles/
+1 SEX F
+1 BIRT
+2 DATE Jan 03 1993
+2 PLAC Nassau, Bahamas
+1 FAMC @F21@
+0 @I221@ INDI
+1 NAME Andrae` Lafane /Battles/
+1 SEX M
+1 BIRT
+2 DATE Jan 16 1983
+2 PLAC Ft. Worth, TX
+1 FAMS @F14@
+1 FAMC @F21@
+0 @I222@ INDI
+1 NAME Andrea Kefane /Battles/
+1 SEX F
+1 BIRT
+2 DATE Jun 27 1985
+2 PLAC Nassau, Bahamas
+1 FAMS @F22@
+1 FAMC @F21@
+0 @I223@ INDI
+1 NAME Andressa Keffia /Battles/
+1 SEX F
+1 BIRT
+2 DATE Aug 28 1987
+2 PLAC Cleburne, TX
+1 FAMS @F23@
+1 FAMC @F21@
+0 @I106@ INDI
+1 NAME Annie Pearl /Battles/
+1 SEX F
+1 BIRT
+2 DATE Mar 06 1943
+2 PLAC Tyler, Texas
+1 NOTE Annie Pearl Battles was born at home at 1315 W. Grove, Tyler, Texas to Sallie Ma
+2 CONC xine Battles and  Johnnie Calvin Battles. She attended T. J. Austin Elementary S
+2 CONC chool (1st through 4th grades) 1949-  1953. She was voted queen of the school wh
+2 CONC en she was in the second grade.  After leaving T. J. Austin, Annie attended Emme
+2 CONC tt J. Scott Junior High School (5th grade) 1953-1954.  Annie’s mother, Sallie, a
+2 CONC nd Annie’s stepfather, M. J. Hutcherson, moved to Los Angeles in January  1954. 
+2 CONC Annie moved there when school was out in June. She attended the 66th Street Elem
+2 CONC entary School  (6th grade) 1954-1955. After graduating from there, she attended 
+2 CONC Thomas A. Edison Junior High  School, (7th grade) 1955-1956. She transferred to 
+2 CONC John Adams Junior High School (7th through 9th  grades) 1956-1958. She was very 
+2 CONC good at softball, and was voted athlete of the year in 1958. She  graduated from
+2 CONC  John Adams then attended John C. Fremont High School (10th through 12th) grades
+2 CONC   1958-1961.  After graduating from high school, Annie attended Los Angeles Trad
+2 CONC e Technical College and went to  work for the Department of Public Social Servic
+2 CONC es. She graduated from Control Data Institute in  November 1972 and went to work
+2 CONC  for the California-American Water Company.  Annie met Bernard K. Richmond after
+2 CONC  graduating from high school. She later married an old  schoolmate, Robert Lee H
+2 CONC ale, January 15, 1977. Annie and Robert moved back to Texas in July 1986.  In Fe
+2 CONC bruary 1988, Annie went to work for the Texas Department of Human Services.
+1 FAMS @F24@
+1 FAMC @F25@
+0 @I422@ INDI
+1 NAME Anthony /Battles/
+1 SEX M
+1 BIRT
+2 DATE Sep 16 1888
+1 DEAT
+2 DATE Dec 1966
+1 NOTE Anthony Battles served in the Army and spent most of his time in  France. His wi
+2 CONC fe’s name was Bertha. They had no children.  Bertha wrote a letter to Settie Hun
+2 CONC t in December 1964 from  Watonga, Oklahoma after placing Anthony in a rest home 
+2 CONC in  Geary, Oklahoma. Anthony was living in Oklahoma when he  died.
+1 FAMS @F26@
+1 FAMC @F27@
+0 @I87@ INDI
+1 NAME Anthony `Tony` /Battles/
+1 SEX M
+1 BIRT
+2 DATE Jul 01 1963
+2 PLAC Overton, Texas
+1 FAMS @F28@
+1 FAMC @F29@
+0 @I46@ INDI
+1 NAME Arthur Lee /Battles/
+1 SEX M
+1 BIRT
+2 DATE Oct 1940
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE 1943
+2 PLAC Tyler, Texas
+1 FAMC @F30@
+0 @I591@ INDI
+1 NAME Ashley /Battles/
+1 SEX F
+1 BIRT
+2 DATE Jan 13 1997
+2 PLAC Tyler, TX
+1 FAMC @F31@
+0 @I701@ INDI
+1 NAME Audree Yvonne /Battles/
+1 SEX F
+1 BIRT
+2 DATE Jul 07 1997
+2 PLAC Dallas,Texas
+1 FAMC @F18@
+0 @I135@ INDI
+1 NAME Augustus /Battles/ Jr.
+1 SEX M
+1 BIRT
+2 DATE Aug 23 1932
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Feb 25 1933
+2 PLAC Tyler, Texas
+1 FAMC @F32@
+0 @I35@ INDI
+1 NAME Augustus `Gus` /Battles/
+1 SEX M
+1 BIRT
+2 DATE Jan 28 1905
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Dec 1965
+2 PLAC Fort Worth, Texas
+1 BURI
+2 PLACE Peoples Burial Park Fort Worth, Tx
+1 NOTE Superintendent Gus Battles was born January 28, 1905 in Tyler, Smith County, Tex
+2 CONC as to the parentage of Mr. and Mrs. Horatio Battles.     Gus lived with his pare
+2 CONC nts until the age of thirteen when he left Tyler and moved to Fort Worth, Texas.
+2 CONC       Gus and Miss Angie Wallace were united in marriage, July 25, 1922. To this
+2 CONC  union five children were born, two of which preceded Gus in death.      Gus con
+2 CONC fessed to Christ and received the Baptism of the Holy Ghost under the leadership
+2 CONC  of Elder C. Olga Love in 1923, where Gus served faithfully as a member. He beca
+2 CONC me a licensed and ordained minister under the leadership of Bishop E. E. Hamilto
+2 CONC n and served as his assistant pastor for five years and assistant pastor under t
+2 CONC he leadership of Bishop S.D. Lee at the Love Chapel C.O.G.I.C. for seven years u
+2 CONC ntil he heard the call to go into another vineyard to watch over the flocks of t
+2 CONC he master.    Gus’s first pastorate was at the Vickery Blvd. Church of God in Ch
+2 CONC rist, where he served faithfully and God blessed his work. He felt the urgency t
+2 CONC o build God a house, and they moved to 1020 Bryan Street on the Southside in For
+2 CONC t Worth, Texas. The church was named Love Sanctuary C.O.G.I.C., and Gus served a
+2 CONC s a faithful and loyal servant until his home going.  He was also called to Grap
+2 CONC evine, Texas to pastor, and for fifteen years, he served as shepherd of the floc
+2 CONC k and built a church and left it free of indebtedness.     During his pastorate,
+2 CONC  Gus held the following positions: President of the Fort Worth District Y. P. W.
+2 CONC  W., Treasurer of the State Youth Department of Texas N. E., and Superintendent 
+2 CONC of the Stop-Six District.      Gus was one of the first three Negroes to be a li
+2 CONC censed and bonded as a contractor by the City of Fort Worth.     Battles and Son
+2 CONC s Cement Contractors was established in 1947.
+1 FAMS @F32@
+1 FAMC @F33@
+0 @I717@ INDI
+1 NAME Ayana /Battles/
+1 SEX F
+1 BIRT
+2 DATE Jul 12 2013
+1 FAMC @F14@
+0 @I429@ INDI
+1 NAME Bertha /Battles/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F26@
+0 @I443@ INDI
+1 NAME Blandon `B.P.` Palaron /Battles/
+1 SEX M
+1 BIRT
+2 DATE Feb 20 1973
+2 PLAC Fort Worth, Texas
+1 EDUC
+2 PLACE Business Administration, Texas College, Tyler, Texas
+1 ADDR
+2 ADR1 3509 Versante Drive
+2 CITY Bedford
+2 STAE Tx
+2 POST 76021
+1 _PMOB 8172199856
+1 NOTE Graduated from Trimble Tech High School, Fort Worth, Texas, 1991. High school ac
+2 CONC tivities: basketball.  High school honors: 1989 – 1991 Trimble Technical High Sc
+2 CONC hool Varsity Basketball three-year  letterman, 1989-1991; Street & Smith Basketb
+2 CONC all Magazine High School Honorable Mention; Who’s  Who Among American High Schoo
+2 CONC l Students; Bunky Stout Texas High School Basketball All-Star  Team.Bachelor of 
+2 CONC Arts Degree – Business Administration, Texas College, Tyler, Texas, 2003. Alpha 
+2 CONC Phi  Alpha Fraternity  Activities:  Counselor, City of Houston Inne  r City Bask
+2 CONC etball Camp, 1996-97  Sports Editor of The Steer, Texas College Student Newspape
+2 CONC r, 1998-99  Chief of Staff, Texas College Student Government Association, 1998-9
+2 CONC 9  Editor, “The Steer” Texas College Student Newspaper, 2000-2001  Student Assis
+2 CONC tant Coach, Texas College Women’s Basketball Program, 2001-2002  Chairman, Econo
+2 CONC mic Development Tyler Texas Chapter NAACP, 2001-2002  Official Statisticians, Te
+2 CONC xas College Women’s Basketball Program, 2003-2004  President, Students In Free E
+2 CONC nterprise (SIFE), 2002-2004  Resident Assistant, Daniel Hall, Texas College, 200
+2 CONC 3-2004  Parliamentarian, Texas College Student Government Association, 2003-2004
+2 CONC  Honors:  Texas College Men’s Basketball Letterman, 1997-99  Student Leader, Tex
+2 CONC as Association of Developing College’s Conference, 2002-2003  Student Leader, Bl
+2 CONC ack Executive Exchange Program (BEEP), 2003-2004  Student Leader, Historical Bla
+2 CONC ck Colleges’/Universities’ Deans, 2003-2004  NAACP Texas College Chapter, Member
+2 CONC  of the Year, 2002-2003  Students in Free Enterprise (SIFE) Member of the Year, 
+2 CONC 2003-2004  Texas College Business Administration Student of the Year, 2003-2004
+1 FAMS @F34@
+1 FAMC @F35@
+0 @I345@ INDI
+1 NAME Brandon /Battles/
+1 SEX M
+1 BIRT
+2 DATE Jan 20 1989
+2 PLAC Fort Worth, Texas
+1 FAMC @F36@
+0 @I158@ INDI
+1 NAME Bridget LaShaun /Battles/
+1 SEX F
+1 BIRT
+2 DATE May 14 1973
+1 FAMC @F37@
+0 @I703@ INDI
+1 NAME Buffy Lin /Battles/
+1 SEX F
+1 BIRT
+2 DATE Dec 11 1973
+2 PLAC Indiana
+1 FAMS @F38@
+0 @I509@ INDI
+1 NAME Camilia Brielle /Battles/
+1 SEX F
+1 BIRT
+2 DATE Jul 15 2008
+2 PLAC Shreveport, LA
+1 FAMC @F14@
+0 @I424@ INDI
+1 NAME Carrie /Battles/
+1 SEX F
+1 BIRT
+2 DATE Sep 20 1919
+2 PLAC Kaufman, Texas
+1 DEAT
+2 DATE Jun 30 2006
+2 PLAC Fort Worth, Texas
+1 BURI
+2 DATE Jul 03 2006
+2 PLACE Skyvue Memorial Park.
+1 FAMS @F39@
+0 @I705@ INDI
+1 NAME Cayce Jerrod /Battles/
+1 SEX M
+1 BIRT
+2 DATE Sep 29 2003
+2 PLAC Fort Worth, Tx
+1 FAMC @F40@
+0 @I704@ INDI
+1 NAME Chance Jalen /Battles/
+1 SEX M
+1 BIRT
+2 DATE Feb 11 2008
+2 PLAC Fort Worth, Tx
+1 FAMC @F40@
+0 @I702@ INDI
+1 NAME Chance Jayden /Battles/
+1 SEX F
+1 BIRT
+2 DATE Feb 11 2008
+2 PLAC Baylor All Saints
+0 @I298@ INDI
+1 NAME Cheris /Battles/
+1 SEX M
+1 BIRT
+2 DATE 1868
+1 DEAT
+2 DATE 1869
+1 FAMC @F41@
+0 @I181@ INDI
+1 NAME Christopher Jerod /Battles/
+1 SEX M
+1 BIRT
+2 DATE Sep 16 1972
+1 FAMS @F38@
+1 FAMS @F40@
+1 FAMC @F42@
+0 @I45@ INDI
+1 NAME Claudia Fay /Battles/
+1 SEX F
+1 BIRT
+2 DATE Apr 04 1939
+2 PLAC Tyler, Texas
+1 FAMS @F43@
+1 FAMS @F44@
+1 FAMS @F45@
+1 FAMC @F30@
+0 @I36@ INDI
+1 NAME Clemie /Battles/
+1 SEX M
+1 BIRT
+2 DATE 1906
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE 1920
+2 PLAC Tyler, Texas
+1 NOTE According to the 1910 Census Report, which was taken on May, 1910, Clemie was 4 
+2 CONC years old.  According to the 1920 Census Report, which was taken on January 1, 1
+2 CONC 920, Clemie was 13 years old.  According to an entry in the family bible, Clemie
+2 CONC  died in 1920.
+1 FAMC @F33@
+0 @I121@ INDI
+1 NAME Clester /Battles/ III
+1 SEX M
+1 BIRT
+2 DATE May 01 1990
+1 FAMC @F46@
+0 @I115@ INDI
+1 NAME Clester `K-Roy` /Battles/ Jr.
+1 SEX M
+1 BIRT
+2 DATE Jun 07 1966
+2 PLAC Tyler, TX
+1 OCCU
+1 NOTE Grandma Annie B. called him "Kilroy" and Grandma Katie called him "Roy Boy"  He 
+2 CONC now goes by "Roy Battles" He loves to whistle and laugh! He would always collect
+2 CONC  rocks when he was a little boy. K-Roy is great with his hands and can install o
+2 CONC r repair anything in a home. He is a plumber for TX Industry. Roy and "Roche" ha
+2 CONC ve one thing in common they both have a crooked index finger. It is from being b
+2 CONC roken and not healing properly.
+1 FAMS @F47@
+1 FAMS @F46@
+1 FAMC @F48@
+0 @I104@ INDI
+1 NAME Costromia `Cos` /Battles/
+1 SEX M
+1 BIRT
+2 DATE Dec 01 1922
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Feb 27 1985
+2 PLAC Tyler, Texas
+1 NOTE He was buried at Oliver Chapel Cementary
+1 FAMS @F3@
+1 FAMC @F49@
+0 @I647@ INDI
+1 NAME Dalhia Alma /Battles/
+1 SEX F
+1 BIRT
+0 @I237@ INDI
+1 NAME Daryll /Battles/
+1 SEX M
+1 BIRT
+1 FAMC @F50@
+0 @I88@ INDI
+1 NAME David /Battles/
+1 SEX M
+1 BIRT
+2 DATE Aug 13 1965
+2 PLAC Overton, Texas
+1 FAMC @F29@
+0 @I346@ INDI
+1 NAME Deanna /Battles/
+1 SEX F
+1 BIRT
+2 DATE Sep 16 1965
+2 PLAC Fort Worth, Texas
+1 FAMS @F28@
+0 @I175@ INDI
+1 NAME Debra Annette /Battles/
+1 SEX F
+1 BIRT
+2 DATE May 13 1955
+2 PLAC Fort Worth, Texas
+1 DEAT
+2 DATE Dec 22 1995
+2 PLAC Philadepphia, Pa
+1 NOTE She was buried at Doria Miller Memorial Park, Waco, Texas
+1 FAMC @F51@
+0 @I94@ INDI
+1 NAME Delton /Battles/
+1 SEX M
+1 BIRT
+2 DATE Mar 28 1956
+1 NOTE He graduated from Dunbar High School, Fort Worth Texas in 1974. He served in the
+2 CONC  United State Marine Corps and the Marine Corps Reserve 1975-1979
+1 FAMS @F52@
+1 FAMC @F53@
+0 @I97@ INDI
+1 NAME Delton /Battles/ Jr.
+1 SEX M
+1 BIRT
+2 DATE Jan 09 1982
+1 FAMC @F54@
+0 @I344@ INDI
+1 NAME Denisha /Battles/
+1 SEX F
+1 BIRT
+2 DATE Jan 11 1984
+2 PLAC Fort Worth, Texas
+1 FAMC @F36@
+0 @I127@ INDI
+1 NAME Dennis /Battles/
+1 SEX M
+1 BIRT
+2 DATE Jun 24 1975
+1 FAMS @F55@
+1 FAMC @F56@
+0 @I13@ INDI
+1 NAME Dianna /Battles/
+1 SEX F
+1 BIRT
+2 DATE Oct 10 1952
+1 FAMS @F57@
+1 FAMC @F58@
+0 @I234@ INDI
+1 NAME DJ /Battles/
+1 SEX M
+1 BIRT
+1 FAMC @F50@
+0 @I423@ INDI
+1 NAME Easter /Battles/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMC @F27@
+0 @I376@ INDI
+1 NAME Easter Marie /Battles/
+1 SEX F
+1 BIRT
+2 DATE Dec 12 1944
+2 PLAC Tyler, Texas
+1 FAMS @F2@
+1 FAMC @F59@
+0 @I31@ INDI
+1 NAME Edmond /Battles/
+1 SEX M
+1 BIRT
+2 DATE May 1897
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Aug 1957
+2 PLAC Tyler, Texas
+1 FAMS @F60@
+1 FAMS @F61@
+1 FAMS @F59@
+1 FAMC @F33@
+0 @I132@ INDI
+1 NAME Edward Lee /Battles/
+1 SEX M
+1 BIRT
+2 DATE Dec 31 1923
+2 PLAC Fort Worth, Texas
+1 DEAT
+2 DATE Dec 11 1996
+1 BURI
+2 PLACE He is buried at Skyvue Memorial Gardens, Rendon, Texas
+1 NOTE Known as “Uncle Buddy” to his nephews and nieces, and “Paw Paw” to his  grandchi
+2 CONC ldren, Edward could play the trumpet, piano, harmonica, and  guitar.  Edward’s p
+2 CONC astoral career began in Mansfield in 1945. On April 27, 1947, he received his ce
+2 CONC rtificate of  ordination. In 1948, he was appointed pastor of the Arlington Chur
+2 CONC ch of God in Christ, and under him  a new church, Emanuel, was built. In 1958, h
+2 CONC e was appointed pastor of the Mitchell Street Church of  God in Christ in Dallas
+2 CONC , Texas.  In 1965, Edward succeeded his father, Superintendent Gus Battles, foun
+2 CONC der of Love Sanctuary, as  pastor of Love Sanctuary in Fort Worth. Edward succes
+2 CONC sfully pastored both churches. Under his  leadership, Love Sanctuary purchased a
+2 CONC  modern structure. The Mitchell Street Church of God in Christ  changed its name
+2 CONC  to Abundant Life and a new edifice was built.  In addition to leading two congr
+2 CONC egations, Edward made important strides at the local, state, and  national level
+2 CONC s of the Church of God in Christ. He served as district superintendent of the Fo
+2 CONC rt Worth  Metroplex District for 14 years as well as superintendent of the Stop 
+2 CONC Six District, Texas Northeast. For  18 years, he worked faithfully as vice presi
+2 CONC dent and president of the youth department. At the time of  his demise, he was a
+2 CONC ctively leading the International Department of Evangelism as president. His  co
+2 CONC mmunity experience included membership on the boards of the Sickle Cell Anemia F
+2 CONC oundation and  the Maddox Community Center Council. He was a member of the Inter
+2 CONC denominational Ministerial  Alliance and was a lifetime member of the NAACP.
+1 FAMS @F62@
+1 FAMS @F63@
+1 FAMC @F32@
+0 @I138@ INDI
+1 NAME Edward Lee /Battles/ Jr.
+1 SEX M
+1 BIRT
+2 DATE Jul 21 1943
+2 PLAC Fort Worth, Texas
+1 NOTE Edward Jr. graduated from I.M. Terrell High School, Fort Worth, Texas in 1961
+1 FAMS @F64@
+1 FAMC @F62@
+0 @I4@ INDI
+1 NAME Elizabeth /Battles/
+1 SEX F
+1 BIRT
+2 DATE Sep 29 1933
+1 FAMS @F58@
+1 FAMS @F65@
+1 FAMC @F30@
+0 @I462@ INDI
+1 NAME Emerald Tiara /Battles/
+1 SEX F
+1 BIRT
+2 DATE 2003
+2 PLAC San Antonio, Texas
+1 FAMC @F66@
+0 @I157@ INDI
+1 NAME Eric Theodore Von Reginald /Battles/
+1 SEX M
+1 BIRT
+2 DATE Oct 14 1970
+2 PLAC Fort Worth, Texas
+1 NOTE Eric Theodore Von Reginald Battles Date of Birth:	October 14, 1970  Graduated fr
+2 CONC om O.D. Wyatt High School, Fort Worth, Texas in 1989. High school activities inc
+2 CONC luded: ROTC and Anne Browning Creative Writing Certificate.  Associate Applied S
+2 CONC cience Degree - Criminal Justice, w/ specialization in Counter Terrorism, Commun
+2 CONC ity College of the Air Force; Associate Applied Science Degree - Instructor of T
+2 CONC echnology and Military Science, Community College of the Air Force; Associate Ap
+2 CONC plied Science Degree - Law Enforcement w/specialization in Special Weapons and T
+2 CONC actics, Wayland Baptist University; Bachelor of Science Degree - Occupational Ed
+2 CONC ucation, w/specialization in Criminal Justice, Wayland Baptist University; Maste
+2 CONC rs Degree - American History w/specialization in Special Operations, American Mi
+2 CONC litary Institute; Masters Degree - Education w/ specialization in Curriculum Dev
+2 CONC elopment and Instruction Design, University of Phoenix; Doctorate Degree - Educa
+2 CONC tion w/specialization in Curriculum Development and Instruction Design, Universi
+2 CONC ty of Phoenix.  Served in the U.S. Navy 1993-2003. Performed various counter-ter
+2 CONC rorism duties, involving special warfare, guerilla warfare, unconventional warfa
+2 CONC re, search and rescue, non-combatant evacuations, K9 explosive detection and dis
+2 CONC posal during operations Cobra Gold, Valiant Usher, and Valiant Blitz during Oper
+2 CONC ations Desert Shield and Desert Storm as a member of Naval Special Warfare Unit 
+2 CONC SEAL Team 3. He supported Navy Explosive Ordinance Disposal Mobile Unit 5 and U.
+2 CONC  S. Special Operations Central Forces Command while deployed throughout the West
+2 CONC ern Pacific, Southwest Asia, the Persian Gulf Region, Saudi Arabia, United Arab 
+2 CONC Emirates, and British Indian Ocean Territories and provided personal protection 
+2 CONC and explosive detection for former U. S. Presidents George Bush and William H. C
+2 CONC linton and various U. S. and foreign dignitaries for U. S. Secret Service and Na
+2 CONC val Criminal Investigative Service.  While assigned to the Department of Defense
+2 CONC  Military Working Dog Academy, Eric instructed federal, civilian, and, military 
+2 CONC law enforcement personnel to effectively handle police K9s as well as trained, u
+2 CONC ntrained, and partially trained K9s to detect, locate, and respond to explosive 
+2 CONC substances.  Military honors and decorations earned: Navy and Marine Corp Medal,
+2 CONC  two Navy and Marine Corps Commendation Medals, Joint Service Achievement Medal,
+2 CONC  Joint Meritorious Unit Award, Navy Unit Commendation Medal, two Navy and Marine
+2 CONC  Corps Achievement Medals, two Armed Forces Expeditionary Medals, two Navy Battl
+2 CONC e “E” Medals, and a Southwest Asia Service Medal.
+1 FAMS @F66@
+1 FAMC @F37@
+0 @I148@ INDI
+1 NAME Felisha Vontria /Battles/
+1 SEX F
+1 BIRT
+2 DATE May 02 1971
+1 FAMS @F67@
+0 @I82@ INDI
+1 NAME Frederick /Battles/ Jr.
+1 SEX M
+1 BIRT
+2 DATE Jun 16 1983
+1 FAMC @F68@
+0 @I49@ INDI
+1 NAME Frederick `Fred` Lee /Battles/
+1 SEX M
+1 BIRT
+2 DATE Jul 22 1945
+2 PLAC Tyler, Texas
+1 FAMS @F69@
+1 FAMS @F70@
+1 FAMS @F68@
+1 FAMC @F30@
+0 @I637@ INDI
+1 NAME Georgia Nell /Battles/
+1 SEX F
+1 BIRT
+2 DATE Oct 01 1950
+1 FAMC @F39@
+0 @I425@ INDI
+1 NAME Gladus /Battles/
+1 SEX F
+1 BIRT
+2 DATE ABT  1925
+2 PLAC Smith County, Texas
+1 DEAT
+1 FAMC @F61@
+0 @I47@ INDI
+1 NAME Helen Marie /Battles/
+1 SEX F
+1 BIRT
+2 DATE Feb 16 1942
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Jun 22 2015
+1 FAMC @F30@
+0 @I29@ INDI
+1 NAME Horatio /Battles/
+1 SEX M
+1 BIRT
+2 DATE Sep 29 1865
+2 PLAC Georgia
+1 DEAT
+2 DATE 1944
+2 PLAC Smith County, Texas
+1 BURI
+2 PLACE Oliver Chapel Cementery
+1 NOTE According to the 1900 Census Report, Horatio Battles was born January 1870, but 
+2 CONC Myrtle Hunt Thomas has his birthday as September 29, 1865. Myrtle remembers Hora
+2 CONC tio being 79 years old when he died in the summer of 1944. <br><br>Horatio marri
+2 CONC ed Georgia Ann Jones on 	January 8, 1885 in Smith County. To this union, two chi
+2 CONC ldren were born: Anthony Battles and Easter Battles. Anthony served in the Unite
+2 CONC d States Army and spent most of his time in France. His wife’s name was Bertha. 
+2 CONC They had no children. Bertha wrote a letter to Settie Hunt in December 1964 from
+2 CONC  Watonga, Oklahoma after placing Anthony in a rest home in Geary, Oklahoma. Anth
+2 CONC ony was living in Oklahoma when he died. Easter died as a young adult.<br><br>Ho
+2 CONC ratio married Elizabeth “Lizzie” Carey on 	March 1, 1896. Whoever filled out the
+2 CONC  license misspelled Lizzie’s last name as “Carry.”<br><br>Horatio and Elizabeth’
+2 CONC s Children:<br><br>1.	Edmond Battles; born March 8, 1896, Tyler, Texas; died Aug
+2 CONC ust 1957, Tyler, Texas. Buried at Oliver Chapel Cemetery.<br>2.	Settie Alma Batt
+2 CONC les; born September 5, 1898, Tyler, Texas; died December 1991, Fort Worth, Texas
+2 CONC . Buried at Skyvue Memorial Gardens, Mansfield, Texas.<br>3.	Sam Calvin Battles;
+2 CONC  born March 12, 1900, Tyler, Texas; died November 27, 1972, Fort Worth, Texas. B
+2 CONC uried at Cedar Hill Memorial Park.<br>4.	Johnnie Mae Battles; born January 5, 19
+2 CONC 03, Tyler, Texas; died March 25, 1974, Tyler, Texas.<br>5.	Augustus “Gus” Battle
+2 CONC s; born January 28, 1905, Tyler, Texas; died February 22, 1965, Fort Worth, Texa
+2 CONC s. Buried at Skyvue Memorial Gardens, Rendon, Texas.<br>6.	Clemie Battles; born 
+2 CONC 1906; died 1920.<br>7.	Luther “Chap” Battles; born 1908, Tyler, Texas; died Octo
+2 CONC ber 19, 1930.<br>8.	James Thomas “J.T.” Battles; born June 25, 1911, Tyler, Texa
+2 CONC s; died July 30, 1970, Tyler, Texas. Buried at Oliver Chapel Cemetery.<br>9.	L.J
+2 CONC . Battles; born March 9, 1915, Tyler, Texas; died February 27, 1984, Fort Worth,
+2 CONC  Texas. Buried at Cedar Hill Memorial Park.<br>10.	Nathaniel Battles, born 1918,
+2 CONC  Tyler, Texas; died October 1952. Buried at Oliver Chapel Cemetery.<br><br>Accor
+2 CONC ding to family members, Horatio and Elizabeth had two additional daughters who e
+2 CONC ach died at very young ages. All of Horatio and Elizabeth’s children were born w
+2 CONC hile Horatio and Elizabeth lived in a log house on Judge Barnes’ Place.<br><br>A
+2 CONC  Mason and a deacon with good hair when he was a young man, Horatio was known as
+2 CONC  “Rashe”. His nickname was often misspelled. On their applications for a Social 
+2 CONC Security Number, Gus spelled his father’s name “Rash,” L.J. spelled it “Reich,” 
+2 CONC and Sam spelled it “Rache.” <br><br>Horatio farmed, but he also possessed an exc
+2 CONC eptional talent for working with wood. He could rive boards to provide a lifetim
+2 CONC e roof for log houses. White people came from near and far to have Horatio build
+2 CONC  log houses. Horatio, his oldest son Edmond, and Horatio’s half-brother, John Jo
+2 CONC hnson, would <br>cut, shape, and notch logs with mallets and axes and construct 
+2 CONC log houses using a mix of sage grass and white clay. If Horatio built or roofed 
+2 CONC a log house, his customers knew his work would be high quality and that his roof
+2 CONC s and log houses would not leak. <br><br>Horatio’s index finger on his right han
+2 CONC d was crooked from being broken by riving logs. Horatio also made walking canes 
+2 CONC and wooden knitting needles. He always kept half of a cow and a hog in a smoke h
+2 CONC ouse. He had a special rub that could keep the meat from spoiling for almost a y
+2 CONC ear. <br><br>Lizzie harvested Irish and sweet potatoes from her garden every yea
+2 CONC r. Shortly after Lizzie died in 1934, a fire destroyed Horatio’s house on Judge 
+2 CONC Barnes’ place. Most of the family’s photographs were lost in the fire. Horatio s
+2 CONC uspected the fire was intentionally set. He had an idea who set it, but no one w
+2 CONC as ever identified as being responsible. <br><br>After Elizabeth died in 1934, H
+2 CONC oratio married a lady who has been referred to only as Mrs. Holden.<br><br>At th
+2 CONC e time of his death in 1944, Horatio was living with his sons, Edmond, Nathaniel
+2 CONC , and Nathaniel’s wife Carrie in Jack Yancey’s place on Ark Road. Johnnie Battle
+2 CONC s, who married L.J. Battles in 1945, remembers seeing Horatio in Fort Worth on a
+2 CONC  single occasion. Horatio was in a car. Although Horatio and Lizzie are buried a
+2 CONC t the Oliver Chapel Cemetery, they are not buried next to each other. Their grav
+2 CONC esites are not marked.
+1 FAMS @F27@
+1 FAMS @F33@
+1 FAMC @F41@
+0 @I145@ INDI
+1 NAME Ian Keith /Battles/
+1 SEX M
+1 BIRT
+2 DATE Jun 14 1967
+1 FAMS @F67@
+1 FAMC @F64@
+0 @I149@ INDI
+1 NAME Isaiah Keith /Battles/
+1 SEX M
+1 BIRT
+2 DATE Apr 23 1997
+2 PLAC Arlington Memorial Hospital, Arlington, TX
+1 FAMC @F67@
+0 @I131@ INDI
+1 NAME J.B. /Battles/
+1 SEX M
+1 BIRT
+2 DATE 1923
+1 DEAT
+2 DATE 1923
+1 FAMC @F32@
+0 @I11@ INDI
+1 NAME James Earl /Battles/
+1 SEX M
+1 BIRT
+2 DATE Apr 06 1936
+1 FAMS @F71@
+1 FAMS @F72@
+1 FAMC @F30@
+0 @I7@ INDI
+1 NAME James `JT` Thomas /Battles/
+1 SEX M
+1 BIRT
+2 DATE Jun 25 1911
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Jul 30 1970
+2 PLAC Tyler, Texas
+1 BURI
+2 DATE Aug 02 1970
+2 PLACE Oliver Chapel Cementary, Tyler, Texas
+1 FAMS @F30@
+1 FAMC @F33@
+0 @I347@ INDI
+1 NAME Jarrayd /Battles/
+1 SEX M
+1 BIRT
+1 DEAT
+2 DATE Aug 01 1986
+1 FAMC @F28@
+0 @I236@ INDI
+1 NAME Jaylynn /Battles/
+1 SEX M
+1 BIRT
+1 FAMC @F50@
+0 @I235@ INDI
+1 NAME JD /Battles/
+1 SEX M
+1 BIRT
+1 FAMC @F50@
+0 @I659@ INDI
+1 NAME Joann /Battles/
+1 SEX F
+1 BIRT
+2 DATE Oct 10 1974
+1 FAMS @F34@
+1 FAMC @F73@
+0 @I124@ INDI
+1 NAME Johnnie C. /Battles/ III
+1 SEX M
+1 BIRT
+2 DATE Feb 08 1975
+1 FAMS @F31@
+1 FAMC @F74@
+0 @I102@ INDI
+1 NAME Johnnie Calvin /Battles/
+1 SEX M
+1 BIRT
+2 DATE Jul 12 1918
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE May 18 1974
+2 PLAC Tyler, Texas
+1 BURI
+2 PLACE Oliver Chapel Cementery
+1 NOTE He was buried at Oliver Chapel Cementary
+1 FAMS @F25@
+1 FAMS @F75@
+1 FAMC @F49@
+0 @I111@ INDI
+1 NAME Johnnie Calvin /Battles/ Jr.
+1 SEX M
+1 BIRT
+2 DATE Jul 25 1950
+2 PLAC Tyler, TX
+1 NOTE Was a very hard working welder and played baseball in his spare time. He also jo
+2 CONC ined the Army after graduating from high school. His whole life changed when he 
+2 CONC was drinking and driving and had an accident. He broke his neck and is paralyzed
+2 CONC  from waist down.
+1 FAMS @F74@
+1 FAMS @F76@
+1 FAMC @F75@
+0 @I34@ INDI
+1 NAME Johnnie Mae /Battles/
+1 SEX F
+1 BIRT
+2 DATE Jan 05 1903
+2 PLAC Smith County, Texas
+1 DEAT
+2 DATE Mar 25 1974
+2 PLAC Tyler, Texas
+1 FAMS @F77@
+1 FAMC @F33@
+0 @I126@ INDI
+1 NAME Jonathan Deon /Battles/
+1 SEX M
+1 BIRT
+2 DATE Apr 23 1976
+2 PLAC Tyler, TX
+1 NOTE In Iraq now this is his 4th time going. He is in the Army and has been after gra
+2 CONC duating from High School. He is working on his college degree. He is a newly wed
+2 CONC  as of 2010.
+1 FAMS @F78@
+1 FAMC @F74@
+0 @I593@ INDI
+1 NAME Jordan /Battles/
+1 SEX F
+1 BIRT
+1 NOTE 1st child but not by wife Jennifer. Jonathan did not marry child`s mother.
+1 FAMC @F78@
+0 @I139@ INDI
+1 NAME Joyce Etta /Battles/
+1 SEX F
+1 BIRT
+2 DATE Jan 03 1945
+2 PLAC Los Angelas, Ca
+1 FAMS @F79@
+1 FAMS @F80@
+1 FAMC @F62@
+0 @I125@ INDI
+1 NAME Julian /Battles/
+1 SEX M
+1 BIRT
+2 DATE Feb 08 1975
+1 FAMC @F74@
+0 @I110@ INDI
+1 NAME Katie Lou /Battles/
+1 SEX F
+1 BIRT
+2 DATE Aug 06 1948
+2 PLAC Tyler, TX
+1 FAMS @F48@
+1 FAMC @F75@
+0 @I129@ INDI
+1 NAME Katie Shanelle /Battles/
+1 SEX F
+1 BIRT
+2 DATE Jun 08 1993
+1 FAMC @F81@
+0 @I86@ INDI
+1 NAME Kayla /Battles/
+1 SEX F
+1 BIRT
+2 DATE May 19 1993
+2 PLAC Tyler, Texas
+1 FAMC @F82@
+0 @I348@ INDI
+1 NAME Kayla /Battles/
+1 SEX F
+1 BIRT
+2 DATE Sep 22 1991
+2 PLAC Fort Worth, Texas
+1 FAMC @F28@
+0 @I590@ INDI
+1 NAME Kayla Ann Marie /Battles/
+1 SEX F
+1 BIRT
+2 DATE Jan 03 1996
+2 PLAC Tyler, TX
+1 FAMC @F31@
+0 @I80@ INDI
+1 NAME Keith Raynord /Battles/
+1 SEX M
+1 BIRT
+2 DATE Aug 16 1968
+2 PLAC Tyler, Texas
+1 FAMS @F82@
+1 FAMC @F69@
+0 @I468@ INDI
+1 NAME Kennedy Felice /Battles/
+1 SEX F
+1 BIRT
+2 DATE Apr 16 2006
+2 PLAC Arlington Memorial Hospital, Arlington, TX
+1 FAMC @F67@
+0 @I379@ INDI
+1 NAME Kenneth Wayne /Battles/
+1 SEX M
+1 BIRT
+2 DATE Mar 20 1968
+2 PLAC Tyler, Texas
+1 FAMC @F19@
+0 @I38@ INDI
+1 NAME L.J. /Battles/
+1 SEX M
+1 BIRT
+2 DATE Mar 09 1915
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Feb 1984
+2 PLAC Fort Worth, Texas
+1 FAMS @F83@
+1 FAMS @F53@
+1 FAMC @F33@
+0 @I92@ INDI
+1 NAME L.J. /Battles/ Jr.
+1 SEX M
+1 BIRT
+2 DATE Feb 06 1936
+1 DEAT
+2 DATE 1945
+1 FAMC @F83@
+0 @I217@ INDI
+1 NAME Lafane /Battles/ Jr.
+1 SEX M
+1 BIRT
+2 DATE Nov 02 1961
+2 PLAC Omaha, NE
+1 FAMS @F21@
+1 FAMC @F16@
+0 @I450@ INDI
+1 NAME Lafane (Golly) /Battles/ Sr
+1 SEX M
+1 BIRT
+2 DATE Feb 07 1935
+2 PLAC Smith County, TX
+1 DEAT
+2 DATE Jun 24 2020
+2 PLAC Kingwood, TX
+1 NOTE Lafane Battles, Sr. was a remarkable individual with a rich and diverse life sto
+2 CONC ry. Born on February 7, 1935, in Smith County, Texas, he was the fourth child an
+2 CONC d oldest son of J.T. and Cora Battles. His life journey came to an end on June 2
+2 CONC 4, 2020.<br><br>Raised in Tyler, Texas, Lafane's early life was shaped by his wo
+2 CONC rk at E. B. Baron Rose Nursery. His pursuit of work then led him to Ft. Worth, w
+2 CONC here he joined his uncle Augustus Battles at Battles and Sons Cement Contractors
+2 CONC . This experience laid the foundation for his strong work ethic, which he furthe
+2 CONC r honed at Maxwell Steel Co. Later, he moved to Omaha, Nebraska, to work at Mast
+2 CONC er Electronics, before eventually settling in Dallas, Texas. In Dallas, he embar
+2 CONC ked on a diverse career path, working at Texas Bithulitc Construction Co, runnin
+2 CONC g his own business, Battles Painting and Decorating Services, and contributing t
+2 CONC o the Southwest Region Conference of Seventh-day Adventist. He also founded Enaf
+2 CONC al and Associates, showcasing his expertise in construction, particularly in the
+2 CONC  renovation of houses and churches in Ft. Worth and East Texas, spanning over 40
+2 CONC  years.<br><br>Lafane was deeply involved in various business and community orga
+2 CONC nizations. He was a charter member of the Better Business Bureau of East Texas a
+2 CONC nd held memberships in the National Federation of Independent Business, Tyler Ch
+2 CONC amber of Commerce, United States Chamber of Commerce, and Arp Chamber of Commerc
+2 CONC e.<br><br>His personal life was as rich and full as his professional one. Lafane
+2 CONC  was married to Kathryn Battles for 59 years, and together they raised a loving 
+2 CONC family. Their children include Lafane Battles, Jr., Alafane Battles, and Lavonne
+2 CONC  Richardson. He was a proud grandfather to seven grandchildren and a great-grand
+2 CONC father to eleven great-grandchildren. Lafane's extensive family also included hi
+2 CONC s siblings Pearlene Domino, Elizabeth Holmes, James Battles, Shirley Cobb, Claud
+2 CONC ia Ferguson, Maurice Battles, and Fredrick Battles, along with his god-mother He
+2 CONC len Harden and god-daughter Linda Singletary. His life was a tapestry of close f
+2 CONC amily ties, deep friendships, and a committed involvement in his church communit
+2 CONC y.<br><br>Lafane Battles, Sr.'s life was a testament to hard work, dedication to
+2 CONC  family, and service to his community. His legacy lives on through his family, t
+2 CONC he businesses he developed, and the many lives he touched.
+1 FAMS @F16@
+1 FAMC @F30@
+0 @I147@ INDI
+1 NAME Lana Kim /Battles/
+1 SEX F
+1 BIRT
+2 DATE Sep 05 1983
+1 FAMS @F84@
+1 FAMC @F64@
+0 @I219@ INDI
+1 NAME Lavonne /Battles/
+1 SEX F
+1 BIRT
+2 DATE Nov 19 1967
+2 PLAC Dallas, Texas
+1 FAMS @F85@
+1 FAMC @F16@
+0 @I577@ INDI
+1 NAME London Mekayla /Battles/
+1 SEX F
+1 BIRT
+2 DATE Dec 03 2004
+2 PLAC Dallas, TX
+1 FAMC @F86@
+0 @I315@ INDI
+1 NAME Louisa /Battles/
+1 SEX F
+1 BIRT
+2 DATE ABT  1842
+2 PLAC Georgia
+1 DEAT
+2 DATE Apr 05 1916
+2 PLAC Victoria County, Texas
+1 FAMS @F87@
+0 @I37@ INDI
+1 NAME Luther `Chap` /Battles/
+1 SEX M
+1 BIRT
+2 DATE 1908
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Oct 19 1930
+2 PLAC Tyler, Texas
+1 NOTE Luther’s death followed an accident in which he had attempted to jump onto the s
+2 CONC ide of a Model-T  Ford to hitch a ride to town in Tyler with two or three other 
+2 CONC men. Luther missed catching onto the car  as he attempted to jump on and fell to
+2 CONC  the street. Shortly after the accident, he became ill and was  treated by Dr. W
+2 CONC illiam F. Warren, Lizzie’s doctor. Luther died from internal bleeding
+1 FAMC @F33@
+0 @I89@ INDI
+1 NAME Marvin /Battles/
+1 SEX M
+1 BIRT
+2 DATE Dec 25 1968
+2 PLAC Overton, Texas
+1 FAMC @F29@
+0 @I48@ INDI
+1 NAME Maurice Monroe /Battles/
+1 SEX M
+1 BIRT
+2 DATE Aug 11 1943
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Aug 03 2025
+2 PLAC Fort Worth, Texas
+1 FAMS @F29@
+1 FAMC @F30@
+0 @I103@ INDI
+1 NAME Maxine /Battles/
+1 SEX F
+1 BIRT
+2 DATE 1920
+1 DEAT
+2 DATE 1938
+2 PLAC Tyler, Texas
+1 NOTE She was buried at Oliver Chapel Cementary
+1 FAMC @F49@
+0 @I133@ INDI
+1 NAME Milton Augustus /Battles/
+1 SEX M
+1 BIRT
+2 DATE Jul 19 1925
+2 PLAC Fort Worth, Texas
+1 DEAT
+2 DATE Jan 14 1980
+2 PLAC Fort Worth, Texas
+1 BURI
+2 DATE Jan 18 1980
+2 PLACE Skyvue Memorial Park.
+1 FAMS @F88@
+1 FAMS @F51@
+1 FAMS @F89@
+1 FAMC @F32@
+0 @I167@ INDI
+1 NAME Milton Augustus /Battles/ II
+1 SEX M
+1 BIRT
+2 DATE Nov 09 1944
+2 PLAC Fort Worth, Texas
+1 DEAT
+2 DATE Sep 02 2009
+2 PLAC Fort Worth, Texas
+1 NOTE Known by the family as Milton, Jr. Graduated from I.M. Terrell. 1962. Served in 
+2 CONC the U.S. Army 1962-  1966 and in the U.S. Army Reserve 1982-1988.
+1 FAMS @F42@
+1 FAMS @F90@
+1 FAMS @F91@
+1 FAMC @F88@
+0 @I39@ INDI
+1 NAME Nathaniel /Battles/
+1 SEX M
+1 BIRT
+2 DATE 1918
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Oct 01 1952
+1 NOTE Nathaniel met Carrie in 1938 while he was living with his brother, L.J., and the
+2 CONC ir father, Horatio at  Jack Yancey’s Place on Ark Road in Tyler, Texas. Nathanie
+2 CONC l and Carrie lived with Horatio until they  moved to Fort Worth in 1948.  Nathan
+2 CONC iel could play the piano and the organ by ear
+1 FAMS @F39@
+1 FAMC @F33@
+0 @I431@ INDI
+1 NAME Nathaniel /Battles/ Jr.
+1 SEX M
+1 BIRT
+2 DATE Oct 30 1948
+1 DEAT
+2 DATE Sep 29 2007
+1 FAMS @F92@
+1 FAMS @F93@
+1 FAMS @F94@
+1 FAMC @F39@
+0 @I343@ INDI
+1 NAME Nicole /Battles/
+1 SEX F
+1 BIRT
+2 DATE Apr 20 1988
+2 PLAC Fort Worth, Texas
+1 FAMC @F95@
+0 @I93@ INDI
+1 NAME Norman /Battles/
+1 SEX M
+1 BIRT
+2 DATE Apr 24 1937
+1 DEAT
+2 DATE Jul 21 2006
+2 PLAC Fort Worth, Texas
+1 BURI
+2 PLACE Garden of Gethsemane – Cedar Hill Memorial Park, Arlington, Texas
+1 NOTE Norman was also married to women whose first  names were Marilyn and Thelma.
+1 FAMS @F13@
+1 FAMS @F96@
+1 FAMC @F83@
+0 @I8@ INDI
+1 NAME Parthenia /Battles/
+1 SEX F
+1 BIRT
+2 DATE Mar 16 1930
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Dec 16 2006
+2 PLAC Fort Worth, Texas
+1 BURI
+2 DATE Dec 23 2006
+2 PLACE Oliver Chapel Cementary, Tyler, Texas
+1 FAMS @F97@
+1 FAMS @F98@
+1 FAMC @F30@
+0 @I9@ INDI
+1 NAME Pearline /Battles/
+1 SEX F
+1 BIRT
+2 DATE Oct 21 1931
+1 DEAT
+2 DATE Dec 16 2023
+1 BURI
+2 DATE Jan 17 2023
+2 PLACE Keene Memorial Park Cemetary
+1 FAMS @F99@
+1 FAMC @F30@
+0 @I377@ INDI
+1 NAME R.B. /Battles/
+1 SEX M
+1 BIRT
+2 DATE Jan 24 1947
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Jun 05 2001
+2 PLAC Tyler, Texas
+1 BURI
+2 PLACE New Canaan Cementery, Whitehouse, Tx
+1 FAMS @F19@
+1 FAMC @F59@
+0 @I83@ INDI
+1 NAME Ramona /Battles/
+1 SEX F
+1 BIRT
+1 FAMC @F68@
+0 @I128@ INDI
+1 NAME Raneka /Battles/
+1 SEX F
+1 BIRT
+2 DATE Jun 08 1987
+1 FAMC @F100@
+0 @I294@ INDI
+1 NAME Richmond /Battles/
+1 SEX M
+1 BIRT
+2 DATE ABT  1832
+2 PLAC Mississippi
+1 DEAT
+2 DATE ABT  1909
+2 PLAC Canton Beat, Smith County Texas
+1 NOTE CENSUS RECORDS - SMITH COUNTY, TX - INDEX FOR 1870 US CENSUS<br><br>SURNAMES:  A
+2 CONC BERNATHY - BEVERS<br><br>Submitted by East Texas Genealogical Society<br>P. O. B
+2 CONC ox 6967, Tyler, TX 75711<br><br>Copyright.  All rights reserved.<br>http://usgwa
+2 CONC rchives.net/copyright.htm<br><br>***********************************************
+2 CONC ************************<br>Thanks to Dan Milligan and Juanice York for copying 
+2 CONC the Index and <br>Edith Willman and Nancy Crain for proofreading the index.<br>*
+2 CONC ****************************************************************************<br>
+2 CONC SURNAME             FIRST NAME                AGE     IMAGE       BEAT    <br><b
+2 CONC r>Batterly            Louisa                    28      0244b   Canton Beat<br>B
+2 CONC atterly            Richmond                  26      0244b   Canton Beat<br><br>
+2 CONC                                                            <br>                 
+2 CONC                                        NO
+1 FAMS @F41@
+1 FAMS @F87@
+0 @I173@ INDI
+1 NAME Rodney Augustus /Battles/
+1 SEX M
+1 BIRT
+2 DATE Jul 27 1949
+2 PLAC Fort Worth, Texas
+1 EDUC
+2 PLACE BBA, University of Texas at Arlington, 1981.
+1 FAMS @F101@
+1 FAMS @F102@
+1 FAMC @F51@
+0 @I33@ INDI
+1 NAME Sam Calvin /Battles/
+1 SEX M
+1 BIRT
+2 DATE Mar 12 1900
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Nov 27 1972
+2 PLAC Fort Worth, Texas
+1 FAMS @F49@
+1 FAMS @F103@
+1 FAMC @F33@
+0 @I32@ INDI
+1 NAME Settie Alma /Battles/
+1 SEX F
+1 BIRT
+2 DATE Sep 05 1898
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Dec 1991
+2 PLAC Fort Worth, Texas
+1 BURI
+2 DATE Dec 13 1991
+2 PLACE Skyvue Memorial Gardens, Rendon, Texas
+1 FAMS @F104@
+1 FAMC @F33@
+0 @I85@ INDI
+1 NAME Shanae /Battles/
+1 SEX M
+1 BIRT
+2 DATE Mar 12 1988
+2 PLAC Tyler, Texas
+1 FAMC @F82@
+0 @I122@ INDI
+1 NAME Shanika /Battles/
+1 SEX F
+1 BIRT
+2 DATE Jun 25 1992
+1 FAMC @F46@
+0 @I567@ INDI
+1 NAME Sharika Jo`Vette /Battles/
+1 SEX F
+1 BIRT
+2 DATE Oct 11 1993
+2 PLAC Dallas, TX
+1 FAMC @F46@
+0 @I12@ INDI
+1 NAME Shirley `Gustine` Augustine /Battles/
+1 SEX F
+1 BIRT
+2 DATE Sep 24 1937
+1 FAMS @F105@
+1 FAMC @F30@
+0 @I99@ INDI
+1 NAME Stephen /Battles/
+1 SEX M
+1 BIRT
+1 FAMC @F106@
+0 @I232@ INDI
+1 NAME Tamara /Battles/
+1 SEX F
+1 BIRT
+1 FAMC @F107@
+0 @I98@ INDI
+1 NAME Terrance Nigel /Battles/
+1 SEX M
+1 BIRT
+2 DATE Jan 23 1983
+1 FAMC @F108@
+0 @I375@ INDI
+1 NAME Tommy Lee /Battles/
+1 SEX M
+1 BIRT
+2 DATE Aug 02 1943
+1 DEAT
+2 DATE Oct 11 2000
+1 BURI
+2 DATE Nov 2000
+2 PLACE Oliver Chapel Cementery
+1 FAMC @F59@
+0 @I113@ INDI
+1 NAME Tony Roche /Battles/
+1 SEX M
+1 BIRT
+2 DATE Jul 17 1954
+1 NOTE Tony is mentally ill has been since he was in his 20`s. He lost his mind when th
+2 CONC e mother of his children left him. He was a very good visual artist before this 
+2 CONC happen. He is able to pay his bills and function in day to day life. He lives wi
+2 CONC th his brother Willie right now.
+1 FAMS @F109@
+1 FAMC @F75@
+0 @I631@ INDI
+1 NAME Tyjuan Dasean /Battles/
+1 SEX M
+1 BIRT
+2 DATE Nov 22 1999
+2 PLAC Fort Worth, Texas
+1 FAMC @F110@
+0 @I123@ INDI
+1 NAME Tyler Makhail /Battles/
+1 SEX M
+1 BIRT
+2 DATE Sep 17 1997
+2 PLAC Dallas, TX
+1 FAMC @F86@
+0 @I630@ INDI
+1 NAME Tynisha May /Battles/
+1 SEX F
+1 BIRT
+2 DATE Dec 02 1998
+2 PLAC Fort Worth, Texas
+1 FAMC @F110@
+0 @I176@ INDI
+1 NAME Tyrone David /Battles/
+1 SEX M
+1 BIRT
+2 DATE Jul 06 1969
+1 FAMS @F110@
+1 FAMS @F111@
+1 FAMC @F89@
+0 @I636@ INDI
+1 NAME Tyrone David `T.J.` /Battles/ Jr.
+1 SEX M
+1 BIRT
+2 DATE Mar 06 2010
+2 PLAC Fort Worth, Texas
+1 FAMC @F111@
+0 @I231@ INDI
+1 NAME Venita /Battles/
+1 SEX F
+1 BIRT
+1 FAMC @F71@
+0 @I174@ INDI
+1 NAME Victor Earl /Battles/
+1 SEX M
+1 BIRT
+2 DATE Dec 26 1951
+2 PLAC Fort Worth, Texas
+1 FAMC @F51@
+0 @I180@ INDI
+1 NAME Vincent Edward /Battles/
+1 SEX M
+1 BIRT
+2 DATE Sep 15 1966
+1 NOTE Graduated from Trimble Tech High School, Fort Worth, Texas; Bachelor of Science 
+2 CONC Degree –  Commerce, Texas A&M University; Master of Liberal Arts Degree, Souther
+2 CONC n Methodist University.  Studied culinary arts with Cordon Bleu in London, Engla
+2 CONC nd. Certified Professional in Human  Resources (PHR); Licensed realtor.  Served 
+2 CONC in the United States Air Force Reserves 1988 - 2003.
+1 FAMC @F42@
+0 @I140@ INDI
+1 NAME Wilburn Joe `Bill` /Battles/ II
+1 SEX M
+1 BIRT
+2 DATE Sep 05 1950
+2 PLAC Fort Worth, Texas
+1 NOTE Known as “Bill” to his brothers, sister, and first cousins—and as “Paw Paw” to h
+2 CONC is grandchildren.  Graduated from I.M. Terrell High School, Fort Worth, Texas in
+2 CONC  1968. High school activities: Sr. Class Manager, President of Band, ROTC; Track
+2 CONC ; Tri-Hi-Y; Boutillion, Junior Texas Senator.  Associate Applied Science Degree,
+2 CONC  Community College of the Air Force, 1990; Associate Arts Degree, Tarrant County
+2 CONC  Jr. College, Fort Worth, Texas, 1994; Bachelor of Arts Degree, Columbia College
+2 CONC , 1997; Masters Degree - Business and Human Relations, Amber University, 2000.  
+2 CONC Served in the U.S. Air Force, 1972-1992, and was discharged with the rank of Tec
+2 CONC hnical Sergeant.  Military honors and decorations earned: Meritorious Service Me
+2 CONC dal; Air Force Commendation Medal with two Oak Leaf Clusters; Air Force Outstand
+2 CONC ing Unit Award with three Oak Leaf Clusters; Air Force Good Conduct Medal with f
+2 CONC ive Oak Leaf Clusters; National Defense Service Medal one device; Air Force Long
+2 CONC evity Service Award Ribbon with four Oak Leaf Clusters; NCO (Non-Commissioned Of
+2 CONC ficer) PME (Professional Military Education) graduate with one Oak Leaf Cluster;
+2 CONC  and an Air Force Training Ribbon.  An Associate Elder at Love Sanctuary Church 
+2 CONC of God in Christ, W.J. received his minister’s license from Abundant Life Januar
+2 CONC y 8, 1995 and his Certificate of Ordination June 28, 2005.  W.J. plays the bass 
+2 CONC guitar.
+1 FAMS @F37@
+1 FAMS @F112@
+1 FAMC @F62@
+0 @I156@ INDI
+1 NAME Wilburn `Spud` Joe /Battles/ III
+1 SEX M
+1 BIRT
+2 DATE Dec 27 1968
+1 FAMC @F37@
+0 @I112@ INDI
+1 NAME Willie Calvin /Battles/
+1 SEX M
+1 BIRT
+2 DATE Jul 25 1952
+2 PLAC Tyler, TX
+1 NOTE Never married but has 3 children by 3 different women.
+1 FAMS @F81@
+1 FAMS @F56@
+1 FAMC @F75@
+0 @I146@ INDI
+1 NAME Winnie Kira /Battles/
+1 SEX F
+1 BIRT
+2 DATE Oct 11 1968
+1 EDUC
+2 PLACE Associate Arts Degree, Tarrant County College, 1991; attended University of Texas at Arlington.
+1 FAMC @F64@
+0 @I209@ INDI
+1 NAME Fred J /Bauer/
+1 SEX M
+1 BIRT
+2 DATE Jul 19 1955
+2 PLAC Alexandria, La
+1 FAMS @F113@
+0 @I356@ INDI
+1 NAME Keisha R /Bauer/
+1 SEX F
+1 BIRT
+2 DATE May 03 1983
+2 PLAC Fort Worth, Texas
+1 FAMC @F113@
+0 @I644@ INDI
+1 NAME Cicero /Bell/
+1 SEX M
+1 BIRT
+2 DATE ABT  1848
+1 DEAT
+0 @I165@ INDI
+1 NAME Cynthia Lee /Bell/
+1 SEX F
+1 BIRT
+1 FAMS @F88@
+0 @I643@ INDI
+1 NAME Mollie /Bell/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F114@
+1 FAMC @F115@
+0 @I635@ INDI
+1 NAME Shenda /Benford/
+1 SEX F
+1 BIRT
+1 FAMS @F111@
+0 @I342@ INDI
+1 NAME Arturo Jefferson /Bent/
+1 SEX M
+1 BIRT
+2 DATE Apr 03 1923
+2 PLAC LeCeiba Honduras S.A.
+1 DEAT
+2 DATE Oct 22 1990
+2 PLAC Tyler, Texas
+1 BURI
+2 PLACE Oliver Chapel Cemetery
+1 FAMS @F44@
+0 @I793@ INDI
+1 NAME Henry /Blakley/
+1 SEX M
+1 BIRT
+2 DATE Feb 04 1880
+1 DEAT
+2 DATE Jun 1967
+2 PLAC Yankton County, South Dakota
+1 BURI
+1 NOTE Henry was the son of Isaac Blakey and Rachael (Lephridge / Jackson) Blakey. His 
+2 CONC birth year was been between 1878 to 1880. Henry was the husband of Mary Elizabet
+2 CONC h Fristoe
+1 FAMS @F116@
+1 FAMC @F117@
+0 @I794@ INDI
+1 NAME Isaac /Blakley/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMS @F117@
+0 @I390@ INDI
+1 NAME Arvela /Blakshire/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F118@
+0 @I714@ INDI
+1 NAME Braden /Boyd/
+1 SEX M
+1 BIRT
+1 FAMS @F23@
+0 @I718@ INDI
+1 NAME Eli /Boyd/
+1 SEX M
+1 BIRT
+2 DATE Aug 29 2013
+1 FAMC @F23@
+0 @I456@ INDI
+1 NAME Hulalia /Bradshaw/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F51@
+0 @I445@ INDI
+1 NAME Rufus /Branch/
+1 SEX M
+1 BIRT
+1 FAMS @F119@
+0 @I803@ INDI
+1 NAME Linda /Brewster/
+1 SEX F
+1 BIRT
+1 FAMS @F70@
+0 @I745@ INDI
+1 NAME Carine /Bright/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F120@
+0 @I306@ INDI
+1 NAME Harriet /Brown/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F121@
+1 FAMS @F122@
+0 @I455@ INDI
+1 NAME Nancy /Brown/
+1 SEX F
+1 BIRT
+1 FAMS @F102@
+0 @I183@ INDI
+1 NAME Nancy Faye /Brown/
+1 SEX M
+1 BIRT
+2 DATE Apr 15 1960
+1 FAMS @F123@
+0 @I155@ INDI
+1 NAME Betty Sue /Bruton/
+1 SEX F
+1 BIRT
+2 DATE Dec 23 1948
+2 PLAC Nacogdoches, Texas
+1 FAMS @F37@
+0 @I368@ INDI
+1 NAME Roketa /Bryant/
+1 SEX F
+1 BIRT
+2 DATE Sep 25 1974
+1 FAMC @F124@
+0 @I369@ INDI
+1 NAME Tanesa /Bryant/
+1 SEX F
+1 BIRT
+2 DATE Jan 03 1976
+1 FAMC @F124@
+0 @I648@ INDI
+1 NAME Belina /Buisson/
+1 SEX F
+1 BIRT
+2 DATE Jul 18 1977
+2 PLAC Ft. Lauderdale, FL
+1 FAMS @F125@
+0 @I470@ INDI
+1 NAME Kayla Lynn /Burrell/
+1 SEX F
+1 BIRT
+2 DATE Jul 03 2003
+2 PLAC Fort Worth, Texas
+1 FAMC @F84@
+0 @I471@ INDI
+1 NAME Lance Junior /Burrell/
+1 SEX M
+1 BIRT
+2 DATE May 28 2005
+2 PLAC Fort Worth, Texas
+1 FAMC @F84@
+0 @I469@ INDI
+1 NAME Lynn “Duke” /Burrell/ Jr.
+1 SEX M
+1 BIRT
+1 FAMS @F84@
+0 @I100@ INDI
+1 NAME Annie Beatrice /Byrd/
+1 SEX F
+1 BIRT
+2 DATE Nov 10 1899
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Jun 04 1995
+2 PLAC Tyler, Texas
+1 NOTE She was buried at Oliver Chapel Cementary
+1 FAMS @F49@
+1 FAMC @F126@
+0 @I382@ INDI
+1 NAME Pearlie /Byrd/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F126@
+0 @I785@ INDI
+1 NAME Anthony /Caddell/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMS @F127@
+0 @I780@ INDI
+1 NAME Carl Edward /Caddell/ Sr
+1 SEX M
+1 BIRT
+2 DATE Feb 02 1946
+1 DEAT
+2 DATE May 01 2008
+1 BURI
+2 DATE May 08 2008
+2 PLACE Dallas-Fort Worth National Cemetery Dallas, Dallas County, Texas
+1 FAMC @F128@
+0 @I274@ INDI
+1 NAME Dorthy /Caddell/
+1 SEX F
+1 BIRT
+2 DATE Mar 22 1948
+2 PLAC Concord, Texas
+1 DEAT
+2 DATE Feb 01 2021
+2 PLAC Forth Worth, Texas
+1 BURI
+2 DATE Feb 08 2021
+2 PLACE Skyvue Memorial Gardens
+1 NOTE Obituary<br>Dorothy Caddell Wynn was born to the late Steve & Cleopatra Caddell 
+2 CONC on March 22,1948 in Concord, Tx. She was joined by a twin, Martha Johnson.  She 
+2 CONC later moved to Tyler Tx where she met Earnest L Wynn Sr & joined him in holy mat
+2 CONC rimony on May 31,1966. Five children were born into this Union. They decided to 
+2 CONC make Fort Worth Tx their permanent residence in 1968. She worked for Mrs. Bairds
+2 CONC  bread for many years and later retired from Walmart. She was summoned peacefull
+2 CONC y to her final resting place in Heaven on 02/01/2021 at Huguley Memorial hospita
+2 CONC l. She was a kind, loving woman with a genuine spirit, yet very direct & thoroug
+2 CONC h. She loved everyone and never saw our imperfections. She was filled with a lot
+2 CONC  of wisdom and raised to serve God early on. <br>She is preceded in death by her
+2 CONC  parents, Steve and Cleopatra Caddell; Mother-in-law, Parthenia McDonald; two br
+2 CONC others, Charles & Carl Caddell; sister, Rose Mary Caddell Johnson; brother-in-la
+2 CONC w, Edward Lee Wynn; grandson, Damian Jackson.<br>She leaves behind four siblings
+2 CONC , Martha Johnson, Doris Ann Campbell (Eddie), Steve Caddell Jr & Peggy Elliott; 
+2 CONC Children; Earnest Wynn Jr (Tamara), Darron Wynn, Kennth Wynn (Toni), Angela Wynn
+2 CONC  and Michelle Wynn; 19 grandchildren and a host of great grandchildren and other
+2 CONC  loved ones / friends.
+1 FAMS @F129@
+1 FAMC @F128@
+0 @I253@ INDI
+1 NAME Martha /Caddell/
+1 SEX F
+1 BIRT
+2 DATE Mar 22 1948
+2 PLAC Concord, Texas
+1 FAMS @F130@
+1 FAMC @F128@
+0 @I779@ INDI
+1 NAME Peggy /Caddell/
+1 SEX F
+1 BIRT
+1 FAMC @F128@
+0 @I777@ INDI
+1 NAME Rose Mary /Caddell/
+1 SEX F
+1 BIRT
+2 DATE Feb 10 1944
+2 PLAC Mount Enterprise, Rusk County, Texas
+1 DEAT
+2 DATE Nov 2020
+2 PLAC Evergreen Memorial Park Cemetery Tyler, Smith County, Texas
+1 FAMC @F128@
+0 @I781@ INDI
+1 NAME Silas /Caddell/
+1 SEX M
+1 BIRT
+2 DATE Feb 20 1872
+1 DEAT
+2 DATE Sep 18 1935
+2 PLAC Mount Enterprise, Rusk County, Texas
+1 BURI
+2 DATE Sep 19 1935
+2 PLACE Campground Cemetery, in Mount Enterprise, Texas.
+1 NOTE SIE CADDELL is the son of Anthony Caddell and Mrs. Helen (Peoples) Devereaux Cad
+2 CONC dell.<br><br>He married his first wife - Mrs. Lizzie Williams Caddell - on Janua
+2 CONC ry 11, 1900 in Rusk County, Texas.<br><br>He married again to his second wife - 
+2 CONC Mrs. Eliza Ross Caddell - on January 17, 1907 in Rusk County, Texas.<br><br>He m
+2 CONC ade a home for his family in Mount Enterprise, Texas in Rusk County.<br><br>He w
+2 CONC orked as a farmer.<br><br>SIE CADDELL was laid to rest on September 19, 1935 on 
+2 CONC the grounds of Campground Cemetery, in Mount Enterprise, Texas.<br><br>His son, 
+2 CONC Marion Caddell, was the informant on the death certificate.<br><br>A. Crimm, of 
+2 CONC Henderson, Texas, was the funeral undertaker who managed the burial arrangements
+2 CONC .<br><br>Sources ~ Texas Death Certificate 43937; and the 1900-1935 US Census Re
+2 CONC cords of Rusk County, Texas<br><br>Note: The grave marker for SIE CADDELL reflec
+2 CONC ts the year of death as 1836. However, the death certificate reports the year of
+2 CONC  death as 1835.<br><br>Sincere thanks to Dee Mack (Contributor 47103752) for con
+2 CONC tributing this memorial.
+1 FAMS @F131@
+1 FAMS @F132@
+1 FAMC @F127@
+0 @I772@ INDI
+1 NAME Steve /Caddell/
+1 SEX M
+1 BIRT
+1 DEAT
+1 NOTE Funeral services for Steve V. Caddell Sr., 96, of Tyler are scheduled for 11 a.m
+2 CONC . Friday, Oct. 26, 2012, at Smith Temple Church of God in Christ with Elder Noel
+2 CONC  Caldwell eulogist<br><br>Burial will be in Evergreen Memorial Park Cem-etery un
+2 CONC der direction of Brooks-Sterling & Garrett Funeral Directors.<br><br>Mr. Caddell
+2 CONC  died Oct. 21, 2012, at his home in Tyler.<br><br>He was born Aug. 18, 1916, in 
+2 CONC Mount Enterprise and had resided in Smith County since 1953. He was a graduate o
+2 CONC f Concord High School and had retired from Behrens Drug Co. He was a member of F
+2 CONC irst Bethel Temple COGIC where he served as head deacon of the church and Sunday
+2 CONC  school superintendent.<br><br>He was preceded in death by his wife, Cleo Caddel
+2 CONC l; parents, Silas and Elizer Ross Caddell; two sons; one daughter; and 10 siblin
+2 CONC gs.<br><br>Survivors include his son, Steve V. Caddell Jr.; daughters, Rose Mary
+2 CONC  Caddell-Johnson, Dorothy Wynn, Martha Johnson, Doris Campbell and Peggy Elliott
+2 CONC ; 25 grandchildren; 64 great-grandchildren; and 23 great-great-grandchildren.
+1 FAMS @F128@
+1 FAMC @F132@
+0 @I778@ INDI
+1 NAME Steve V /Caddell/ Jr
+1 SEX M
+1 BIRT
+2 DATE Dec 09 1953
+1 FAMS @F133@
+1 FAMC @F128@
+0 @I481@ INDI
+1 NAME Azore Harmon /Caldwell/
+1 SEX M
+1 BIRT
+2 DATE Dec 19 2007
+1 FAMC @F134@
+0 @I378@ INDI
+1 NAME Estella Louise /Caldwell/
+1 SEX F
+1 BIRT
+1 FAMS @F19@
+0 @I533@ INDI
+1 NAME Jacori Robinson /Caldwell/
+1 SEX M
+1 BIRT
+2 DATE Mar 18 1995
+2 PLAC Smith County
+1 FAMC @F135@
+0 @I15@ INDI
+1 NAME Keenan Damone /Caldwell/
+1 SEX M
+1 BIRT
+2 DATE Feb 06 1973
+2 PLAC Tyler, Texas
+1 FAMS @F136@
+1 FAMS @F137@
+1 FAMC @F57@
+0 @I534@ INDI
+1 NAME Keona S. /Caldwell/
+1 SEX F
+1 BIRT
+2 DATE May 05 1993
+2 PLAC Smith County
+1 FAMC @F138@
+0 @I480@ INDI
+1 NAME Lazarus Lamar /Caldwell/
+1 SEX M
+1 BIRT
+2 DATE Feb 19 2005
+1 FAMC @F134@
+0 @I482@ INDI
+1 NAME Phihia Diann /Caldwell/
+1 SEX F
+1 BIRT
+2 DATE Feb 11 2009
+1 FAMC @F134@
+0 @I16@ INDI
+1 NAME Timothy /Caldwell/ Jr.
+1 SEX M
+1 BIRT
+2 DATE Jan 06 1980
+2 PLAC Tyler, Texas
+1 FAMC @F57@
+0 @I14@ INDI
+1 NAME Timothy /Caldwell/ Sr.
+1 SEX M
+1 BIRT
+2 DATE Aug 26 1952
+2 PLAC Whitehouse, Tx
+1 FAMS @F57@
+0 @I215@ INDI
+1 NAME Yasmine Umiya /Caldwell/
+1 SEX F
+1 BIRT
+2 DATE Jul 08 1994
+2 PLAC Smith County
+1 FAMC @F137@
+0 @I788@ INDI
+1 NAME Sonia /Campbell/
+1 SEX F
+1 BIRT
+1 FAMS @F133@
+0 @I309@ INDI
+1 NAME Allen /Carey/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMC @F139@
+0 @I310@ INDI
+1 NAME Andrew /Carey/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMC @F139@
+0 @I30@ INDI
+1 NAME Elizabeth `Lizzie` /Carey/
+1 SEX F
+1 BIRT
+2 DATE May 1875
+2 PLAC Georgia
+1 DEAT
+2 DATE Nov 05 1933
+2 PLAC Smith County, Texas
+1 FAMS @F33@
+1 FAMC @F139@
+0 @I304@ INDI
+1 NAME Fred /Carey/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMS @F139@
+0 @I308@ INDI
+1 NAME Obelia /Carey/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMC @F139@
+0 @I307@ INDI
+1 NAME Sallie Ann /Carey/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMC @F139@
+0 @I665@ INDI
+1 NAME Kaleb /Carter/
+1 SEX M
+1 BIRT
+1 FAMC @F140@
+0 @I42@ INDI
+1 NAME LaDora Ann /Carter/
+1 SEX F
+1 BIRT
+2 DATE Nov 07 1962
+2 PLAC Smith County, Texas
+1 FAMS @F141@
+0 @I667@ INDI
+1 NAME Brandon /Cartet/
+1 SEX M
+1 BIRT
+0 @I233@ INDI
+1 NAME Larry /Chalk/ Jr.
+1 SEX M
+1 BIRT
+1 FAMC @F107@
+0 @I678@ INDI
+1 NAME Brandon /Chambers/
+1 SEX M
+1 BIRT
+1 FAMC @F142@
+0 @I676@ INDI
+1 NAME Mya /Chambers/
+1 SEX F
+1 BIRT
+1 FAMC @F142@
+0 @I674@ INDI
+1 NAME Otis /Chambers/
+1 SEX M
+1 BIRT
+0 @I675@ INDI
+1 NAME Otis /Chambers/
+1 SEX M
+1 BIRT
+1 FAMS @F142@
+0 @I677@ INDI
+1 NAME Otis /Chambers/ Jr
+1 SEX M
+1 BIRT
+1 FAMC @F142@
+0 @I673@ INDI
+1 NAME Tierra /Chambers/
+1 SEX F
+1 BIRT
+1 FAMC @F142@
+0 @I726@ INDI
+1 NAME Shertoddra `Chic` /Chandler/
+1 SEX F
+1 BIRT
+2 DATE Feb 14 1973
+1 FAMS @F143@
+0 @I724@ INDI
+1 NAME Brandon /Chatman/
+1 SEX M
+1 BIRT
+1 FAMS @F144@
+0 @I725@ INDI
+1 NAME Nyla /Chatman/
+1 SEX F
+1 BIRT
+1 FAMC @F144@
+0 @I340@ INDI
+1 NAME Benny Lee /Choice/
+1 SEX M
+1 BIRT
+2 DATE Aug 1939
+1 FAMC @F145@
+0 @I338@ INDI
+1 NAME Emma Lee /Choice/
+1 SEX F
+1 BIRT
+2 DATE 1938
+2 PLAC Tyler, Texas
+1 DEAT
+1 FAMS @F146@
+1 FAMC @F145@
+0 @I319@ INDI
+1 NAME Eulalia Katherine /Choice/
+1 SEX F
+1 BIRT
+2 DATE Sep 21 1921
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Aug 10 2007
+2 PLAC Dallas, Texas
+1 BURI
+2 PLACE Oliver Chapel Cementery
+1 FAMC @F147@
+0 @I322@ INDI
+1 NAME Jessie /Choice/
+1 SEX M
+1 BIRT
+2 DATE Sep 15 1910
+2 PLAC Tyler, Texas
+1 FAMC @F147@
+0 @I324@ INDI
+1 NAME Kelester /Choice/
+1 SEX M
+1 BIRT
+2 DATE 1915
+2 PLAC Smith County, Texas
+1 DEAT
+2 DATE Sep 21 1946
+2 PLAC Smith County, Texas
+1 BURI
+2 PLACE Oliver Chapel Cementery
+1 FAMS @F145@
+1 FAMC @F147@
+0 @I321@ INDI
+1 NAME Lera Cleo /Choice/
+1 SEX M
+1 BIRT
+1 FAMC @F147@
+0 @I320@ INDI
+1 NAME Lois /Choice/
+1 SEX F
+1 BIRT
+2 DATE Jun 26 1913
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Jun 21 1999
+2 PLAC Tyler, Texas
+1 BURI
+2 PLACE Evergreen Memorial Park Tyler, Texas
+1 NOTE In Memory of Lois Murphy  Services for Lois Murphy, 85, Tyler, are scheduled for
+2 CONC  11 a.m. Thursday at North Tenneha  Church of Christ with Brother Douglas Howie 
+2 CONC Jr. officiating.  Burial will be in Evergreen memorial Park under direction of S
+2 CONC terling Funeral Directors, Tyler.  Mrs. Murphy died June 21.  She was born June 
+2 CONC 26, 1913 in Tyler to the late Wallace and Susie Choice and was a lifelong  resid
+2 CONC ent of Smith County. She attended Garfield School and was a retired cook for Ram
+2 CONC sour Day  Care Center. She was a member of Universal Heights Church of Christ an
+2 CONC d was preceded in death  by several siblings.  Survivors include her husband, Cl
+2 CONC arence Murphy, Tyler; sons, Clarence Ray Murphy, James Earl  Murphy, Cleo Murphy
+2 CONC , T.O. Murphy and Dwain Murphy , all of Tyler; daughters, Nina Mae  Warren, Kath
+2 CONC erine Cobb and Christine Mosley Fuller, all of Tyler; sisters Eulalia Choice and
+2 CONC   Jessie Choice, both of Tyler, Mattie Balwin, Fort Worth, and Cleo Francis, For
+2 CONC t Lauderdale, Fla.;  34 grandchildren; 29 great-grandchildren; and one great-gre
+2 CONC at-grandchild.  Pallbearers will be friends of the family. Honorary pallbearers 
+2 CONC are grandsons.
+1 FAMS @F148@
+1 FAMC @F147@
+0 @I341@ INDI
+1 NAME Lottie Mae /Choice/
+1 SEX F
+1 BIRT
+2 DATE Feb 1940
+2 PLAC Tyler, Texas
+1 FAMC @F145@
+0 @I325@ INDI
+1 NAME Mattie Docious /Choice/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMC @F147@
+0 @I323@ INDI
+1 NAME Mercie D. /Choice/
+1 SEX F
+1 BIRT
+1 DEAT
+2 DATE Jun 16 1959
+2 PLAC Tyler, Texas
+1 FAMS @F149@
+1 FAMC @F147@
+0 @I317@ INDI
+1 NAME Wallace /Choice/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMS @F147@
+1 FAMS @F126@
+0 @I526@ INDI
+1 NAME Brenda /Ckeveland/
+1 SEX F
+1 BIRT
+1 FAMS @F150@
+0 @I523@ INDI
+1 NAME Maudie L /Clark/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F151@
+0 @I749@ INDI
+1 NAME Billie /Clemmons/
+1 SEX M
+1 BIRT
+1 FAMC @F152@
+0 @I750@ INDI
+1 NAME Lula Mae /Clemmons/
+1 SEX F
+1 BIRT
+1 FAMC @F152@
+0 @I496@ INDI
+1 NAME Hattie /Clemons/
+1 SEX F
+1 BIRT
+2 DATE Jul 12 1905
+1 DEAT
+2 DATE Nov 08 2001
+2 PLAC Overton
+1 BURI
+2 PLACE New Home Cemetery, Overton, Tx
+1 FAMC @F153@
+0 @I813@ INDI
+1 NAME Bering /Cobb/
+1 SEX F
+1 BIRT
+1 FAMS @F154@
+0 @I812@ INDI
+1 NAME Carnell Timms /Cobb/
+1 SEX M
+1 BIRT
+1 FAMS @F154@
+0 @I238@ INDI
+1 NAME Chester H /Cobb/
+1 SEX M
+1 BIRT
+2 DATE Nov 05 1938
+2 PLAC Longview, Texas
+1 DEAT
+2 DATE Mar 29 2024
+2 PLAC Fort Worth, Tx
+1 FAMS @F105@
+1 FAMC @F154@
+0 @I229@ INDI
+1 NAME Helen /Cobb/
+1 SEX F
+1 BIRT
+2 DATE Jun 13 1931
+2 PLAC Forth Worth
+1 DEAT
+2 DATE 2001
+1 FAMS @F71@
+0 @I239@ INDI
+1 NAME Kelvin Lynn /Cobb/
+1 SEX M
+1 BIRT
+2 DATE Nov 20 1960
+1 FAMS @F155@
+1 FAMS @F156@
+1 FAMC @F105@
+0 @I247@ INDI
+1 NAME Lindsey /Cobb/
+1 SEX F
+1 BIRT
+2 DATE Oct 20 1993
+1 FAMC @F156@
+0 @I240@ INDI
+1 NAME Marquetta Y /Cobb/
+1 SEX F
+1 BIRT
+2 DATE Apr 03 1964
+1 FAMS @F12@
+1 FAMC @F105@
+0 @I248@ INDI
+1 NAME Melanie /Cobb/
+1 SEX F
+1 BIRT
+2 DATE Oct 14 1997
+1 FAMC @F156@
+0 @I246@ INDI
+1 NAME Melissa /Cobb/
+1 SEX F
+1 BIRT
+2 DATE Oct 03 1983
+1 FAMC @F156@
+0 @I244@ INDI
+1 NAME Quanitha /Cobb/
+1 SEX F
+1 BIRT
+2 DATE Oct 26 1982
+1 FAMS @F142@
+1 FAMS @F144@
+1 FAMC @F155@
+0 @I241@ INDI
+1 NAME Ryon /Cobb/
+1 SEX M
+1 BIRT
+2 DATE Oct 14 1969
+1 FAMC @F105@
+0 @I243@ INDI
+1 NAME Sheritha /Cobb/
+1 SEX F
+1 BIRT
+2 DATE Sep 14 1981
+1 FAMS @F157@
+1 FAMC @F155@
+0 @I441@ INDI
+1 NAME Kendall /Collins/ Jr.
+1 SEX M
+1 BIRT
+1 FAMS @F158@
+0 @I374@ INDI
+1 NAME Sallie /Cooper/
+1 SEX F
+1 BIRT
+2 DATE ABT May 05 1923
+1 DEAT
+2 DATE Jul 20 2007
+2 PLAC Fort Worth, Texas
+1 FAMS @F59@
+0 @I766@ INDI
+1 NAME Tallan E’mere /Crumley/
+1 SEX M
+1 BIRT
+2 DATE Mar 14 2013
+2 PLAC Fort Worth, TX
+1 FAMC @F159@
+0 @I420@ INDI
+1 NAME Achsah /Daniels/
+1 SEX F
+1 BIRT
+2 DATE May 1895
+1 DEAT
+1 FAMC @F160@
+0 @I414@ INDI
+1 NAME Carrie /Daniels/
+1 SEX F
+1 BIRT
+2 DATE Mar 1875
+1 DEAT
+1 FAMS @F160@
+0 @I419@ INDI
+1 NAME Clara /Daniels/
+1 SEX F
+1 BIRT
+2 DATE Apr 1894
+1 DEAT
+1 FAMC @F160@
+0 @I416@ INDI
+1 NAME Joe /Daniels/
+1 SEX M
+1 BIRT
+2 DATE Jan 1887
+1 DEAT
+1 FAMC @F160@
+0 @I415@ INDI
+1 NAME Nora /Daniels/
+1 SEX F
+1 BIRT
+2 DATE Jan 1888
+1 DEAT
+1 FAMC @F160@
+0 @I418@ INDI
+1 NAME Oscar /Daniels/
+1 SEX M
+1 BIRT
+2 DATE Jun 1892
+1 DEAT
+1 FAMC @F160@
+0 @I417@ INDI
+1 NAME Salisie /Daniels/
+1 SEX F
+1 BIRT
+2 DATE May 1890
+1 DEAT
+1 FAMC @F160@
+0 @I296@ INDI
+1 NAME Unknown /Daniels/
+1 SEX M
+1 BIRT
+1 FAMS @F161@
+0 @I299@ INDI
+1 NAME William Johnson /Daniels/
+1 SEX M
+1 BIRT
+2 DATE Jan 1864
+1 DEAT
+1 FAMS @F160@
+1 FAMC @F161@
+0 @I734@ INDI
+1 NAME Julia /Davis/
+1 SEX F
+1 BIRT
+2 DATE ABT  1868
+1 DEAT
+2 DATE ABT  1945
+1 FAMS @F162@
+0 @I538@ INDI
+1 NAME Sarah /Davis/
+1 SEX F
+1 BIRT
+2 DATE ABT  1848
+2 PLAC Alabama
+1 DEAT
+2 DATE May 08 1911
+2 PLAC Smith County, Texas
+1 BURI
+2 PLACE Hopwell Cemetery
+1 FAMS @F163@
+0 @I311@ INDI
+1 NAME Willie /Davis/
+1 SEX M
+1 BIRT
+1 FAMC @F139@
+0 @I552@ INDI
+1 NAME Albert /Dennis/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMC @F164@
+0 @I539@ INDI
+1 NAME Albert /Dennis/
+1 SEX M
+1 BIRT
+2 DATE ABT  1872
+1 DEAT
+2 DATE ABT  1921
+1 FAMC @F163@
+0 @I546@ INDI
+1 NAME Catherine /Dennis/
+1 SEX F
+1 BIRT
+2 DATE ABT  1887
+1 DEAT
+1 FAMC @F163@
+0 @I553@ INDI
+1 NAME Charlie /Dennis/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMC @F164@
+0 @I540@ INDI
+1 NAME Emma /Dennis/
+1 SEX F
+1 BIRT
+2 DATE ABT  1873
+1 DEAT
+1 FAMC @F163@
+0 @I541@ INDI
+1 NAME George /Dennis/
+1 SEX M
+1 BIRT
+2 DATE Feb 07 1875
+1 DEAT
+2 DATE Nov 22 1934
+1 OCCU
+1 NOTE George was a farmer and carpenter by trade. It is recorded that he was on of the
+2 CONC  founders and builders of Hopewell C.M.E. Church. He served as a trustee while h
+2 CONC e was a member of the church. Records are recorded in the district Court, State 
+2 CONC of Texas, Smith County, that George was among the first men of color to own prop
+2 CONC erty in Smith County.
+1 FAMS @F164@
+1 FAMC @F163@
+0 @I549@ INDI
+1 NAME Hattie Bell /Dennis/
+1 SEX F
+1 BIRT
+2 DATE ABT  1891
+1 DEAT
+2 DATE Dec 1967
+1 FAMC @F163@
+0 @I554@ INDI
+1 NAME Johnny /Dennis/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMC @F164@
+0 @I544@ INDI
+1 NAME Johnny /Dennis/
+1 SEX M
+1 BIRT
+2 DATE Aug 01 1882
+1 DEAT
+2 DATE May 22 1972
+1 FAMC @F163@
+0 @I555@ INDI
+1 NAME Magnolia /Dennis/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMC @F164@
+0 @I556@ INDI
+1 NAME Mamie /Dennis/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMC @F164@
+0 @I558@ INDI
+1 NAME Mary Ethel /Dennis/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMC @F164@
+0 @I545@ INDI
+1 NAME Mathis /Dennis/
+1 SEX M
+1 BIRT
+2 DATE ABT  1885
+1 DEAT
+2 DATE ABT  1911
+1 FAMC @F163@
+0 @I559@ INDI
+1 NAME Mattie /Dennis/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMC @F164@
+0 @I542@ INDI
+1 NAME Mattie /Dennis/
+1 SEX F
+1 BIRT
+2 DATE ABT  1877
+1 DEAT
+1 FAMC @F163@
+0 @I560@ INDI
+1 NAME McCalister /Dennis/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMC @F164@
+0 @I561@ INDI
+1 NAME Ora /Dennis/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMC @F164@
+0 @I562@ INDI
+1 NAME Ortis /Dennis/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMC @F164@
+0 @I563@ INDI
+1 NAME Otis /Dennis/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMC @F164@
+0 @I564@ INDI
+1 NAME Sarah /Dennis/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMC @F164@
+0 @I566@ INDI
+1 NAME Velma /Dennis/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMC @F164@
+0 @I543@ INDI
+1 NAME Vera /Dennis/
+1 SEX F
+1 BIRT
+2 DATE ABT  1878
+1 DEAT
+1 FAMC @F163@
+0 @I565@ INDI
+1 NAME Wesley Earl /Dennis/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMC @F164@
+0 @I313@ INDI
+1 NAME Wesley `Wes` /Dennis/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMS @F163@
+1 FAMC @F121@
+0 @I548@ INDI
+1 NAME Wilene /Dennis/
+1 SEX F
+1 BIRT
+2 DATE ABT  1890
+1 DEAT
+1 FAMC @F163@
+0 @I260@ INDI
+1 NAME Cassaundra /Desudes/
+1 SEX F
+1 BIRT
+1 FAMC @F9@
+0 @I273@ INDI
+1 NAME Travion /Desudes/
+1 SEX M
+1 BIRT
+1 FAMC @F165@
+0 @I272@ INDI
+1 NAME Yoshiauna /Desudes/
+1 SEX F
+1 BIRT
+1 FAMC @F165@
+0 @I475@ INDI
+1 NAME Marchabroda L. /Dewberry/
+1 SEX F
+1 BIRT
+1 FAMS @F74@
+0 @I358@ INDI
+1 NAME Adrian /Domino/
+1 SEX M
+1 BIRT
+2 DATE Dec 20 1983
+1 FAMC @F166@
+0 @I202@ INDI
+1 NAME Arquilla /Domino/
+1 SEX F
+1 BIRT
+1 FAMS @F167@
+1 FAMC @F99@
+0 @I359@ INDI
+1 NAME Brianna /Domino/
+1 SEX F
+1 BIRT
+2 DATE Apr 15 1984
+1 FAMC @F166@
+0 @I360@ INDI
+1 NAME David /Domino/
+1 SEX M
+1 BIRT
+2 DATE Nov 28 1986
+1 FAMC @F166@
+0 @I366@ INDI
+1 NAME David /Domino/
+1 SEX M
+1 BIRT
+2 DATE Sep 21 1966
+2 PLAC Overton, Texas
+1 DEAT
+2 DATE Sep 21 1966
+2 PLAC Overton, Texas
+1 FAMC @F99@
+0 @I205@ INDI
+1 NAME Elbert /Domino/ Jr.
+1 SEX M
+1 BIRT
+1 FAMS @F168@
+1 FAMS @F166@
+1 FAMC @F99@
+0 @I197@ INDI
+1 NAME Elbert Lee /Domino/ Sr
+1 SEX M
+1 BIRT
+2 DATE May 07 1908
+2 PLAC Overton, Texas
+1 DEAT
+2 DATE Mar 02 2000
+1 NOTE Elbert Lee Domino Sr.: A Legacy of Dedication and Faith<br><br>In the quaint tow
+2 CONC n of Overton, Texas, on May 7, 1908, Elbert Lee Domino Sr. first opened his eyes
+2 CONC  to the world. Born to the loving embrace of Jimmy and Lula Ford Domino, Elbert 
+2 CONC was the fifth of six siblings who grew up in the heart of a farming community, i
+2 CONC nstilling in him values of hard work, resilience, and dedication.<br><br>In a co
+2 CONC mmunity where everyone knew each other, Elbert carved a niche for himself by own
+2 CONC ing and operating a café. More than a place to grab a meal, this café played a p
+2 CONC ivotal role in his life—it was the place where his heart found its counterpart i
+2 CONC n Pearlene Battles. Serving customers and sharing smiles, their camaraderie flou
+2 CONC rished into love. And on September 29, 1950, they decided to embrace life's jour
+2 CONC ney together as a married couple. Together, they built a family of seven childre
+2 CONC n, who not only were testament to their love but also to their shared values.<br
+2 CONC ><br>Elbert's childhood on a farm had ignited a lifelong passion for farming. Wh
+2 CONC ile some men of his age would be looking towards retirement, Elbert was often se
+2 CONC en at the Dallas Farmers Market, beaming with pride as he showcased his produce.
+2 CONC  His unyielding work ethic was not only evident in his business but also in the 
+2 CONC principles he passed on to his children.<br><br>More than his entrepreneurial en
+2 CONC deavors, it was Elbert's benevolence that endeared him to many. In his eyes, eve
+2 CONC ry person was a friend, and his hands were always extended to help those in need
+2 CONC . His unwavering faith in Jesus was the backbone of his actions. He lived the te
+2 CONC achings he believed in, ensuring that his children imbibed them not just through
+2 CONC  his words but through his daily actions.<br><br>His commitment to his faith was
+2 CONC  evident in his affiliation with the Sharon Seventh Day Adventist in Tyler, Texa
+2 CONC s. As someone who practiced what he preached, Elbert earned not just the respect
+2 CONC  but also the admiration of the community.<br><br>Elbert Lee Domino Sr., a symbo
+2 CONC l of steadfastness and love, breathed his last on March 2, 2000. His legacy, how
+2 CONC ever, remains imprinted on the sands of time, in the hearts of his family, and i
+2 CONC n the memories of the community. A beacon of faith, love, and dedication, Elbert
+2 CONC ’s life serves as a testimony to the power of leading by example.
+1 FAMS @F169@
+1 FAMS @F99@
+1 FAMC @F153@
+0 @I495@ INDI
+1 NAME James /Domino/
+1 SEX M
+1 BIRT
+2 DATE Sep 10 1909
+1 DEAT
+2 DATE Aug 19 1997
+2 PLAC Overton
+1 BURI
+2 PLACE New Home Cemetery, Overton, Tx
+1 NOTE PVT U.S. ARMY WW II
+1 FAMC @F153@
+0 @I361@ INDI
+1 NAME Jassamine /Domino/
+1 SEX F
+1 BIRT
+2 DATE May 06 1988
+1 FAMC @F166@
+0 @I363@ INDI
+1 NAME Jayson /Domino/
+1 SEX M
+1 BIRT
+2 DATE May 24 1984
+1 FAMC @F170@
+0 @I211@ INDI
+1 NAME Jimmie Deloris /Domino/
+1 SEX F
+1 BIRT
+2 DATE Feb 01 1961
+2 PLAC Tyler, TX
+1 FAMS @F171@
+1 FAMC @F99@
+0 @I493@ INDI
+1 NAME Jimmy /Domino/
+1 SEX M
+1 BIRT
+2 DATE Jan 10 1883
+2 PLAC Turner Town
+1 DEAT
+2 DATE Feb 28 1956
+1 BURI
+2 PLACE New Home Cemetery, Overton Tx
+1 FAMC @F120@
+0 @I365@ INDI
+1 NAME Lauren /Domino/
+1 SEX F
+1 BIRT
+2 DATE Sep 11 1991
+1 FAMC @F170@
+0 @I204@ INDI
+1 NAME Linda Faye /Domino/
+1 SEX F
+1 BIRT
+2 DATE Jun 12 1955
+1 DEAT
+2 DATE Jan 12 2022
+1 FAMS @F113@
+1 FAMC @F99@
+0 @I198@ INDI
+1 NAME Maggie /Domino/
+1 SEX F
+1 BIRT
+2 DATE Jun 26 1951
+1 FAMS @F172@
+1 FAMC @F99@
+0 @I362@ INDI
+1 NAME Mia /Domino/
+1 SEX F
+1 BIRT
+2 DATE Nov 26 1982
+1 FAMC @F170@
+0 @I207@ INDI
+1 NAME Michael Tyron /Domino/
+1 SEX M
+1 BIRT
+2 DATE Apr 04 1959
+1 DEAT
+2 DATE Jun 07 2026
+2 PLAC Dallas, Texas
+1 BURI
+2 DATE Jun 26 2026
+1 FAMS @F170@
+1 FAMC @F99@
+0 @I364@ INDI
+1 NAME Victoria /Domino/
+1 SEX F
+1 BIRT
+2 DATE Mar 19 1988
+1 FAMC @F170@
+0 @I744@ INDI
+1 NAME Edd /Domonic/
+1 SEX M
+1 BIRT
+1 FAMS @F120@
+0 @I580@ INDI
+1 NAME Brenda Kay /Edwards/
+1 SEX F
+1 BIRT
+2 DATE May 29 1969
+2 PLAC Dallas, TX
+1 FAMS @F47@
+0 @I516@ INDI
+1 NAME Harriet /Edwards/
+1 SEX F
+1 BIRT
+1 FAMS @F173@
+0 @I585@ INDI
+1 NAME JaVon /Edwards/
+1 SEX M
+1 BIRT
+2 DATE 2008
+2 PLAC Dallas, TX
+1 FAMC @F174@
+0 @I584@ INDI
+1 NAME Lyric /Edwards/
+1 SEX F
+1 BIRT
+2 DATE 2007
+2 PLAC Dallas, TX
+1 FAMC @F174@
+0 @I120@ INDI
+1 NAME Shatoria LaShawn /Edwards/
+1 SEX F
+1 BIRT
+2 DATE May 08 1986
+2 PLAC Dallas, TX
+1 FAMC @F47@
+0 @I583@ INDI
+1 NAME Tre` /Edwards/
+1 SEX M
+1 BIRT
+2 DATE 2005
+2 PLAC Dallas, TX
+1 FAMC @F174@
+0 @I440@ INDI
+1 NAME Kenneth L. /Elam/
+1 SEX M
+1 BIRT
+1 FAMS @F35@
+0 @I90@ INDI
+1 NAME Bertha /Evans/
+1 SEX F
+1 BIRT
+1 FAMS @F83@
+0 @I389@ INDI
+1 NAME Frank /Evans/
+1 SEX M
+1 BIRT
+1 FAMS @F175@
+0 @I660@ INDI
+1 NAME James Albert /Fahey/
+1 SEX M
+1 BIRT
+2 DATE Jul 23 1936
+1 DEAT
+2 DATE Apr 13 2006
+0 @I661@ INDI
+1 NAME Rosemary /Fahey/
+1 SEX F
+1 BIRT
+2 DATE Feb 04 1935
+0 @I58@ INDI
+1 NAME Floyd /Ferguson/ Sr
+1 SEX M
+1 BIRT
+2 DATE Sep 23 1928
+1 DEAT
+2 DATE Dec 11 2020
+2 PLAC Smith County, Texas
+2 SOUR @S0@
+3 QUAY 3
+3 DATA 
+4 DATE Dec 11 2020
+1 BURI
+2 DATE Dec 18 2020
+2 PLACE Oliver Chapel Cemetery
+1 FAMS @F45@
+0 @I640@ INDI
+1 NAME Paula Ann /Fisher/
+1 SEX F
+1 BIRT
+1 FAMS @F52@
+0 @I646@ INDI
+1 NAME Dalhia Alma /Flores/
+1 SEX F
+1 BIRT
+0 @I752@ INDI
+1 NAME Brenda /Flowers/
+1 SEX F
+1 BIRT
+1 FAMS @F176@
+0 @I61@ INDI
+1 NAME Brian /Flowers/
+1 SEX M
+1 BIRT
+2 DATE Jan 17 1979
+1 FAMC @F176@
+0 @I754@ INDI
+1 NAME Brian /Flowers/ JR
+1 SEX M
+1 BIRT
+2 DATE Jul 04
+1 FAMC @F177@
+0 @I801@ INDI
+1 NAME Abner Lee /Ford/
+1 SEX M
+1 BIRT
+1 FAMS @F178@
+0 @I489@ INDI
+1 NAME Leon /Ford/
+1 SEX M
+1 BIRT
+1 FAMS @F179@
+0 @I494@ INDI
+1 NAME Lula /Ford/
+1 SEX F
+1 BIRT
+2 DATE Apr 23 1881
+2 PLAC Overton
+1 DEAT
+2 DATE Apr 13 1972
+2 PLAC Overton
+1 FAMC @F180@
+0 @I746@ INDI
+1 NAME Monroe /Ford/
+1 SEX M
+1 BIRT
+1 FAMS @F180@
+0 @I576@ INDI
+1 NAME Prince Earl /Foster/
+1 SEX M
+1 BIRT
+2 DATE Sep 19 1941
+2 PLAC Smith County Texas
+1 DEAT
+2 DATE Apr 15 2001
+2 PLAC Henderson, Rusk TX
+1 NOTE Was T-boned while driving a GMC truck double tank. He was going to see his broth
+2 CONC er that was in the hospital. The truck exploded instantly with him in it. Family
+2 CONC  file law suit and settled favoring the family.
+0 @I464@ INDI
+1 NAME Rodney K. /Francois/
+1 SEX M
+1 BIRT
+1 FAMS @F181@
+0 @I789@ INDI
+1 NAME Benjamin Franklin (Frank) /Fristoe/
+1 SEX M
+1 BIRT
+2 DATE Feb 02 1862
+1 DEAT
+2 DATE Dec 13 1941
+2 PLAC Salisbury, Chariton County, Missouri,
+1 BURI
+2 PLACE Salisbury Cemetery
+1 FAMS @F182@
+1 FAMS @F183@
+0 @I506@ INDI
+1 NAME Marjorie /Fristoe/
+1 SEX F
+1 BIRT
+2 DATE Dec 22 1897
+2 PLAC Chariton County, Missouri
+1 DEAT
+2 DATE Oct 21 1972
+2 PLAC Omaha, NE
+1 BURI
+2 PLACE Forest Lawn Memorial Park
+1 NOTE Omaha, Douglas County, Nebraska, USA<br>PLOT	Interment# 58500, Section PEACE, Lo
+2 CONC t# Sgl, Grave# 106<br>The fifth child, fourth daughter, born to Benjamin Frankli
+2 CONC n (Frank) Fristoe and Margaret Anne (Annie) Spence.<br><br>Her name is listed as
+2 CONC  Myra then Matilda in two census records, respectively.
+1 FAMS @F184@
+1 FAMC @F183@
+0 @I791@ INDI
+1 NAME Mary Elizabeth /Fristoe/
+1 SEX F
+1 BIRT
+2 DATE Sep 01 1889
+2 PLAC Missouri, USA
+1 DEAT
+2 DATE Oct 08 1957
+2 PLAC Yankton County, South Dakota
+1 BURI
+2 PLACE Yankton City Cemetery
+1 NOTE Mary was the daughter of Frank and Amanda (Porter) Fristoe. Mary's mother passed
+2 CONC  away when whe was very young, so she was raised by her Grandma Porter.<br><br>M
+2 CONC ary attended school and church at "Porter Chapel" A.M.E. in rural Salibury, MO.<
+2 CONC br><br>Mary eloped with Henry Blakey on October 16, 1905 in Yankton, South Dakot
+2 CONC a. They were married at the Court House.<br><br>Source of info was from a 1985 B
+2 CONC lakey Blakley White Reunion booklet<br><br>The 1900 census has Mary born in Mar 
+2 CONC of 1889.
+1 FAMS @F116@
+1 FAMC @F182@
+0 @I728@ INDI
+1 NAME Maxie Henry /Gee/
+1 SEX M
+1 BIRT
+2 DATE Mar 09 1925
+1 DEAT
+2 DATE Oct 23 1999
+2 PLAC Smith County Texas
+1 BURI
+2 PLACE Piney Grove Cementery
+1 FAMS @F185@
+0 @I213@ INDI
+1 NAME Andrew /Gent/
+1 SEX M
+1 BIRT
+2 DATE May 25 1989
+2 PLAC Rivera Beach, Fla
+1 FAMC @F171@
+0 @I214@ INDI
+1 NAME Chassity /Gent/
+1 SEX F
+1 BIRT
+2 DATE Sep 08 1992
+2 PLAC Boynton Beach, FL
+1 FAMC @F171@
+0 @I212@ INDI
+1 NAME Kimm /Gent/
+1 SEX M
+1 BIRT
+2 DATE Aug 14 1955
+2 PLAC Delray Beach, Fla
+1 FAMS @F171@
+0 @I582@ INDI
+1 NAME Brenda Fay /Glynn/
+1 SEX F
+1 BIRT
+2 DATE Mar 22 1978
+2 PLAC Garland, TX
+1 FAMS @F10@
+0 @I760@ INDI
+1 NAME Chris /Goss/
+1 SEX M
+1 BIRT
+1 FAMS @F186@
+0 @I756@ INDI
+1 NAME Chrislyn /Goss/
+1 SEX F
+1 BIRT
+2 DATE Feb 28 2002
+2 PLAC Tyler, TX
+1 FAMC @F186@
+0 @I757@ INDI
+1 NAME Kaelyn /Goss/
+1 SEX F
+1 BIRT
+2 DATE Jun 01 2006
+2 PLAC Tyler, TX
+1 FAMC @F186@
+0 @I74@ INDI
+1 NAME Juanita /Grimes/
+1 SEX F
+1 BIRT
+2 DATE Apr 24 1952
+2 PLAC Midland, Tx
+1 FAMS @F187@
+0 @I116@ INDI
+1 NAME Metro Carl /Gross/
+1 SEX M
+1 BIRT
+2 DATE Mar 25 1975
+2 PLAC Tyler, TX
+1 FAMS @F10@
+1 FAMS @F188@
+1 FAMC @F189@
+0 @I771@ INDI
+1 NAME Landon /Hainey/
+1 SEX M
+1 BIRT
+2 DATE Jul 03 2019
+2 PLAC Houston, TX
+1 FAMC @F190@
+0 @I770@ INDI
+1 NAME Tanisha /Hainey/
+1 SEX F
+1 BIRT
+1 FAMS @F190@
+0 @I107@ INDI
+1 NAME Robert Lee /Hale/
+1 SEX M
+1 BIRT
+1 FAMS @F24@
+0 @I532@ INDI
+1 NAME Kim N. /Haley/
+1 SEX M
+1 BIRT
+1 FAMS @F12@
+0 @I510@ INDI
+1 NAME Sheila /Hart/
+1 SEX F
+1 BIRT
+2 DATE Aug 22 1960
+2 PLAC Ennis, TX
+1 FAMS @F170@
+0 @I748@ INDI
+1 NAME Olla Bell /Harvey/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F169@
+0 @I688@ INDI
+1 NAME Marie /Haynes/
+1 SEX F
+1 BIRT
+0 @I143@ INDI
+1 NAME Almyra /Henderson/
+1 SEX F
+1 BIRT
+1 FAMS @F63@
+0 @I694@ INDI
+1 NAME Nakia /Henderson-Kincaide/
+1 SEX F
+1 BIRT
+2 DATE Oct 06 1980
+2 PLAC Troup Texas
+1 FAMS @F191@
+1 FAMC @F192@
+0 @I79@ INDI
+1 NAME Idonia /Henry/
+1 SEX F
+1 BIRT
+2 DATE Jun 22 1948
+1 FAMS @F69@
+0 @I142@ INDI
+1 NAME James Melvin /Hernandez/
+1 SEX M
+1 BIRT
+2 DATE Jul 31 1949
+2 PLAC Fort Worth, Texas
+1 EDUC
+2 PLACE BBA, Huston Tillotson, 1971
+1 NOTE Graduated from Dunbar High School, Fort Worth, 1967. Bachelor of Business Admini
+2 CONC stration Degree,  Huston Tillotson, 1971.  Serving as an usher from 1997 to 2002
+2 CONC , James was ordained as a deacon at the St. Stephens Missionary  Baptist Church 
+2 CONC in Austin April 16, 2000. He was called to the ministry on January 1, 2001.  Rod
+2 CONC ney Battles and Joyce Battles Smith were in attendance when James preached his f
+2 CONC irst sermon at  the St. Stephens Missionary Baptist Church in Austin March 31, 2
+2 CONC 001.  James received his Ministry License in May 2002 at the Turning Point Bible
+2 CONC  Fellowship Church.  Ordained a minister by Pastor, Carl E. Harvey, Sr. on Decem
+2 CONC ber 1, 2002 at the Turning Point Bible  Fellowship Church. Founded “The Way . . 
+2 CONC . The Truth . . . And The Life Christian Church” (The  WTL) June 6, 2004. Organi
+2 CONC zed the WTL August 21, 2004. Graduated from the Austin Baptist  Association Semi
+2 CONC nary Extension June 2, 2006.
+1 FAMS @F193@
+1 FAMC @F194@
+0 @I163@ INDI
+1 NAME James Melvin /Hernandez/ Jr.
+1 SEX M
+1 BIRT
+2 DATE Jan 31 1973
+1 FAMC @F193@
+0 @I164@ INDI
+1 NAME Lethecia DeVon /Hernandez/
+1 SEX F
+1 BIRT
+2 DATE Nov 07 1977
+1 FAMC @F193@
+0 @I477@ INDI
+1 NAME Wanda G /Hicks/
+1 SEX F
+1 BIRT
+1 FAMS @F195@
+0 @I179@ INDI
+1 NAME Shirley Jefferson /Hill/
+1 SEX F
+1 BIRT
+1 FAMS @F91@
+0 @I498@ INDI
+1 NAME Tyler K /Hines/
+1 SEX M
+1 BIRT
+2 DATE Dec 10 2000
+2 PLAC Marietta, Ga
+1 FAMC @F196@
+0 @I499@ INDI
+1 NAME Tyre K /Hines/
+1 SEX M
+1 BIRT
+2 DATE Nov 05 2003
+2 PLAC Marietta, Ga
+1 FAMC @F196@
+0 @I497@ INDI
+1 NAME Tyrez C /Hines/
+1 SEX M
+1 BIRT
+2 DATE Apr 16 2000
+2 PLAC Marietta, Ga
+1 FAMC @F196@
+0 @I804@ INDI
+1 NAME George /Hobson/
+1 SEX M
+1 BIRT
+1 DEAT
+0 @I505@ INDI
+1 NAME Henry /Hobson/ Sr
+1 SEX M
+1 BIRT
+2 DATE Mar 30 1890
+2 PLAC Mississippi
+1 DEAT
+2 DATE Nov 23 1983
+2 PLAC Omaha, NE
+1 BURI
+2 PLACE Mount Hope Cemetery, Omaha, NE
+1 FAMS @F184@
+1 FAMC @F197@
+0 @I451@ INDI
+1 NAME Kathryn V. /Hobson/
+1 SEX F
+1 BIRT
+2 DATE Jul 07 1938
+2 PLAC Omaha, NE
+1 FAMS @F16@
+1 FAMC @F184@
+0 @I805@ INDI
+1 NAME Mary Elizabeth /Hobson/
+1 SEX F
+1 BIRT
+2 DATE Oct 1870
+2 PLAC Mississippi, USA
+1 DEAT
+2 DATE 1961
+2 PLAC Mississippi, USA
+0 @I729@ INDI
+1 NAME Abram /Holmes/
+1 SEX M
+1 BIRT
+2 DATE 1795
+2 PLAC North Carolina
+1 DEAT
+1 CENS
+1 FAMS @F198@
+0 @I43@ INDI
+1 NAME Brandon /Holmes/
+1 SEX M
+1 BIRT
+2 DATE May 29 1986
+2 PLAC Dallas, Texas
+1 FAMC @F195@
+0 @I28@ INDI
+1 NAME Brian /Holmes/
+1 SEX M
+1 BIRT
+2 DATE Jan 26 1973
+2 PLAC Tyler, Texas
+1 FAMS @F143@
+1 FAMC @F65@
+0 @I55@ INDI
+1 NAME Cameron /Holmes/
+1 SEX M
+1 BIRT
+2 DATE Sep 09 1997
+1 FAMC @F199@
+0 @I2@ INDI
+1 NAME Christopher Steele /Holmes/
+1 SEX M
+1 BIRT
+2 DATE Mar 12 1985
+2 PLAC Dallas, Texas
+1 FAMC @F200@
+0 @I192@ INDI
+1 NAME Dore` Raeleshia /Holmes/
+1 SEX F
+1 BIRT
+2 DATE Sep 11 1970
+1 FAMS @F1@
+1 FAMC @F201@
+0 @I642@ INDI
+1 NAME Elder /Holmes/
+1 SEX M
+1 BIRT
+2 DATE 1878
+2 PLAC Smith County,Texas
+1 DEAT
+1 FAMS @F114@
+1 FAMC @F198@
+0 @I486@ INDI
+1 NAME Goldie /Holmes/
+1 SEX F
+1 BIRT
+2 DATE Feb 10 1923
+2 PLAC Smith County,Texas
+1 DEAT
+2 DATE Aug 26 1997
+2 PLAC Tyler, Texas
+1 BURI
+2 PLACE Johnson Memorial Cemetery
+1 FAMC @F202@
+0 @I483@ INDI
+1 NAME Hattie Bell /Holmes/
+1 SEX F
+1 BIRT
+2 DATE Nov 30 1926
+1 DEAT
+2 DATE Nov 08 2017
+2 PLAC Tyler, Texas
+1 BURI
+2 DATE Nov 14 2017
+2 PLACE Piney Grove Tyler,Texas
+1 FAMS @F179@
+1 FAMC @F202@
+0 @I5@ INDI
+1 NAME Jessie James /Holmes/
+1 SEX M
+1 BIRT
+2 DATE May 03 1928
+2 PLAC Smith County, Texas
+1 DEAT
+2 DATE Nov 28 1986
+2 PLAC Tyler, Texas
+1 BURI
+2 DATE Nov 30 1986
+2 PLACE Piney Grove Tyler,Texas
+1 FAMS @F151@
+1 FAMS @F65@
+1 FAMC @F202@
+0 @I448@ INDI
+1 NAME Jethro /Holmes/
+1 SEX M
+1 BIRT
+2 DATE ABT  1900
+1 DEAT
+2 DATE Dec 05 1935
+2 PLAC Smith County, Texas
+1 BURI
+2 DATE Dec 06 1935
+2 PLACE Saint Violet Cemetery
+1 FAMS @F202@
+1 FAMC @F114@
+0 @I522@ INDI
+1 NAME Jethro /Holmes/
+1 SEX M
+1 BIRT
+2 DATE Jun 13 1948
+1 DEAT
+2 DATE Aug 15 1995
+2 PLAC Dallas, Texas
+1 FAMS @F203@
+1 FAMS @F204@
+1 FAMS @F150@
+1 FAMC @F151@
+0 @I44@ INDI
+1 NAME Kendal /Holmes/
+1 SEX M
+1 BIRT
+2 DATE Dec 15 1990
+2 PLAC Dallas, Texas
+1 FAMC @F195@
+0 @I20@ INDI
+1 NAME Kent L /Holmes/
+1 SEX M
+1 BIRT
+2 DATE Jul 28 1959
+2 PLAC Tyler, Texas
+1 FAMS @F195@
+1 FAMS @F141@
+1 FAMC @F65@
+0 @I730@ INDI
+1 NAME Lavina /Holmes/
+1 SEX F
+1 BIRT
+2 DATE 1857
+2 PLAC Smith County,Texas
+1 DEAT
+1 FAMS @F198@
+0 @I191@ INDI
+1 NAME Leon /Holmes/
+1 SEX M
+1 BIRT
+2 PLAC Parker County, exas
+1 FAMS @F201@
+0 @I484@ INDI
+1 NAME Lovie /Holmes/
+1 SEX F
+1 BIRT
+2 DATE 1921
+2 PLAC Smith County,Texas
+1 DEAT
+2 DATE Dec 29 2009
+2 PLAC Smith County, Texas
+1 BURI
+2 PLACE Piney Grove Tyler,Texas
+1 FAMS @F205@
+1 FAMC @F202@
+0 @I17@ INDI
+1 NAME Patricia Ann /Holmes/
+1 SEX F
+1 BIRT
+2 DATE Oct 16 1957
+2 PLAC Tyler, Texas
+1 NOTE Patricia Holmes Nicholson was born on October 16, 1952, in a small town in Texas
+2 CONC , to Jessie James and Elizabeth Battles Holmes. Despite growing up in a humble e
+2 CONC nvironment, Patricia's upbringing instilled in her a strong work ethic and appre
+2 CONC ciation for what she had. She attended Jackson Elementary and Middle School, a h
+2 CONC istoric African American school, before integrating into Chapel Hill High School
+2 CONC .<br><br>As a young teenager, Patricia accepted Jesus Christ as her lord and sav
+2 CONC ior, which has been a guiding force in her life ever since. After completing hig
+2 CONC h school, she earned an associate degree in computer programming and moved to Da
+2 CONC llas to start her career. Along the way, she met David Nicholson, whom she marri
+2 CONC ed. Unfortunately, her husband passed away, leaving her to raise their two boys 
+2 CONC alone.<br><br>Despite this hardship, Patricia continued to work with various com
+2 CONC panies, including AT&T, for many years. She retired early to enjoy the fruits of
+2 CONC  her labor and travel to Israel, where she experienced the things she had always
+2 CONC  studied about. She now spends her time giving back to her community by voluntee
+2 CONC ring to build houses for families in need and ministering to young college stude
+2 CONC nts.<br>She also help in ministering to young college students to impart wisdom 
+2 CONC to them while sharing the good news of Jesus Christ.<br>Patricia takes on the li
+2 CONC keness of her Heavenly Father by continuing to give to those around her. Her lov
+2 CONC e for Jesus and her community shines through in all that she does, and she reali
+2 CONC zes that her work is not finished yet. Patricia is currently helping to raise an
+2 CONC d impart wisdom to her two grandsons, and she looks forward to whatever the futu
+2 CONC re may hold.
+1 FAMS @F206@
+1 FAMC @F65@
+0 @I24@ INDI
+1 NAME Sonya Renae /Holmes/
+1 SEX F
+1 BIRT
+2 DATE Aug 17 1963
+2 PLAC Tyler, Texas
+1 FAMS @F207@
+1 FAMC @F65@
+0 @I27@ INDI
+1 NAME Stewart /Holmes/
+1 SEX M
+1 BIRT
+2 DATE Jan 14 1967
+2 PLAC Tyler, Texas
+1 FAMS @F199@
+1 FAMC @F65@
+0 @I531@ INDI
+1 NAME Tamie Loraine /Holmes/
+1 SEX F
+1 BIRT
+2 DATE Sep 14 1960
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Nov 14 1960
+2 PLAC Tyler, Texas
+1 FAMC @F65@
+0 @I21@ INDI
+1 NAME Theresa L /Holmes/
+1 SEX F
+1 BIRT
+2 DATE Sep 20 1961
+2 PLAC Tyler, Texas
+1 FAMS @F208@
+1 FAMC @F65@
+0 @I485@ INDI
+1 NAME Vida Mae /Holmes/
+1 SEX F
+1 BIRT
+2 DATE Nov 17 1924
+2 PLAC Smith County, Texas
+1 DEAT
+2 DATE Dec 16 2010
+2 PLAC Smith County, Texas
+1 BURI
+2 PLACE Piney Grove Cementery
+1 FAMS @F185@
+1 FAMC @F202@
+0 @I1@ INDI
+1 NAME William Earl /Holmes/
+1 SEX M
+1 BIRT
+2 DATE Jul 04 1955
+2 PLAC Tyler, Texas
+1 EDUC
+2 PLACE Associate Degree at Control Data Institute
+1 NOTE William Holmes was born on July 4, 1955, to Jessie James and Elizabeth Holmes in
+2 CONC  a small farming community in the Jackson Heights area. Growing up, William was 
+2 CONC surrounded by a loving family and extended family, which instilled a strong work
+2 CONC  ethic and a clear view of life in him. He attended Jackson Elementary and then 
+2 CONC moved to Chapel Hill High School, where he graduated in 1973. William was ranked
+2 CONC  in the top fifteen percent of his class, which showed his dedication to educati
+2 CONC on.<br><br>After graduating, William attended computer school and earned his ass
+2 CONC ociate degree in computer maintenance. He then moved to Sacramento, California, 
+2 CONC to work on his career, where he realized that he needed a closer relationship wi
+2 CONC th God. During this time, he accepted Jesus Christ as his savior and was baptize
+2 CONC d in the holy spirit, which helped him navigate through life.<br><br>William wor
+2 CONC ked several years and honed his skills in the computer maintenance field before 
+2 CONC deciding to move back to Texas. After relocating back to Dallas, he worked sever
+2 CONC al more years in the service area. William always had a passion for creating and
+2 CONC  planning, so he decided to try his hand as a manager of a retail business. He t
+2 CONC hen wanted to apply his craft as an entrepreneur and created a plan to start a c
+2 CONC hildren's transportation business, which was a daring and new type of venture. W
+2 CONC illiam successfully owned and operated the business for twenty-five years.<br><b
+2 CONC r>After thinking about what was next, William started planning for the next chap
+2 CONC ter in his life. During the COVID-19 pandemic, he decided to make the move to en
+2 CONC ter full-time in the airport transportation industry. He started with a few clie
+2 CONC nts from his student transportation days and now has a client base of over five 
+2 CONC hundred clients in his database, which continues to grow. William's company has 
+2 CONC an outlet through its website, app, and other social media events. He is constan
+2 CONC tly expanding the business and creating other business opportunities. William be
+2 CONC lieves that with God, all things are possible, and the sky is the limit.
+1 FAMS @F200@
+1 FAMS @F209@
+1 FAMC @F65@
+0 @I670@ INDI
+1 NAME Brandon /Houston/
+1 SEX M
+1 BIRT
+1 FAMS @F157@
+0 @I672@ INDI
+1 NAME Brandon /Houston/
+1 SEX M
+1 BIRT
+0 @I669@ INDI
+1 NAME Devon /Houston/
+1 SEX M
+1 BIRT
+1 FAMC @F157@
+0 @I671@ INDI
+1 NAME Sydney /Houston/
+1 SEX F
+1 BIRT
+1 FAMC @F157@
+0 @I442@ INDI
+1 NAME Bobby Ray /Howard/
+1 SEX M
+1 BIRT
+1 FAMS @F210@
+0 @I444@ INDI
+1 NAME LaNetra `NeNe` Mshie /Howard/
+1 SEX F
+1 BIRT
+2 DATE Jan 12 1985
+2 PLAC Fort Worth, Texas
+1 FAMC @F210@
+0 @I19@ INDI
+1 NAME Sherry Kay /Howard/
+1 SEX F
+1 BIRT
+2 DATE Dec 15
+1 FAMS @F209@
+0 @I586@ INDI
+1 NAME Cleaster /Hudson/ Sr.
+1 SEX M
+1 BIRT
+2 DATE Jun 30 1945
+2 PLAC Tyler, TX
+1 DEAT
+2 DATE Apr 28 1992
+2 PLAC Tyler, TX
+1 NOTE Was murdered by elementary classmates. He was driving while they place a strap a
+2 CONC round neck from back seat and person in front seat stabbed him with knife. Then 
+2 CONC they drove him to hospital. He later died on operating table.
+1 FAMS @F48@
+0 @I178@ INDI
+1 NAME Kathie /Hudson/
+1 SEX F
+1 BIRT
+1 FAMS @F90@
+0 @I355@ INDI
+1 NAME Kristy /Hudson/
+1 SEX F
+1 BIRT
+2 DATE Jan 03 1979
+2 PLAC Dallas, Texas
+1 FAMS @F196@
+1 FAMC @F113@
+0 @I712@ INDI
+1 NAME Timothy /Hudson/
+1 SEX M
+1 BIRT
+2 DATE Jun
+2 PLAC Alexandria LA
+1 FAMS @F196@
+0 @I380@ INDI
+1 NAME BJ /Hunt/
+1 SEX M
+1 BIRT
+1 DEAT
+2 DATE 1962
+2 PLAC Fort Worth, Texas
+1 FAMS @F104@
+0 @I381@ INDI
+1 NAME Myrtle Beatrice /Hunt/
+1 SEX F
+1 BIRT
+2 DATE Jun 16 1924
+1 DEAT
+2 DATE Feb 25 2010
+1 NOTE Myrtle is a member of the Order of the Eastern Star and served in the U.S. Navy 
+2 CONC as an x-ray technician  and nurse from 1963 to 1986. She enlisted as an instruct
+2 CONC or and taught x-ray and nursing courses. She  retired as a Petty Officer, 1st Cl
+2 CONC ass. For most of her military career, her home bases were Pearl Harbor,  Hawaii 
+2 CONC and Naples, Italy. She was the first black woman to retire from the Dallas Naval
+2 CONC  Air Station  and received a plaque from then President, Ronald Reagan.  Settie 
+2 CONC attended Myrtle’s retirement ceremony as did every one of Myrtle’s past Commande
+2 CONC rs except  one from Oklahoma, who visited her after she retired.
+1 FAMC @F104@
+0 @I501@ INDI
+1 NAME Alauna K /Jackson/
+1 SEX F
+1 BIRT
+2 DATE Mar 12 2005
+2 PLAC Marietta, Ga
+1 FAMC @F211@
+0 @I153@ INDI
+1 NAME Danny M /Jackson/
+1 SEX M
+1 BIRT
+2 DATE Oct 04 1955
+2 PLAC Tyler, TX
+1 FAMS @F212@
+0 @I570@ INDI
+1 NAME Donica LaShun /Jackson/
+1 SEX F
+1 BIRT
+2 DATE Dec 28 1969
+2 PLAC Dallas, TX
+1 FAMS @F46@
+0 @I336@ INDI
+1 NAME Doris Fay /Jackson/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMC @F149@
+0 @I335@ INDI
+1 NAME Jimmy Lee /Jackson/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMS @F149@
+0 @I436@ INDI
+1 NAME Mary /Jackson/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F213@
+0 @I101@ INDI
+1 NAME Nealie /Jackson/
+1 SEX F
+1 BIRT
+2 DATE Jun 15 1910
+2 PLAC Marshall Texas
+1 DEAT
+2 DATE Mar 27 1994
+2 PLAC Fort Worth, Texas
+1 BURI
+2 PLACE Cedar Hill Memorial Park
+1 FAMS @F103@
+1 FAMC @F213@
+0 @I184@ INDI
+1 NAME Tanisha Roshun /Jackson/
+1 SEX F
+1 BIRT
+1 FAMS @F110@
+0 @I435@ INDI
+1 NAME Tony /Jackson/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMS @F213@
+0 @I302@ INDI
+1 NAME Anna /Johnson/
+1 SEX F
+1 BIRT
+2 DATE 1869
+1 DEAT
+1 FAMC @F214@
+0 @I409@ INDI
+1 NAME Asiana /Johnson/
+1 SEX F
+1 BIRT
+2 DATE ABT  1868
+1 DEAT
+1 FAMC @F214@
+0 @I411@ INDI
+1 NAME Desheres /Johnson/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMC @F214@
+0 @I258@ INDI
+1 NAME Jaloh /Johnson/
+1 SEX M
+1 BIRT
+1 FAMC @F9@
+0 @I301@ INDI
+1 NAME John Henry /Johnson/
+1 SEX M
+1 BIRT
+2 DATE ABT  1874
+1 DEAT
+1 FAMS @F215@
+1 FAMC @F214@
+0 @I412@ INDI
+1 NAME Kate /Johnson/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F215@
+0 @I413@ INDI
+1 NAME Lillian /Johnson/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMC @F215@
+0 @I458@ INDI
+1 NAME Lucinda /Johnson/
+1 SEX F
+1 BIRT
+1 FAMS @F216@
+0 @I751@ INDI
+1 NAME Sonya /Johnson/
+1 SEX F
+1 BIRT
+1 FAMS @F168@
+0 @I300@ INDI
+1 NAME Susie /Johnson/
+1 SEX F
+1 BIRT
+2 DATE May 01 1882
+2 PLAC Smith County, Texas
+1 DEAT
+2 DATE May 15 1974
+1 BURI
+2 PLACE Oliver Chapel Cementary
+1 NOTE In Memory of Susie Johnson Choice  Mrs. Susie Choice. the daughter of the late M
+2 CONC r. and Mrs. William Johnson, was born May 1,  1882 in Smith County, Texas.  Many
+2 CONC  years ago she united with the New Zion Baptist Church # 2, and was an active me
+2 CONC mber  until her health failed.  She was a charter member of Queen of Honor Court
+2 CONC  #185 and served as Joshua for several  years.  She was united in marriage to Mr
+2 CONC . Wallace Choice, who preceded her in death. To this union  seven children were 
+2 CONC born, she had one son by a former marriage, Willie Starr, Jr. Two sons and  one 
+2 CONC daughter preceded her in death.  Mrs. Choice departed this life May 10, 1974 at 
+2 CONC 6:30 am. Her survivors include five daughters,  Miss Eulalia Choice, Mrs. Lois M
+2 CONC urphy, Mrs. Laura C. Francis, Miss Jessie Choice, Mrs. Annie  B. Langley stepdau
+2 CONC ghter all of Tyler, Texas, Mrs. Mattie D. Bolton of Venus, Texas, five  nieces, 
+2 CONC one nephew, twenty-two grandchildren, forty-one great grandchildren and a host o
+2 CONC f  other relatives and friends.  Services Wednesday, May 15, 1974, 2:00 p.m., Ne
+2 CONC w Zion Baptist Church, Tyler, Texas. Brooks-Sterling  Funeral Directors.
+1 FAMS @F217@
+1 FAMS @F147@
+1 FAMC @F214@
+0 @I410@ INDI
+1 NAME Theodoshius /Johnson/
+1 SEX M
+1 BIRT
+2 DATE ABT  1873
+1 DEAT
+1 FAMC @F214@
+0 @I758@ INDI
+1 NAME Trenton /Johnson/ Jr
+1 SEX M
+1 BIRT
+2 DATE Aug 03 2017
+1 FAMC @F218@
+0 @I761@ INDI
+1 NAME Trenton /Johnson/ Sr
+1 SEX M
+1 BIRT
+1 FAMS @F218@
+0 @I606@ INDI
+1 NAME Vasha /Johnson/
+1 SEX F
+1 BIRT
+1 FAMS @F55@
+0 @I297@ INDI
+1 NAME William `Bill` /Johnson/
+1 SEX M
+1 BIRT
+2 DATE 1927
+1 DEAT
+2 DATE Sep
+1 NOTE William “Bill” Johnson is listed in the 1880 Census Report as  black. The 1910 C
+2 CONC ensus Report listed him as mulatto. According to  family members, he was part bl
+2 CONC ack and part white with blue eyes and  looked like a white man. He was known to 
+2 CONC curse prolifically. He was  born in 1854 or 1855 in Texas. His father was born i
+2 CONC n South  Carolina; his mother was born in Georgia.  William Johnson died Septemb
+2 CONC er 27, 1927.  The following information is recorded in the 1880 Census Report.  
+2 CONC The information going across for each person) is: name, color/race,  gender, age
+2 CONC , relation to head of household, occupation, place of birth,  place of birth of 
+2 CONC father, and place of birth of mother.  Johnson, William B M 26 Head Farming TX -
+2 CONC  -  Johnson, Susan B F 35 Wife Housekeeping GA - -  Johnson, Anna B F 11 Daughte
+2 CONC r Farm Laborer TX - -  Johnson, Theodoshius B M 7 Son - TX - -  Johnson, J.H.B. 
+2 CONC B M 5 Son - TX - -  According to family members, William and Susan’s children we
+2 CONC re:  1. Anna Johnson, b. 1869  2. Theodoshius Johnson, b. 1872/73  3. John Henry
+2 CONC  Johnson, b. 1874/75  4. Susan “Susie” Johnson, b. May 1,1882, d. May 10,1974  5
+2 CONC . Dosheres Johnson
+1 FAMS @F214@
+0 @I73@ INDI
+1 NAME Cecilia /Jones/
+1 SEX F
+1 BIRT
+2 DATE Feb 02 1984
+1 FAMC @F124@
+0 @I693@ INDI
+1 NAME Doris /Jones/
+1 SEX F
+1 BIRT
+2 DATE Sep 17 1945
+2 PLAC Troup Texas
+1 DEAT
+0 @I70@ INDI
+1 NAME Elston /Jones/
+1 SEX M
+1 BIRT
+2 DATE Jan 10 1961
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Sep 18 2020
+2 PLAC Fort Worth, Texas
+1 BURI
+2 DATE Sep 26 2020
+2 PLACE Fort Worth, Texas
+1 FAMS @F187@
+1 FAMC @F219@
+0 @I421@ INDI
+1 NAME Georgia Ann /Jones/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F27@
+0 @I686@ INDI
+1 NAME Leasuance D /Jones/
+1 SEX F
+1 BIRT
+2 DATE Sep 25 1967
+2 PLAC Troup Texas
+1 FAMS @F136@
+1 FAMC @F192@
+0 @I69@ INDI
+1 NAME Victor /Jones/
+1 SEX M
+1 BIRT
+2 DATE Jul 08 1959
+2 PLAC Tyler, Texas
+1 FAMS @F124@
+1 FAMC @F219@
+0 @I25@ INDI
+1 NAME Donald /Keeler/
+1 SEX M
+1 BIRT
+1 FAMS @F207@
+0 @I26@ INDI
+1 NAME Donte /Keeler/
+1 SEX M
+1 BIRT
+2 DATE Dec 24 1992
+2 PLAC Tyler, Texas
+1 FAMC @F207@
+0 @I196@ INDI
+1 NAME Lance Ryan /Kelley/
+1 SEX M
+1 BIRT
+2 DATE Dec 18 1980
+1 EDUC
+2 PLACE Elsik High School, Houston, Texas
+1 NOTE Graduated from Elsik High School, Houston, Texas, 1999. High school activities: 
+2 CONC Art Club;  Swimming Team
+1 FAMC @F220@
+0 @I195@ INDI
+1 NAME Thermon /Kelley/
+1 SEX M
+1 BIRT
+1 FAMS @F220@
+0 @I76@ INDI
+1 NAME Angela /Key/
+1 SEX F
+1 BIRT
+2 DATE Jun 15 1984
+1 FAMC @F221@
+0 @I75@ INDI
+1 NAME Carlos /Key/
+1 SEX M
+1 BIRT
+2 DATE Jul 30 1963
+1 FAMS @F221@
+0 @I71@ INDI
+1 NAME Jacqueline /Key/
+1 SEX F
+1 BIRT
+1 FAMS @F221@
+1 FAMC @F219@
+0 @I77@ INDI
+1 NAME Jessica /Key/
+1 SEX F
+1 BIRT
+2 DATE Jul 05 1985
+1 FAMC @F221@
+0 @I755@ INDI
+1 NAME Kadavion /Key/
+1 SEX M
+1 BIRT
+2 DATE Apr 29 1999
+2 PLAC Tyler, Tx
+1 FAMC @F222@
+0 @I78@ INDI
+1 NAME Nicole /Key/
+1 SEX F
+1 BIRT
+2 DATE Nov 19 1987
+1 FAMC @F221@
+0 @I759@ INDI
+1 NAME Willie /Key/
+1 SEX M
+1 BIRT
+1 FAMS @F222@
+0 @I698@ INDI
+1 NAME Kaelyn /Kincaide/
+1 SEX F
+1 BIRT
+2 DATE Feb 02 2001
+2 PLAC Irvin Texas
+1 FAMC @F191@
+0 @I697@ INDI
+1 NAME Keylon /Kincaide/ JR
+1 SEX M
+1 BIRT
+2 DATE Nov 29 2000
+2 PLAC Tyler,Texas
+1 FAMC @F191@
+0 @I695@ INDI
+1 NAME Keylon /Kincaide/ Sr
+1 SEX M
+1 BIRT
+2 DATE Aug 20 1982
+2 PLAC Troup Texas
+1 FAMS @F191@
+0 @I696@ INDI
+1 NAME Kylon /Kincaide/
+1 SEX M
+1 BIRT
+2 DATE Aug 20 2008
+2 PLAC Irvin Texas
+1 FAMC @F191@
+0 @I508@ INDI
+1 NAME Geraldine D. /King/
+1 SEX F
+1 BIRT
+2 DATE Nov 01 1930
+2 PLAC Yamato, FL
+0 @I806@ INDI
+1 NAME Lionel Cuthbert /King/
+1 SEX M
+1 BIRT
+2 DATE 1897
+2 PLAC Bridgeton, Barbados
+1 DEAT
+2 DATE Jul 1961
+2 PLAC Barbados
+1 FAMS @F223@
+0 @I452@ INDI
+1 NAME Murville Adolpheus /King/ Jr
+1 SEX M
+1 BIRT
+2 DATE Aug 16 1960
+2 PLAC Pompano Beach, FL
+1 DEAT
+2 DATE Mar 13 2007
+2 PLAC Kissimme, FL
+1 FAMS @F15@
+1 FAMC @F224@
+0 @I507@ INDI
+1 NAME Murville Adolpheus /King/ Sr
+1 SEX M
+1 BIRT
+2 DATE Feb 11 1931
+2 PLAC Barbados
+1 DEAT
+2 DATE Nov 30 2020
+2 PLAC Boca Raton, FL
+1 FAMC @F223@
+0 @I473@ INDI
+1 NAME Wendy Anne /Landgraff/
+1 SEX F
+1 BIRT
+1 FAMS @F225@
+0 @I479@ INDI
+1 NAME Angeline /Lane/
+1 SEX F
+1 BIRT
+1 FAMS @F226@
+0 @I550@ INDI
+1 NAME Candis /Lane/
+1 SEX F
+1 BIRT
+2 DATE Feb 16 1884
+1 DEAT
+2 DATE Sep 29 1949
+2 PLAC Smith County, Texas
+1 BURI
+2 PLACE Hopwell Cemetery
+1 FAMS @F164@
+1 FAMC @F227@
+0 @I551@ INDI
+1 NAME Martha /Lane/
+1 SEX F
+1 BIRT
+1 DEAT
+0 @I629@ INDI
+1 NAME Jacqueline `Jackie` Delores /Lawson/
+1 SEX F
+1 BIRT
+2 DATE Sep 11 1955
+1 FAMS @F112@
+0 @I137@ INDI
+1 NAME Josephine Mary /Lee/
+1 SEX F
+1 BIRT
+2 DATE Nov 06 1924
+2 PLAC Blackjack, Texas
+1 DEAT
+1 FAMS @F62@
+0 @I439@ INDI
+1 NAME Willie I /Lee/
+1 SEX M
+1 BIRT
+1 FAMS @F228@
+0 @I177@ INDI
+1 NAME Mary Lou /Leeper/
+1 SEX F
+1 BIRT
+2 PLAC Houston, Texas
+1 DEAT
+2 DATE Sep 1992
+2 PLAC Fort Worth, Texas
+1 FAMS @F42@
+0 @I190@ INDI
+1 NAME Angela Eileen /Lenzy/
+1 SEX F
+1 BIRT
+2 DATE Feb 19 1963
+1 NOTE Graduated from O.D. Wyatt High School, 1980. High school activities: band (playe
+2 CONC d piano and  clarinet). High school honors: Who’s Who in America; Who’s Who All 
+2 CONC America Band; National  Honor Society; National Award for Who’s Who.  Attended T
+2 CONC arrant County Junior College, Houston Community College System, and the Universi
+2 CONC ty of  Houston.
+1 FAMS @F119@
+1 FAMC @F229@
+0 @I189@ INDI
+1 NAME Anthony `Tony` Eugene /Lenzy/
+1 SEX M
+1 BIRT
+2 DATE Feb 02 1965
+2 PLAC Fort Worth, Texas
+1 FAMS @F230@
+1 FAMC @F229@
+0 @I187@ INDI
+1 NAME Diana Yvonne /Lenzy/
+1 SEX F
+1 BIRT
+2 DATE Jan 22 1951
+2 PLAC Fort Worth, Texas
+1 FAMS @F220@
+1 FAMC @F229@
+0 @I134@ INDI
+1 NAME Dorothy Ree /Lenzy/
+1 SEX F
+1 BIRT
+2 DATE Apr 08 1928
+2 PLAC Fort Worth, Texas
+1 DEAT
+2 DATE Mar 31 1996
+1 BURI
+2 PLACE Skyvue Memorial Gardens, Rendon, Texas
+1 NOTE Known as “Aunt Dot” to her nephews and nieces, Dorothy could play the  piano and
+2 CONC  organ.
+1 FAMS @F229@
+1 FAMC @F32@
+0 @I186@ INDI
+1 NAME Helen Ruth /Lenzy/
+1 SEX F
+1 BIRT
+2 DATE Jan 25 1949
+2 PLAC Fort Worth, Texas
+1 DEAT
+2 DATE May 18 1997
+2 PLAC Fort Worth, Texas
+1 EDUC
+2 PLACE Graduated from I.M. Terrell, 1967. High school activities: choir; Journalism Queen.
+1 BURI
+2 DATE May 23 1997
+2 PLACE Skyvue Memorial Gardens, Rendon, Texas
+1 FAMS @F201@
+1 FAMC @F229@
+0 @I185@ INDI
+1 NAME Roosevelt Aaron /Lenzy/
+1 SEX M
+1 BIRT
+2 DATE Feb 26 1922
+2 PLAC Rosebud, Texas
+1 DEAT
+2 DATE Jun 29 1999
+2 PLAC Fort Worth, Texas
+1 BURI
+2 PLACE Skyvue Memorial Gardens, Rendon, Texas
+1 FAMS @F229@
+0 @I188@ INDI
+1 NAME Wanda Jean /Lenzy/
+1 SEX F
+1 BIRT
+2 DATE Jan 07 1953
+2 PLAC Fort Worth, Texas
+1 FAMS @F228@
+1 FAMS @F35@
+1 FAMS @F158@
+1 FAMS @F210@
+1 FAMC @F229@
+0 @I795@ INDI
+1 NAME Rachael /Lephridge/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F117@
+0 @I81@ INDI
+1 NAME Helen /Lewis/
+1 SEX F
+1 BIRT
+2 DATE Jun 04 1953
+2 PLAC Fort Worth, Texas
+1 FAMS @F68@
+0 @I530@ INDI
+1 NAME Sharon L. /Lewis/
+1 SEX F
+1 BIRT
+1 FAMS @F231@
+0 @I798@ INDI
+1 NAME Donald Roy /Lynch/
+1 SEX M
+1 BIRT
+2 DATE Apr 27 1958
+2 PLAC Tyler, Texas
+1 FAMC @F232@
+0 @I799@ INDI
+1 NAME Ronald N. /Lynch/
+1 SEX M
+1 BIRT
+2 DATE Apr 27 1958
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Feb 17 2008
+2 PLAC Smith County, Texas
+1 NOTE Services for Ronald N. Lynch, 49, Dallas, formerly of Tyler, are scheduled for 2
+2 CONC  p.m. Saturday at Liberty Baptist Church with the Revs. Elijah Stansell, Leroy R
+2 CONC edwine and Mark Hood officiating. Burial will be in Prospect Cemetery under dire
+2 CONC ction of Brooks-Sterling & Garrett Funeral Directors, Tyler. Mr. Lynch died Feb.
+2 CONC  17, 2008, in Dallas. He was born April 27, 1958, in Tyler and attended Chapel H
+2 CONC ill High School, Tyler Junior College, Stephen F. Austin State University and Th
+2 CONC e University of Texas at Tyler. He was a teacher at Chapel Hill Independent Scho
+2 CONC ol District for 18 years and an analyst for Verizon Communications. He was a mem
+2 CONC ber of North Dallas Bible Community Church, and was preceded in death by his mot
+2 CONC her, Sleetie Mosley Lynch. Survivors include his father, the Rev. Roy Lee Lynch,
+2 CONC  Tyler; brother, Donald Roy Lynch, Dallas; and sister, Vickie Lynch Ford, Tyler.
+2 CONC  Family will receive friends 7-8 p.m. Friday at the funeral home.
+1 FAMC @F232@
+0 @I797@ INDI
+1 NAME Roy Lee /Lynch/
+1 SEX M
+1 BIRT
+2 DATE Sep 05 1938
+1 DEAT
+2 DATE Oct 01 2011
+2 PLAC Smith County, Texas
+1 BURI
+2 PLACE Prospect Cemetery, Overton , Tx
+1 FAMS @F232@
+0 @I800@ INDI
+1 NAME Vickie Lynn /Lynch/
+1 SEX F
+1 BIRT
+2 DATE Nov 30 1960
+2 PLAC Tyler Texas
+1 FAMS @F178@
+1 FAMC @F232@
+0 @I719@ INDI
+1 NAME Anesu /Mafi/
+1 SEX F
+1 BIRT
+2 DATE Sep 22 2011
+1 FAMC @F22@
+0 @I720@ INDI
+1 NAME Idanai /Mafi/
+1 SEX M
+1 BIRT
+2 DATE May 29 2014
+1 FAMC @F22@
+0 @I511@ INDI
+1 NAME Wilson /Mafi/
+1 SEX M
+1 BIRT
+1 FAMS @F22@
+0 @I491@ INDI
+1 NAME Myrtle Lee /Martin/
+1 SEX F
+1 BIRT
+1 FAMS @F96@
+0 @I266@ INDI
+1 NAME Tamesha /Matt/
+1 SEX F
+1 BIRT
+1 FAMC @F233@
+0 @I775@ INDI
+1 NAME Bryant /McClendon/
+1 SEX M
+1 BIRT
+2 DATE 1857
+1 DEAT
+2 DATE 1932
+0 @I773@ INDI
+1 NAME Cleopatra /McClendon/
+1 SEX F
+1 BIRT
+2 DATE Jun 03 1921
+2 PLAC Timpson, Shelby County, Texas
+1 DEAT
+2 DATE Feb 16 2002
+2 PLAC Smith County, Texas
+1 FAMS @F128@
+1 FAMC @F234@
+0 @I774@ INDI
+1 NAME Homer /McClendon/
+1 SEX M
+1 BIRT
+2 DATE Sep 23 1884
+1 DEAT
+2 DATE Jan 13 1952
+1 BURI
+2 PLACE New Hope Cemetery Timpson, Shelby County, Texas
+1 FAMS @F234@
+1 FAMC @F235@
+0 @I776@ INDI
+1 NAME Lee Dolia /McClendon/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F234@
+0 @I687@ INDI
+1 NAME Sheree /McCowin/
+1 SEX F
+1 BIRT
+0 @I524@ INDI
+1 NAME Judy J /McCullouch/
+1 SEX F
+1 BIRT
+2 DATE ABT  1948
+1 FAMS @F203@
+0 @I52@ INDI
+1 NAME Zack /McDonald/ Jr.
+1 SEX M
+1 BIRT
+2 DATE Mar 19 1919
+2 PLAC Henderson, Texas
+1 DEAT
+2 DATE Jan 23 1985
+2 PLAC Fort Worth, Texas
+1 BURI
+2 DATE Jan 26 1985
+2 PLACE Mt. Enterprise, Tx
+1 FAMS @F98@
+1 FAMC @F216@
+0 @I457@ INDI
+1 NAME Zack /McDonald/ Sr.
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMS @F216@
+0 @I764@ INDI
+1 NAME Hanna /Mcelyea/
+1 SEX F
+1 BIRT
+1 FAMS @F236@
+0 @I349@ INDI
+1 NAME Merlyn Loretta /McGee/
+1 SEX F
+1 BIRT
+2 DATE May 13 1960
+1 FAMS @F237@
+0 @I295@ INDI
+1 NAME Susan /Mijues/
+1 SEX F
+1 BIRT
+2 DATE ABT  1845
+2 PLAC Georgia
+1 DEAT
+2 DATE 1910
+2 PLAC Canton Beat, Texas
+1 NOTE CENSUS RECORDS - SMITH COUNTY, TX - INDEX FOR 1870 US CENSUS<br><br>SURNAMES:  M
+2 CONC IJUES - MYSON<br><br>Submitted by East Texas Genealogical Society<br>P. O. Box 6
+2 CONC 967, Tyler, TX 75711<br><br>Copyright.  All rights reserved.<br>http://usgwarchi
+2 CONC ves.net/copyright.htm<br><br>***************************************************
+2 CONC ********************<br><br>Thanks to Dan Milligan and Juanice York for copying 
+2 CONC the Index and <br>Edith Willman and Nancy Crain for proofreading the index.<br><
+2 CONC br>*****************************************************************************
+2 CONC <br>SURNAME             FIRST NAME                AGE     IMAGE       BEAT      
+2 CONC                                                          <br>                   
+2 CONC                                      NO<br>*************************************
+2 CONC ****************************************<br><br>Mijues              Hannah      
+2 CONC               1       0244b   Canton Beat<br>Mijues              Horatio        
+2 CONC            4       0244b   Canton Beat<br>Mijues              Susan             
+2 CONC         25      0244b   Canton Beat<br>Mijues              William              
+2 CONC      6       0244b   Canton Beat
+1 FAMS @F41@
+1 FAMS @F161@
+1 FAMS @F214@
+0 @I242@ INDI
+1 NAME Arlene /Miller/
+1 SEX F
+1 BIRT
+1 FAMS @F155@
+0 @I595@ INDI
+1 NAME Janet Sue /Miller/
+1 SEX F
+1 BIRT
+2 PLAC Tyler, TX
+1 FAMS @F81@
+0 @I722@ INDI
+1 NAME Janice /Miller/
+1 SEX F
+1 BIRT
+2 DATE Jul 22 1948
+1 FAMS @F238@
+0 @I220@ INDI
+1 NAME Keffe Ann /Miller/
+1 SEX F
+1 BIRT
+2 PLAC Nassau, Bahamas
+1 FAMS @F21@
+0 @I428@ INDI
+1 NAME Hurbert Lee /Mitchell/
+1 SEX M
+1 BIRT
+2 DATE Dec 31 1941
+2 PLAC Tyler, Texas
+1 DEAT
+1 FAMC @F239@
+0 @I472@ INDI
+1 NAME Robert George /Mitchell/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMS @F239@
+0 @I589@ INDI
+1 NAME Patricia A /Mitchum/
+1 SEX F
+1 BIRT
+2 DATE Aug 31 1975
+2 PLAC Tyler, TX
+1 FAMS @F31@
+0 @I767@ INDI
+1 NAME Eternity Brielle /Mondine/
+1 SEX F
+1 BIRT
+2 DATE Feb 24 2015
+2 PLAC Fort Worth,  TX
+1 FAMC @F159@
+0 @I668@ INDI
+1 NAME Bobbie /Montgomery/
+1 SEX F
+1 BIRT
+0 @I245@ INDI
+1 NAME Pamela /Montgomery/
+1 SEX F
+1 BIRT
+2 DATE May 27 1963
+2 PLAC Fort Worth, Texas
+1 FAMS @F156@
+1 FAMC @F240@
+0 @I816@ INDI
+1 NAME Albert /Moore/
+1 SEX M
+1 BIRT
+2 DATE Nov 13 1923
+1 DEAT
+2 DATE Dec 12 2025
+0 @I269@ INDI
+1 NAME Anothy /Moore/
+1 SEX M
+1 BIRT
+1 FAMC @F8@
+0 @I230@ INDI
+1 NAME Barbara /Moore/
+1 SEX F
+1 BIRT
+1 FAMS @F72@
+0 @I201@ INDI
+1 NAME Brian /Moore/
+1 SEX M
+1 BIRT
+2 DATE Sep 22 1980
+2 PLAC Dallas, Texas
+1 FAMC @F172@
+0 @I658@ INDI
+1 NAME Damian /Moore/
+1 SEX M
+1 BIRT
+2 DATE May 16 2007
+2 PLAC Dallas, Texas
+1 FAMC @F241@
+0 @I199@ INDI
+1 NAME Eugene /Moore/
+1 SEX M
+1 BIRT
+2 DATE Dec 19 1952
+2 PLAC Greenville, Miss
+1 FAMS @F172@
+1 FAMC @F242@
+0 @I200@ INDI
+1 NAME Eugene /Moore/ II
+1 SEX M
+1 BIRT
+2 DATE Aug 24 1978
+2 PLAC Fort Worth, Texas
+1 FAMC @F172@
+0 @I811@ INDI
+1 NAME Fred Cornelious /Moore/
+1 SEX M
+1 BIRT
+2 DATE Sep 15 1954
+2 PLAC Tyler, Texas
+1 ADDR
+2 ADR1 3862 Scenic Drive
+2 CITY Tyler
+2 STAE Texas
+2 POST 75709
+2 CTRY  United States
+1 _PMOB 9033765904
+1 FAMS @F243@
+0 @I810@ INDI
+1 NAME Fredetta Marie /Moore/
+1 SEX F
+1 BIRT
+2 DATE Aug 22 1981
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Feb 27 2018
+1 FAMC @F243@
+0 @I657@ INDI
+1 NAME Jayden Lee /Moore/
+1 SEX F
+1 BIRT
+2 DATE Aug 30 2005
+2 PLAC Dallas, Texas
+1 FAMC @F241@
+0 @I91@ INDI
+1 NAME Johnnie Beatrice /Moore/
+1 SEX F
+1 BIRT
+2 DATE Jan 12 1917
+1 FAMS @F53@
+0 @I817@ INDI
+1 NAME Odessa /Moore/
+1 SEX F
+1 BIRT
+2 DATE Feb 21
+0 @I809@ INDI
+1 NAME Veronica Michelle /Moore-Smith/
+1 SEX F
+1 BIRT
+2 DATE Feb 22 1975
+2 PLAC Tyler, Texas
+1 ADDR
+2 ADR1 3862 Scenic Drive
+2 CITY Forney
+2 STAE TX
+2 POST 75126
+2 CTRY  United States
+1 _PMOB 2145297225
+1 FAMS @F244@
+1 FAMC @F243@
+0 @I182@ INDI
+1 NAME Linda Joyce /Morris/
+1 SEX F
+1 BIRT
+2 DATE Jan 1951
+2 PLAC Fort Worth, Texas
+1 FAMS @F101@
+1 FAMS @F123@
+0 @I518@ INDI
+1 NAME Charles /Mosley/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMC @F173@
+0 @I598@ INDI
+1 NAME Clarence R /Mosley/ Jr
+1 SEX M
+1 BIRT
+2 DATE Aug 31 1972
+2 PLAC Nueces, TX
+1 NOTE Possible husband of Aquilla according to website. Still searching for both he an
+2 CONC d Aquilla.
+1 FAMS @F245@
+0 @I460@ INDI
+1 NAME Dora /Mosley/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F246@
+0 @I528@ INDI
+1 NAME Dora Yvonne /Mosley/
+1 SEX F
+1 BIRT
+2 DATE Mar 18 1962
+2 PLAC Tyler, Texas
+1 FAMC @F247@
+0 @I520@ INDI
+1 NAME Eddie /Mosley/
+1 SEX M
+1 BIRT
+1 FAMC @F173@
+0 @I459@ INDI
+1 NAME Frank /Mosley/
+1 SEX M
+1 BIRT
+2 DATE ABT  1874
+2 PLAC Tennessee
+1 DEAT
+1 FAMS @F246@
+1 FAMC @F173@
+0 @I521@ INDI
+1 NAME Lane /Mosley/
+1 SEX M
+1 BIRT
+1 FAMC @F173@
+0 @I519@ INDI
+1 NAME Mary /Mosley/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMC @F173@
+0 @I514@ INDI
+1 NAME Needam /Mosley/
+1 SEX M
+1 BIRT
+2 DATE ABT  1840
+2 PLAC South Carolina
+1 DEAT
+1 FAMS @F173@
+0 @I517@ INDI
+1 NAME Needom /Mosley/
+1 SEX M
+1 BIRT
+2 DATE Jul 26 1922
+1 DEAT
+2 DATE Aug 25 2005
+2 PLAC Tyler, Texas
+1 FAMS @F247@
+1 FAMC @F246@
+0 @I447@ INDI
+1 NAME Octavia /Mosley/
+1 SEX F
+1 BIRT
+2 DATE Oct 16 1902
+1 DEAT
+2 DATE Aug 09 1994
+2 PLAC Tyler, Texas
+1 BURI
+2 DATE Aug 12 1994
+2 PLACE Piney Grove Tyler,Texas
+1 FAMS @F202@
+1 FAMC @F246@
+0 @I529@ INDI
+1 NAME Ricky B /Mosley/
+1 SEX M
+1 BIRT
+2 DATE Jan 25 1964
+2 PLAC Tyler, Texas
+1 FAMS @F231@
+1 FAMC @F247@
+0 @I796@ INDI
+1 NAME Sleetie Janett /Mosley/
+1 SEX F
+1 BIRT
+2 DATE Nov 22 1940
+2 PLAC Smith County, Texas
+1 DEAT
+2 DATE May 23 2003
+2 PLAC Smith County, Texas
+1 FAMS @F232@
+1 FAMC @F247@
+0 @I397@ INDI
+1 NAME Albert Lawrence /Murphy/
+1 SEX M
+1 BIRT
+1 FAMC @F248@
+0 @I401@ INDI
+1 NAME Almarie `Buddy` /Murphy/
+1 SEX F
+1 BIRT
+2 DATE Sep 01 1957
+2 PLAC Tyler, Texas
+1 FAMS @F243@
+1 FAMC @F249@
+0 @I386@ INDI
+1 NAME Alvin /Murphy/
+1 SEX M
+1 BIRT
+2 DATE Jun 17 1922
+1 DEAT
+2 DATE Jan 05 1997
+2 PLAC Tyler, Texas
+1 BURI
+2 PLACE Oliver Chapel Cementery
+1 FAMS @F118@
+1 FAMS @F248@
+1 FAMC @F77@
+0 @I392@ INDI
+1 NAME Alvin O`Neal /Murphy/
+1 SEX M
+1 BIRT
+1 FAMC @F248@
+0 @I398@ INDI
+1 NAME Alvineda /Murphy/
+1 SEX F
+1 BIRT
+1 FAMC @F248@
+0 @I399@ INDI
+1 NAME Alvinetta /Murphy/
+1 SEX F
+1 BIRT
+1 FAMC @F248@
+0 @I396@ INDI
+1 NAME Anthony wayne /Murphy/
+1 SEX M
+1 BIRT
+1 FAMC @F248@
+0 @I334@ INDI
+1 NAME Christine /Murphy/
+1 SEX F
+1 BIRT
+1 FAMC @F148@
+0 @I326@ INDI
+1 NAME Clarence /Murphy/
+1 SEX M
+1 BIRT
+1 FAMS @F148@
+0 @I328@ INDI
+1 NAME Clarence Ray /Murphy/
+1 SEX M
+1 BIRT
+1 FAMC @F148@
+0 @I330@ INDI
+1 NAME Cleo /Murphy/
+1 SEX M
+1 BIRT
+1 FAMC @F148@
+0 @I403@ INDI
+1 NAME David Wayne /Murphy/
+1 SEX M
+1 BIRT
+2 DATE Oct 10 1960
+2 PLAC Tyler, Texas
+1 FAMC @F249@
+0 @I400@ INDI
+1 NAME Debra Elaine /Murphy/
+1 SEX F
+1 BIRT
+2 DATE Jul 04 1955
+2 PLAC Tyler, Texas
+1 FAMC @F249@
+0 @I332@ INDI
+1 NAME Dwain /Murphy/
+1 SEX M
+1 BIRT
+1 FAMC @F148@
+0 @I387@ INDI
+1 NAME Eariton C. /Murphy/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMC @F77@
+0 @I383@ INDI
+1 NAME George /Murphy/
+1 SEX M
+1 BIRT
+2 DATE May 01 1901
+1 DEAT
+2 DATE Nov 14 1991
+1 FAMS @F77@
+0 @I385@ INDI
+1 NAME Georgia `Dreamie: Mae /Murphy/
+1 SEX F
+1 BIRT
+2 DATE Aug 28 1926
+1 DEAT
+2 DATE Dec 10 2015
+2 PLAC Tyler, Texas
+1 BURI
+2 DATE Dec 2015
+2 PLACE Oliver Chapel Cementary
+1 FAMC @F77@
+0 @I329@ INDI
+1 NAME James Earl /Murphy/
+1 SEX M
+1 BIRT
+1 FAMC @F148@
+0 @I333@ INDI
+1 NAME Katherine /Murphy/
+1 SEX F
+1 BIRT
+1 FAMC @F148@
+0 @I395@ INDI
+1 NAME Larry Donnell /Murphy/
+1 SEX M
+1 BIRT
+2 DATE Nov 23 1950
+1 DEAT
+2 DATE Sep 29 2014
+2 PLAC Oliver Chapel Cemetary
+1 FAMC @F248@
+0 @I388@ INDI
+1 NAME Margaret LaNell /Murphy/
+1 SEX F
+1 BIRT
+2 DATE Dec 03 1931
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Jan 18 2000
+2 PLAC Tyler, Texas
+1 FAMS @F249@
+1 FAMS @F6@
+1 FAMC @F77@
+0 @I394@ INDI
+1 NAME Melvin Charles /Murphy/
+1 SEX M
+1 BIRT
+1 FAMC @F248@
+0 @I327@ INDI
+1 NAME Nina Mae /Murphy/
+1 SEX F
+1 BIRT
+1 FAMC @F148@
+0 @I402@ INDI
+1 NAME Stephanie /Murphy/
+1 SEX F
+1 BIRT
+2 DATE Dec 15 1958
+2 PLAC Tyler, Texas
+1 FAMC @F249@
+0 @I331@ INDI
+1 NAME T.O. /Murphy/
+1 SEX M
+1 BIRT
+1 FAMC @F148@
+0 @I384@ INDI
+1 NAME Valeree /Murphy/
+1 SEX F
+1 BIRT
+2 DATE Oct 19 1923
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Feb 24 1998
+2 PLAC Tyler, Texas
+1 NOTE She was buried at Oliver Chapel Cementary
+1 FAMS @F175@
+1 FAMC @F77@
+0 @I393@ INDI
+1 NAME Wilma George /Murphy/
+1 SEX M
+1 BIRT
+2 DATE Nov 30 1946
+1 DEAT
+2 DATE Jan 2002
+2 PLAC Tyler, Texas
+1 BURI
+2 DATE Jan 2002
+2 PLACE Oliver Chapel Cementary
+1 FAMC @F248@
+0 @I500@ INDI
+1 NAME Eric /Nettles/
+1 SEX M
+1 BIRT
+2 DATE Jan 16 2008
+2 PLAC Marietta, Ga
+1 FAMC @F211@
+0 @I807@ INDI
+1 NAME Blanche Viola /Newton/
+1 SEX F
+1 BIRT
+2 PLAC Bridgeton, Barbados
+1 DEAT
+2 PLAC Barbados
+1 FAMS @F223@
+0 @I504@ INDI
+1 NAME Althea /Nichols/
+1 SEX F
+1 BIRT
+1 DEAT
+2 DATE Mar 11 2011
+2 PLAC Houston, TX
+0 @I60@ INDI
+1 NAME Andrea /Nichols/
+1 SEX F
+1 BIRT
+2 DATE May 20 1977
+1 FAMC @F250@
+0 @I65@ INDI
+1 NAME Derrick /Nichols/
+1 SEX M
+1 BIRT
+2 DATE Oct 08 1997
+1 FAMC @F11@
+0 @I763@ INDI
+1 NAME Kuencie /Nichols/
+1 SEX F
+1 BIRT
+2 DATE Jul 11 2001
+2 PLAC Houston, TX
+1 FAMC @F11@
+0 @I63@ INDI
+1 NAME Pha’Lyssia /Nichols/
+1 SEX F
+1 BIRT
+2 DATE Feb 26 1994
+1 DEAT
+2 DATE Apr 13 2022
+2 PLAC Houston, TX
+1 FAMC @F11@
+0 @I64@ INDI
+1 NAME Taleah /Nichols/
+1 SEX F
+1 BIRT
+2 DATE May 29 1995
+1 FAMC @F11@
+0 @I802@ INDI
+1 NAME Atlas Key /Nicholson/
+1 SEX M
+1 BIRT
+2 DATE Mar 29 2021
+2 PLAC Denton County, Texas
+1 FAMC @F251@
+0 @I727@ INDI
+1 NAME Cyprus David /Nicholson/
+1 SEX M
+1 BIRT
+2 DATE Dec 21 2020
+2 PLAC Denton County, Texas
+1 FAMC @F251@
+0 @I23@ INDI
+1 NAME Darius /Nicholson/
+1 SEX M
+1 BIRT
+2 DATE Oct 22 1989
+2 PLAC Dallas, Texas
+1 GRAD
+2 DATE May 2012
+2 PLACE Bachelor Radio, Television and Film (University Of North Texas)
+1 FAMS @F251@
+1 FAMC @F206@
+0 @I18@ INDI
+1 NAME David Keith /Nicholson/
+1 SEX M
+1 BIRT
+2 DATE May 19 1961
+2 PLAC San Bernardino ,Ca
+1 DEAT
+2 DATE Feb 03 1997
+1 BURI
+2 DATE Feb 08 1997
+2 PLACE Piney Grove Tyler,Texas
+1 FAMS @F206@
+0 @I22@ INDI
+1 NAME Kierre /Nicholson/
+1 SEX M
+1 BIRT
+2 DATE Dec 11 1985
+2 PLAC Dallas, Texas
+1 GRAD
+2 DATE Dec 2008
+2 PLACE Bachelor Degree Marketing and Advertising @ West Texas A&M
+1 FAMC @F206@
+0 @I721@ INDI
+1 NAME Jing Purcell /Nourse/
+1 SEX F
+1 BIRT
+2 DATE Sep 29 1991
+1 GRAD
+2 DATE Aug 2013
+2 PLACE Bachelor Of Science In Merchandising (University Of North Texas)
+1 FAMS @F251@
+1 FAMC @F238@
+0 @I723@ INDI
+1 NAME Richard C /Nourse/ Jr
+1 SEX M
+1 BIRT
+2 DATE Aug 28 1944
+1 FAMS @F238@
+0 @I446@ INDI
+1 NAME DeMeaka Roshelle /Overstreet/
+1 SEX F
+1 BIRT
+1 FAMS @F230@
+0 @I740@ INDI
+1 NAME Martha /Pahus/
+1 SEX F
+1 BIRT
+2 DATE ABT  1832
+2 PLAC Virginia
+1 DEAT
+2 DATE Feb 12 1932
+1 BURI
+2 PLACE Pleasant Grove Cemetery
+1 FAMS @F252@
+1 FAMC @F253@
+0 @I743@ INDI
+1 NAME Peter /Pahus/
+1 SEX M
+1 BIRT
+0 @I432@ INDI
+1 NAME Edna /Parker/
+1 SEX F
+1 BIRT
+1 FAMS @F92@
+0 @I490@ INDI
+1 NAME Delorice /Pate/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F13@
+0 @I786@ INDI
+1 NAME Helen /Peoples/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F127@
+0 @I62@ INDI
+1 NAME Ambra /Phillips/
+1 SEX F
+1 BIRT
+2 DATE Jan 07 1981
+1 FAMS @F222@
+1 FAMS @F186@
+1 FAMS @F218@
+1 FAMC @F176@
+0 @I57@ INDI
+1 NAME Daryll /Phillips/
+1 SEX M
+1 BIRT
+2 DATE Jun 15 1958
+2 PLAC Fort Worth, Texas
+1 FAMS @F176@
+1 FAMS @F237@
+1 FAMC @F43@
+0 @I350@ INDI
+1 NAME Daryll /Phillips/ II
+1 SEX M
+1 BIRT
+2 DATE Apr 16 1992
+2 PLAC Tyler, Texas
+1 FAMS @F236@
+1 FAMC @F237@
+0 @I56@ INDI
+1 NAME Johnnie /Phillips/
+1 SEX M
+1 BIRT
+1 FAMS @F43@
+0 @I765@ INDI
+1 NAME Rhiannon /Phillips/
+1 SEX F
+1 BIRT
+2 DATE Oct 2020
+1 FAMC @F236@
+0 @I753@ INDI
+1 NAME Trevian /Phillips/
+1 SEX M
+1 BIRT
+2 DATE Sep 14
+1 FAMC @F237@
+0 @I59@ INDI
+1 NAME Tyra Denise /Phillips/
+1 SEX F
+1 BIRT
+2 DATE Jul 22 1962
+2 PLAC Los Angeles, CA
+1 FAMS @F254@
+1 FAMC @F43@
+0 @I208@ INDI
+1 NAME Patricia /Pike/
+1 SEX F
+1 BIRT
+2 DATE Jun 25 1961
+2 PLAC Los Angelas, Ca
+1 FAMS @F166@
+0 @I792@ INDI
+1 NAME Amanda /Porter/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F182@
+0 @I250@ INDI
+1 NAME Tori /Pruitt/
+1 SEX F
+1 BIRT
+2 DATE Sep 30 1987
+1 FAMC @F12@
+0 @I747@ INDI
+1 NAME Janie /Ramery/
+1 SEX F
+1 BIRT
+1 FAMS @F180@
+0 @I525@ INDI
+1 NAME Sara L /Ramirez/
+1 SEX F
+1 BIRT
+1 FAMS @F204@
+0 @I641@ INDI
+1 NAME Linda /Raven/
+1 SEX F
+1 BIRT
+1 DEAT
+0 @I144@ INDI
+1 NAME Mattie /Raven/
+1 SEX F
+1 BIRT
+2 DATE Oct 20 1943
+2 PLAC Harlingen, Texas
+1 FAMS @F64@
+0 @I172@ INDI
+1 NAME May /Rettig/
+1 SEX F
+1 BIRT
+2 PLAC Minden, Texas
+1 DEAT
+2 DATE Aug 05 1995
+2 PLAC Fort Worth, Texas
+1 FAMS @F89@
+0 @I474@ INDI
+1 NAME Hannah Lauren /Richmond/
+1 SEX F
+1 BIRT
+2 DATE Mar 18 1997
+2 PLAC Fairfax, Virginia
+1 FAMC @F225@
+0 @I711@ INDI
+1 NAME Meagan Olivia /Richmond/
+1 SEX F
+1 BIRT
+2 DATE Jul 04 2003
+1 FAMC @F225@
+0 @I108@ INDI
+1 NAME Rory Micah /Richmond/
+1 SEX M
+1 BIRT
+2 DATE Sep 27 1964
+2 PLAC Los Angelas, Ca
+1 FAMS @F225@
+1 FAMC @F24@
+0 @I808@ INDI
+1 NAME Carlos /Rimes/
+1 SEX M
+1 BIRT
+1 FAMS @F255@
+0 @I463@ INDI
+1 NAME Verlon Eugene /Roberson/
+1 SEX M
+1 BIRT
+1 FAMS @F80@
+0 @I437@ INDI
+1 NAME Na`Cole Renee /Roberts/
+1 SEX F
+1 BIRT
+2 DATE Feb 09 1978
+2 PLAC Fort Worth, Texas
+1 FAMS @F40@
+0 @I154@ INDI
+1 NAME John /Robinson/ III
+1 SEX M
+1 BIRT
+2 DATE Jun 04 1961
+1 FAMS @F256@
+0 @I430@ INDI
+1 NAME Burnett /Ross/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMS @F58@
+0 @I782@ INDI
+1 NAME Elizer /Ross/
+1 SEX F
+1 BIRT
+2 DATE 1881
+2 PLAC Mount Enterprise, Rusk County, Texas
+1 DEAT
+2 DATE Sep 05 1930
+2 PLAC Mount Enterprise, Rusk County, Texas
+1 BURI
+2 PLACE Campground Cemetery Mount Enterprise, Rusk County, Texas
+1 FAMS @F132@
+1 FAMC @F257@
+0 @I783@ INDI
+1 NAME Jeff /Ross/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMS @F257@
+0 @I109@ INDI
+1 NAME Katie Mae /Ross/
+1 SEX F
+1 BIRT
+2 DATE Sep 02 1913
+1 DEAT
+2 DATE Sep 25 2006
+1 BURI
+2 PLACE New Canaan Cementery, Whitehouse, Tx
+1 FAMS @F75@
+0 @I784@ INDI
+1 NAME Mary Bell /Ross/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F257@
+0 @I391@ INDI
+1 NAME Elsie Lorene /Roy/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F248@
+0 @I653@ INDI
+1 NAME Robyn /Salter/
+1 SEX F
+1 BIRT
+2 DATE Apr 17 1979
+1 FAMS @F258@
+0 @I707@ INDI
+1 NAME Lloyd J. /Sams/ Sr.
+1 SEX M
+1 BIRT
+2 DATE 1980
+1 FAMS @F259@
+0 @I573@ INDI
+1 NAME Lloyd Joshua /Sams/ Jr
+1 SEX M
+1 BIRT
+2 DATE Nov 25 2009
+2 PLAC Houston, TX
+1 FAMC @F260@
+0 @I572@ INDI
+1 NAME Lloyd Joshua /Sams/ Sr
+1 SEX F
+1 BIRT
+2 DATE Jan 16 1980
+2 PLAC Houston, TX
+1 NOTE Graduated from University of Dallas  Computer Programmer
+0 @I54@ INDI
+1 NAME Pearly Mae /Sanders/
+1 SEX F
+1 BIRT
+2 DATE Nov 28 1944
+2 PLAC Henderson, Texas
+1 DEAT
+2 DATE Dec 25 2012
+2 PLAC Tyler, Texas
+1 FAMS @F29@
+0 @I732@ INDI
+1 NAME Mollie /Scott/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F261@
+0 @I337@ INDI
+1 NAME Lovella /Seston/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F145@
+0 @I467@ INDI
+1 NAME Chandler Julius /Sims/
+1 SEX M
+1 BIRT
+2 DATE Aug 07 2007
+1 FAMC @F262@
+0 @I466@ INDI
+1 NAME Julian Christopher /Sims/
+1 SEX M
+1 BIRT
+2 DATE Mar 19 2006
+2 PLAC Arlington Memorial, Arlington, Texas
+1 FAMC @F262@
+0 @I465@ INDI
+1 NAME Keith Benard /Sims/
+1 SEX M
+1 BIRT
+1 FAMS @F262@
+0 @I373@ INDI
+1 NAME Roberta /Sled/
+1 SEX F
+1 BIRT
+1 FAMS @F61@
+0 @I664@ INDI
+1 NAME Charles /Smirh/
+1 SEX M
+1 BIRT
+0 @I666@ INDI
+1 NAME Charles /Smith/
+1 SEX M
+1 BIRT
+0 @I119@ INDI
+1 NAME Cory Tisone /Smith/
+1 SEX M
+1 BIRT
+2 DATE Oct 28 1996
+2 PLAC Dallas, TX
+1 FAMC @F263@
+0 @I433@ INDI
+1 NAME Francetta /Smith/
+1 SEX F
+1 BIRT
+1 FAMS @F93@
+0 @I662@ INDI
+1 NAME Isaac Lynn /Smith/
+1 SEX M
+1 BIRT
+1 FAMC @F264@
+0 @I152@ INDI
+1 NAME Janeen `GiGi` Raeshaun /Smith/
+1 SEX F
+1 BIRT
+2 DATE Mar 11 1968
+2 PLAC Harris Hospital, Fort Worth, Texas
+1 NOTE Graduated from O.D. Wyatt High School, 1986. High school activities: volleyball,
+2 CONC  track, basketball; Student Council President and Vice President; Senior Class P
+2 CONC resident.    Bachelor of Science Degree - Electrical Engineering, Prairie View A
+2 CONC &M University, 1990; Master’s Degree - Business Management Human Relations from 
+2 CONC Amber University, 1993. Currently pursuing PhD in Business Administration and Te
+2 CONC chnology
+1 FAMS @F256@
+1 FAMS @F262@
+1 FAMC @F79@
+0 @I151@ INDI
+1 NAME Javaun `ReeRee` Ren`ee /Smith/
+1 SEX F
+1 BIRT
+2 DATE Feb 18 1964
+2 PLAC St. Joseph Hospital, Fort Worth, Texas
+1 NOTE Graduated from O.D. Wyatt High School, 1982. High school activities: band, Ice S
+2 CONC kating Club, and Spanish Club.Bachelor of Arts Degree - Business Administration,
+2 CONC  North Texas State University, 1985; Master’s Degree – Professional Development 
+2 CONC with dual concentration in Management and Marketing, Dallas Baptist University, 
+2 CONC 2006; currently pursuing a PhD in Leadership Studies.An adjunct instructor for E
+2 CONC verest College and Corinthian College in Arlington, Texas, Javaun also coaches t
+2 CONC he career choices and enhances the employability of students graduating.Javaun h
+2 CONC as an extensive history in ministry administration and operations with Ambassado
+2 CONC rs of Christ and Sacred Moments Ministries. She has worked with Sacred Moments M
+2 CONC inistries since its inception in 1995 as co-developer and Program/Marketing Dire
+2 CONC ctor. She has been instrumental in helping Sacred Moments expand into a successf
+2 CONC ul multi-faceted ministry. She has served as Board Member, Chief Operations Offi
+2 CONC cer, Marketing Director, and Sacred Moments’ Co-Director, along with being a nat
+2 CONC ional event planner and consultant to ministries across the nation. In 2005, Jav
+2 CONC aun worked as Travel Coordinator with T.D. Jakes Ministries and assisted with pl
+2 CONC anning the annual Mega Fest Conference in Atlanta, Georgia.
+1 FAMS @F181@
+1 FAMS @F212@
+1 FAMC @F79@
+0 @I150@ INDI
+1 NAME Jimmy Ray /Smith/
+1 SEX M
+1 BIRT
+2 DATE Dec 01 1943
+2 PLAC Fort Worth, Texas
+1 FAMS @F79@
+0 @I663@ INDI
+1 NAME Lauryn Lynn /Smith/
+1 SEX M
+1 BIRT
+1 FAMC @F264@
+0 @I303@ INDI
+1 NAME Margaret /Smith/
+1 SEX F
+1 BIRT
+1 DEAT
+2 DATE Dec 28 1921
+1 FAMS @F139@
+1 FAMC @F122@
+0 @I690@ INDI
+1 NAME Otha Lanale /Smith/
+1 SEX F
+1 BIRT
+1 FAMS @F137@
+0 @I314@ INDI
+1 NAME Reece /Smith/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMS @F122@
+0 @I815@ INDI
+1 NAME Rhyan Jordan /Smith/
+1 SEX M
+1 BIRT
+2 DATE Mar 30 2006
+2 PLAC Dallas, Texas
+1 ADDR
+1 _PMOB 2155297225
+1 NOTE Baptized at Carter Temple CME Church - Tyler, TX (2006)<br>Lives with parents in
+2 CONC  Forney, Texas
+1 FAMC @F244@
+0 @I814@ INDI
+1 NAME Ronnie Joe /Smith/ Jr
+1 SEX M
+1 BIRT
+2 DATE Nov 30 1973
+2 PLAC Bay City, Texas
+1 FAMS @F244@
+0 @I537@ INDI
+1 NAME Stacie Battles /Smith/
+1 SEX F
+1 BIRT
+2 DATE Aug 24 1965
+2 PLAC Tyler Texas
+1 FAMS @F263@
+1 FAMC @F48@
+0 @I574@ INDI
+1 NAME Tyrone /Smith/ Sr
+1 SEX M
+1 BIRT
+2 DATE Dec 29 1962
+2 PLAC Dallas, TX
+1 EDUC
+2 DATE May 1986
+2 PLACE Kansas University, Lawrence KS
+1 FAMS @F263@
+0 @I689@ INDI
+1 NAME Otha Lanale /Smith-Caldwell/
+1 SEX F
+1 BIRT
+0 @I72@ INDI
+1 NAME DeLois /Snowton/
+1 SEX F
+1 BIRT
+1 FAMS @F124@
+0 @I587@ INDI
+1 NAME Monica Shuntayna /Spann-Gross/
+1 SEX F
+1 BIRT
+2 DATE Jun 28 1977
+2 PLAC Dallas, TX
+1 FAMS @F188@
+0 @I790@ INDI
+1 NAME Margaret Anne (Annie) /Spence/
+1 SEX F
+1 BIRT
+2 DATE Dec 04 1868
+1 DEAT
+2 DATE May 08 1962
+2 PLAC Salisbury, Chariton County, Missouri,
+1 BURI
+2 PLACE Salisbury Cemetery Salisbury, Chariton County, Missouri,
+1 FAMS @F183@
+0 @I316@ INDI
+1 NAME Willie /Star/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMS @F217@
+0 @I318@ INDI
+1 NAME Willie /Starr/ Jr.
+1 SEX M
+1 BIRT
+2 DATE 1900
+2 PLAC Tyler, Texas
+1 DEAT
+1 FAMC @F217@
+0 @I512@ INDI
+1 NAME George /Steele/
+1 SEX M
+1 BIRT
+1 FAMS @F265@
+0 @I513@ INDI
+1 NAME Hazel /Steele/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F265@
+0 @I3@ INDI
+1 NAME Sandra D /Steele/
+1 SEX F
+1 BIRT
+2 DATE Dec 13 1952
+2 PLAC Beckley, W Va
+1 FAMS @F200@
+1 FAMC @F265@
+0 @I461@ INDI
+1 NAME Rhonda K /Stevens/
+1 SEX F
+1 BIRT
+2 DATE Jun 02 1971
+2 PLAC Las Vegas, Nevada
+1 FAMS @F66@
+0 @I656@ INDI
+1 NAME Hamilton Avery /Stone/
+1 SEX M
+1 BIRT
+2 DATE Apr 28 1987
+2 PLAC Savannah, GA
+1 NOTE Graduated from Morehouse College & 2nd Ltd. Marines
+1 FAMS @F266@
+0 @I700@ INDI
+1 NAME Amber Renee /Taylor/
+1 SEX F
+1 BIRT
+2 DATE Jan 12 1994
+2 PLAC Tyler, Texas
+1 FAMC @F17@
+0 @I709@ INDI
+1 NAME Burrell /Taylor/ II
+1 SEX M
+1 BIRT
+2 PLAC Tyler, Texas
+1 FAMS @F17@
+0 @I339@ INDI
+1 NAME Thad /Taylor/
+1 SEX M
+1 BIRT
+1 FAMS @F146@
+0 @I710@ INDI
+1 NAME Fabian /Thomas/
+1 SEX M
+1 BIRT
+2 DATE Jan 16 1978
+2 PLAC Ark
+1 FAMS @F18@
+0 @I692@ INDI
+1 NAME George /Thomas/
+1 SEX M
+1 BIRT
+2 DATE Jul 02 1919
+1 DEAT
+0 @I708@ INDI
+1 NAME Fabian /Thomas 2/
+1 SEX M
+1 BIRT
+2 DATE Mar 23 2013
+2 PLAC Houston, texas
+1 FAMC @F18@
+0 @I370@ INDI
+1 NAME Cynthia Ann /Thompson/
+1 SEX F
+1 BIRT
+2 DATE Nov 20 1964
+1 FAMC @F219@
+0 @I371@ INDI
+1 NAME Zuleika /Thompson/
+1 SEX F
+1 BIRT
+2 DATE Jun 06 1968
+2 PLAC Tyler, Texas
+1 FAMC @F219@
+0 @I716@ INDI
+1 NAME Kayla /Timm/
+1 SEX F
+1 BIRT
+2 DATE Apr 12 2012
+1 FAMC @F20@
+0 @I715@ INDI
+1 NAME Kyle /Timm/
+1 SEX M
+1 BIRT
+1 FAMS @F20@
+0 @I579@ INDI
+1 NAME Kimberly Michelle /Tittle/
+1 SEX F
+1 BIRT
+2 DATE Oct 18 1967
+2 PLAC Dallas, TX
+0 @I66@ INDI
+1 NAME Dexter /Turnquest/
+1 SEX M
+1 BIRT
+2 DATE Aug 22 1964
+2 PLAC Acklin Islands, Bahamas
+1 FAMS @F254@
+0 @I68@ INDI
+1 NAME Jordan /Turnquest/
+1 SEX M
+1 BIRT
+2 DATE Aug 27 1998
+2 PLAC The Woodlands, TX
+1 FAMC @F254@
+0 @I67@ INDI
+1 NAME Krysti /Turnquest/
+1 SEX F
+1 BIRT
+2 DATE Feb 23 1989
+2 PLAC Tampa, FL
+1 FAMC @F254@
+0 @I405@ INDI
+1 NAME Unknown /Unknown/
+1 SEX M
+1 BIRT
+1 FAMS @F249@
+0 @I312@ INDI
+1 NAME Unknown /Unknown/
+1 SEX M
+1 BIRT
+1 DEAT
+1 FAMS @F121@
+0 @I160@ INDI
+1 NAME Edith Sandra /Valiere/
+1 SEX F
+1 BIRT
+2 DATE Mar 19 1976
+2 PLAC Clovis, New Mexico
+1 FAMC @F267@
+0 @I596@ INDI
+1 NAME Aquilla Lyvester Denise /Wade/
+1 SEX F
+1 BIRT
+2 DATE Oct 27 1974
+2 PLAC Tyler, TX
+1 NOTE The family have not seen her since she was a little girl. We believe she might l
+2 CONC ive in Houston or Dallas TX. We are still researching for her.
+1 FAMS @F245@
+1 FAMC @F109@
+0 @I599@ INDI
+1 NAME Doris Lyneice /Wade/
+1 SEX F
+1 BIRT
+2 DATE Aug 05 1955
+2 PLAC Tyler, TX
+1 DEAT
+1 NOTE We believe she lives in Tyler or Dallas. Family has not seen her since she left 
+2 CONC Tony.
+1 FAMS @F109@
+0 @I597@ INDI
+1 NAME Galwin Dallen /Wade/
+1 SEX M
+1 BIRT
+2 DATE Sep 08 1976
+2 PLAC Tyler, TX
+1 NOTE Family believe he lives in Tyler but I am still researching. Have not seen him s
+2 CONC ince he was a small child.
+1 FAMC @F109@
+0 @I367@ INDI
+1 NAME Pamela /Walker/
+1 SEX F
+1 BIRT
+2 DATE Apr 16 1966
+2 PLAC Tyler, Texas
+1 FAMS @F199@
+0 @I130@ INDI
+1 NAME Angie `Baby` Ree /Wallace/
+1 SEX F
+1 BIRT
+2 DATE Apr 06 1905
+2 PLAC Jefferson, Texas
+1 DEAT
+2 DATE Dec 04 1980
+2 PLAC Fort Worth, Texas
+1 BURI
+2 DATE Dec 09 1980
+2 PLACE Skyvue Memorial Gardens, Rendon, Texas
+1 NOTE Mrs. Angie Wallace (Baby) Battles, born April 6, the youngest of 12 children to 
+2 CONC Mr. and Mrs. Lewis  Wallace Sr. in Marion County, Jefferson, Texas, succumbed to
+2 CONC  a lengthy illness, Thursday, December 4,  1980 at a local convalescent center. 
+2 CONC  She became a resident of Fort Worth at an early age. She met the late Superinte
+2 CONC ndent Gus Battles and they  were married on July 25, 1922. To this union five ch
+2 CONC ildren were born. Two of the children and a fosterdaughter  yet live.  Mother Ba
+2 CONC ttles became a Christian at an early age and she began her church work then. She
+2 CONC  was saved at  the age of 16 and received the Baptism of the Holy Ghost. She wor
+2 CONC ked in the church faithfully, serving as  church secretary, Sunshine Band presid
+2 CONC ent, Home and Foreign Mission president, Usher Board President,  and Mother`s Bo
+2 CONC ard president. Her only church home was "White Street" Church of God In Christ, 
+2 CONC later  named "East Rosedale" COGIC, and still later "Love Chapel" COGIC. Her pas
+2 CONC tors were: the late Elder E.  E. Hamilton, and Elder S. D. Lee. When her husband
+2 CONC , the late Superintendent G. Battles began pastoring  Love Sanctuary, she began 
+2 CONC her role as Pastor`s wife. They labored at the West Vickery Street COGIC,  which
+2 CONC  later moved to 1020 Bryan and the church was renamed "Love Sanctuary". They bui
+2 CONC lt the edifice on  Bryan St. and they also labored for over 15 years at Grapevin
+2 CONC e, Texas where they erected the present  Sanctuary.  She is known throughout the
+2 CONC  city and state for her many charitable deeds. She is widely known for her  spir
+2 CONC it of hospitality, She served as president of the Minister`s Wives of the city a
+2 CONC nd district. Under the  supervision of the late Mother Bertha M. Polk, she worke
+2 CONC d with all of the auxiliaries and received the  appointment of president of the 
+2 CONC City-wide Women`s auxiliary union of Fort Worth and District Missionary  of the 
+2 CONC Denton district. Other areas served included president of the "Ever-Ready" Circl
+2 CONC e, Co-state president  of hospitality, and Usher Board counselor for the volunte
+2 CONC er mission.  Mother Battles became the "Church Mother" in 1965 through the recom
+2 CONC mendation and appointment of her  son Elder E. L. Battles, who took up the mantl
+2 CONC e from his father`s pastoral work. She remained in that office  until the Lord c
+2 CONC alled her home.  In 1978 at the Sheraton Hotel, Mother Battles was named "Mother
+2 CONC  of the Year" by the F. Brooks and Grays  Literary and Art Club for her distingu
+2 CONC ished service in the community. Mother Battles was a succourer of  many and her 
+2 CONC daily motto "Lord help me to live from day-to-day in such a self forget forgetfu
+2 CONC l way, that  even when I kneel to pray, my prayer shall be for others." She is s
+2 CONC urvived by her beloved son, Dr. E. L.  Battles, her daughter, Mrs. Dorothy R. Le
+2 CONC nzy, her foster daughter, Mrs. Mary Stewart, 15 grandchildren, 11  great grandch
+2 CONC ildren, nieces, nephews, other relatives and a host of friends  Early in her mar
+2 CONC riage to Gus, Angie worked as a maid for some affluent  white people in Fort Wor
+2 CONC th. She is credited for getting Gus introduced to  men who helped him finance Ba
+2 CONC ttles & Sons Cement Contractors.  Baby was an excellent cook, and she taught her
+2 CONC  children be good cooks also.  Known for her homemade ginger bread, pound cake, 
+2 CONC and sweet potato pies,  Baby’s specialty was homemade rolls. She passed her reci
+2 CONC pe down to her  granddaughter, Angela Eileen Lenzy.
+1 FAMS @F32@
+1 FAMC @F226@
+0 @I478@ INDI
+1 NAME Lewis /Wallace/
+1 SEX M
+1 BIRT
+1 FAMS @F226@
+0 @I84@ INDI
+1 NAME Shelia /Wallace/
+1 SEX F
+1 BIRT
+2 DATE Jul 05 1965
+2 PLAC Fort Worth, Texas
+1 FAMS @F82@
+0 @I6@ INDI
+1 NAME Cora /Walton/
+1 SEX F
+1 BIRT
+2 DATE Oct 03 1912
+2 PLAC Smith County, Texas
+1 DEAT
+2 DATE Jun 28 1990
+2 PLAC Tyler, Texas
+1 BURI
+2 DATE Jul 07 1990
+2 PLACE Oliver Chapel Cementary, Tyler, Tx
+1 NOTE Sallie Williams Battles Hutcherson is Annie Pearl Battles’ mother.  Sallie and C
+2 CONC ora Battles were half-sisters who also married relatives.  Cora married J.T. Bat
+2 CONC tles; Sallie married J.T.’s nephew, Johnnie Calvin Battles. All of J.T. Battles 
+2 CONC and  Johnnie Calvin Battles’ children are double relatives
+1 FAMS @F30@
+1 FAMC @F5@
+0 @I476@ INDI
+1 NAME Cinda J. /Ward/
+1 SEX F
+1 BIRT
+1 FAMS @F76@
+0 @I592@ INDI
+1 NAME Jennifer /Ward/
+1 SEX F
+1 BIRT
+1 FAMS @F78@
+0 @I594@ INDI
+1 NAME Seth /Ward/
+1 SEX M
+1 BIRT
+1 NOTE Jonathan`s step son.
+1 FAMC @F78@
+0 @I488@ INDI
+1 NAME Barbara Jean /Warren/
+1 SEX F
+1 BIRT
+1 FAMC @F205@
+0 @I527@ INDI
+1 NAME Juanita /Warren/
+1 SEX F
+1 BIRT
+2 DATE Apr 07 1924
+1 DEAT
+2 DATE Feb 05 2001
+2 PLAC Tyler, Texas
+1 FAMS @F247@
+0 @I487@ INDI
+1 NAME M.C. /Warren/
+1 SEX M
+1 BIRT
+2 DATE Apr 26 1921
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Jun 01 1994
+2 PLAC Tyler, Texas
+1 BURI
+2 PLACE Piney Grove Cementary
+1 FAMS @F205@
+0 @I372@ INDI
+1 NAME Rosie /Warren/
+1 SEX F
+1 BIRT
+1 FAMS @F60@
+0 @I638@ INDI
+1 NAME Jewell /Wheeler/
+1 SEX F
+1 BIRT
+0 @I251@ INDI
+1 NAME DeMunsha /Whitten/
+1 SEX M
+1 BIRT
+2 DATE Apr 03 1994
+1 FAMC @F12@
+0 @I427@ INDI
+1 NAME Alex /Williams/ Jr.
+1 SEX M
+1 BIRT
+2 DATE Apr 25 1974
+1 FAMC @F2@
+0 @I619@ INDI
+1 NAME Bernice Catherine /Williams/
+1 SEX F
+1 BIRT
+2 DATE May 10 1924
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Jan 04 2002
+2 PLAC Tyler, Texas
+1 FAMC @F5@
+0 @I257@ INDI
+1 NAME Brenda /Williams/
+1 SEX F
+1 BIRT
+2 DATE Oct 19 1949
+1 FAMS @F9@
+0 @I96@ INDI
+1 NAME Cedrick DeNard /Williams/
+1 SEX M
+1 BIRT
+1 FAMC @F268@
+0 @I118@ INDI
+1 NAME Destinee Starcina /Williams/
+1 SEX F
+1 BIRT
+2 DATE Jan 03 1987
+2 PLAC Dallas, TX
+1 EDUC
+2 DATE May 18 2008
+2 PLACE Spelman College, Atl GA
+1 NOTE Bachelor of Art
+1 FAMS @F266@
+1 FAMC @F269@
+0 @I608@ INDI
+1 NAME Gabrielle /Williams/
+1 SEX F
+1 BIRT
+1 FAMC @F55@
+0 @I609@ INDI
+1 NAME Jaylon /Williams/
+1 SEX M
+1 BIRT
+1 FAMC @F55@
+0 @I610@ INDI
+1 NAME Jaymin /Williams/
+1 SEX F
+1 BIRT
+1 FAMC @F55@
+0 @I226@ INDI
+1 NAME Kerry Frantino /Williams/
+1 SEX M
+1 BIRT
+1 FAMS @F85@
+0 @I227@ INDI
+1 NAME Kerry Frantino /Williams/ II
+1 SEX M
+1 BIRT
+2 DATE Aug 26 1996
+1 FAMC @F85@
+0 @I228@ INDI
+1 NAME Kira Lavonne /Williams/
+1 SEX F
+1 BIRT
+2 DATE Jan 02 1999
+1 FAMC @F85@
+0 @I706@ INDI
+1 NAME La Donica Janelle /Williams/
+1 SEX F
+1 BIRT
+2 DATE Jun 17 1985
+2 PLAC Dallas, Texas
+1 NOTE Graduated from University of TX in Austin. Business Marketing Degree 2007. Lives
+2 CONC  in Houston.
+1 FAMS @F259@
+1 FAMC @F269@
+0 @I571@ INDI
+1 NAME Leron Marcellous /Williams/
+1 SEX M
+1 BIRT
+2 DATE Feb 04 1966
+2 PLAC Ft. Worth, TX
+0 @I787@ INDI
+1 NAME Lizzie /Williams/
+1 SEX F
+1 BIRT
+1 DEAT
+1 FAMS @F131@
+0 @I611@ INDI
+1 NAME Makayla /Williams/
+1 SEX F
+1 BIRT
+1 FAMC @F55@
+0 @I613@ INDI
+1 NAME Monroe /Williams/
+1 SEX M
+1 BIRT
+2 DATE Nov 15 1919
+1 DEAT
+2 DATE Oct 1975
+2 PLAC Chicago, Il
+1 FAMC @F5@
+0 @I617@ INDI
+1 NAME Ophelia /Williams/
+1 SEX F
+1 BIRT
+2 DATE Jul 19 1917
+2 PLAC Grosbeck, Texas
+1 DEAT
+2 DATE Nov 04 1981
+2 PLAC Tyler, Texas
+1 FAMC @F5@
+0 @I105@ INDI
+1 NAME Sallie Maxine /Williams/
+1 SEX F
+1 BIRT
+2 DATE Feb 06 1922
+2 PLAC Ferris Texas
+1 DEAT
+2 DATE Dec 12 2000
+2 PLAC Tyler, Texas
+1 FAMS @F25@
+1 FAMS @F239@
+0 @I502@ INDI
+1 NAME Sam /Williams/ Jr.
+1 SEX M
+1 BIRT
+2 DATE Jul 19 1898
+2 PLAC Texas
+1 DEAT
+1 FAMS @F5@
+1 FAMC @F270@
+0 @I621@ INDI
+1 NAME Sam /Williams/ Sr.
+1 SEX M
+1 BIRT
+1 DEAT
+0 @I614@ INDI
+1 NAME Samie /Williams/
+1 SEX M
+1 BIRT
+2 DATE Nov 13 1925
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Nov 14 2002
+2 PLAC Tyler, Texas
+1 FAMC @F5@
+0 @I40@ INDI
+1 NAME Thomas /Williams/
+1 SEX M
+1 BIRT
+1 FAMS @F208@
+0 @I41@ INDI
+1 NAME Traneshea `Shea` /Williams/
+1 SEX F
+1 BIRT
+2 DATE Jun 27 1991
+1 FAMS @F255@
+1 FAMC @F208@
+0 @I602@ INDI
+1 NAME Vickie Lynn /Williams/
+1 SEX F
+1 BIRT
+1 NOTE Never married Willie
+1 FAMS @F56@
+0 @I612@ INDI
+1 NAME Xavier /Williams/
+1 SEX M
+1 BIRT
+1 FAMC @F55@
+0 @I645@ INDI
+1 NAME Yvette /Williams/
+1 SEX F
+1 BIRT
+0 @I162@ INDI
+1 NAME Brenda Joyce /Wilson/
+1 SEX F
+1 BIRT
+2 DATE Oct 22 1949
+2 PLAC Fort Worth, Texas
+1 FAMS @F193@
+0 @I434@ INDI
+1 NAME Dorothy Jean /Woods/
+1 SEX F
+1 BIRT
+1 FAMS @F94@
+0 @I649@ INDI
+1 NAME Aaron /Wright/
+1 SEX M
+1 BIRT
+2 DATE Dec 04 2003
+2 PLAC Orlando, FL
+1 FAMC @F125@
+0 @I652@ INDI
+1 NAME Adrianna /Wright/
+1 SEX F
+1 BIRT
+2 DATE Aug 28 2010
+2 PLAC Winter Park, FL
+1 FAMC @F125@
+0 @I651@ INDI
+1 NAME Alex /Wright/
+1 SEX M
+1 BIRT
+2 DATE May 03 2007
+2 PLAC Ft. Lauderdale , FL
+1 FAMC @F125@
+0 @I650@ INDI
+1 NAME Avani /Wright/
+1 SEX F
+1 BIRT
+2 DATE Jun 22 2005
+2 PLAC Ft. Lauderdale, FL
+1 FAMC @F125@
+0 @I354@ INDI
+1 NAME Brandon /Wright/
+1 SEX M
+1 BIRT
+2 DATE Nov 19 1983
+1 FAMC @F167@
+0 @I203@ INDI
+1 NAME Clarence /Wright/
+1 SEX M
+1 BIRT
+2 DATE Jan 20 1950
+2 PLAC New Orleans, La
+1 FAMS @F167@
+0 @I352@ INDI
+1 NAME Craig /Wright/
+1 SEX M
+1 BIRT
+2 DATE Sep 05 1978
+2 PLAC Ft. Worth, FL
+1 FAMS @F258@
+1 FAMC @F167@
+0 @I654@ INDI
+1 NAME Craig /Wright/ Jr.
+1 SEX M
+1 BIRT
+2 DATE Dec 27 2000
+2 PLAC Huntsville, AL
+1 FAMC @F258@
+0 @I655@ INDI
+1 NAME Regan /Wright/
+1 SEX F
+1 BIRT
+2 DATE Apr 21 2004
+2 PLAC Orlando, FL
+1 FAMC @F258@
+0 @I353@ INDI
+1 NAME Reginald /Wright/
+1 SEX M
+1 BIRT
+2 DATE Jul 14 1982
+1 FAMC @F167@
+0 @I351@ INDI
+1 NAME Stephen /Wright/
+1 SEX M
+1 BIRT
+2 DATE Jul 31 1976
+2 PLAC Pine Bluff, AR
+1 FAMS @F125@
+1 FAMC @F167@
+0 @I290@ INDI
+1 NAME Adrian /Wynn/
+1 SEX M
+1 BIRT
+1 FAMC @F271@
+0 @I733@ INDI
+1 NAME Andrew /Wynn/
+1 SEX M
+1 BIRT
+2 DATE ABT  1867
+1 DEAT
+2 DATE ABT Mar 05 1947
+1 BURI
+2 PLACE Evergreen Memorial Park Cemetery
+1 FAMS @F162@
+1 FAMC @F252@
+0 @I739@ INDI
+1 NAME Andrew /Wynn/
+1 SEX M
+1 BIRT
+2 DATE ABT  1820
+2 PLAC Virginia
+1 DEAT
+1 BURI
+2 PLACE Pleasant Grove Cemetery
+1 FAMS @F252@
+0 @I278@ INDI
+1 NAME Angela /Wynn/
+1 SEX F
+1 BIRT
+1 FAMC @F129@
+0 @I252@ INDI
+1 NAME Anthony `Tony` Damon /Wynn/
+1 SEX M
+1 BIRT
+2 DATE May 09 1967
+2 PLAC Fort Worth, Texas
+1 FAMS @F272@
+1 FAMC @F130@
+0 @I291@ INDI
+1 NAME Ashley /Wynn/
+1 SEX F
+1 BIRT
+1 FAMC @F271@
+0 @I264@ INDI
+1 NAME Brianna /Wynn/
+1 SEX F
+1 BIRT
+2 DATE May 31 1992
+2 PLAC Fort Worth, TX
+1 FAMC @F272@
+0 @I679@ INDI
+1 NAME Carmela Thomas /Wynn/
+1 SEX F
+1 BIRT
+2 DATE Mar 19 1967
+2 PLAC Fort Worth, TX
+0 @I680@ INDI
+1 NAME Carmela Thomas /Wynn/
+1 SEX F
+1 BIRT
+2 DATE Mar 19 1967
+2 PLAC Fort Worth, TX
+0 @I681@ INDI
+1 NAME Carmela Thomas /Wynn/
+1 SEX F
+1 BIRT
+2 DATE Mar 19 1967
+2 PLAC Fort Worth, TX
+0 @I682@ INDI
+1 NAME Carmela Thomas /Wynn/
+1 SEX F
+1 BIRT
+2 DATE Mar 19 1967
+2 PLAC Fort Worth, TX
+0 @I683@ INDI
+1 NAME Carmela Thomas /Wynn/
+1 SEX F
+1 BIRT
+2 DATE Mar 19 1967
+2 PLAC Fort Worth, TX
+1 FAMS @F272@
+0 @I293@ INDI
+1 NAME Chelsea /Wynn/
+1 SEX F
+1 BIRT
+1 FAMC @F271@
+0 @I276@ INDI
+1 NAME Darron /Wynn/
+1 SEX M
+1 BIRT
+2 DATE Aug 16 1967
+2 PLAC Fort Worth, Texas
+1 FAMC @F129@
+0 @I287@ INDI
+1 NAME Darron /Wynn/ Jr.
+1 SEX M
+1 BIRT
+1 FAMC @F273@
+0 @I285@ INDI
+1 NAME DeJaun /Wynn/
+1 SEX M
+1 BIRT
+1 FAMC @F273@
+0 @I286@ INDI
+1 NAME Demain /Wynn/
+1 SEX M
+1 BIRT
+1 FAMC @F273@
+0 @I262@ INDI
+1 NAME Derick Lee /Wynn/
+1 SEX M
+1 BIRT
+2 DATE Jun 17 1983
+1 FAMC @F9@
+0 @I275@ INDI
+1 NAME Earnest /Wynn/ Jr.
+1 SEX M
+1 BIRT
+2 DATE Aug 17 1966
+2 PLAC Fort Worth, Texas
+1 FAMS @F274@
+1 FAMC @F129@
+0 @I53@ INDI
+1 NAME Earnest Lee /Wynn/
+1 SEX M
+1 BIRT
+2 DATE Jan 24 1947
+2 PLAC Smith County, Texas
+1 FAMS @F129@
+1 FAMC @F97@
+0 @I50@ INDI
+1 NAME Edward Lee /Wynn/
+1 SEX M
+1 BIRT
+2 DATE Mar 11 1946
+2 PLAC Tyler, Texas
+1 DEAT
+2 DATE Aug 26 2020
+2 PLAC Fort Worth, Texas
+1 FAMS @F130@
+1 FAMS @F9@
+1 FAMC @F97@
+0 @I284@ INDI
+1 NAME Eric /Wynn/
+1 SEX M
+1 BIRT
+1 FAMC @F274@
+0 @I283@ INDI
+1 NAME Erica /Wynn/
+1 SEX F
+1 BIRT
+1 FAMC @F274@
+0 @I261@ INDI
+1 NAME Erick Lee /Wynn/
+1 SEX M
+1 BIRT
+2 DATE Jun 17 1983
+1 FAMC @F9@
+0 @I735@ INDI
+1 NAME Gertrude /Wynn/
+1 SEX F
+1 BIRT
+2 DATE ABT  1900
+1 DEAT
+1 FAMC @F162@
+0 @I51@ INDI
+1 NAME Hershell /Wynn/
+1 SEX M
+1 BIRT
+2 DATE Jul 21 1924
+2 PLAC Smith County, Texas
+1 DEAT
+2 DATE Dec 01 2000
+2 PLAC Smith County, Texas
+1 FAMS @F97@
+1 FAMC @F261@
+0 @I742@ INDI
+1 NAME Howard /Wynn/
+1 SEX M
+1 BIRT
+2 DATE Apr 07 1911
+1 DEAT
+2 DATE Mar 07 1961
+2 PLAC Kaufman County, Texas
+1 FAMC @F162@
+0 @I255@ INDI
+1 NAME Jarold Diandre /Wynn/
+1 SEX M
+1 BIRT
+2 DATE Nov 21 1970
+2 PLAC Fort Worth, Texas
+1 FAMC @F130@
+0 @I263@ INDI
+1 NAME Jasmin /Wynn/
+1 SEX F
+1 BIRT
+2 DATE Feb 22 1990
+2 PLAC Fort Worth, TX
+1 FAMC @F272@
+0 @I736@ INDI
+1 NAME Jessie /Wynn/
+1 SEX M
+1 BIRT
+2 DATE ABT  1909
+1 DEAT
+1 FAMC @F162@
+0 @I292@ INDI
+1 NAME Joshua /Wynn/
+1 SEX M
+1 BIRT
+1 FAMC @F271@
+0 @I289@ INDI
+1 NAME Kendria /Wynn/
+1 SEX F
+1 BIRT
+1 FAMC @F271@
+0 @I277@ INDI
+1 NAME Kenneth /Wynn/
+1 SEX M
+1 BIRT
+2 DATE Apr 21 1970
+2 PLAC Fort Worth, Texas
+1 FAMC @F129@
+0 @I267@ INDI
+1 NAME Keoni Catrise /Wynn/
+1 SEX F
+1 BIRT
+2 DATE Apr 03 2000
+1 FAMC @F275@
+0 @I268@ INDI
+1 NAME Lamodrick /Wynn/
+1 SEX M
+1 BIRT
+1 FAMS @F190@
+1 FAMC @F276@
+0 @I281@ INDI
+1 NAME Lasaundra /Wynn/
+1 SEX F
+1 BIRT
+1 FAMC @F274@
+0 @I279@ INDI
+1 NAME Machelle /Wynn/
+1 SEX F
+1 BIRT
+1 FAMC @F129@
+0 @I741@ INDI
+1 NAME Messiah /Wynn/
+1 SEX M
+1 BIRT
+2 DATE ABT  1897
+1 DEAT
+2 DATE ABT Nov 04 1929
+1 BURI
+2 PLACE Pleasant Grove Cemetery
+1 FAMC @F252@
+0 @I737@ INDI
+1 NAME Odell /Wynn/
+1 SEX M
+1 BIRT
+2 DATE ABT  1915
+1 DEAT
+1 FAMC @F162@
+0 @I282@ INDI
+1 NAME Porcshae /Wynn/
+1 SEX F
+1 BIRT
+1 FAMC @F274@
+0 @I256@ INDI
+1 NAME Stacey /Wynn/
+1 SEX M
+1 BIRT
+2 DATE Oct 12 1973
+2 PLAC Fort Worth, Texas
+1 FAMC @F130@
+0 @I280@ INDI
+1 NAME Tamara /Wynn/
+1 SEX F
+1 BIRT
+1 FAMS @F274@
+0 @I254@ INDI
+1 NAME Tanya /Wynn/
+1 SEX F
+1 BIRT
+2 DATE Feb 28 1969
+2 PLAC Fort Worth, Texas
+1 FAMC @F130@
+0 @I288@ INDI
+1 NAME Tasha /Wynn/
+1 SEX F
+1 BIRT
+1 FAMC @F271@
+0 @I731@ INDI
+1 NAME Tessie /Wynn/
+1 SEX M
+1 BIRT
+2 DATE 1903
+1 DEAT
+2 DATE ABT  1950
+1 FAMS @F261@
+1 FAMC @F162@
+0 @I738@ INDI
+1 NAME Willie Mack /Wynn/
+1 SEX M
+1 BIRT
+2 DATE Jan 22 1890
+2 PLAC Rusk County, Texas
+1 DEAT
+2 DATE Nov 04 1951
+2 PLAC Houston, Harris County, Texas
+1 BURI
+2 PLACE Evergreen Memorial Park Cemetery
+1 FAMC @F162@
+0 @I168@ INDI
+1 NAME Aubrey /Yeldell/
+1 SEX F
+1 BIRT
+2 DATE Dec 19 1946
+1 DEAT
+2 DATE ABT  1984
+1 FAMC @F277@
+0 @I265@ INDI
+1 NAME Brandon /Younger/
+1 SEX M
+1 BIRT
+2 DATE Jun
+1 FAMC @F233@
+0 @I769@ INDI
+1 NAME Brooklyn /Younger/
+1 SEX F
+1 BIRT
+2 DATE Aug
+1 FAMC @F278@
+0 @F1@ FAM
+1 HUSB @I193@
+1 WIFE @I192@
+1 CHIL @I194@
+1 DIV
+0 @F2@ FAM
+1 HUSB @I426@
+1 WIFE @I376@
+1 CHIL @I427@
+1 MARR
+2 DATE Jun 21 1965
+2 PLAC Tarrant County, Texas
+0 @F3@ FAM
+1 HUSB @I104@
+1 WIFE @I603@
+1 CHIL @I604@
+1 MARR
+2 DATE 1947
+2 PLAC Tyler, TX
+0 @F4@ FAM
+1 HUSB @I615@
+1 WIFE @I616@
+1 CHIL @I624@
+1 CHIL @I622@
+1 CHIL @I625@
+1 CHIL @I623@
+1 CHIL @I626@
+1 CHIL @I503@
+1 CHIL @I628@
+1 CHIL @I627@
+1 MARR
+2 DATE ABT  1881
+0 @F5@ FAM
+1 HUSB @I502@
+1 WIFE @I503@
+1 CHIL @I6@
+1 CHIL @I619@
+1 CHIL @I613@
+1 CHIL @I617@
+1 CHIL @I614@
+0 @F6@ FAM
+1 HUSB @I404@
+1 WIFE @I388@
+1 CHIL @I407@
+1 CHIL @I406@
+0 @F7@ FAM
+1 WIFE @I263@
+1 CHIL @I768@
+0 @F8@ FAM
+1 WIFE @I259@
+1 CHIL @I270@
+1 CHIL @I271@
+1 CHIL @I269@
+0 @F9@ FAM
+1 HUSB @I50@
+1 WIFE @I257@
+1 CHIL @I259@
+1 CHIL @I260@
+1 CHIL @I258@
+1 CHIL @I262@
+1 CHIL @I261@
+0 @F10@ FAM
+1 HUSB @I116@
+1 WIFE @I582@
+1 CHIL @I581@
+0 @F11@ FAM
+1 WIFE @I60@
+1 CHIL @I762@
+1 CHIL @I65@
+1 CHIL @I763@
+1 CHIL @I63@
+1 CHIL @I64@
+0 @F12@ FAM
+1 HUSB @I532@
+1 WIFE @I240@
+1 CHIL @I249@
+1 CHIL @I250@
+1 CHIL @I251@
+1 MARR
+2 DATE Aug 02
+0 @F13@ FAM
+1 HUSB @I93@
+1 WIFE @I490@
+1 CHIL @I492@
+1 DIV
+0 @F14@ FAM
+1 HUSB @I221@
+1 WIFE @I713@
+1 CHIL @I717@
+1 CHIL @I509@
+0 @F15@ FAM
+1 HUSB @I452@
+1 WIFE @I218@
+1 MARR
+2 DATE Jun 16 2000
+2 PLAC Hawthorne, FL
+0 @F16@ FAM
+1 HUSB @I450@
+1 WIFE @I451@
+1 CHIL @I218@
+1 CHIL @I217@
+1 CHIL @I219@
+1 MARR
+2 DATE Mar 03 1961
+2 PLAC Omaha, NE
+0 @F17@ FAM
+1 HUSB @I709@
+1 WIFE @I699@
+1 CHIL @I700@
+0 @F18@ FAM
+1 HUSB @I710@
+1 WIFE @I699@
+1 CHIL @I701@
+1 CHIL @I708@
+0 @F19@ FAM
+1 HUSB @I377@
+1 WIFE @I378@
+1 CHIL @I699@
+1 CHIL @I379@
+1 DIV
+0 @F20@ FAM
+1 HUSB @I715@
+1 WIFE @I224@
+1 CHIL @I716@
+0 @F21@ FAM
+1 HUSB @I217@
+1 WIFE @I220@
+1 CHIL @I224@
+1 CHIL @I225@
+1 CHIL @I221@
+1 CHIL @I222@
+1 CHIL @I223@
+1 MARR
+2 DATE Aug 15 1982
+2 PLAC Nassau, Bahamas
+0 @F22@ FAM
+1 HUSB @I511@
+1 WIFE @I222@
+1 CHIL @I719@
+1 CHIL @I720@
+1 MARR
+2 DATE Apr 04 2010
+0 @F23@ FAM
+1 HUSB @I714@
+1 WIFE @I223@
+1 CHIL @I718@
+1 MARR
+2 DATE Jul 21 2013
+0 @F24@ FAM
+1 HUSB @I107@
+1 WIFE @I106@
+1 CHIL @I108@
+1 MARR
+2 DATE Jan 15 1977
+0 @F25@ FAM
+1 HUSB @I102@
+1 WIFE @I105@
+1 CHIL @I106@
+1 MARR
+2 DATE 1942
+2 PLAC Tyler, Texas
+1 DIV
+0 @F26@ FAM
+1 HUSB @I422@
+1 WIFE @I429@
+0 @F27@ FAM
+1 HUSB @I29@
+1 WIFE @I421@
+1 CHIL @I422@
+1 CHIL @I423@
+1 MARR
+2 DATE Jan 08 1885
+2 PLAC Smith County, Texas
+0 @F28@ FAM
+1 HUSB @I87@
+1 WIFE @I346@
+1 CHIL @I347@
+1 CHIL @I348@
+0 @F29@ FAM
+1 HUSB @I48@
+1 WIFE @I54@
+1 CHIL @I87@
+1 CHIL @I88@
+1 CHIL @I89@
+1 MARR
+2 DATE Oct 20 1962
+1 DIV
+0 @F30@ FAM
+1 HUSB @I7@
+1 WIFE @I6@
+1 CHIL @I46@
+1 CHIL @I45@
+1 CHIL @I4@
+1 CHIL @I49@
+1 CHIL @I47@
+1 CHIL @I11@
+1 CHIL @I450@
+1 CHIL @I48@
+1 CHIL @I8@
+1 CHIL @I9@
+1 CHIL @I12@
+1 MARR
+2 DATE Mar 1929
+0 @F31@ FAM
+1 HUSB @I124@
+1 WIFE @I589@
+1 CHIL @I591@
+1 CHIL @I590@
+1 MARR
+2 DATE May 17 1997
+2 PLAC Tyler, TX
+0 @F32@ FAM
+1 HUSB @I35@
+1 WIFE @I130@
+1 CHIL @I135@
+1 CHIL @I132@
+1 CHIL @I131@
+1 CHIL @I133@
+1 CHIL @I134@
+1 MARR
+2 DATE Jul 25 1922
+0 @F33@ FAM
+1 HUSB @I29@
+1 WIFE @I30@
+1 CHIL @I35@
+1 CHIL @I36@
+1 CHIL @I31@
+1 CHIL @I7@
+1 CHIL @I34@
+1 CHIL @I38@
+1 CHIL @I37@
+1 CHIL @I39@
+1 CHIL @I33@
+1 CHIL @I32@
+1 MARR
+2 DATE Mar 01 1896
+2 PLAC Smith County, Texas
+0 @F34@ FAM
+1 HUSB @I443@
+1 WIFE @I659@
+1 MARR
+2 DATE Oct 01 2011
+0 @F35@ FAM
+1 HUSB @I440@
+1 WIFE @I188@
+1 CHIL @I443@
+1 MARR
+2 DATE Nov 27 1975
+2 PLAC El Paso County, Texas
+1 DIV
+0 @F36@ FAM
+1 HUSB @I88@
+1 CHIL @I345@
+1 CHIL @I344@
+0 @F37@ FAM
+1 HUSB @I140@
+1 WIFE @I155@
+1 CHIL @I158@
+1 CHIL @I157@
+1 CHIL @I156@
+1 MARR
+2 DATE Oct 17 1968
+2 PLAC Fort Worth, Texas
+0 @F38@ FAM
+1 HUSB @I181@
+1 WIFE @I703@
+1 MARR
+2 DATE Jun 16 2012
+2 PLAC Fort Worth Tx
+0 @F39@ FAM
+1 HUSB @I39@
+1 WIFE @I424@
+1 CHIL @I637@
+1 CHIL @I431@
+0 @F40@ FAM
+1 HUSB @I181@
+1 WIFE @I437@
+1 CHIL @I705@
+1 CHIL @I704@
+1 MARR
+2 DATE Aug 22 2003
+2 PLAC Las Vegas, Nevada
+1 DIV
+2 DATE Dec 12 2009
+0 @F41@ FAM
+1 HUSB @I294@
+1 WIFE @I295@
+1 CHIL @I298@
+1 CHIL @I29@
+0 @F42@ FAM
+1 HUSB @I167@
+1 WIFE @I177@
+1 CHIL @I181@
+1 CHIL @I180@
+1 MARR
+2 DATE ABT  1966
+2 PLAC Fort Worth, Texas
+0 @F43@ FAM
+1 HUSB @I56@
+1 WIFE @I45@
+1 CHIL @I57@
+1 CHIL @I59@
+1 MARR
+2 DATE Jan 22 1958
+2 PLAC Smith County, Texas
+1 DIV
+0 @F44@ FAM
+1 HUSB @I342@
+1 WIFE @I45@
+1 MARR
+2 DATE Aug 14 1965
+2 PLAC Reno, Nevado
+0 @F45@ FAM
+1 HUSB @I58@
+1 WIFE @I45@
+1 MARR
+2 DATE Nov 20 1992
+0 @F46@ FAM
+1 HUSB @I115@
+1 WIFE @I570@
+1 CHIL @I121@
+1 CHIL @I122@
+1 CHIL @I567@
+1 MARR
+2 DATE Sep 29 1990
+2 PLAC Dallas, TX
+0 @F47@ FAM
+1 HUSB @I115@
+1 WIFE @I580@
+1 CHIL @I120@
+0 @F48@ FAM
+1 HUSB @I586@
+1 WIFE @I110@
+1 CHIL @I115@
+1 CHIL @I537@
+0 @F49@ FAM
+1 HUSB @I33@
+1 WIFE @I100@
+1 CHIL @I104@
+1 CHIL @I102@
+1 CHIL @I103@
+1 MARR
+2 DATE Sep 29 1917
+2 PLAC Tyler, Texas
+0 @F50@ FAM
+1 WIFE @I232@
+1 CHIL @I237@
+1 CHIL @I234@
+1 CHIL @I236@
+1 CHIL @I235@
+0 @F51@ FAM
+1 HUSB @I133@
+1 WIFE @I456@
+1 CHIL @I175@
+1 CHIL @I173@
+1 CHIL @I174@
+1 MARR
+2 DATE Jun 30 1948
+2 PLAC Tarrant County
+1 DIV
+2 DATE 1955
+0 @F52@ FAM
+1 HUSB @I94@
+1 WIFE @I640@
+0 @F53@ FAM
+1 HUSB @I38@
+1 WIFE @I91@
+1 CHIL @I94@
+1 MARR
+2 DATE Apr 15 1945
+0 @F54@ FAM
+1 HUSB @I94@
+1 WIFE @I641@
+1 CHIL @I97@
+0 @F55@ FAM
+1 HUSB @I127@
+1 WIFE @I606@
+1 CHIL @I608@
+1 CHIL @I609@
+1 CHIL @I610@
+1 CHIL @I611@
+1 CHIL @I612@
+0 @F56@ FAM
+1 HUSB @I112@
+1 WIFE @I602@
+1 CHIL @I127@
+0 @F57@ FAM
+1 HUSB @I14@
+1 WIFE @I13@
+1 CHIL @I15@
+1 CHIL @I16@
+1 MARR
+2 DATE Feb 10 1977
+2 PLAC Tyler, Texas
+0 @F58@ FAM
+1 HUSB @I430@
+1 WIFE @I4@
+1 CHIL @I13@
+0 @F59@ FAM
+1 HUSB @I31@
+1 WIFE @I374@
+1 CHIL @I376@
+1 CHIL @I377@
+1 CHIL @I375@
+0 @F60@ FAM
+1 HUSB @I31@
+1 WIFE @I372@
+1 MARR
+2 DATE Dec 28 1916
+2 PLAC Smith County, Texas
+1 DIV
+0 @F61@ FAM
+1 HUSB @I31@
+1 WIFE @I373@
+1 CHIL @I425@
+1 MARR
+2 DATE Dec 05 1926
+2 PLAC Smith County, Texas
+1 DIV
+0 @F62@ FAM
+1 HUSB @I132@
+1 WIFE @I137@
+1 CHIL @I138@
+1 CHIL @I139@
+1 CHIL @I140@
+1 MARR
+2 DATE Oct 03 1942
+2 PLAC Fort Worth, Texas
+1 DIV
+0 @F63@ FAM
+1 HUSB @I132@
+1 WIFE @I143@
+1 MARR
+2 DATE Apr 08 1979
+2 PLAC Oklahoma
+0 @F64@ FAM
+1 HUSB @I138@
+1 WIFE @I144@
+1 CHIL @I145@
+1 CHIL @I147@
+1 CHIL @I146@
+1 MARR
+2 DATE Dec 05 1965
+2 PLAC Oakland, Ca
+0 @F65@ FAM
+1 HUSB @I5@
+1 WIFE @I4@
+1 CHIL @I28@
+1 CHIL @I20@
+1 CHIL @I17@
+1 CHIL @I24@
+1 CHIL @I27@
+1 CHIL @I531@
+1 CHIL @I21@
+1 CHIL @I1@
+1 MARR
+2 DATE Aug 02 1964
+2 PLAC Shelby County Texas
+0 @F66@ FAM
+1 HUSB @I157@
+1 WIFE @I461@
+1 CHIL @I462@
+1 MARR
+2 DATE Dec 29 2000
+2 PLAC Bexar County, Texas
+0 @F67@ FAM
+1 HUSB @I145@
+1 WIFE @I148@
+1 CHIL @I149@
+1 CHIL @I468@
+1 MARR
+2 DATE Jul 18 1992
+0 @F68@ FAM
+1 HUSB @I49@
+1 WIFE @I81@
+1 CHIL @I82@
+1 CHIL @I83@
+1 MARR
+2 DATE Jun 13 1980
+2 PLAC Parker, Texas
+0 @F69@ FAM
+1 HUSB @I49@
+1 WIFE @I79@
+1 CHIL @I80@
+1 MARR
+2 DATE Dec 23 1964
+2 PLAC Tyler, Texas
+1 DIV
+2 DATE Apr 11 1972
+0 @F70@ FAM
+1 HUSB @I49@
+1 WIFE @I803@
+1 MARR
+2 DATE Oct 06 1973
+2 PLAC Tarrant County, Texas
+1 DIV
+2 DATE Dec 16 1976
+0 @F71@ FAM
+1 HUSB @I11@
+1 WIFE @I229@
+1 CHIL @I231@
+1 DIV
+0 @F72@ FAM
+1 HUSB @I11@
+1 WIFE @I230@
+1 MARR
+2 DATE Dec 22 1989
+0 @F73@ FAM
+1 HUSB @I660@
+1 WIFE @I661@
+1 CHIL @I659@
+0 @F74@ FAM
+1 HUSB @I111@
+1 WIFE @I475@
+1 CHIL @I124@
+1 CHIL @I126@
+1 CHIL @I125@
+1 MARR
+2 DATE Jul 11 1974
+2 PLAC Smith County, Texas
+1 DIV
+0 @F75@ FAM
+1 HUSB @I102@
+1 WIFE @I109@
+1 CHIL @I111@
+1 CHIL @I110@
+1 CHIL @I113@
+1 CHIL @I112@
+1 MARR
+2 DATE 1947
+2 PLAC Tyler, Texas
+0 @F76@ FAM
+1 HUSB @I111@
+1 WIFE @I476@
+1 MARR
+2 DATE Jul 23 1983
+2 PLAC Smith County, Texas
+0 @F77@ FAM
+1 HUSB @I383@
+1 WIFE @I34@
+1 CHIL @I386@
+1 CHIL @I387@
+1 CHIL @I385@
+1 CHIL @I388@
+1 CHIL @I384@
+1 MARR
+2 DATE Aug 13 1921
+2 PLAC Tyler, Texas
+0 @F78@ FAM
+1 HUSB @I126@
+1 WIFE @I592@
+1 CHIL @I593@
+1 CHIL @I594@
+1 MARR
+2 DATE Mar 15 2010
+2 PLAC Ft. Riley, Kansas
+0 @F79@ FAM
+1 HUSB @I150@
+1 WIFE @I139@
+1 CHIL @I152@
+1 CHIL @I151@
+1 MARR
+2 DATE Jun 07 1964
+0 @F80@ FAM
+1 HUSB @I463@
+1 WIFE @I139@
+1 MARR
+2 DATE Dec 16 2006
+2 PLAC The Chosen Vessel, Fort Worth, Texas
+0 @F81@ FAM
+1 HUSB @I112@
+1 WIFE @I595@
+1 CHIL @I129@
+0 @F82@ FAM
+1 HUSB @I80@
+1 WIFE @I84@
+1 CHIL @I86@
+1 CHIL @I85@
+1 MARR
+2 DATE Nov 22 1981
+0 @F83@ FAM
+1 HUSB @I38@
+1 WIFE @I90@
+1 CHIL @I92@
+1 CHIL @I93@
+1 DIV
+0 @F84@ FAM
+1 HUSB @I469@
+1 WIFE @I147@
+1 CHIL @I470@
+1 CHIL @I471@
+1 MARR
+2 DATE Mar 01 2003
+0 @F85@ FAM
+1 HUSB @I226@
+1 WIFE @I219@
+1 CHIL @I227@
+1 CHIL @I228@
+1 MARR
+2 DATE Dec 01 1997
+1 DIV
+2 DATE Jul 04 2001
+0 @F86@ FAM
+1 HUSB @I115@
+1 WIFE @I579@
+1 CHIL @I577@
+1 CHIL @I123@
+0 @F87@ FAM
+1 HUSB @I294@
+1 WIFE @I315@
+0 @F88@ FAM
+1 HUSB @I133@
+1 WIFE @I165@
+1 CHIL @I167@
+1 MARR
+2 DATE Feb 01 1944
+2 PLAC Fort Worth, Texas
+1 DIV
+0 @F89@ FAM
+1 HUSB @I133@
+1 WIFE @I172@
+1 CHIL @I176@
+1 MARR
+2 DATE ABT  1968
+2 PLAC Fort Worth, Texas
+0 @F90@ FAM
+1 HUSB @I167@
+1 WIFE @I178@
+1 DIV
+0 @F91@ FAM
+1 HUSB @I167@
+1 WIFE @I179@
+0 @F92@ FAM
+1 HUSB @I431@
+1 WIFE @I432@
+1 MARR
+2 DATE Mar 13 1970
+1 DIV
+0 @F93@ FAM
+1 HUSB @I431@
+1 WIFE @I433@
+1 MARR
+2 DATE Nov 19 1984
+1 DIV
+0 @F94@ FAM
+1 HUSB @I431@
+1 WIFE @I434@
+1 MARR
+2 DATE Jun 12 1999
+0 @F95@ FAM
+1 HUSB @I89@
+1 CHIL @I343@
+0 @F96@ FAM
+1 HUSB @I93@
+1 WIFE @I491@
+1 MARR
+2 DATE Feb 29 1968
+2 PLAC Parker County, Texas
+1 DIV
+0 @F97@ FAM
+1 HUSB @I51@
+1 WIFE @I8@
+1 CHIL @I53@
+1 CHIL @I50@
+1 MARR
+2 DATE Sep 08 1945
+2 PLAC Smith County, Texas
+1 DIV
+0 @F98@ FAM
+1 HUSB @I52@
+1 WIFE @I8@
+1 MARR
+2 DATE Feb 07 1959
+2 PLAC Shelby, Texas
+0 @F99@ FAM
+1 HUSB @I197@
+1 WIFE @I9@
+1 CHIL @I202@
+1 CHIL @I366@
+1 CHIL @I205@
+1 CHIL @I211@
+1 CHIL @I204@
+1 CHIL @I198@
+1 CHIL @I207@
+1 MARR
+2 DATE Sep 29 1950
+0 @F100@ FAM
+1 HUSB @I112@
+1 CHIL @I128@
+0 @F101@ FAM
+1 HUSB @I173@
+1 WIFE @I182@
+1 MARR
+2 DATE Mar 09 1969
+2 PLAC Fort Worth, Texas
+1 DIV
+0 @F102@ FAM
+1 HUSB @I173@
+1 WIFE @I455@
+1 MARR
+2 DATE Sep 1985
+1 DIV
+0 @F103@ FAM
+1 HUSB @I33@
+1 WIFE @I101@
+1 MARR
+2 DATE 1945
+2 PLAC Fort Worth, Texas
+0 @F104@ FAM
+1 HUSB @I380@
+1 WIFE @I32@
+1 CHIL @I381@
+1 MARR
+2 DATE Jun 16 1918
+0 @F105@ FAM
+1 HUSB @I238@
+1 WIFE @I12@
+1 CHIL @I239@
+1 CHIL @I240@
+1 CHIL @I241@
+1 MARR
+2 DATE Jun 10 1960
+2 PLAC Tyler, Texas
+0 @F106@ FAM
+1 HUSB @I94@
+1 WIFE @I647@
+1 CHIL @I99@
+0 @F107@ FAM
+1 WIFE @I231@
+1 CHIL @I232@
+1 CHIL @I233@
+0 @F108@ FAM
+1 HUSB @I94@
+1 WIFE @I646@
+1 CHIL @I98@
+0 @F109@ FAM
+1 HUSB @I113@
+1 WIFE @I599@
+1 CHIL @I596@
+1 CHIL @I597@
+0 @F110@ FAM
+1 HUSB @I176@
+1 WIFE @I184@
+1 CHIL @I631@
+1 CHIL @I630@
+0 @F111@ FAM
+1 HUSB @I176@
+1 WIFE @I635@
+1 CHIL @I636@
+1 MARR
+2 DATE Oct 2009
+2 PLAC Fort Worth, Texas
+0 @F112@ FAM
+1 HUSB @I140@
+1 WIFE @I629@
+1 MARR
+2 DATE Nov 29 1998
+0 @F113@ FAM
+1 HUSB @I209@
+1 WIFE @I204@
+1 CHIL @I356@
+1 CHIL @I355@
+1 MARR
+2 DATE Sep 05 1976
+0 @F114@ FAM
+1 HUSB @I642@
+1 WIFE @I643@
+1 CHIL @I448@
+0 @F115@ FAM
+1 HUSB @I644@
+1 CHIL @I643@
+0 @F116@ FAM
+1 HUSB @I793@
+1 WIFE @I791@
+1 MARR
+2 DATE Oct 16 1905
+2 PLAC Yankton, South Dakota
+0 @F117@ FAM
+1 HUSB @I794@
+1 WIFE @I795@
+1 CHIL @I793@
+0 @F118@ FAM
+1 HUSB @I386@
+1 WIFE @I390@
+1 DIV
+0 @F119@ FAM
+1 HUSB @I445@
+1 WIFE @I190@
+1 MARR
+2 DATE Nov 05 2005
+2 PLAC Houston, Texas
+1 DIV
+2 DATE Apr 13 2007
+0 @F120@ FAM
+1 HUSB @I744@
+1 WIFE @I745@
+1 CHIL @I493@
+0 @F121@ FAM
+1 HUSB @I312@
+1 WIFE @I306@
+1 CHIL @I313@
+0 @F122@ FAM
+1 HUSB @I314@
+1 WIFE @I306@
+1 CHIL @I303@
+0 @F123@ FAM
+1 HUSB @I183@
+1 WIFE @I182@
+1 MARR
+2 DATE Sep 14 1985
+2 PLAC Hurst, Texas
+0 @F124@ FAM
+1 HUSB @I69@
+1 WIFE @I72@
+1 CHIL @I368@
+1 CHIL @I369@
+1 CHIL @I73@
+1 MARR
+2 DATE Mar 05 1983
+1 DIV
+0 @F125@ FAM
+1 HUSB @I351@
+1 WIFE @I648@
+1 CHIL @I649@
+1 CHIL @I652@
+1 CHIL @I651@
+1 CHIL @I650@
+1 MARR
+2 DATE Jul 08 2001
+2 PLAC Winter Park, FL
+0 @F126@ FAM
+1 HUSB @I317@
+1 WIFE @I382@
+1 CHIL @I100@
+0 @F127@ FAM
+1 HUSB @I785@
+1 WIFE @I786@
+1 CHIL @I781@
+0 @F128@ FAM
+1 HUSB @I772@
+1 WIFE @I773@
+1 CHIL @I780@
+1 CHIL @I274@
+1 CHIL @I253@
+1 CHIL @I779@
+1 CHIL @I777@
+1 CHIL @I778@
+0 @F129@ FAM
+1 HUSB @I53@
+1 WIFE @I274@
+1 CHIL @I278@
+1 CHIL @I276@
+1 CHIL @I275@
+1 CHIL @I277@
+1 CHIL @I279@
+1 MARR
+2 DATE May 31 1966
+2 PLAC Shelby County, Texas
+0 @F130@ FAM
+1 HUSB @I50@
+1 WIFE @I253@
+1 CHIL @I252@
+1 CHIL @I255@
+1 CHIL @I256@
+1 CHIL @I254@
+1 MARR
+2 DATE Jul 02 1966
+1 DIV
+0 @F131@ FAM
+1 HUSB @I781@
+1 WIFE @I787@
+1 MARR
+2 DATE Jan 11 1900
+0 @F132@ FAM
+1 HUSB @I781@
+1 WIFE @I782@
+1 CHIL @I772@
+1 MARR
+2 DATE Jan 17 1907
+2 PLAC Rusk County, Texas
+0 @F133@ FAM
+1 HUSB @I778@
+1 WIFE @I788@
+1 MARR
+2 DATE Jul 09 1977
+2 PLAC Smith County , Texas
+1 DIV
+2 DATE Jun 05 1978
+0 @F134@ FAM
+1 HUSB @I16@
+1 CHIL @I481@
+1 CHIL @I480@
+1 CHIL @I482@
+0 @F135@ FAM
+1 HUSB @I15@
+1 WIFE @I688@
+1 CHIL @I533@
+0 @F136@ FAM
+1 HUSB @I15@
+1 WIFE @I686@
+1 MARR
+2 DATE Nov 11 2011
+2 PLAC St. Louis Baptist Church, Tyler,Texas
+0 @F137@ FAM
+1 HUSB @I15@
+1 WIFE @I690@
+1 CHIL @I215@
+1 DIV
+0 @F138@ FAM
+1 HUSB @I15@
+1 WIFE @I687@
+1 CHIL @I534@
+0 @F139@ FAM
+1 HUSB @I304@
+1 WIFE @I303@
+1 CHIL @I309@
+1 CHIL @I310@
+1 CHIL @I30@
+1 CHIL @I308@
+1 CHIL @I307@
+1 CHIL @I311@
+0 @F140@ FAM
+1 HUSB @I667@
+1 WIFE @I246@
+1 CHIL @I665@
+0 @F141@ FAM
+1 HUSB @I20@
+1 WIFE @I42@
+1 MARR
+2 DATE Oct 05 2010
+0 @F142@ FAM
+1 HUSB @I675@
+1 WIFE @I244@
+1 CHIL @I678@
+1 CHIL @I676@
+1 CHIL @I677@
+1 CHIL @I673@
+1 DIV
+0 @F143@ FAM
+1 HUSB @I28@
+1 WIFE @I726@
+1 MARR
+2 DATE Mar 07 2018
+0 @F144@ FAM
+1 HUSB @I724@
+1 WIFE @I244@
+1 CHIL @I725@
+0 @F145@ FAM
+1 HUSB @I324@
+1 WIFE @I337@
+1 CHIL @I340@
+1 CHIL @I338@
+1 CHIL @I341@
+0 @F146@ FAM
+1 HUSB @I339@
+1 WIFE @I338@
+0 @F147@ FAM
+1 HUSB @I317@
+1 WIFE @I300@
+1 CHIL @I319@
+1 CHIL @I322@
+1 CHIL @I324@
+1 CHIL @I321@
+1 CHIL @I320@
+1 CHIL @I325@
+1 CHIL @I323@
+1 MARR
+2 PLAC Tyler, Texas
+0 @F148@ FAM
+1 HUSB @I326@
+1 WIFE @I320@
+1 CHIL @I334@
+1 CHIL @I328@
+1 CHIL @I330@
+1 CHIL @I332@
+1 CHIL @I329@
+1 CHIL @I333@
+1 CHIL @I327@
+1 CHIL @I331@
+0 @F149@ FAM
+1 HUSB @I335@
+1 WIFE @I323@
+1 CHIL @I336@
+0 @F150@ FAM
+1 HUSB @I522@
+1 WIFE @I526@
+1 MARR
+2 DATE Nov 30 1990
+2 PLAC Dallas, Texas
+0 @F151@ FAM
+1 HUSB @I5@
+1 WIFE @I523@
+1 CHIL @I522@
+0 @F152@ FAM
+1 WIFE @I496@
+1 CHIL @I749@
+1 CHIL @I750@
+0 @F153@ FAM
+1 HUSB @I493@
+1 WIFE @I494@
+1 CHIL @I496@
+1 CHIL @I197@
+1 CHIL @I495@
+0 @F154@ FAM
+1 HUSB @I812@
+1 WIFE @I813@
+1 CHIL @I238@
+0 @F155@ FAM
+1 HUSB @I239@
+1 WIFE @I242@
+1 CHIL @I244@
+1 CHIL @I243@
+1 DIV
+0 @F156@ FAM
+1 HUSB @I239@
+1 WIFE @I245@
+1 CHIL @I247@
+1 CHIL @I248@
+1 CHIL @I246@
+1 MARR
+2 DATE Dec 19 1992
+2 PLAC Fort Worth, Texas
+0 @F157@ FAM
+1 HUSB @I670@
+1 WIFE @I243@
+1 CHIL @I669@
+1 CHIL @I671@
+0 @F158@ FAM
+1 HUSB @I441@
+1 WIFE @I188@
+1 MARR
+2 DATE Jun 15 1978
+2 PLAC Parker County, Texas
+1 DIV
+0 @F159@ FAM
+1 WIFE @I264@
+1 CHIL @I766@
+1 CHIL @I767@
+0 @F160@ FAM
+1 HUSB @I299@
+1 WIFE @I414@
+1 CHIL @I420@
+1 CHIL @I419@
+1 CHIL @I416@
+1 CHIL @I415@
+1 CHIL @I418@
+1 CHIL @I417@
+0 @F161@ FAM
+1 HUSB @I296@
+1 WIFE @I295@
+1 CHIL @I299@
+0 @F162@ FAM
+1 HUSB @I733@
+1 WIFE @I734@
+1 CHIL @I735@
+1 CHIL @I742@
+1 CHIL @I736@
+1 CHIL @I737@
+1 CHIL @I731@
+1 CHIL @I738@
+0 @F163@ FAM
+1 HUSB @I313@
+1 WIFE @I538@
+1 CHIL @I539@
+1 CHIL @I546@
+1 CHIL @I540@
+1 CHIL @I541@
+1 CHIL @I549@
+1 CHIL @I544@
+1 CHIL @I545@
+1 CHIL @I542@
+1 CHIL @I543@
+1 CHIL @I548@
+1 MARR
+2 DATE Jan 03 1871
+2 PLAC Smith County, Texas
+0 @F164@ FAM
+1 HUSB @I541@
+1 WIFE @I550@
+1 CHIL @I552@
+1 CHIL @I553@
+1 CHIL @I554@
+1 CHIL @I555@
+1 CHIL @I556@
+1 CHIL @I558@
+1 CHIL @I559@
+1 CHIL @I560@
+1 CHIL @I561@
+1 CHIL @I562@
+1 CHIL @I563@
+1 CHIL @I564@
+1 CHIL @I566@
+1 CHIL @I565@
+1 MARR
+2 DATE Oct 16 1904
+0 @F165@ FAM
+1 WIFE @I260@
+1 CHIL @I273@
+1 CHIL @I272@
+0 @F166@ FAM
+1 HUSB @I205@
+1 WIFE @I208@
+1 CHIL @I358@
+1 CHIL @I359@
+1 CHIL @I360@
+1 CHIL @I361@
+1 MARR
+2 DATE Jul 12 1987
+2 PLAC Keene, Texas
+0 @F167@ FAM
+1 HUSB @I203@
+1 WIFE @I202@
+1 CHIL @I354@
+1 CHIL @I352@
+1 CHIL @I353@
+1 CHIL @I351@
+1 MARR
+2 DATE Jul 21 1974
+2 PLAC Keene, Texas
+0 @F168@ FAM
+1 HUSB @I205@
+1 WIFE @I751@
+1 MARR
+2 DATE Dec 05 1976
+1 DIV
+2 DATE Sep 16 1986
+0 @F169@ FAM
+1 HUSB @I197@
+1 WIFE @I748@
+1 MARR
+2 DATE Dec 13 1941
+2 PLAC Smith County, Texas
+0 @F170@ FAM
+1 HUSB @I207@
+1 WIFE @I510@
+1 CHIL @I363@
+1 CHIL @I365@
+1 CHIL @I362@
+1 CHIL @I364@
+0 @F171@ FAM
+1 HUSB @I212@
+1 WIFE @I211@
+1 CHIL @I213@
+1 CHIL @I214@
+1 MARR
+2 DATE Sep 15 1985
+2 PLAC Delray Beach, FL
+0 @F172@ FAM
+1 HUSB @I199@
+1 WIFE @I198@
+1 CHIL @I201@
+1 CHIL @I200@
+1 MARR
+2 DATE Jun 01 1975
+2 PLAC Keene, Texas
+0 @F173@ FAM
+1 HUSB @I514@
+1 WIFE @I516@
+1 CHIL @I518@
+1 CHIL @I520@
+1 CHIL @I459@
+1 CHIL @I521@
+1 CHIL @I519@
+1 MARR
+2 DATE Sep 03 1873
+2 PLAC Smith County, Texas
+0 @F174@ FAM
+1 WIFE @I120@
+1 CHIL @I585@
+1 CHIL @I584@
+1 CHIL @I583@
+0 @F175@ FAM
+1 HUSB @I389@
+1 WIFE @I384@
+1 MARR
+2 PLAC Tyler, Texas
+0 @F176@ FAM
+1 HUSB @I57@
+1 WIFE @I752@
+1 CHIL @I61@
+1 CHIL @I62@
+1 MARR
+2 DATE Dec 27 1980
+2 PLAC Smith County , Texas
+1 DIV
+2 DATE Jul 14 1989
+0 @F177@ FAM
+1 HUSB @I61@
+1 CHIL @I754@
+0 @F178@ FAM
+1 HUSB @I801@
+1 WIFE @I800@
+1 MARR
+2 DATE Apr 08 1985
+2 PLAC Smith County, Texas
+0 @F179@ FAM
+1 HUSB @I489@
+1 WIFE @I483@
+0 @F180@ FAM
+1 HUSB @I746@
+1 WIFE @I747@
+1 CHIL @I494@
+0 @F181@ FAM
+1 HUSB @I464@
+1 WIFE @I151@
+1 MARR
+2 DATE Aug 31 1991
+2 PLAC Fort Worth, Texas
+1 DIV
+0 @F182@ FAM
+1 HUSB @I789@
+1 WIFE @I792@
+1 CHIL @I791@
+1 MARR
+2 DATE Dec 31 1883
+2 PLAC Chariton Co. MO
+0 @F183@ FAM
+1 HUSB @I789@
+1 WIFE @I790@
+1 CHIL @I506@
+1 MARR
+2 DATE 1892
+0 @F184@ FAM
+1 HUSB @I505@
+1 WIFE @I506@
+1 CHIL @I451@
+0 @F185@ FAM
+1 HUSB @I728@
+1 WIFE @I485@
+0 @F186@ FAM
+1 HUSB @I760@
+1 WIFE @I62@
+1 CHIL @I756@
+1 CHIL @I757@
+0 @F187@ FAM
+1 HUSB @I70@
+1 WIFE @I74@
+1 MARR
+2 DATE Nov 13 1991
+2 PLAC Fort Worth, Texas
+0 @F188@ FAM
+1 HUSB @I116@
+1 WIFE @I587@
+1 MARR
+2 DATE May 19 2011
+2 PLAC Dallas, TX
+0 @F189@ FAM
+1 HUSB @I576@
+1 WIFE @I110@
+1 CHIL @I116@
+0 @F190@ FAM
+1 HUSB @I268@
+1 WIFE @I770@
+1 CHIL @I771@
+1 MARR
+2 DATE Sep 19 2020
+0 @F191@ FAM
+1 HUSB @I695@
+1 WIFE @I694@
+1 CHIL @I698@
+1 CHIL @I697@
+1 CHIL @I696@
+0 @F192@ FAM
+1 HUSB @I692@
+1 WIFE @I693@
+1 CHIL @I694@
+1 CHIL @I686@
+0 @F193@ FAM
+1 HUSB @I142@
+1 WIFE @I162@
+1 CHIL @I163@
+1 CHIL @I164@
+1 MARR
+2 DATE Jun 12 1971
+2 PLAC Dallas, Texas
+0 @F194@ FAM
+1 HUSB @I132@
+1 WIFE @I638@
+1 CHIL @I142@
+0 @F195@ FAM
+1 HUSB @I20@
+1 WIFE @I477@
+1 CHIL @I43@
+1 CHIL @I44@
+1 MARR
+2 DATE Jul 18 1981
+2 PLAC Dallas County, Texas
+1 DIV
+0 @F196@ FAM
+1 HUSB @I712@
+1 WIFE @I355@
+1 CHIL @I498@
+1 CHIL @I499@
+1 CHIL @I497@
+1 MARR
+2 DATE Aug 12
+2 PLAC Alexandria LA
+0 @F197@ FAM
+1 HUSB @I804@
+1 WIFE @I805@
+1 CHIL @I505@
+0 @F198@ FAM
+1 HUSB @I729@
+1 WIFE @I730@
+1 CHIL @I642@
+0 @F199@ FAM
+1 HUSB @I27@
+1 WIFE @I367@
+1 CHIL @I55@
+1 MARR
+2 DATE May 26 1990
+2 PLAC Tyler, Texas
+1 DIV
+0 @F200@ FAM
+1 HUSB @I1@
+1 WIFE @I3@
+1 CHIL @I2@
+1 MARR
+2 DATE Aug 25 1985
+2 PLAC Plano, Texas
+1 DIV
+0 @F201@ FAM
+1 HUSB @I191@
+1 WIFE @I186@
+1 CHIL @I192@
+0 @F202@ FAM
+1 HUSB @I448@
+1 WIFE @I447@
+1 CHIL @I486@
+1 CHIL @I483@
+1 CHIL @I5@
+1 CHIL @I484@
+1 CHIL @I485@
+0 @F203@ FAM
+1 HUSB @I522@
+1 WIFE @I524@
+1 MARR
+2 DATE Jul 20 1969
+2 PLAC Dallas, Texas
+1 DIV
+2 DATE Sep 25 1979
+0 @F204@ FAM
+1 HUSB @I522@
+1 WIFE @I525@
+1 MARR
+2 DATE Nov 07 1979
+2 PLAC Dallas, Texas
+1 DIV
+0 @F205@ FAM
+1 HUSB @I487@
+1 WIFE @I484@
+1 CHIL @I488@
+0 @F206@ FAM
+1 HUSB @I18@
+1 WIFE @I17@
+1 CHIL @I23@
+1 CHIL @I22@
+1 MARR
+2 DATE Apr 06 1985
+2 PLAC Tyler, Texas
+0 @F207@ FAM
+1 HUSB @I25@
+1 WIFE @I24@
+1 CHIL @I26@
+1 MARR
+2 DATE Sep 29 1990
+2 PLAC Tyler, Texas
+1 DIV
+0 @F208@ FAM
+1 HUSB @I40@
+1 WIFE @I21@
+1 CHIL @I41@
+1 MARR
+2 DATE May 10 1996
+0 @F209@ FAM
+1 HUSB @I1@
+1 WIFE @I19@
+1 MARR
+2 DATE Jan 18 1997
+0 @F210@ FAM
+1 HUSB @I442@
+1 WIFE @I188@
+1 CHIL @I444@
+1 MARR
+2 DATE May 19 1980
+2 PLAC Oklahoma City, Ok
+0 @F211@ FAM
+1 WIFE @I356@
+1 CHIL @I501@
+1 CHIL @I500@
+0 @F212@ FAM
+1 HUSB @I153@
+1 WIFE @I151@
+1 MARR
+2 DATE Sep 15 1995
+2 PLAC Fort Worth, Texas
+1 DIV
+2 DATE Aug 07 2007
+0 @F213@ FAM
+1 HUSB @I435@
+1 WIFE @I436@
+1 CHIL @I101@
+0 @F214@ FAM
+1 HUSB @I297@
+1 WIFE @I295@
+1 CHIL @I302@
+1 CHIL @I409@
+1 CHIL @I411@
+1 CHIL @I301@
+1 CHIL @I300@
+1 CHIL @I410@
+0 @F215@ FAM
+1 HUSB @I301@
+1 WIFE @I412@
+1 CHIL @I413@
+0 @F216@ FAM
+1 HUSB @I457@
+1 WIFE @I458@
+1 CHIL @I52@
+0 @F217@ FAM
+1 HUSB @I316@
+1 WIFE @I300@
+1 CHIL @I318@
+1 MARR
+2 DATE ABT  1899
+2 PLAC Tyler, Texas
+1 DIV
+0 @F218@ FAM
+1 HUSB @I761@
+1 WIFE @I62@
+1 CHIL @I758@
+0 @F219@ FAM
+1 WIFE @I47@
+1 CHIL @I70@
+1 CHIL @I69@
+1 CHIL @I71@
+1 CHIL @I370@
+1 CHIL @I371@
+0 @F220@ FAM
+1 HUSB @I195@
+1 WIFE @I187@
+1 CHIL @I196@
+1 MARR
+2 PLAC Fort Worth, Texas
+0 @F221@ FAM
+1 HUSB @I75@
+1 WIFE @I71@
+1 CHIL @I76@
+1 CHIL @I77@
+1 CHIL @I78@
+1 MARR
+2 DATE May 23 1983
+0 @F222@ FAM
+1 HUSB @I759@
+1 WIFE @I62@
+1 CHIL @I755@
+0 @F223@ FAM
+1 HUSB @I806@
+1 WIFE @I807@
+1 CHIL @I507@
+0 @F224@ FAM
+1 HUSB @I507@
+1 WIFE @I508@
+1 CHIL @I452@
+0 @F225@ FAM
+1 HUSB @I108@
+1 WIFE @I473@
+1 CHIL @I474@
+1 CHIL @I711@
+1 DIV
+0 @F226@ FAM
+1 HUSB @I478@
+1 WIFE @I479@
+1 CHIL @I130@
+0 @F227@ FAM
+1 WIFE @I551@
+1 CHIL @I550@
+0 @F228@ FAM
+1 HUSB @I439@
+1 WIFE @I188@
+1 MARR
+2 DATE Mar 09 1971
+2 PLAC Fort Worth, Texas
+1 DIV
+0 @F229@ FAM
+1 HUSB @I185@
+1 WIFE @I134@
+1 CHIL @I190@
+1 CHIL @I189@
+1 CHIL @I187@
+1 CHIL @I186@
+1 CHIL @I188@
+1 MARR
+2 DATE ABT  1948
+0 @F230@ FAM
+1 HUSB @I189@
+1 WIFE @I446@
+1 MARR
+2 DATE Jun 12 1999
+2 PLAC Fort Worth, Texas
+0 @F231@ FAM
+1 HUSB @I529@
+1 WIFE @I530@
+1 MARR
+2 DATE Aug 01 1987
+2 PLAC Tyler, Texas
+0 @F232@ FAM
+1 HUSB @I797@
+1 WIFE @I796@
+1 CHIL @I798@
+1 CHIL @I799@
+1 CHIL @I800@
+1 MARR
+2 DATE Aug 25 1957
+2 PLAC Smith County, Texas
+0 @F233@ FAM
+1 WIFE @I254@
+1 CHIL @I266@
+1 CHIL @I265@
+0 @F234@ FAM
+1 HUSB @I774@
+1 WIFE @I776@
+1 CHIL @I773@
+0 @F235@ FAM
+1 HUSB @I775@
+1 CHIL @I774@
+0 @F236@ FAM
+1 HUSB @I350@
+1 WIFE @I764@
+1 CHIL @I765@
+0 @F237@ FAM
+1 HUSB @I57@
+1 WIFE @I349@
+1 CHIL @I350@
+1 CHIL @I753@
+1 MARR
+2 DATE Oct 06 1990
+2 PLAC Tyler, Texas
+0 @F238@ FAM
+1 HUSB @I723@
+1 WIFE @I722@
+1 CHIL @I721@
+0 @F239@ FAM
+1 HUSB @I472@
+1 WIFE @I105@
+1 CHIL @I428@
+0 @F240@ FAM
+1 WIFE @I668@
+1 CHIL @I245@
+0 @F241@ FAM
+1 HUSB @I201@
+1 CHIL @I658@
+1 CHIL @I657@
+0 @F242@ FAM
+1 HUSB @I816@
+1 WIFE @I817@
+1 CHIL @I199@
+0 @F243@ FAM
+1 HUSB @I811@
+1 WIFE @I401@
+1 CHIL @I810@
+1 CHIL @I809@
+0 @F244@ FAM
+1 HUSB @I814@
+1 WIFE @I809@
+1 CHIL @I815@
+1 MARR
+2 DATE Jul 27 2002
+2 PLAC Carter Temple CME Church Tyler, TX
+0 @F245@ FAM
+1 HUSB @I598@
+1 WIFE @I596@
+0 @F246@ FAM
+1 HUSB @I459@
+1 WIFE @I460@
+1 CHIL @I517@
+1 CHIL @I447@
+0 @F247@ FAM
+1 HUSB @I517@
+1 WIFE @I527@
+1 CHIL @I528@
+1 CHIL @I529@
+1 CHIL @I796@
+0 @F248@ FAM
+1 HUSB @I386@
+1 WIFE @I391@
+1 CHIL @I397@
+1 CHIL @I392@
+1 CHIL @I398@
+1 CHIL @I399@
+1 CHIL @I396@
+1 CHIL @I395@
+1 CHIL @I394@
+1 CHIL @I393@
+0 @F249@ FAM
+1 HUSB @I405@
+1 WIFE @I388@
+1 CHIL @I401@
+1 CHIL @I403@
+1 CHIL @I400@
+1 CHIL @I402@
+0 @F250@ FAM
+1 HUSB @I57@
+1 WIFE @I504@
+1 CHIL @I60@
+0 @F251@ FAM
+1 HUSB @I23@
+1 WIFE @I721@
+1 CHIL @I802@
+1 CHIL @I727@
+1 MARR
+2 DATE Apr 16 2016
+2 PLAC Lewisville Tx
+0 @F252@ FAM
+1 HUSB @I739@
+1 WIFE @I740@
+1 CHIL @I733@
+1 CHIL @I741@
+0 @F253@ FAM
+1 HUSB @I743@
+1 CHIL @I740@
+0 @F254@ FAM
+1 HUSB @I66@
+1 WIFE @I59@
+1 CHIL @I68@
+1 CHIL @I67@
+1 MARR
+2 DATE Sep 04 1984
+0 @F255@ FAM
+1 HUSB @I808@
+1 WIFE @I41@
+1 MARR
+2 DATE Jun 26 2021
+2 PLAC Longview, Texas
+0 @F256@ FAM
+1 HUSB @I154@
+1 WIFE @I152@
+1 MARR
+2 DATE Nov 26 1994
+1 DIV
+0 @F257@ FAM
+1 HUSB @I783@
+1 WIFE @I784@
+1 CHIL @I782@
+0 @F258@ FAM
+1 HUSB @I352@
+1 WIFE @I653@
+1 CHIL @I654@
+1 CHIL @I655@
+1 MARR
+2 DATE Sep 05 2003
+2 PLAC Apopka, FL
+0 @F259@ FAM
+1 HUSB @I707@
+1 WIFE @I706@
+1 MARR
+2 DATE Jul 18 2007
+2 PLAC Houston, Texas
+0 @F260@ FAM
+1 WIFE @I572@
+1 CHIL @I573@
+0 @F261@ FAM
+1 HUSB @I731@
+1 WIFE @I732@
+1 CHIL @I51@
+0 @F262@ FAM
+1 HUSB @I465@
+1 WIFE @I152@
+1 CHIL @I467@
+1 CHIL @I466@
+1 MARR
+2 DATE Jul 04 2004
+0 @F263@ FAM
+1 HUSB @I574@
+1 WIFE @I537@
+1 CHIL @I119@
+1 MARR
+2 DATE Jul 06 1990
+2 PLAC Dallas, TX
+0 @F264@ FAM
+1 HUSB @I664@
+1 WIFE @I246@
+1 CHIL @I662@
+1 CHIL @I663@
+0 @F265@ FAM
+1 HUSB @I512@
+1 WIFE @I513@
+1 CHIL @I3@
+0 @F266@ FAM
+1 HUSB @I656@
+1 WIFE @I118@
+1 MARR
+2 DATE May 22 2012
+2 PLAC Dallas, TX
+0 @F267@ FAM
+1 HUSB @I140@
+1 CHIL @I160@
+0 @F268@ FAM
+1 HUSB @I94@
+1 WIFE @I645@
+1 CHIL @I96@
+0 @F269@ FAM
+1 HUSB @I571@
+1 WIFE @I537@
+1 CHIL @I118@
+1 CHIL @I706@
+0 @F270@ FAM
+1 HUSB @I621@
+1 CHIL @I502@
+0 @F271@ FAM
+1 HUSB @I277@
+1 CHIL @I290@
+1 CHIL @I291@
+1 CHIL @I293@
+1 CHIL @I292@
+1 CHIL @I289@
+1 CHIL @I288@
+0 @F272@ FAM
+1 HUSB @I252@
+1 WIFE @I683@
+1 CHIL @I264@
+1 CHIL @I263@
+1 MARR
+2 DATE Feb 19 1999
+2 PLAC Fort Worth, TX
+0 @F273@ FAM
+1 HUSB @I276@
+1 CHIL @I287@
+1 CHIL @I285@
+1 CHIL @I286@
+0 @F274@ FAM
+1 HUSB @I275@
+1 WIFE @I280@
+1 CHIL @I284@
+1 CHIL @I283@
+1 CHIL @I281@
+1 CHIL @I282@
+0 @F275@ FAM
+1 HUSB @I255@
+1 CHIL @I267@
+0 @F276@ FAM
+1 HUSB @I256@
+1 CHIL @I268@
+0 @F277@ FAM
+1 HUSB @I133@
+1 CHIL @I168@
+0 @F278@ FAM
+1 HUSB @I265@
+1 CHIL @I769@
+0 TRLR
