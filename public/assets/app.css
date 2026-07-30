@@ -96,8 +96,10 @@ table.list th{color:var(--gold);font-size:12px;letter-spacing:1px;text-transform
 
 /* ---------- Legacy hero (public landing) ---------- */
 .hero{position:relative;width:100vw;margin-left:calc(-50vw + 50%);margin-top:-28px;overflow:hidden;
-  min-height:560px;display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(180deg,#6b451f 0%,#59331a 30%,#431417 68%,#3a0d12 100%);}
+  line-height:0;background:#3a0d12;}
+.hero-img{display:block;width:100%;height:auto;}
+.hot{position:absolute;display:block;cursor:pointer;border-radius:12px;transition:background .2s, box-shadow .2s;}
+.hot:hover{background:rgba(255,221,150,.10);box-shadow:inset 0 0 0 1px rgba(224,192,116,.45);}
 .hero-bg{position:absolute;inset:0;pointer-events:none;
   background:
     radial-gradient(56% 62% at 50% 44%, rgba(28,7,9,.55), transparent 72%),

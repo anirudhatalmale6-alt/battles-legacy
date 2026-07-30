@@ -33,47 +33,15 @@ page_head('Home');
        <b style="color:var(--gold2)"><?= (int)$nph ?></b> photographs pinned and growing.</p>
   </div>
 <?php else: ?>
-  <?php
-  // The family patriarchs — the portraits provided by the family. These are fixed (not auto-selected).
-  $pool = [
-    ['n' => 'Richmond Battles',    'y' => '1832 – 1909', 'p' => 'assets/patriarchs/richmond.jpg', 'pid' => ''],
-    ['n' => 'John N. Battles',     'y' => '1870 – 1940', 'p' => 'assets/patriarchs/johnn.jpg',    'pid' => ''],
-    ['n' => 'William Holmes',      'y' => '1921 – 1988', 'p' => 'assets/patriarchs/william.jpg',  'pid' => ''],
-    ['n' => 'Lafane Battles Sr.',  'y' => '1896 – 1978', 'p' => 'assets/patriarchs/lafane.jpg',   'pid' => ''],
-  ];
-  $slots = count($pool);
-  ?>
   <section class="hero">
-    <div class="hero-bg" aria-hidden="true"></div>
-    <div class="hero-inner">
-      <div class="anc-group left">
-        <?php for ($s = 0; $s < $slots && $s < 2; $s++): $a = $pool[$s]; ?>
-          <a class="anc-link" href="<?= $a['pid'] ? 'person.php?pid=' . rawurlencode($a['pid']) : 'tree.php' ?>" title="Open the family tree">
-            <figure class="anc">
-              <img src="<?= e($a['p']) ?>" alt="<?= e($a['n']) ?>">
-              <figcaption><?= e($a['n']) ?><span class="yr"><?= e($a['y']) ?></span></figcaption>
-            </figure>
-          </a>
-        <?php endfor; ?>
-      </div>
-      <div class="hero-center">
-        <h1 class="hero-title">One Family.<br>Many Stories.<br><span class="script">One Legacy.</span></h1>
-        <p class="hero-lede">Welcome to our family's digital home — a place where generations come together to
-           preserve our history, honor our ancestors, and build a stronger future for those who follow us.</p>
-        <a class="btn gold hero-cta" href="tree.php">Explore Our Family Tree</a>
-        <div class="hero-actions"><a class="btn-ghost" href="login.php">Family Login</a></div>
-      </div>
-      <div class="anc-group right">
-        <?php for ($s = 2; $s < $slots && $s < 4; $s++): $a = $pool[$s]; ?>
-          <a class="anc-link" href="<?= $a['pid'] ? 'person.php?pid=' . rawurlencode($a['pid']) : 'tree.php' ?>" title="Open the family tree">
-            <figure class="anc">
-              <img src="<?= e($a['p']) ?>" alt="<?= e($a['n']) ?>">
-              <figcaption><?= e($a['n']) ?><span class="yr"><?= e($a['y']) ?></span></figcaption>
-            </figure>
-          </a>
-        <?php endfor; ?>
-      </div>
-    </div>
+    <img class="hero-img" src="assets/hero-full.jpg"
+         alt="The Battles Legacy — One Family. Many Stories. One Legacy. Featuring Richmond Battles, John N. Battles, William Holmes and Lafane Battles Sr.">
+    <!-- clickable areas over the patriarchs and the button — all open the family tree -->
+    <a class="hot" style="left:37%;top:59%;width:26%;height:14%" href="tree.php" title="Explore the family tree"></a>
+    <a class="hot" style="left:3%;top:22%;width:15%;height:56%"  href="tree.php" title="Richmond Battles — open the family tree"></a>
+    <a class="hot" style="left:18.5%;top:22%;width:14.5%;height:56%" href="tree.php" title="John N. Battles — open the family tree"></a>
+    <a class="hot" style="left:63.5%;top:22%;width:13.5%;height:56%" href="tree.php" title="William Holmes — open the family tree"></a>
+    <a class="hot" style="left:77%;top:22%;width:14.5%;height:56%" href="tree.php" title="Lafane Battles Sr. — open the family tree"></a>
   </section>
 
   <div class="panel" style="text-align:center;max-width:720px;margin:30px auto">
