@@ -37,32 +37,43 @@ page_head('Home', $u ? [] : ['body_class' => 'home']);
     <img class="hero-img" src="assets/hero-scene.jpg"
          alt="The Battles Legacy — One Family. Many Stories. One Legacy.">
     <!-- four ancestor portraits that fade fully out to the tree, then the next fades in — never two faces at once -->
-    <a class="rslot" style="left:2.5%;top:19%;width:15%;height:76%"  href="tree.php" title="Open the family tree"><img class="rot" alt=""></a>
-    <a class="rslot" style="left:18%;top:19%;width:15%;height:76%"  href="tree.php" title="Open the family tree"><img class="rot" alt=""></a>
-    <a class="rslot" style="left:63%;top:19%;width:15%;height:76%"  href="tree.php" title="Open the family tree"><img class="rot" alt=""></a>
-    <a class="rslot" style="left:78%;top:19%;width:15.5%;height:76%" href="tree.php" title="Open the family tree"><img class="rot" alt=""></a>
+    <a class="rslot" style="left:2.5%;top:17%;width:15%;height:72%"  href="tree.php" title="Open the family tree"><img class="rot" alt=""><span class="rcap"><b class="rc-name"></b><span class="rc-yr"></span></span></a>
+    <a class="rslot" style="left:18%;top:17%;width:15%;height:72%"  href="tree.php" title="Open the family tree"><img class="rot" alt=""><span class="rcap"><b class="rc-name"></b><span class="rc-yr"></span></span></a>
+    <a class="rslot" style="left:63%;top:17%;width:15%;height:72%"  href="tree.php" title="Open the family tree"><img class="rot" alt=""><span class="rcap"><b class="rc-name"></b><span class="rc-yr"></span></span></a>
+    <a class="rslot" style="left:78%;top:17%;width:15.5%;height:72%" href="tree.php" title="Open the family tree"><img class="rot" alt=""><span class="rcap"><b class="rc-name"></b><span class="rc-yr"></span></span></a>
     <!-- clickable Explore Our Family Tree button (baked into the scene) -->
     <a class="hot" style="left:39.5%;top:78%;width:20.5%;height:13%" href="tree.php" title="Explore the family tree"></a>
   </section>
   <script>
   (function(){
-    var PH=['p01','p02','p03','p04','p05','p06','p07','p08','p09','p10','p11','p12']
-      .map(function(n){return 'assets/hero-rot/'+n+'.jpg';});
+    var IDS=['p01','p02','p03','p04','p05','p06','p07','p08','p09','p10','p11','p12'];
+    var META={
+      p01:['L.J. Battles','1915 – 1984'], p02:['Nathaniel Battles','1918 – 1952'],
+      p03:['Susie Johnson','1882 – 1974'], p04:['Elizabeth Carey','1875 – 1933'],
+      p05:['James (JT) Battles','1911 – 1970'], p06:['Horatio Battles','1865 – 1944'],
+      p07:['Settie Battles','1898 – 1991'], p08:['Augustus (Gus) Battles','1905 – 1965'],
+      p09:['Johnnie Mae Battles','1903 – 1974'], p10:['Anthony Battles','1888 – 1966'],
+      p11:['Sam Calvin Battles','1900 – 1972'], p12:['Edmond Battles','1897 – 1957']
+    };
     // each slot cycles its own group of 3 photos, so no face is ever shown twice at once
     var SETS=[[0,1,2],[3,4,5],[6,7,8],[9,10,11]];
     var slots=[].slice.call(document.querySelectorAll('.hero .rslot'));
+    function paint(s,id){
+      s._img.src='assets/hero-rot/'+id+'.jpg';
+      s._nm.textContent=META[id][0]; s._yr.textContent=META[id][1];
+    }
     slots.forEach(function(s,i){
-      s._img=s.querySelector('.rot'); s._set=SETS[i]; s._k=0;
-      s._img.src=PH[s._set[0]];
-      requestAnimationFrame(function(){ s._img.classList.add('on'); });
+      s._img=s.querySelector('.rot'); s._cap=s.querySelector('.rcap');
+      s._nm=s.querySelector('.rc-name'); s._yr=s.querySelector('.rc-yr');
+      s._set=SETS[i]; s._k=0; paint(s,IDS[s._set[0]]);
+      requestAnimationFrame(function(){ s._img.classList.add('on'); s._cap.classList.add('on'); });
     });
     function cycle(i){
       var s=slots[i];
-      s._img.classList.remove('on');                 // fade current portrait out to the tree
-      setTimeout(function(){                          // once it's gone, swap and fade the next one in
-        s._k=(s._k+1)%s._set.length;
-        s._img.src=PH[s._set[s._k]];
-        s._img.classList.add('on');
+      s._img.classList.remove('on'); s._cap.classList.remove('on');   // fade portrait + name out to the tree
+      setTimeout(function(){                                          // once gone, swap and fade the next in
+        s._k=(s._k+1)%s._set.length; paint(s,IDS[s._set[s._k]]);
+        s._img.classList.add('on'); s._cap.classList.add('on');
       }, 1300);
     }
     slots.forEach(function(s,i){ setTimeout(function(){ setInterval(function(){cycle(i);}, 5200); }, 1600 + i*950); });

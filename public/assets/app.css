@@ -111,6 +111,13 @@ table.list th{color:var(--gold);font-size:12px;letter-spacing:1px;text-transform
           mask-image:radial-gradient(ellipse 66% 80% at 50% 40%,#000 54%,transparent 84%);}
 .rslot .rot.on{opacity:1;}
 .rslot:hover .rot.on{filter:sepia(.4) contrast(1.05) brightness(1.15);}
+.rslot .rcap{position:absolute;left:-20%;right:-20%;bottom:1%;text-align:center;
+  opacity:0;transition:opacity 1.1s ease;pointer-events:none;
+  font-family:'Cormorant Garamond',serif;color:var(--gold2);line-height:1.12;
+  text-shadow:0 1px 6px rgba(0,0,0,.9),0 0 3px rgba(0,0,0,.75);}
+.rslot .rcap.on{opacity:1;}
+.rc-name{display:block;font-size:15.5px;font-weight:600;letter-spacing:.3px;}
+.rc-yr{display:block;font-size:12.5px;color:var(--gold-soft);letter-spacing:1.2px;margin-top:1px;}
 .hero-bg{position:absolute;inset:0;pointer-events:none;
   background:
     radial-gradient(56% 62% at 50% 44%, rgba(28,7,9,.55), transparent 72%),
