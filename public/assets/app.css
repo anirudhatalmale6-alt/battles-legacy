@@ -131,3 +131,8 @@ table.list th{color:var(--gold);font-size:12px;letter-spacing:1px;text-transform
 @media(max-width:980px){.anc{width:126px;height:180px}.hero-title{font-size:36px}.hero-title .script{font-size:44px}}
 @media(max-width:680px){.hero{min-height:auto}.anc-group{order:2}.anc{width:120px;height:168px}
   .hero-center{order:1;flex-basis:100%}.hero-inner{gap:18px;padding:34px 18px}}
+
+/* patriarch portraits are clickable -> family tree */
+.anc-link{display:inline-block;text-decoration:none;cursor:pointer;transition:transform .25s ease, filter .25s ease;}
+.anc-link:hover{transform:translateY(-4px);}
+.anc-link:hover .anc img{filter:sepia(.45) contrast(1.05) brightness(1.12);}

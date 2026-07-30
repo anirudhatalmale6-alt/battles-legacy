@@ -36,10 +36,10 @@ page_head('Home');
   <?php
   // The family patriarchs — the portraits provided by the family. These are fixed (not auto-selected).
   $pool = [
-    ['n' => 'Richmond Battles',    'y' => '1832 – 1909', 'p' => 'assets/patriarchs/richmond.jpg', 'pid' => '@I294@'],
+    ['n' => 'Richmond Battles',    'y' => '1832 – 1909', 'p' => 'assets/patriarchs/richmond.jpg', 'pid' => ''],
     ['n' => 'John N. Battles',     'y' => '1870 – 1940', 'p' => 'assets/patriarchs/johnn.jpg',    'pid' => ''],
     ['n' => 'William Holmes',      'y' => '1921 – 1988', 'p' => 'assets/patriarchs/william.jpg',  'pid' => ''],
-    ['n' => 'Lafane Battles Sr.',  'y' => '1896 – 1978', 'p' => 'assets/patriarchs/lafane.jpg',   'pid' => '@I450@'],
+    ['n' => 'Lafane Battles Sr.',  'y' => '1896 – 1978', 'p' => 'assets/patriarchs/lafane.jpg',   'pid' => ''],
   ];
   $slots = count($pool);
   ?>
@@ -48,10 +48,12 @@ page_head('Home');
     <div class="hero-inner">
       <div class="anc-group left">
         <?php for ($s = 0; $s < $slots && $s < 2; $s++): $a = $pool[$s]; ?>
-          <figure class="anc" data-slot="<?= $s ?>">
-            <img src="<?= e($a['p']) ?>" alt="<?= e($a['n']) ?>">
-            <figcaption><?= e($a['n']) ?><span class="yr"><?= e($a['y']) ?></span></figcaption>
-          </figure>
+          <a class="anc-link" href="<?= $a['pid'] ? 'person.php?pid=' . rawurlencode($a['pid']) : 'tree.php' ?>" title="Open the family tree">
+            <figure class="anc">
+              <img src="<?= e($a['p']) ?>" alt="<?= e($a['n']) ?>">
+              <figcaption><?= e($a['n']) ?><span class="yr"><?= e($a['y']) ?></span></figcaption>
+            </figure>
+          </a>
         <?php endfor; ?>
       </div>
       <div class="hero-center">
@@ -63,10 +65,12 @@ page_head('Home');
       </div>
       <div class="anc-group right">
         <?php for ($s = 2; $s < $slots && $s < 4; $s++): $a = $pool[$s]; ?>
-          <figure class="anc" data-slot="<?= $s ?>">
-            <img src="<?= e($a['p']) ?>" alt="<?= e($a['n']) ?>">
-            <figcaption><?= e($a['n']) ?><span class="yr"><?= e($a['y']) ?></span></figcaption>
-          </figure>
+          <a class="anc-link" href="<?= $a['pid'] ? 'person.php?pid=' . rawurlencode($a['pid']) : 'tree.php' ?>" title="Open the family tree">
+            <figure class="anc">
+              <img src="<?= e($a['p']) ?>" alt="<?= e($a['n']) ?>">
+              <figcaption><?= e($a['n']) ?><span class="yr"><?= e($a['y']) ?></span></figcaption>
+            </figure>
+          </a>
         <?php endfor; ?>
       </div>
     </div>
