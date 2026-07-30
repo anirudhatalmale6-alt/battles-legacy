@@ -100,10 +100,9 @@ table.list th{color:var(--gold);font-size:12px;letter-spacing:1px;text-transform
   background:linear-gradient(180deg,#6b451f 0%,#59331a 30%,#431417 68%,#3a0d12 100%);}
 .hero-bg{position:absolute;inset:0;pointer-events:none;
   background:
-    radial-gradient(120% 75% at 50% 6%, rgba(240,208,138,.32), transparent 60%),
-    radial-gradient(80% 55% at 16% 18%, rgba(214,170,108,.20), transparent 62%),
-    radial-gradient(80% 55% at 84% 18%, rgba(214,170,108,.20), transparent 62%),
-    url('hero-trees.svg') bottom center / cover no-repeat;}
+    radial-gradient(56% 62% at 50% 44%, rgba(28,7,9,.55), transparent 72%),
+    linear-gradient(rgba(34,10,12,.28), rgba(34,10,12,.28)),
+    url('hero-bg.jpg') center / cover no-repeat;}
 .hero-bg::after{content:"";position:absolute;inset:0;
   background:radial-gradient(ellipse 75% 70% at 50% 44%, transparent 52%, rgba(30,8,10,.72) 100%);}
 .hero-inner{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;
