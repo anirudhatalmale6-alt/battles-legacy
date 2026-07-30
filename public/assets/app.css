@@ -155,7 +155,7 @@ body.home .foot{display:none;}
 /* scripture value strip */
 .valuestrip{background:linear-gradient(180deg,#2c090d,#360d11);border-top:1px solid rgba(201,162,75,.3);
   border-bottom:1px solid rgba(201,162,75,.3);}
-.vs-inner{max-width:1240px;margin:0 auto;padding:26px 24px;display:grid;
+.vs-inner{max-width:1240px;margin:0 auto;padding:52px 24px 34px;display:grid;
   grid-template-columns:1.5fr 1fr 1fr 1fr 1fr;gap:26px;align-items:center;}
 .vs-verse{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gold2);font-size:18px;
   line-height:1.4;border:0;}
