@@ -33,15 +33,85 @@ page_head('Home');
        <b style="color:var(--gold2)"><?= (int)$nph ?></b> photographs pinned and growing.</p>
   </div>
 <?php else: ?>
-  <div class="panel" style="text-align:center;max-width:720px;margin:30px auto">
-    <h1><span class="script">The Battles</span> Legacy</h1>
-    <p class="lede" style="margin:14px auto">A private home for our family's history — the tree, the photographs,
-       and the memories that connect us. This hub is for family. Sign in to see everyone, including our living relatives.</p>
-    <div style="margin-top:22px">
-      <a class="btn gold" href="login.php">Family Login</a>
-      <a class="btn" href="tree.php" style="margin-left:8px">Preview the Tree</a>
+  <?php
+  // Featured ancestors for the hero — deceased (public) relatives who have a photograph, eldest first.
+  // Best-documented deceased ancestors (most portraits => most likely a real portrait, not a lone headstone).
+  $anc = all("SELECT p.pid,p.name,p.given,p.surname,p.birth_date,p.death_date, MIN(ph.path) photo, COUNT(ph.id) c
+              FROM persons p JOIN photos ph ON ph.pid=p.pid
+              WHERE p.living=0 AND ph.status='approved'
+                AND ph.filename NOT LIKE '%headstone%' AND ph.filename NOT LIKE '%tomb%'
+                AND ph.filename NOT LIKE '%grave%' AND ph.filename NOT LIKE '%cemetery%'
+              GROUP BY p.pid,p.name,p.given,p.surname,p.birth_date,p.death_date
+              HAVING c >= 2
+              ORDER BY c DESC");
+  $anc = array_slice($anc, 0, 16);                 // keep the best-documented
+  foreach ($anc as $i => $a) { preg_match('/(\d{4})/', $a['birth_date'], $m); $anc[$i]['yr'] = isset($m[1]) ? (int)$m[1] : 9999; }
+  usort($anc, function($x,$y){ return $x['yr'] <=> $y['yr']; });   // display eldest first
+  $pool = [];
+  foreach ($anc as $a) {
+      $yrs = trim(yr($a['birth_date']) . ' – ' . yr($a['death_date']));
+      $pool[] = ['n' => trim($a['given'] . ' ' . $a['surname']), 'y' => trim($yrs, ' –'), 'p' => $a['photo']];
+  }
+  $slots = min(4, count($pool));
+  ?>
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <div class="anc-group left">
+        <?php for ($s = 0; $s < $slots && $s < 2; $s++): $a = $pool[$s]; ?>
+          <figure class="anc" data-slot="<?= $s ?>">
+            <img src="<?= e($a['p']) ?>" alt="<?= e($a['n']) ?>">
+            <figcaption><?= e($a['n']) ?><span class="yr"><?= e($a['y']) ?></span></figcaption>
+          </figure>
+        <?php endfor; ?>
+      </div>
+      <div class="hero-center">
+        <h1 class="hero-title">One Family.<br>Many Stories.<br><span class="script">One Legacy.</span></h1>
+        <p class="hero-lede">Welcome to our family's digital home — a place where generations come together to
+           preserve our history, honor our ancestors, and build a stronger future for those who follow us.</p>
+        <a class="btn gold hero-cta" href="tree.php">Explore Our Family Tree</a>
+        <div class="hero-actions"><a class="btn-ghost" href="login.php">Family Login</a></div>
+      </div>
+      <div class="anc-group right">
+        <?php for ($s = 2; $s < $slots && $s < 4; $s++): $a = $pool[$s]; ?>
+          <figure class="anc" data-slot="<?= $s ?>">
+            <img src="<?= e($a['p']) ?>" alt="<?= e($a['n']) ?>">
+            <figcaption><?= e($a['n']) ?><span class="yr"><?= e($a['y']) ?></span></figcaption>
+          </figure>
+        <?php endfor; ?>
+      </div>
     </div>
-    <p class="muted" style="margin-top:18px">Living relatives' names and photos stay hidden from the public preview — family sees everything once signed in.</p>
+  </section>
+
+  <div class="panel" style="text-align:center;max-width:720px;margin:30px auto">
+    <p class="lede" style="margin:0 auto">This is the private home of the Battles family — our tree, our photographs,
+       and the memories that connect us. Sign in to see everyone, including our living relatives.</p>
+    <p class="muted" style="margin-top:16px">Living relatives' names and photos stay hidden from the public view — family sees everything once signed in.</p>
   </div>
+
+  <script>
+  (function(){
+    var pool = <?= json_encode($pool, JSON_UNESCAPED_UNICODE) ?>;
+    var figs = Array.prototype.slice.call(document.querySelectorAll('.anc'));
+    if (pool.length <= figs.length) return;
+    var idx = figs.length;
+    function rotate(){
+      var fig = figs[Math.floor(Math.random()*figs.length)];
+      var next = pool[idx % pool.length]; idx++;
+      var img = fig.querySelector('img'), cap = fig.querySelector('figcaption');
+      fig.classList.add('swap');
+      setTimeout(function(){
+        var pre = new Image();
+        pre.onload = function(){
+          img.src = next.p; img.alt = next.n;
+          cap.innerHTML = next.n + '<span class="yr">' + next.y + '</span>';
+          fig.classList.remove('swap');
+        };
+        pre.src = next.p;
+      }, 1000);
+    }
+    setInterval(rotate, 4200);
+  })();
+  </script>
 <?php endif;
 page_foot();

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMax slice">
+  <defs>
+    <linearGradient id="t" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7a5228" stop-opacity="0"/>
+      <stop offset="0.55" stop-color="#6e4a24" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#4a2c12" stop-opacity="0.6"/>
+    </linearGradient>
+    <radialGradient id="c" cx="0.5" cy="0.45" r="0.6">
+      <stop offset="0" stop-color="#8a6234" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#5c3a1c" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- distant canopy haze -->
+  <ellipse cx="230" cy="230" rx="360" ry="170" fill="url(#c)"/>
+  <ellipse cx="980" cy="230" rx="360" ry="170" fill="url(#c)"/>
+  <ellipse cx="600" cy="270" rx="420" ry="180" fill="url(#c)"/>
+  <!-- tree line -->
+  <g fill="url(#t)">
+    <path d="M120 420 q4 -150 18 -190 q-40 -14 -46 -60 q-2 -44 40 -60 q10 -50 60 -54 q46 -40 96 -8 q54 -8 66 44 q46 6 42 58 q-4 42 -46 52 q16 46 20 178 z"/>
+    <rect x="180" y="300" width="14" height="120"/>
+    <path d="M420 420 q6 -120 16 -158 q-46 -10 -54 -58 q-4 -50 46 -66 q14 -46 66 -46 q50 -30 92 6 q50 0 58 50 q40 12 34 60 q-6 44 -50 50 q14 40 18 162 z"/>
+    <rect x="486" y="322" width="12" height="98"/>
+    <path d="M760 420 q6 -140 18 -180 q-44 -12 -50 -60 q-2 -48 44 -62 q12 -48 64 -50 q48 -36 96 -4 q52 -6 62 48 q42 10 38 60 q-4 42 -48 50 q16 44 20 170 z"/>
+    <rect x="826" y="308" width="14" height="112"/>
+    <path d="M1010 420 q6 -110 16 -146 q-42 -10 -48 -54 q-2 -44 42 -58 q12 -42 60 -44 q44 -32 88 4 q48 -4 56 46 l0 352 z"/>
+  </g>
+</svg>
