@@ -47,13 +47,14 @@ page_head('Home', $u ? [] : ['body_class' => 'home']);
   <script>
   (function(){
     var IDS=['p01','p02','p03','p04','p05','p06','p07','p08','p09','p10','p11','p12'];
+    // [name, years, person-id] — clicking a portrait opens that person's page so anyone can learn who they are
     var META={
-      p01:['L.J. Battles','1915 – 1984'], p02:['Nathaniel Battles','1918 – 1952'],
-      p03:['Susie Johnson','1882 – 1974'], p04:['Elizabeth Carey','1875 – 1933'],
-      p05:['James (JT) Battles','1911 – 1970'], p06:['Horatio Battles','1865 – 1944'],
-      p07:['Settie Battles','1898 – 1991'], p08:['Augustus (Gus) Battles','1905 – 1965'],
-      p09:['Johnnie Mae Battles','1903 – 1974'], p10:['Anthony Battles','1888 – 1966'],
-      p11:['Sam Calvin Battles','1900 – 1972'], p12:['Edmond Battles','1897 – 1957']
+      p01:['L.J. Battles','1915 – 1984','@I38@'], p02:['Nathaniel Battles','1918 – 1952','@I39@'],
+      p03:['Susie Johnson','1882 – 1974','@I300@'], p04:['Elizabeth Carey','1875 – 1933','@I30@'],
+      p05:['James (JT) Battles','1911 – 1970','@I7@'], p06:['Horatio Battles','1865 – 1944','@I29@'],
+      p07:['Settie Battles','1898 – 1991','@I32@'], p08:['Augustus (Gus) Battles','1905 – 1965','@I35@'],
+      p09:['Johnnie Mae Battles','1903 – 1974','@I34@'], p10:['Anthony Battles','1888 – 1966','@I422@'],
+      p11:['Sam Calvin Battles','1900 – 1972','@I33@'], p12:['Edmond Battles','1897 – 1957','@I31@']
     };
     // each slot cycles its own group of 3 photos, so no face is ever shown twice at once
     var SETS=[[0,1,2],[3,4,5],[6,7,8],[9,10,11]];
@@ -61,6 +62,8 @@ page_head('Home', $u ? [] : ['body_class' => 'home']);
     function paint(s,id){
       s._img.src='assets/hero-rot/'+id+'.jpg';
       s._nm.textContent=META[id][0]; s._yr.textContent=META[id][1];
+      s.setAttribute('href','person.php?pid='+encodeURIComponent(META[id][2]));
+      s.setAttribute('title','Read about '+META[id][0]);
     }
     slots.forEach(function(s,i){
       s._img=s.querySelector('.rot'); s._cap=s.querySelector('.rcap');
