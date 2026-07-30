@@ -153,36 +153,7 @@ page_head('Home', $u ? [] : ['body_class' => 'home']);
     </div>
   </section>
 
-  <!-- rich footer -->
-  <footer class="homefoot">
-    <div class="hf-inner">
-      <div class="hf-col">
-        <h4>✉ Stay Connected</h4>
-        <p>Subscribe for family updates and news.</p>
-        <form class="hf-sub" onsubmit="return hfSub(this)">
-          <input type="email" name="email" placeholder="Your email address" required>
-          <button type="submit" class="btn gold">Subscribe</button>
-          <span class="hf-thanks">Thank you — we'll keep you posted.</span>
-        </form>
-      </div>
-      <div class="hf-col">
-        <h4>🔒 Private Family Website</h4>
-        <p>This is a private website for family members. Login to access all features.</p>
-        <a class="btn2 solid" href="login.php">Login</a>
-      </div>
-      <div class="hf-col">
-        <h4>Follow us on Faith, Family &amp; Love</h4>
-        <p class="script hf-motto">Rooted in Faith. United in Love. Building Our Legacy.</p>
-      </div>
-      <div class="hf-col hf-brand">
-        <span class="hf-tree"><svg viewBox="0 0 24 24"><path d="M12 3a5 5 0 0 0-4 8 4 4 0 0 0 1 7h6a4 4 0 0 0 1-7 5 5 0 0 0-4-8z"/><line x1="12" y1="13" x2="12" y2="22"/></svg></span>
-        <div>Building on<br><b>The Battles Legacy</b></div>
-      </div>
-    </div>
-  </footer>
-  <script>
-    function hfSub(f){f.querySelector('.hf-thanks').style.display='block';f.querySelector('input').value='';f.querySelector('input').disabled=true;return false;}
-  </script>
+  <?php legacy_footer(); ?>
 
 <?php endif;
 page_foot();
