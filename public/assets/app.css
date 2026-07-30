@@ -100,6 +100,15 @@ table.list th{color:var(--gold);font-size:12px;letter-spacing:1px;text-transform
 .hero-img{display:block;width:100%;height:auto;}
 .hot{position:absolute;display:block;cursor:pointer;border-radius:12px;transition:background .2s, box-shadow .2s;}
 .hot:hover{background:rgba(255,221,150,.10);box-shadow:inset 0 0 0 1px rgba(224,192,116,.45);}
+/* rotating ancestor portraits that fade in/out over the tree scene */
+.rslot{position:absolute;display:block;cursor:pointer;}
+.rslot .rot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 24%;
+  opacity:0;transition:opacity 1.6s ease;pointer-events:none;
+  filter:sepia(.55) saturate(.82) contrast(1.03) brightness(1.06);
+  -webkit-mask-image:radial-gradient(ellipse 60% 70% at 50% 42%,#000 44%,transparent 78%);
+          mask-image:radial-gradient(ellipse 60% 70% at 50% 42%,#000 44%,transparent 78%);}
+.rslot .rot.on{opacity:1;}
+.rslot:hover .rot.on{filter:sepia(.4) contrast(1.05) brightness(1.15);}
 .hero-bg{position:absolute;inset:0;pointer-events:none;
   background:
     radial-gradient(56% 62% at 50% 44%, rgba(28,7,9,.55), transparent 72%),

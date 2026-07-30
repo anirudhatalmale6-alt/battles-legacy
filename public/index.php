@@ -34,15 +34,35 @@ page_head('Home', $u ? [] : ['body_class' => 'home']);
   </div>
 <?php else: ?>
   <section class="hero">
-    <img class="hero-img" src="assets/hero-full.jpg"
-         alt="The Battles Legacy — One Family. Many Stories. One Legacy. Featuring Richmond Battles, John N. Battles, William Holmes and Lafane Battles Sr.">
-    <!-- clickable areas over the patriarchs and the button — all open the family tree -->
-    <a class="hot" style="left:37%;top:59%;width:26%;height:14%" href="tree.php" title="Explore the family tree"></a>
-    <a class="hot" style="left:3%;top:22%;width:15%;height:56%"  href="tree.php" title="Richmond Battles — open the family tree"></a>
-    <a class="hot" style="left:18.5%;top:22%;width:14.5%;height:56%" href="tree.php" title="John N. Battles — open the family tree"></a>
-    <a class="hot" style="left:63.5%;top:22%;width:13.5%;height:56%" href="tree.php" title="William Holmes — open the family tree"></a>
-    <a class="hot" style="left:77%;top:22%;width:14.5%;height:56%" href="tree.php" title="Lafane Battles Sr. — open the family tree"></a>
+    <img class="hero-img" src="assets/hero-scene.jpg"
+         alt="The Battles Legacy — One Family. Many Stories. One Legacy.">
+    <!-- four ancestor portraits that gently fade in and out over the tree scene; each opens the family tree -->
+    <a class="rslot" style="left:2.5%;top:19%;width:15%;height:76%"  href="tree.php" title="Open the family tree"><img class="rot a" alt=""><img class="rot b" alt=""></a>
+    <a class="rslot" style="left:18%;top:19%;width:15%;height:76%"  href="tree.php" title="Open the family tree"><img class="rot a" alt=""><img class="rot b" alt=""></a>
+    <a class="rslot" style="left:63%;top:19%;width:15%;height:76%"  href="tree.php" title="Open the family tree"><img class="rot a" alt=""><img class="rot b" alt=""></a>
+    <a class="rslot" style="left:78%;top:19%;width:15.5%;height:76%" href="tree.php" title="Open the family tree"><img class="rot a" alt=""><img class="rot b" alt=""></a>
+    <!-- clickable Explore Our Family Tree button (baked into the scene) -->
+    <a class="hot" style="left:39.5%;top:78%;width:20.5%;height:13%" href="tree.php" title="Explore the family tree"></a>
   </section>
+  <script>
+  (function(){
+    var PH=['p01','p02','p03','p04','p05','p06','p07','p08','p09','p10','p11','p12']
+      .map(function(n){return 'assets/hero-rot/'+n+'.jpg';});
+    var slots=[].slice.call(document.querySelectorAll('.hero .rslot'));
+    var idx=[0,3,6,9];
+    slots.forEach(function(s,i){
+      s._a=s.querySelector('.a'); s._b=s.querySelector('.b'); s._top=true;
+      s._a.src=PH[idx[i]]; s._a.classList.add('on');
+    });
+    function tick(i){
+      var s=slots[i]; idx[i]=(idx[i]+4)%PH.length;
+      var hidden=s._top?s._b:s._a, shown=s._top?s._a:s._b;
+      hidden.onload=function(){ hidden.classList.add('on'); shown.classList.remove('on'); s._top=!s._top; };
+      hidden.src=PH[idx[i]];
+    }
+    slots.forEach(function(s,i){ setTimeout(function(){ setInterval(function(){tick(i);}, 5400); }, i*1350); });
+  })();
+  </script>
 
   <!-- scripture value strip -->
   <section class="valuestrip">
