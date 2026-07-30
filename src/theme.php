@@ -3,6 +3,7 @@
 
 function page_head($title, $opts = []) {
     $full = $opts['full'] ?? false; // full = no container padding (used by the tree)
+    $bodyClass = $opts['body_class'] ?? ''; // extra body class (e.g. 'home')
     $u = current_user();
     $site = config('site_name');
     ?><!DOCTYPE html>
@@ -16,7 +17,7 @@ function page_head($title, $opts = []) {
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=EB+Garamond&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/app.css">
 </head>
-<body class="<?= $full ? 'full' : '' ?>">
+<body class="<?= trim(($full ? 'full ' : '') . $bodyClass) ?>">
 <header class="nav">
   <a class="brand" href="index.php"><span class="script">The Battles</span> Legacy</a>
   <nav class="links">
