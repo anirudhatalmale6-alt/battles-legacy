@@ -148,7 +148,16 @@ function _first_last($name, $SUFFIX) {
 function install_photos($srcDir, $dry = false) {
     if (!is_dir($srcDir)) return ['ok' => false, 'error' => "Photo folder not found: $srcDir"];
     $SUFFIX = ['sr','jr','ii','iii','iv','v'];
-    $OVERRIDES = ['anothany wynn'=>'@I252@','agustus battles'=>'@I35@'];
+    $OVERRIDES = [
+        'anothany wynn'=>'@I252@', 'agustus battles'=>'@I35@',
+        'gus battles'=>'@I35@',      // Augustus `Gus` Battles
+        'horatio'=>'@I29@',          // Horatio Battles (unique)
+        'cos battles'=>'@I104@',     // Costromia `Cos` Battles
+        'fred battles'=>'@I49@',     // Frederick `Fred` Lee Battles
+        'chris holmes'=>'@I2@',      // Christopher Steele Holmes
+        'chic chandler'=>'@I726@',   // Shertoddra `Chic` Chandler
+        'frank fristoe'=>'@I789@',   // Benjamin Franklin (Frank) Fristoe
+    ];
     $people = all("SELECT pid,name,given,surname FROM persons");
     $byFull=[]; $byFL=[]; $byGiven=[];
     foreach ($people as $p) {
