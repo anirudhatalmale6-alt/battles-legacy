@@ -137,7 +137,8 @@ function install_gedcom($path) {
 // ---------- Photos ----------
 function _norm($s) { $s = strtolower($s); $s = str_replace(['`',"'",'"','.'], '', $s); return trim(preg_replace('/\s+/',' ', preg_replace('/[^a-z0-9]+/',' ',$s))); }
 function _clean_filename($base) {
-    $b = preg_replace('/\[\d+\]/','',$base); $b = preg_replace('/\([^)]*\)/','',$b);
+    $b = preg_replace('/^thumb[_ ]+/i','',$base);          // strip thumbnail prefix
+    $b = preg_replace('/\[\d+\]/','',$b); $b = preg_replace('/\([^)]*\)/','',$b);
     $b = preg_replace('/[_]+/',' ',$b); $b = preg_replace('/\s*\d+\s*$/','',$b);
     return trim(preg_replace('/\s+/',' ',$b));
 }
@@ -157,6 +158,19 @@ function install_photos($srcDir, $dry = false) {
         'chris holmes'=>'@I2@',      // Christopher Steele Holmes
         'chic chandler'=>'@I726@',   // Shertoddra `Chic` Chandler
         'frank fristoe'=>'@I789@',   // Benjamin Franklin (Frank) Fristoe
+        // spelling / nickname / married-name variants confirmed against the tree
+        'dianne battles'=>'@I13@',   // Dianna Battles
+        'fabin thomas'=>'@I710@',    // Fabian Thomas
+        'darly phillips'=>'@I57@',   // Daryll Phillips
+        'patrica holmes'=>'@I17@',   // Patricia Ann Holmes
+        'james batles'=>'@I11@',     // James Earl Battles (misspelled file)
+        'cleo mclendon'=>'@I773@',   // Cleopatra McClendon
+        'cindi ward'=>'@I476@',      // Cinda J. Ward
+        'hannah'=>'@I474@',          // Hannah Lauren Richmond
+        'meagan'=>'@I711@',          // Meagan Olivia Richmond
+        'rory'=>'@I108@',            // Rory Micah Richmond
+        'nathaniel battles tomb'=>'@I39@',  // Nathaniel Battles (grave photo)
+        'gus battles headstone'=>'@I35@',   // Augustus `Gus` Battles (grave photo)
     ];
     $people = all("SELECT pid,name,given,surname FROM persons");
     $byFull=[]; $byFL=[]; $byGiven=[];
@@ -179,21 +193,33 @@ function install_photos($srcDir, $dry = false) {
     };
     $publicDir = __DIR__ . '/../public/';
     if (!$dry) @mkdir($publicDir . config('photos_dir'), 0775, true);
-    $exts=['jpg','jpeg','png','gif','webp']; $files=[];
-    foreach (scandir($srcDir) as $f) { if ($f[0]==='.') continue; if (in_array(strtolower(pathinfo($f,PATHINFO_EXTENSION)),$exts,true)) $files[]=$f; }
-    sort($files);
-    $stats=['matched'=>0,'copied'=>0,'skipped'=>0,'unmatched'=>0]; $unmatched=[];
+    $exts=['jpg','jpeg','png','gif','webp']; $full=[]; $thumb=[];
+    foreach (scandir($srcDir) as $f) {
+        if ($f[0]==='.') continue;
+        if (!in_array(strtolower(pathinfo($f,PATHINFO_EXTENSION)),$exts,true)) continue;
+        if (preg_match('/^thumb[_ ]/i',$f)) $thumb[]=$f; else $full[]=$f;
+    }
+    sort($full); sort($thumb);
+    // Full-size photos first; then thumbnails ONLY for people who still have no photo
+    // (so we never duplicate, but people whose pictures exist only as thumbnails still get them).
+    $files = array_merge($full, $thumb);
+    $isThumb = array_fill_keys($thumb, true);
+    $stats=['matched'=>0,'copied'=>0,'skipped'=>0,'unmatched'=>0,'thumb_used'=>0,'thumb_redundant'=>0]; $unmatched=[];
+    $havePhoto=[]; foreach (all("SELECT DISTINCT pid FROM photos") as $r) $havePhoto[$r['pid']]=true;
     $exists = db()->prepare("SELECT id FROM photos WHERE pid=? AND filename=?");
     $insert = db()->prepare("INSERT INTO photos (pid,filename,path,caption,status,source) VALUES (?,?,?,?, 'approved','import')");
     foreach ($files as $f) {
         $cleanName=_clean_filename(pathinfo($f,PATHINFO_FILENAME));
         $pid=$match($cleanName);
         if (!$pid) { $stats['unmatched']++; $unmatched[]=$f; continue; }
+        if (!empty($isThumb[$f]) && !empty($havePhoto[$pid])) { $stats['thumb_redundant']++; continue; } // person already has a real photo
         $stats['matched']++;
+        if (!empty($isThumb[$f])) $stats['thumb_used']++;
         $safe=preg_replace('/[^A-Za-z0-9._-]+/','_',$f);
         $relDir=config('photos_dir').'/'.trim($pid,'@'); $rel=$relDir.'/'.$safe;
-        $exists->execute([$pid,$f]); if ($exists->fetch()) { $stats['skipped']++; continue; }
+        $exists->execute([$pid,$f]); if ($exists->fetch()) { $stats['skipped']++; $havePhoto[$pid]=true; continue; }
         if (!$dry) { @mkdir($publicDir.$relDir,0775,true); if (@copy($srcDir.'/'.$f,$publicDir.$rel)) $stats['copied']++; $insert->execute([$pid,$f,$rel,$cleanName]); }
+        $havePhoto[$pid]=true;
     }
     return ['ok' => true, 'stats' => $stats, 'unmatched' => $unmatched];
 }
