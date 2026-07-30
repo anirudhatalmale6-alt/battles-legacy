@@ -18,7 +18,7 @@ $defaults = [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $f = fn($k) => trim($_POST[$k] ?? '');
+    $f = function($k) { return trim($_POST[$k] ?? ''); };
     // 1) test DB connection first (don't poison config cache)
     try {
         $test = new PDO(sprintf('mysql:host=%s;dbname=%s;charset=utf8mb4', $f('db_host'), $f('db_name')), $f('db_user'), $f('db_pass'));

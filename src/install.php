@@ -117,7 +117,7 @@ function install_gedcom($path) {
             $fam[$fid]=$r;
         } else { $i++; }
     }
-    $by = fn($d) => preg_match('/\d{4}/',$d,$m) ? (int)$m[0] : null;
+    $by = function($d) { return preg_match('/\d{4}/',$d,$m) ? (int)$m[0] : null; };
     db()->beginTransaction();
     db()->exec("DELETE FROM persons"); db()->exec("DELETE FROM families");
     $living = 0;
@@ -142,7 +142,7 @@ function _clean_filename($base) {
     return trim(preg_replace('/\s+/',' ',$b));
 }
 function _first_last($name, $SUFFIX) {
-    $t = array_values(array_filter(explode(' ', _norm($name)), fn($w)=>!in_array($w,$SUFFIX,true)));
+    $t = array_values(array_filter(explode(' ', _norm($name)), function($w) use ($SUFFIX) { return !in_array($w,$SUFFIX,true); }));
     return count($t) < 2 ? null : $t[0].' '.end($t);
 }
 function install_photos($srcDir, $dry = false) {
