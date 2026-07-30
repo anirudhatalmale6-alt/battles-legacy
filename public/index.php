@@ -34,25 +34,14 @@ page_head('Home');
   </div>
 <?php else: ?>
   <?php
-  // Featured ancestors for the hero — deceased (public) relatives who have a photograph, eldest first.
-  // Best-documented deceased ancestors (most portraits => most likely a real portrait, not a lone headstone).
-  $anc = all("SELECT p.pid,p.name,p.given,p.surname,p.birth_date,p.death_date, MIN(ph.path) photo, COUNT(ph.id) c
-              FROM persons p JOIN photos ph ON ph.pid=p.pid
-              WHERE p.living=0 AND ph.status='approved'
-                AND ph.filename NOT LIKE '%headstone%' AND ph.filename NOT LIKE '%tomb%'
-                AND ph.filename NOT LIKE '%grave%' AND ph.filename NOT LIKE '%cemetery%'
-              GROUP BY p.pid,p.name,p.given,p.surname,p.birth_date,p.death_date
-              HAVING c >= 2
-              ORDER BY c DESC");
-  $anc = array_slice($anc, 0, 16);                 // keep the best-documented
-  foreach ($anc as $i => $a) { preg_match('/(\d{4})/', $a['birth_date'], $m); $anc[$i]['yr'] = isset($m[1]) ? (int)$m[1] : 9999; }
-  usort($anc, function($x,$y){ return $x['yr'] <=> $y['yr']; });   // display eldest first
-  $pool = [];
-  foreach ($anc as $a) {
-      $yrs = trim(yr($a['birth_date']) . ' – ' . yr($a['death_date']));
-      $pool[] = ['n' => trim($a['given'] . ' ' . $a['surname']), 'y' => trim($yrs, ' –'), 'p' => $a['photo']];
-  }
-  $slots = min(4, count($pool));
+  // The family patriarchs — the portraits provided by the family. These are fixed (not auto-selected).
+  $pool = [
+    ['n' => 'Richmond Battles',    'y' => '1832 – 1909', 'p' => 'assets/patriarchs/richmond.jpg', 'pid' => '@I294@'],
+    ['n' => 'John N. Battles',     'y' => '1870 – 1940', 'p' => 'assets/patriarchs/johnn.jpg',    'pid' => ''],
+    ['n' => 'William Holmes',      'y' => '1921 – 1988', 'p' => 'assets/patriarchs/william.jpg',  'pid' => ''],
+    ['n' => 'Lafane Battles Sr.',  'y' => '1896 – 1978', 'p' => 'assets/patriarchs/lafane.jpg',   'pid' => '@I450@'],
+  ];
+  $slots = count($pool);
   ?>
   <section class="hero">
     <div class="hero-bg" aria-hidden="true"></div>
@@ -89,29 +78,5 @@ page_head('Home');
     <p class="muted" style="margin-top:16px">Living relatives' names and photos stay hidden from the public view — family sees everything once signed in.</p>
   </div>
 
-  <script>
-  (function(){
-    var pool = <?= json_encode($pool, JSON_UNESCAPED_UNICODE) ?>;
-    var figs = Array.prototype.slice.call(document.querySelectorAll('.anc'));
-    if (pool.length <= figs.length) return;
-    var idx = figs.length;
-    function rotate(){
-      var fig = figs[Math.floor(Math.random()*figs.length)];
-      var next = pool[idx % pool.length]; idx++;
-      var img = fig.querySelector('img'), cap = fig.querySelector('figcaption');
-      fig.classList.add('swap');
-      setTimeout(function(){
-        var pre = new Image();
-        pre.onload = function(){
-          img.src = next.p; img.alt = next.n;
-          cap.innerHTML = next.n + '<span class="yr">' + next.y + '</span>';
-          fig.classList.remove('swap');
-        };
-        pre.src = next.p;
-      }, 1000);
-    }
-    setInterval(rotate, 4200);
-  })();
-  </script>
 <?php endif;
 page_foot();
