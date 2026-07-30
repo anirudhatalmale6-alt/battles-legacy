@@ -19,10 +19,21 @@ function page_head($title, $opts = []) {
 </head>
 <body class="<?= trim(($full ? 'full ' : '') . $bodyClass) ?>">
 <header class="nav">
-  <a class="brand" href="index.php"><span class="script">The Battles</span> Legacy</a>
+  <a class="brand" href="index.php">
+    <span class="brand-name"><span class="script">The Battles</span> Legacy</span>
+    <span class="brand-tag">Honoring Our Past. Inspiring Our Future.</span>
+  </a>
   <nav class="links">
+    <a href="index.php">Home</a>
+    <a href="section.php?s=history">History</a>
+    <a href="tree.php">Family Tree</a>
+    <a href="section.php?s=faith">Faith</a>
+    <a href="section.php?s=enterprise">Enterprise</a>
+    <a href="section.php?s=health">Health</a>
+    <a href="section.php?s=news">Family News</a>
+    <a href="section.php?s=memorial">Memorial</a>
+    <a href="section.php?s=aahistory">African American History</a>
     <?php if ($u): ?>
-      <a href="tree.php">Family Tree</a>
       <a href="upload.php">Add a Photo</a>
       <?php if (role_at_least('moderator')): ?>
         <a href="moderate.php">Review Queue<?php $c = one("SELECT COUNT(*) c FROM photos WHERE status='pending'"); if ($c && $c['c']) echo ' <b class="badge">' . (int)$c['c'] . '</b>'; ?></a>
@@ -31,8 +42,7 @@ function page_head($title, $opts = []) {
       <span class="who"><?= e($u['name']) ?> · <?= e(ucfirst($u['role'])) ?></span>
       <a class="btn-ghost" href="logout.php">Sign out</a>
     <?php else: ?>
-      <a href="tree.php">Family Tree</a>
-      <a class="btn-ghost" href="login.php">Family Login</a>
+      <a class="btn-ghost" href="login.php">Login</a>
     <?php endif; ?>
   </nav>
 </header>
