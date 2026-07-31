@@ -155,9 +155,10 @@ $CHAPTERS[] = [
 
 $CHAPTERS[] = [
  'n'=>5,'slug'=>'william-bill-johnson','title'=>'William "Bill" Johnson','date'=>'Jan 15 2011',
- 'card'=>'',
- 'lead'=>"William \"Bill\" Johnson is listed in the 1880 Census as black and in 1910 as mulatto. According to family members, he was part black and part white with blue eyes and looked like a white man.",
+ 'card'=>'johnson.jpg',
+ 'lead'=>"Part black and part white, with blue eyes, he looked like a white man and was known to curse prolifically. He married Susan and, together, they raised a family of five.",
  'body'=>
+   h_img('johnson.jpg','William &ldquo;Bill&rdquo; Johnson, husband of Susan and father of five Johnson children.').
    '<p>William &ldquo;Bill&rdquo; Johnson is listed in the 1880 Census Report as black. The 1910 Census Report listed him as mulatto. According to family members, he was part black and part white with blue eyes and looked like a white man. He was known to curse prolifically. He was born in 1854 or 1855 in Texas. His father was born in South Carolina; his mother was born in Georgia. William Johnson died September 27, 1927.</p>'.
    '<p>The following information is recorded in the 1880 Census Report. The information going across for each person is: name, color/race, gender, age, relation to head of household, occupation, and place of birth.</p>'.
    $T_JOHNSON1880.
@@ -277,6 +278,54 @@ $CHAPTERS[] = [
 
 /* =================== END CHAPTERS =================== */
 
+/* ============================================================
+   THE STORY — a flowing, plain-language narrative of the family
+   saga that opens the History page. Every fact below is drawn
+   directly from the family book; nothing is invented. Its job is
+   to draw the reader in before they reach the detailed chapters.
+   ============================================================ */
+function pull($quote, $who = '') {
+    $h = '<blockquote class="pull">&ldquo;' . $quote . '&rdquo;';
+    if ($who) $h .= '<cite>&mdash; ' . $who . '</cite>';
+    return $h . '</blockquote>';
+}
+$STORY_HTML =
+ '<section class="story">'.
+  '<p class="story-kicker">Our Story</p>'.
+  '<h2>One Family, One Long Road</h2>'.
+  '<p class="story-sub">Before the census reports and the family Bible, there was a story &mdash; of a free man, two women who followed him to Texas, and the generations they set in motion. Here it is, from the beginning.</p>'.
+
+  '<p class="drop">Every person who carries the Battles name today can trace their line back to a single man: <b>Richmond Battles</b>, born in 1832 to an enslaved African father and a Creek Indian mother. And because of who his mother was, Richmond was born free &mdash; in a world built on slavery.</p>'.
+
+  '<p>His story begins on a dock. Sometime around 1814, a white man named John N. Battles bought several slaves in Norfolk, Virginia and carried them west to Monroe County in the Mississippi Territory, where he farmed 120 acres. One of the men he purchased would father the son the family came to know as Richmond. That same man had a brother, sold to another planter named King &mdash; and generations later, a Reverend King met in Fort Worth turned out to be that brother&rsquo;s own grandson. Two branches of one African family, parted on an auction block and quietly rejoined a century later.</p>'.
+
+  '<p>Richmond&rsquo;s mother was Creek. Under the law of her people, a child born to a Creek woman was a full member of her clan and of the tribe &mdash; so although his father wore the chains of slavery, Richmond never did. He grew into a good-looking man, and a free one. When emancipation came in 1863, he left Mississippi for Georgia and stayed two years. And there, the heart of the family story begins &mdash; because in Georgia, Richmond met two women.</p>'.
+
+  pull('Susan and Louisa both followed Richmond to Texas in 1865. They settled next door to one another. They did not get along.').
+
+  '<p><b>Louisa</b> was the daughter of a Black mother and a wealthy white Georgia plantation owner. She was educated, she dressed well, and her father claimed her and kept her in money all her life &mdash; even after she married Richmond in 1865. <b>Susan</b> was light-complexioned and already a mother; her first son, William Daniels, she brought with her to Texas. Both women followed Richmond to Smith County. Susan&rsquo;s house was the very next dwelling over from Richmond and Louisa&rsquo;s &mdash; and the two women could not stand one another.</p>'.
+
+  '<p>There was a reason for the tension that Louisa did not yet know. On September 29, 1865, Susan gave birth to a son named Horatio. Three years later came another, Cheris. Richmond was their father &mdash; but his wife had no idea.</p>'.
+
+  '<p>The truth came out in the plainest way imaginable. Sometime after 1870, Louisa told Richmond she did not want to have children of her own. His reply became a piece of family lore.</p>'.
+
+  pull('Then you can help me raise mine.', 'Richmond Battles').
+
+  '<p>When Louisa asked what he meant, he said only, &ldquo;I&rsquo;ll show you.&rdquo; That year, young Horatio and his half-brother William Daniels moved into Richmond and Louisa&rsquo;s home. Louisa raised them, and the children came to call her &ldquo;Auntie.&rdquo; She never quite made her peace with it: when the census taker came in 1880, she refused to give Horatio the Battles name and told the official his surname was &ldquo;Williams.&rdquo; It is written that way in the record to this day.</p>'.
+
+  '<p>Susan, meanwhile, made her own life. Though she and Richmond never married, she was in every real sense the first lady of the family. On February 26, 1874 she married <b>William &ldquo;Bill&rdquo; Johnson</b> &mdash; a mulatto man, part Black and part white, with blue eyes, who looked white and cursed prolifically. Together they raised five children, and the Johnson and Battles lines have been braided together ever since.</p>'.
+
+  h_img('johnson.jpg','William &ldquo;Bill&rdquo; Johnson, who married Susan &mdash; the first lady of the Battles family.').
+
+  '<p>From Richmond and Susan&rsquo;s son Horatio, the family multiplied across East Texas and, later, Fort Worth. Horatio and his wife Lizzie kept one of the oldest family Bibles in Tarrant County, its pages crowded with births, marriages, and deaths. The children were sent to Garfield School in Tyler. The elders were laid to rest &mdash; many in unmarked graves &mdash; at the Oliver Chapel Cemetery.</p>'.
+
+  '<p>Not every chapter was gentle. In 1925, William Daniels&rsquo; son Joe cut a white man down on Wall Street in downtown Tyler and fled &mdash; first to Oklahoma, with seventeen-year-old Luther &ldquo;Chap&rdquo; Battles at his side. Joe was never caught, never tried. Luther came home.</p>'.
+
+  '<p class="story-close">These are the stories the census reports only hint at. On the chapters that follow you&rsquo;ll find the records themselves &mdash; the 1870, 1880, 1900 and 1910 censuses, the Bible in its own handwriting, the schoolhouse photographs &mdash; set down exactly as they were recovered. Read them in order, or wander wherever your name leads you. Either way, you are reading about people who were determined to be remembered.</p>'.
+
+  '<p class="byline">&mdash; Compiled from the family history researched by Rodney Battles &amp; Annie Pearl Battles Hale</p>'.
+ '</section>';
+
 $bySlug = [];
 foreach ($CHAPTERS as $c) $bySlug[$c['slug']] = $c;
 $sel = $_GET['ch'] ?? '';
@@ -317,10 +366,11 @@ page_head($current ? $current['title'] : 'Our History', ['body_class' => 'home h
 
   <main class="hist-main">
   <?php if (!$current): /* ---------- ALL CHAPTERS ---------- */ ?>
-    <div class="hist-intro">
-      <p>The chapters below are drawn directly from the Battles family history book &mdash; researched and written
-         by <b>Rodney Battles</b> and <b>Annie Pearl Battles Hale</b>. They trace our family from Richmond Battles,
-         born in 1832, through the census records, the family Bible, and the schools and churches of East Texas.</p>
+    <?= $STORY_HTML ?>
+    <div class="chapters-head">
+      <span class="ch-orn">&#10086;</span>
+      <h2>The Full Record &mdash; Chapter by Chapter</h2>
+      <p>The complete history, chapter by chapter &mdash; the census reports, the family Bible, the schoolhouse and the cemetery, each with its own photographs and records.</p>
     </div>
     <div class="hist-grid">
       <?php foreach ($CHAPTERS as $c): ?>
