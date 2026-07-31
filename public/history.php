@@ -239,7 +239,7 @@ $CHAPTERS[] = [
  'body'=>
    '<p>These class photographs from Garfield School in Tyler, Texas are preserved in the family history book. Several of the Battles family&rsquo;s children were educated here in the early 1900s.</p>'.
    h_img('garfield.jpg','(1) Johnny Calvin Battles (son of Calvin Sam Battles) and (2) Nathaniel Battles, youngest child of Horatio and Lizzie Battles. Nathaniel and Johnny were both born in 1918. Nathaniel was Johnny&rsquo;s uncle.').
-   h_img('garfield_color.jpg','Garfield School class, Tyler, Texas — a restored view of the same schoolhouse steps.'),
+   h_img('garfield_color.jpg','The Garfield School, Tyler, Texas — students and teachers gathered before the schoolhouse.'),
 ];
 
 $CHAPTERS[] = [
