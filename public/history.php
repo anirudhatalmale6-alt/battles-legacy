@@ -101,7 +101,10 @@ $CHAPTERS[] = [
  'body'=>
    '<p>I would like to whole heartedly thank Rodney Augustus Battles and Annie Pearl Hale for their untiring dedication and hard work in researching information regarding our family history. Their gathering of information has given us all a view into our past that helps us understand our present. This information has introduced all of us to family members that we did not know existed and will allow each of us to share our family with other families.</p>'.
    '<p>Again, thank you Rodney and Annie for being so diligent in your pursuit of this great quest.</p>'.
-   h_img('annie.jpg','Annie Pearl Battles Hale').
+   '<div class="hf-duo">'.
+     h_img('rodney.jpg','Rodney Augustus Battles').
+     h_img('annie.jpg','Annie Pearl Battles Hale').
+   '</div>'.
    '<p class="byline">— Annie Pearl Battles Hale</p>',
 ];
 
