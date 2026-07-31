@@ -28,7 +28,7 @@ function page_head($title, $opts = []) {
     <a href="history.php">History</a>
     <a href="tree.php">Family Tree</a>
     <a href="section.php?s=faith">Faith</a>
-    <a href="section.php?s=enterprise">Enterprise</a>
+    <a href="enterprise.php">Enterprise</a>
     <a href="section.php?s=health">Health</a>
     <a href="section.php?s=news">Family News</a>
     <a href="section.php?s=memorial">Memorial</a>
