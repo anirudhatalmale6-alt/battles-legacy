@@ -11,6 +11,20 @@ if ($p['living'] && !logged_in()) {
     header('Location: login.php'); exit;
 }
 
+// Moderators/admins can choose which photo is this person's main (tree + profile) photo.
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && role_at_least('moderator')) {
+    csrf_check();
+    if (($_POST['action'] ?? '') === 'set_primary') {
+        $phid = (int)($_POST['photo_id'] ?? 0);
+        if (one("SELECT id FROM photos WHERE id=? AND pid=? AND status='approved'", [$phid, $pid])) {
+            q("UPDATE photos SET is_primary=0 WHERE pid=?", [$pid]);
+            q("UPDATE photos SET is_primary=1 WHERE id=?", [$phid]);
+            flash('Main photo updated — it now shows in the tree and here.');
+        }
+    }
+    header('Location: person.php?pid=' . urlencode($pid)); exit;
+}
+
 $name = person_display_name($p);
 $photos = person_photos($pid);
 $occ = json_decode($p['occupation'] ?: '[]', true);
@@ -68,9 +82,17 @@ page_head($name);
 <div class="panel" style="margin-top:20px">
   <h2>Photographs<?= $photos ? ' (' . count($photos) . ')' : '' ?></h2>
   <?php if ($photos): ?>
+    <?php $canSetMain = role_at_least('moderator') && count($photos) > 1; ?>
+    <?php if ($canSetMain): ?><p class="muted" style="margin-bottom:8px">The first photo (marked <b style="color:var(--gold2)">&#9733; Main</b>) is what shows in the family tree. Hover any other photo and click &ldquo;Set as main&rdquo; to change it.</p><?php endif; ?>
     <div class="gallery">
-      <?php foreach ($photos as $ph): ?>
-        <a href="#" onclick="lb('<?= e($ph['path']) ?>');return false"><img src="<?= e($ph['path']) ?>" alt="<?= e($ph['caption']) ?>"></a>
+      <?php foreach ($photos as $i => $ph): $isMain = ($i === 0); ?>
+        <div class="gphoto<?= $isMain ? ' is-main' : '' ?>">
+          <a href="#" onclick="lb('<?= e($ph['path']) ?>');return false"><img src="<?= e($ph['path']) ?>" alt="<?= e($ph['caption']) ?>"></a>
+          <?php if ($isMain && count($photos) > 1): ?><span class="gmain">&#9733; Main</span><?php endif; ?>
+          <?php if (role_at_least('moderator') && !$isMain): ?>
+            <form method="post" class="gsetmain"><?= csrf_field() ?><input type="hidden" name="action" value="set_primary"><input type="hidden" name="photo_id" value="<?= (int)$ph['id'] ?>"><button type="submit">Set as main</button></form>
+          <?php endif; ?>
+        </div>
       <?php endforeach; ?>
     </div>
   <?php else: ?>

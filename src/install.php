@@ -45,7 +45,8 @@ function install_migrate() {
 "photos" => "CREATE TABLE IF NOT EXISTS photos (
   id $AI, pid VARCHAR(16) NOT NULL, filename VARCHAR(255) NOT NULL, path VARCHAR(255) NOT NULL,
   caption VARCHAR(500) DEFAULT '', status VARCHAR(20) NOT NULL DEFAULT 'approved',
-  source VARCHAR(20) NOT NULL DEFAULT 'import', uploaded_by INT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  source VARCHAR(20) NOT NULL DEFAULT 'import', uploaded_by INT NULL, is_primary INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )$ENG",
     ];
     foreach ($tables as $sql) db()->exec($sql);

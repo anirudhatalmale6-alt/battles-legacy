@@ -28,7 +28,7 @@ function person_photos($pid) {
     // Living relatives' photos are only shown to logged-in members.
     $p = one("SELECT living FROM persons WHERE pid=?", [$pid]);
     if ($p && $p['living'] && !logged_in()) return [];
-    return all("SELECT * FROM photos WHERE pid=? AND status='approved' ORDER BY id", [$pid]);
+    return all("SELECT * FROM photos WHERE pid=? AND status='approved' ORDER BY is_primary DESC, id", [$pid]);
 }
 
 function primary_photo($pid) {
