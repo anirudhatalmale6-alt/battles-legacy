@@ -2,22 +2,33 @@
 require __DIR__ . '/../src/bootstrap.php';
 
 /* ============================================================
-   ENTERPRISE — full page, built to match the approved design.
-   Everything below is driven by simple arrays so it converts
-   cleanly into a self-service admin screen (add / edit / remove
-   videos, businesses, sayings) once the look is signed off.
+   ENTERPRISE — built to match the approved design.
+   Driven by simple arrays so it converts cleanly into a
+   self-service admin screen (add / edit / remove businesses,
+   videos, sayings) once the look is signed off.
+   Sample businesses are illustrative (tagged "Example").
    ============================================================ */
 
 /* --- Five pillars (top icon bar) --- */
 $PILLARS = [
-  ['icon'=>'bulb',    'title'=>'Entrepreneurs',         'text'=>'Building businesses, creating opportunities, and leading with vision.'],
-  ['icon'=>'case',    'title'=>'Business Professionals','text'=>'Excellence in every field, leading with skill, integrity, and purpose.'],
-  ['icon'=>'chart',   'title'=>'Motivation',            'text'=>'Inspiring the next generation to dream, to strive, and to achieve.'],
-  ['icon'=>'users',   'title'=>'Family in Business',    'text'=>'Our legacy continues through partnership, support, and unity.'],
-  ['icon'=>'star',    'title'=>'Member Spotlights',     'text'=>'Celebrating the achievements of our family and the impact we make.'],
+  ['icon'=>'bulb',  'title'=>'Entrepreneurs',          'text'=>'Building businesses, creating opportunities, and leading with vision.'],
+  ['icon'=>'case',  'title'=>'Business Professionals', 'text'=>'Excellence in every field, leading with skill, integrity, and purpose.'],
+  ['icon'=>'chart', 'title'=>'Motivation',             'text'=>'Inspiring the next generation to dream, to strive, and to achieve.'],
+  ['icon'=>'users', 'title'=>'Family in Business',     'text'=>'Our legacy continues through partnership, support, and unity.'],
+  ['icon'=>'star',  'title'=>'Member Spotlights',      'text'=>'Celebrating the achievements of our family and the impact we make.'],
 ];
 
-/* --- Featured videos (add your own YouTube/Vimeo links later) --- */
+/* --- Featured family businesses (sample directory) --- */
+$BIZ = [
+  ['img'=>'gmw',     'mono'=>'GMW', 'name'=>'GMW Transportation',        'who'=>'Bill Holmes',          'cat'=>'Airport Transportation',        'loc'=>'Dallas, TX',      'blurb'=>'Private airport transportation to DFW &amp; Love Field. Dependable, professional, and on time.'],
+  ['img'=>'threads', 'mono'=>'T&amp;G', 'name'=>'Threads &amp; Grace Boutique','who'=>'Danielle Battles',     'cat'=>"Women's Fashion &amp; Accessories",'loc'=>'Fort Worth, TX', 'blurb'=>'Stylish fashion for every season. Empowering women to look and feel their best.'],
+  ['img'=>'law',     'mono'=>'BLG', 'name'=>'Battles Law Group',          'who'=>'Tanisha Battles, Esq.','cat'=>'Personal Injury &bull; Estate Planning','loc'=>'Houston, TX','blurb'=>'Dedicated legal representation with compassion, integrity, and results.'],
+  ['img'=>'cafe',    'mono'=>'B',   'name'=>'Battles Table Caf&eacute;',  'who'=>'James Battles Jr.',    'cat'=>'Caf&eacute; &amp; Catering',    'loc'=>'Frisco, TX',     'blurb'=>'Delicious food. Warm atmosphere. Bringing people together one meal at a time.'],
+  ['img'=>'ksj',     'mono'=>'KSJ', 'name'=>'KSJ Consulting',             'who'=>'Katrina Smith-Jackson','cat'=>'Business Strategy &bull; Leadership','loc'=>'Atlanta, GA', 'blurb'=>'Helping organizations grow through strategy, leadership and operational excellence.'],
+  ['img'=>'sons',    'mono'=>'B&amp;S','name'=>'Battles &amp; Sons Construction','who'=>'Robert Battles',  'cat'=>'General Contracting',           'loc'=>'Arlington, TX',  'blurb'=>'Quality construction. Strong foundations. Building for generations to come.'],
+];
+
+/* --- Featured videos --- */
 $VID_FEATURE = ['title'=>'Legacy in Action', 'sub'=>'Words of Wisdom from Our Elders', 'dur'=>'5:42'];
 $VIDEOS = [
   ['title'=>'Building a Business With Faith &amp; Purpose', 'dur'=>'4:18'],
@@ -60,6 +71,9 @@ function ent_icon($k) {
     'heart'  => '<path d="M12 20.5C7.2 16.9 4 13.7 4 10.2A3.7 3.7 0 0 1 10 7.4a3.7 3.7 0 0 1 2 1.3 3.7 3.7 0 0 1 2-1.3 3.7 3.7 0 0 1 6 2.8c0 3.5-3.2 6.7-8 10.3z"/>',
     'film'   => '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M8 5v14M16 5v14"/>',
     'bank'   => '<path d="M4 10h16M3 10l9-6 9 6M6 10v7M10 10v7M14 10v7M18 10v7M4 20h16"/>',
+    'globe'  => '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.7 2.6 15.3 0 18M12 3c-2.6 2.7-2.6 15.3 0 18"/>',
+    'phone'  => '<path d="M6 3h3l1.6 5-2 1.4a12 12 0 0 0 5.9 5.9l1.4-2 5 1.6v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4 5.2 2 2 0 0 1 6 3z"/>',
+    'mail'   => '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/>',
   ];
   $inner = $p[$k] ?? '<circle cx="12" cy="12" r="8"/>';
   return '<svg viewBox="0 0 24 24" aria-hidden="true">' . $inner . '</svg>';
@@ -69,6 +83,8 @@ page_head('Enterprise', ['body_class' => 'home ent']);
 ?>
 <!-- HERO -->
 <section class="ent2-hero">
+  <img class="ent2-hero-img" src="assets/enterprise/hero-band.jpg"
+       alt="Building Tomorrow. Honoring Our Legacy. Enterprising Our Future.">
   <div class="ent2-hero-inner">
     <h1 class="ent2-h1">Building Tomorrow.<br>Honoring Our Legacy.</h1>
     <span class="ent2-script">Enterprising Our Future.</span>
@@ -88,6 +104,46 @@ page_head('Enterprise', ['body_class' => 'home ent']);
       <p><?= $p['text'] /* authored above */ ?></p>
     </div>
   <?php endforeach; ?>
+</section>
+
+<!-- FEATURED FAMILY BUSINESSES -->
+<section class="ent2-bizwrap">
+  <div class="ent2-bizhead">
+    <h2>Featured Family Businesses</h2>
+    <p>Support our family. Strengthen our legacy.</p>
+  </div>
+  <form class="biz-search" onsubmit="return false;">
+    <input type="text" placeholder="Search businesses by name, profession, or location...">
+    <select aria-label="Category">
+      <option>All Categories</option>
+      <option>Business</option>
+      <option>Profession</option>
+      <option>Trades &amp; Construction</option>
+      <option>Food &amp; Hospitality</option>
+      <option>Professional Services</option>
+    </select>
+    <button type="submit" class="ent2-btn">Search</button>
+  </form>
+  <div class="biz-grid">
+    <?php foreach ($BIZ as $b): ?>
+      <article class="biz-card">
+        <div class="biz-photo" style="background-image:url('assets/enterprise/biz_<?= e($b['img']) ?>.jpg')">
+          <span class="ent-ex">Example</span>
+          <span class="biz-mono"><?= $b['mono'] /* authored */ ?></span>
+        </div>
+        <div class="biz-body">
+          <h3><?= $b['name'] /* authored */ ?></h3>
+          <div class="biz-who"><?= $b['who'] /* authored */ ?></div>
+          <div class="biz-cat"><?= $b['cat'] /* authored */ ?></div>
+          <div class="biz-loc"><?= $b['loc'] /* authored */ ?></div>
+          <p class="biz-blurb"><?= $b['blurb'] /* authored */ ?></p>
+          <div class="biz-ico"><?= ent_icon('globe') . ent_icon('phone') . ent_icon('mail') ?></div>
+          <button type="button" class="ent2-btn biz-view">View Business</button>
+        </div>
+      </article>
+    <?php endforeach; ?>
+  </div>
+  <button type="button" class="ent2-btn center" style="margin-top:24px;">View All Family Businesses &rarr;</button>
 </section>
 
 <!-- MAIN: videos + finance -->
@@ -156,7 +212,7 @@ page_head('Enterprise', ['body_class' => 'home ent']);
   </div>
   <p class="ent2-note">This page is live with sample content so you can see the full design in place.
      Once you're happy with the look, I'll wire up the admin screen &mdash; you'll log in and add, edit,
-     or remove videos, businesses, sayings and spotlights yourself, no coding, and they'll appear here instantly.</p>
+     or remove businesses, videos and sayings yourself, no coding, and they'll appear here instantly.</p>
 </section>
 
 <?php legacy_footer(); page_foot();
