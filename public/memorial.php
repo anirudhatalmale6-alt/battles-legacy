@@ -21,10 +21,15 @@ page_head('Memorial', ['body_class' => 'home mem']);
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1.6 3.2.6 4.9-.8 6.6-1.3 1.6-2.7 3.1-2.7 5.4a3.5 3.5 0 0 0 7 0c0-1.4-.6-2.5-1.2-3.4 1.9 1 3.2 2.9 3.2 5.1a6.5 6.5 0 1 1-13 0C6.7 8.9 12 8 12 2z"/></svg>
   </div>
   <h1>In Loving Memory</h1>
-  <p>Honoring the loved ones who have gone before us &mdash; the generations whose faith, hard work,
-     and love built the Battles family. May their memory forever be a blessing.</p>
+  <div class="mem-script">Forever in Our Hearts</div>
+  <p>We honor the lives, love, and legacy of our family members who have gone before us.
+     Their light continues to shine in us.</p>
   <?php if ($count): ?><div class="mem-count"><?= (int)$count ?> remembered</div><?php endif; ?>
 </section>
+<div class="mem-verse">
+  <span class="mv-dove">&#128330;</span>
+  <span class="mv-text">&ldquo;Precious in the sight of the Lord is the death of his saints.&rdquo; <em>&mdash; Psalm 116:15</em></span>
+</div>
 
 <div class="mem-wrap">
   <?php if ($count > 12): ?>
@@ -43,7 +48,7 @@ page_head('Memorial', ['body_class' => 'home mem']);
       $ini  = strtoupper(substr($p['given'], 0, 1) . substr($p['surname'], 0, 1));
       if ($ini === '') $ini = strtoupper(substr($p['name'], 0, 1));
     ?>
-      <a class="mem-card" href="person.php?pid=<?= e($p['pid']) ?>" data-name="<?= e(strtolower($p['name'])) ?>">
+      <a class="mem-card" href="tribute.php?pid=<?= e($p['pid']) ?>" data-name="<?= e(strtolower($p['name'])) ?>">
         <div class="mem-photo">
           <?php if ($img): ?><img src="<?= e($img) ?>" alt="" loading="lazy">
           <?php else: ?><span class="mem-mono"><?= e($ini) ?></span><?php endif; ?>
