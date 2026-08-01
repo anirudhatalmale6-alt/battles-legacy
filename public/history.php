@@ -105,7 +105,7 @@ $CHAPTERS[] = [
      h_img('rodney.jpg','Rodney Augustus Battles').
      h_img('annie.jpg','Annie Pearl Battles Hale').
    '</div>'.
-   '<p class="byline">— Annie Pearl Battles Hale</p>',
+   '<p class="byline">&mdash; William Holmes</p>',
 ];
 
 $CHAPTERS[] = [
@@ -306,6 +306,8 @@ $STORY_HTML =
   pull('Susan and Louisa both followed Richmond to Texas in 1865. They settled next door to one another. They did not get along.').
 
   '<p><b>Louisa</b> was the daughter of a Black mother and a wealthy white Georgia plantation owner. She was educated, she dressed well, and her father claimed her and kept her in money all her life &mdash; even after she married Richmond in 1865. <b>Susan</b> was light-complexioned and already a mother; her first son, William Daniels, she brought with her to Texas. Both women followed Richmond to Smith County. Susan&rsquo;s house was the very next dwelling over from Richmond and Louisa&rsquo;s &mdash; and the two women could not stand one another.</p>'.
+
+  h_img('louisa.jpg','Louisa Battles &mdash; Richmond&rsquo;s wife, who raised his sons and became known to them as &ldquo;Auntie.&rdquo;').
 
   '<p>There was a reason for the tension that Louisa did not yet know. On September 29, 1865, Susan gave birth to a son named Horatio. Three years later came another, Cheris. Richmond was their father &mdash; but his wife had no idea.</p>'.
 

@@ -419,8 +419,13 @@ body.home .foot{display:none;}
 .ent2-pillar h4{font-family:'Cormorant Garamond',serif;color:var(--gold2);font-weight:600;
   font-size:18px;text-transform:uppercase;letter-spacing:.6px;margin:0 0 6px;}
 .ent2-pillar p{color:#e7d6b6;font-size:13px;line-height:1.5;margin:0;font-family:'EB Garamond',serif;}
+a.ent2-pillar{text-decoration:none;display:block;}
+.ent2-pillar.linked{cursor:pointer;transition:background .2s;}
+.ent2-pillar.linked:hover{background:rgba(201,162,75,.10);}
+.ent2-pillar.linked:hover h4{text-decoration:underline;text-underline-offset:3px;}
 
 /* featured family businesses */
+.ent2-bizwrap{scroll-margin-top:14px;}
 .ent2-bizwrap{background:radial-gradient(130% 90% at 50% 0%, #efe0c2, #e6d2ac 70%, #dcc59a);padding:36px 24px 42px;}
 .ent2-bizhead{text-align:center;margin-bottom:6px;}
 .ent2-bizhead h2{font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-weight:600;font-size:30px;

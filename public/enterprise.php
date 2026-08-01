@@ -14,7 +14,7 @@ $PILLARS = [
   ['icon'=>'bulb',  'title'=>'Entrepreneurs',          'text'=>'Building businesses, creating opportunities, and leading with vision.'],
   ['icon'=>'case',  'title'=>'Business Professionals', 'text'=>'Excellence in every field, leading with skill, integrity, and purpose.'],
   ['icon'=>'chart', 'title'=>'Motivation',             'text'=>'Inspiring the next generation to dream, to strive, and to achieve.'],
-  ['icon'=>'users', 'title'=>'Family in Business',     'text'=>'Our legacy continues through partnership, support, and unity.'],
+  ['icon'=>'users', 'title'=>'Family in Business',     'text'=>'Our legacy continues through partnership, support, and unity.', 'link'=>'#family-in-business'],
   ['icon'=>'star',  'title'=>'Member Spotlights',      'text'=>'Celebrating the achievements of our family and the impact we make.'],
 ];
 
@@ -97,17 +97,17 @@ page_head('Enterprise', ['body_class' => 'home ent']);
 
 <!-- PILLARS -->
 <section class="ent2-pillars">
-  <?php foreach ($PILLARS as $p): ?>
-    <div class="ent2-pillar">
+  <?php foreach ($PILLARS as $p): $lnk = !empty($p['link']); ?>
+    <<?= $lnk ? 'a href="'.e($p['link']).'"' : 'div' ?> class="ent2-pillar<?= $lnk ? ' linked' : '' ?>">
       <div class="ent2-pic"><?= ent_icon($p['icon']) ?></div>
       <h4><?= e($p['title']) ?></h4>
       <p><?= $p['text'] /* authored above */ ?></p>
-    </div>
+    </<?= $lnk ? 'a' : 'div' ?>>
   <?php endforeach; ?>
 </section>
 
 <!-- FEATURED FAMILY BUSINESSES -->
-<section class="ent2-bizwrap">
+<section class="ent2-bizwrap" id="family-in-business">
   <div class="ent2-bizhead">
     <h2>Featured Family Businesses</h2>
     <p>Support our family. Strengthen our legacy.</p>
