@@ -101,10 +101,12 @@ let ROOT = ROOT_DEFAULT, expanded = new Set([ROOT]), SEL = null;
 document.getElementById('statline').textContent =
   Object.keys(I).length + " relatives · " + Object.keys(F).length + " families" + (window.IS_MEMBER ? " · signed in as family" : " · public preview");
 
-function childrenOf(pid){const seen=new Set(),out=[];(I[pid]?.fams||[]).forEach(fid=>{(F[fid]?.chil||[]).forEach(c=>{if(I[c]&&!seen.has(c)){seen.add(c);out.push(c);}});});return out;}
+function childrenOf(pid){const seen=new Set(),out=[];(I[pid]?.fams||[]).forEach(fid=>{(F[fid]?.chil||[]).forEach(c=>{if(I[c]&&!seen.has(c)){seen.add(c);out.push(c);}});});out.sort(byAge);return out;}
 function spousesOf(pid){const out=[];(I[pid]?.fams||[]).forEach(fid=>{const f=F[fid];if(!f)return;const s=f.husb===pid?f.wife:f.husb;if(s&&I[s])out.push(s);});return out;}
 function parentsOf(pid){const out=[];(I[pid]?.famc||[]).forEach(fid=>{const f=F[fid];if(!f)return;if(f.husb&&I[f.husb])out.push(f.husb);if(f.wife&&I[f.wife])out.push(f.wife);});return out;}
 function yr(d){if(!d)return"";const m=d.match(/\d{4}/);return m?m[0]:"";}
+/* sort people oldest-first by birth year; unknown years go last, then alphabetical */
+function byAge(a,b){const ya=+(yr(I[a]?.birth?.date)||99999),yb=+(yr(I[b]?.birth?.date)||99999);return ya!==yb?ya-yb:(I[a]?.name||'').localeCompare(I[b]?.name||'');}
 function lifespan(p){const b=yr(p.birth.date),d=yr(p.death.date);if(b&&d)return b+" – "+d;if(b)return "b. "+b;if(d)return "d. "+d;return "";}
 function initials(p){const parts=(p.given||'?').replace(/[`'"]/g,'').trim().split(/\s+/);const a=(parts[0]||'?')[0];const b=(p.surname||'')[0]||'';return (a+b).toUpperCase();}
 function avatarHTML(pid){const ph=PHOTOS[pid];return ph?`<img src="${ph}" alt="">`:`<span>${initials(I[pid])}</span>`;}
@@ -211,7 +213,7 @@ window.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox();});
 
 const q=document.getElementById('q'),results=document.getElementById('results');
 const roster=Object.values(I).map(p=>({id:p.id,name:p.name,y:yr(p.birth.date)}));
-q.addEventListener('input',()=>{const s=q.value.trim().toLowerCase();if(s.length<2){results.classList.remove('show');return;}const hits=roster.filter(r=>r.name.toLowerCase().includes(s)).slice(0,40);results.innerHTML=hits.map(h=>`<div onclick="pick('${h.id}')">${h.name} <span class="yr">${h.y?'· '+h.y:''}</span></div>`).join('')||'<div>No matches</div>';results.classList.add('show');});
+q.addEventListener('input',()=>{const s=q.value.trim().toLowerCase();if(s.length<2){results.classList.remove('show');return;}const hits=roster.filter(r=>r.name.toLowerCase().includes(s)).sort((a,b)=>{const ya=+(a.y||99999),yb=+(b.y||99999);return ya!==yb?ya-yb:a.name.localeCompare(b.name);}).slice(0,40);results.innerHTML=hits.map(h=>`<div onclick="pick('${h.id}')">${h.name} <span class="yr">${h.y?'· '+h.y:''}</span></div>`).join('')||'<div>No matches</div>';results.classList.add('show');});
 q.addEventListener('blur',()=>setTimeout(()=>results.classList.remove('show'),200));
 function pick(pid){q.value=I[pid].name;results.classList.remove('show');focusOn(pid);}
 
