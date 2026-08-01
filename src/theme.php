@@ -31,7 +31,7 @@ function page_head($title, $opts = []) {
     <a href="enterprise.php">Enterprise</a>
     <a href="section.php?s=health">Health</a>
     <a href="section.php?s=news">Family News</a>
-    <a href="section.php?s=memorial">Memorial</a>
+    <a href="memorial.php">Memorial</a>
     <a href="section.php?s=aahistory">African American History</a>
     <?php if ($u): ?>
       <a href="upload.php">Add a Photo</a>
