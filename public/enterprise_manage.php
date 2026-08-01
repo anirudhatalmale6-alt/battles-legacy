@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     /* ---------- BUSINESSES ---------- */
     if ($act === 'biz_save') {
         $name = trim($_POST['name'] ?? '');
-        if ($name === '') { flash('A business needs a name.'); }
+        if ($name === '') { flash('Please fill in the Name field — it is required to save a business.'); }
         else {
             $cur = $id ? one("SELECT photo FROM enterprise_businesses WHERE id=?", [$id]) : null;
             list($photo, $perr) = ent_save_photo($cur['photo'] ?? '');
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                    trim($_POST['location']??''),trim($_POST['blurb']??''),trim($_POST['link']??''),
                    trim($_POST['phone']??''),trim($_POST['email']??''),$photo,
                    ent_next_sort('enterprise_businesses'),$status]);
-                flash('Business added.');
+                flash('Business added — open the Enterprise page to see it live.');
             }
         }
     } elseif ($act === 'biz_delete' && $id) {
@@ -134,8 +134,10 @@ function em_status_opts($sel) {
 page_head('Manage Enterprise', ['body_class' => 'em']);
 ?>
 <h1>Manage the Enterprise page</h1>
-<p class="lede">Add, edit, or remove the Family Businesses, Videos and Sayings here. Changes appear on the
-   <a href="enterprise.php">Enterprise page</a> right away. Entries marked as samples show an "Example" tag until you edit them.</p>
+<p class="lede">Add, edit, or remove the Family Businesses, Videos and Sayings here. Fill in the form, then click the
+   button at the bottom of it (the <b>Name</b> field is required). Entries marked as samples show an "Example" tag until you edit them.</p>
+<p style="margin:10px 0 4px"><a class="btn gold" href="enterprise.php" target="_blank" rel="noopener">View the Enterprise page &#8599;</a>
+   <span class="muted" style="margin-left:10px">Opens in a new tab. If a change doesn't show, refresh that tab.</span></p>
 
 <div class="em-tabs">
   <a href="?tab=businesses" class="<?= $tab==='businesses'?'on':'' ?>">Businesses (<?= count($BIZ) ?>)</a>
