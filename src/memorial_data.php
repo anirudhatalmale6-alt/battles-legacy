@@ -10,7 +10,8 @@ function mem_migrate() {
     db()->exec("CREATE TABLE IF NOT EXISTS memorial_meta (
       pid VARCHAR(16) PRIMARY KEY, tribute VARCHAR(600) DEFAULT '', known_for VARCHAR(300) DEFAULT '',
       faith VARCHAR(140) DEFAULT '', legacy VARCHAR(240) DEFAULT '', scripture VARCHAR(400) DEFAULT '',
-      scripture_ref VARCHAR(140) DEFAULT '', candles INT NOT NULL DEFAULT 0, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      scripture_ref VARCHAR(140) DEFAULT '', candles INT NOT NULL DEFAULT 0, hidden INT NOT NULL DEFAULT 0,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )$ENG");
     db()->exec("CREATE TABLE IF NOT EXISTS memorial_condolences (
       id $AI, pid VARCHAR(16) NOT NULL, user_id INT NULL, author VARCHAR(160) DEFAULT '',
@@ -31,6 +32,12 @@ function mem_ensure_meta($pid) {
     if (!one("SELECT pid FROM memorial_meta WHERE pid=?", [$pid])) {
         q("INSERT INTO memorial_meta (pid) VALUES (?)", [$pid]);
     }
+}
+
+/** hide (1) or restore (0) a person from the Memorial listing */
+function mem_set_hidden($pid, $hidden) {
+    mem_ensure_meta($pid);
+    q("UPDATE memorial_meta SET hidden=? WHERE pid=?", [$hidden ? 1 : 0, $pid]);
 }
 
 function mem_light_candle($pid) {

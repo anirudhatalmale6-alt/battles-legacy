@@ -791,3 +791,20 @@ body.tribute .chip:hover{background:var(--gold);color:var(--maroon);}
 .gsetmain button{width:100%;background:rgba(28,6,8,.88);color:var(--gold2);border:1px solid var(--gold);
   border-radius:6px;padding:6px;font-size:12px;cursor:pointer;font-family:inherit;}
 .gsetmain button:hover{background:var(--gold);color:var(--maroon);}
+
+.gdel{position:absolute;top:6px;right:6px;opacity:0;transition:opacity .15s;z-index:3;}
+.gphoto:hover .gdel{opacity:1;}
+.gdel button{width:26px;height:26px;border-radius:50%;background:rgba(28,6,8,.9);color:#f0b8a8;border:1px solid #a5451f;
+  font-size:16px;line-height:1;cursor:pointer;display:grid;place-items:center;}
+.gdel button:hover{background:#a5451f;color:#fff;}
+
+/* Memorial — admin hide/restore controls */
+.mem-cell{position:relative;}
+.mem-hidebtn{position:absolute;top:8px;right:8px;opacity:0;transition:opacity .15s;z-index:3;}
+.mem-cell:hover .mem-hidebtn{opacity:1;}
+.mem-hidebtn button{background:rgba(28,6,8,.92);color:#f0b8a8;border:1px solid #a5451f;border-radius:14px;
+  font-size:12px;padding:3px 11px;cursor:pointer;font-family:inherit;}
+.mem-hidebtn button:hover{background:#a5451f;color:#fff;}
+.mem-adminnote{text-align:center;margin:0 0 14px;color:var(--gold2);font-size:14px;}
+.mem-adminnote a{color:var(--gold2);text-decoration:underline;}
+.mem-tip{color:var(--gold-soft);font-size:12px;font-style:italic;}

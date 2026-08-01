@@ -1,18 +1,34 @@
 <?php
 require __DIR__ . '/../src/bootstrap.php';
+require_once __DIR__ . '/../src/memorial_data.php';
+mem_migrate();
+
+$isAdmin = role_at_least('moderator');
+
+/* admin: hide a name from the memorial, or restore it */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAdmin) {
+    csrf_check();
+    $act = $_POST['action'] ?? '';
+    if ($act === 'hide_mem' && !empty($_POST['pid'])) { mem_set_hidden($_POST['pid'], 1); flash('Removed from the Memorial.'); header('Location: memorial.php'); exit; }
+    if ($act === 'show_mem' && !empty($_POST['pid'])) { mem_set_hidden($_POST['pid'], 0); flash('Restored to the Memorial.'); header('Location: memorial.php?hidden=1'); exit; }
+    header('Location: memorial.php'); exit;
+}
 
 /* Memorial — honors everyone in the tree who has passed (living=0, so it is
-   public-safe; living relatives are never listed here). Drawn straight from
-   the family records, with a photo where we have one. */
-$people = all("SELECT pid,name,given,surname,birth_date,death_date,death_place,buri_place
-               FROM persons WHERE living=0 ORDER BY surname, given, name");
+   public-safe; living relatives are never listed here). Admins can hide names. */
+$showHidden = $isAdmin && (($_GET['hidden'] ?? '') === '1');
+$people = all("SELECT p.pid,p.name,p.given,p.surname,p.birth_date,p.death_date,p.death_place,p.buri_place
+               FROM persons p LEFT JOIN memorial_meta m ON m.pid=p.pid
+               WHERE p.living=0 AND COALESCE(m.hidden,0)=" . ($showHidden ? 1 : 0) . "
+               ORDER BY p.surname, p.given, p.name");
 
-/* primary approved photo per person, in one query (no N+1) */
+/* main approved photo per person (respects the chosen 'main' photo), no N+1 */
 $phmap = [];
-foreach (all("SELECT pid, path FROM photos WHERE status='approved' ORDER BY id") as $ph) {
+foreach (all("SELECT pid, path FROM photos WHERE status='approved' ORDER BY is_primary DESC, id") as $ph) {
     if (!isset($phmap[$ph['pid']])) $phmap[$ph['pid']] = $ph['path'];
 }
 $count = count($people);
+$hiddenCount = $isAdmin ? (int)((one("SELECT COUNT(*) c FROM memorial_meta WHERE hidden=1") ?: ['c'=>0])['c']) : 0;
 
 page_head('Memorial', ['body_class' => 'home mem']);
 ?>
@@ -39,7 +55,12 @@ page_head('Memorial', ['body_class' => 'home mem']);
 </section>
 
 <div class="mem-wrap">
-  <?php if ($count): ?><div class="mem-count-line"><b><?= (int)$count ?></b> loved ones remembered <span class="mem-hits" id="memhits"></span></div><?php endif; ?>
+  <?php if ($showHidden): ?>
+    <div class="mem-adminnote">Hidden from the Memorial &mdash; these names are not shown publicly. <a href="memorial.php">&larr; Back to the Memorial</a></div>
+  <?php elseif ($isAdmin && $hiddenCount): ?>
+    <div class="mem-adminnote"><a href="memorial.php?hidden=1">Manage hidden names (<?= $hiddenCount ?>)</a></div>
+  <?php endif; ?>
+  <?php if ($count): ?><div class="mem-count-line"><b><?= (int)$count ?></b> <?= $showHidden ? 'hidden' : 'loved ones remembered' ?> <span class="mem-hits" id="memhits"></span><?php if ($isAdmin && !$showHidden): ?> <span class="mem-tip">&middot; hover a card and click Hide to remove a name</span><?php endif; ?></div><?php endif; ?>
 
   <?php if ($count): ?>
   <div class="mem-grid" id="memgrid">
@@ -50,15 +71,23 @@ page_head('Memorial', ['body_class' => 'home mem']);
       $ini  = strtoupper(substr($p['given'], 0, 1) . substr($p['surname'], 0, 1));
       if ($ini === '') $ini = strtoupper(substr($p['name'], 0, 1));
     ?>
-      <a class="mem-card" href="tribute.php?pid=<?= e($p['pid']) ?>" data-name="<?= e(strtolower($p['name'])) ?>">
-        <div class="mem-photo">
-          <?php if ($img): ?><img src="<?= e($img) ?>" alt="" loading="lazy">
-          <?php else: ?><span class="mem-mono"><?= e($ini) ?></span><?php endif; ?>
-        </div>
-        <div class="mem-name"><?= e($p['name']) ?></div>
-        <div class="mem-years"><?= e($yrs) ?></div>
-        <?php if ($rest): ?><div class="mem-rest">&#10013; <?= e($rest) ?></div><?php endif; ?>
-      </a>
+      <div class="mem-cell" data-name="<?= e(strtolower($p['name'])) ?>">
+        <a class="mem-card" href="tribute.php?pid=<?= e($p['pid']) ?>">
+          <div class="mem-photo">
+            <?php if ($img): ?><img src="<?= e($img) ?>" alt="" loading="lazy">
+            <?php else: ?><span class="mem-mono"><?= e($ini) ?></span><?php endif; ?>
+          </div>
+          <div class="mem-name"><?= e($p['name']) ?></div>
+          <div class="mem-years"><?= e($yrs) ?></div>
+          <?php if ($rest): ?><div class="mem-rest">&#10013; <?= e($rest) ?></div><?php endif; ?>
+        </a>
+        <?php if ($isAdmin): ?>
+          <form method="post" class="mem-hidebtn" onsubmit="return confirm('<?= $showHidden ? 'Restore this name to the Memorial?' : 'Remove this name from the Memorial? (You can restore it later.)' ?>')">
+            <?= csrf_field() ?><input type="hidden" name="action" value="<?= $showHidden ? 'show_mem' : 'hide_mem' ?>"><input type="hidden" name="pid" value="<?= e($p['pid']) ?>">
+            <button type="submit"><?= $showHidden ? 'Restore' : '&times; Hide' ?></button>
+          </form>
+        <?php endif; ?>
+      </div>
     <?php endforeach; ?>
   </div>
   <p class="mem-none" id="memnone" style="display:none">No names match that search.</p>
@@ -71,7 +100,7 @@ page_head('Memorial', ['body_class' => 'home mem']);
 function memFilter(){
   var box = document.getElementById('memq'); if(!box) return;
   var q = box.value.toLowerCase().trim();
-  var cards = document.querySelectorAll('#memgrid .mem-card'), shown = 0;
+  var cards = document.querySelectorAll('#memgrid .mem-cell'), shown = 0;
   cards.forEach(function(c){
     var hit = !q || c.getAttribute('data-name').indexOf(q) > -1;
     c.style.display = hit ? '' : 'none'; if (hit) shown++;

@@ -21,6 +21,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && role_at_least('moderator')) {
             q("UPDATE photos SET is_primary=1 WHERE id=?", [$phid]);
             flash('Main photo updated — it now shows in the tree and here.');
         }
+    } elseif (($_POST['action'] ?? '') === 'delete_photo') {
+        $phid = (int)($_POST['photo_id'] ?? 0);
+        $ph = one("SELECT * FROM photos WHERE id=? AND pid=?", [$phid, $pid]);
+        if ($ph) {
+            $abs = __DIR__ . '/' . $ph['path'];
+            if (is_file($abs)) @unlink($abs);
+            q("DELETE FROM photos WHERE id=?", [$phid]);
+            // if we removed the main photo, promote the next one so the tree still has a face
+            if (!empty($ph['is_primary'])) {
+                $next = one("SELECT id FROM photos WHERE pid=? AND status='approved' ORDER BY id LIMIT 1", [$pid]);
+                if ($next) q("UPDATE photos SET is_primary=1 WHERE id=?", [$next['id']]);
+            }
+            flash('Photo deleted.');
+        }
     }
     header('Location: person.php?pid=' . urlencode($pid)); exit;
 }
@@ -82,15 +96,17 @@ page_head($name);
 <div class="panel" style="margin-top:20px">
   <h2>Photographs<?= $photos ? ' (' . count($photos) . ')' : '' ?></h2>
   <?php if ($photos): ?>
-    <?php $canSetMain = role_at_least('moderator') && count($photos) > 1; ?>
-    <?php if ($canSetMain): ?><p class="muted" style="margin-bottom:8px">The first photo (marked <b style="color:var(--gold2)">&#9733; Main</b>) is what shows in the family tree. Hover any other photo and click &ldquo;Set as main&rdquo; to change it.</p><?php endif; ?>
+    <?php if (role_at_least('moderator')): ?><p class="muted" style="margin-bottom:8px">The photo marked <b style="color:var(--gold2)">&#9733; Main</b> is what shows in the family tree. Hover a photo to <b>Set as main</b>, or click <b>&times;</b> to delete a duplicate.</p><?php endif; ?>
     <div class="gallery">
       <?php foreach ($photos as $i => $ph): $isMain = ($i === 0); ?>
         <div class="gphoto<?= $isMain ? ' is-main' : '' ?>">
           <a href="#" onclick="lb('<?= e($ph['path']) ?>');return false"><img src="<?= e($ph['path']) ?>" alt="<?= e($ph['caption']) ?>"></a>
           <?php if ($isMain && count($photos) > 1): ?><span class="gmain">&#9733; Main</span><?php endif; ?>
-          <?php if (role_at_least('moderator') && !$isMain): ?>
-            <form method="post" class="gsetmain"><?= csrf_field() ?><input type="hidden" name="action" value="set_primary"><input type="hidden" name="photo_id" value="<?= (int)$ph['id'] ?>"><button type="submit">Set as main</button></form>
+          <?php if (role_at_least('moderator')): ?>
+            <form method="post" class="gdel" onsubmit="return confirm('Delete this photo permanently?')"><?= csrf_field() ?><input type="hidden" name="action" value="delete_photo"><input type="hidden" name="photo_id" value="<?= (int)$ph['id'] ?>"><button type="submit" title="Delete photo">&times;</button></form>
+            <?php if (!$isMain): ?>
+              <form method="post" class="gsetmain"><?= csrf_field() ?><input type="hidden" name="action" value="set_primary"><input type="hidden" name="photo_id" value="<?= (int)$ph['id'] ?>"><button type="submit">Set as main</button></form>
+            <?php endif; ?>
           <?php endif; ?>
         </div>
       <?php endforeach; ?>
