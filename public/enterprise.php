@@ -9,8 +9,9 @@ try {
     $BIZ  = ent_businesses();
     $VIDS = ent_videos();
     $SAYS = ent_sayings();
+    $FIN  = ent_finance();
 } catch (Exception $ex) {
-    $BIZ = $VIDS = $SAYS = [];
+    $BIZ = $VIDS = $SAYS = $FIN = [];
 }
 $FEAT = $VIDS ? $VIDS[0] : null;
 $REST = $VIDS ? array_slice($VIDS, 1) : [];
@@ -21,13 +22,6 @@ $PILLARS = [
   ['icon'=>'chart', 'title'=>'Motivation',             'text'=>'Inspiring the next generation to dream, to strive, and to achieve.'],
   ['icon'=>'users', 'title'=>'Family in Business',     'text'=>'Our legacy continues through partnership, support, and unity.', 'link'=>'#family-in-business'],
   ['icon'=>'star',  'title'=>'Member Spotlights',      'text'=>'Celebrating the achievements of our family and the impact we make.'],
-];
-
-$FINANCE = [
-  ['icon'=>'seed',   'title'=>'Build Wealth',        'tips'=>['Budget Wisely','Save Consistently','Invest Early','Avoid Debt Traps']],
-  ['icon'=>'home',   'title'=>'Buy &amp; Own',       'tips'=>['Homeownership Tips','Real Estate Investing','Building Equity','Family Property']],
-  ['icon'=>'shield', 'title'=>'Protect Your Future', 'tips'=>['Insurance Essentials','Emergency Fund','Estate Planning','Wills &amp; Trusts']],
-  ['icon'=>'cap',    'title'=>'Invest in Education', 'tips'=>['College Savings Plans','Scholarships','Student Loan Tips','Skill Development']],
 ];
 
 $ACTIONS = [
@@ -189,12 +183,16 @@ page_head('Enterprise', ['body_class' => 'home ent']);
       <div class="ent2-sec-title"><?= ent_icon('bank') ?> Financial Guidance &amp; Suggestions</div>
       <p class="ent2-sec-sub">Practical advice. Generational wealth. Financial freedom.</p>
       <div class="ent2-fin-grid">
-        <?php foreach ($FINANCE as $f): ?>
+        <?php foreach ($FIN as $f): ?>
           <div class="ent2-fin">
             <div class="ent2-fic"><?= ent_icon($f['icon']) ?></div>
-            <h3><?= $f['title'] /* authored */ ?></h3>
-            <ul><?php foreach ($f['tips'] as $t): ?><li><?= $t /* authored */ ?></li><?php endforeach; ?></ul>
-            <button type="button" class="ent2-btn">Learn More</button>
+            <h3><?= e($f['title']) ?></h3>
+            <ul><?php foreach (ent_tips($f['tips']) as $t): ?><li><?= e($t) ?></li><?php endforeach; ?></ul>
+            <?php if (!empty($f['link'])): $fl = trim($f['link']); if (!preg_match('~^https?://~i', $fl)) $fl = 'http://' . $fl; ?>
+              <a class="ent2-btn" href="<?= e($fl) ?>" target="_blank" rel="noopener">Learn More</a>
+            <?php else: ?>
+              <button type="button" class="ent2-btn">Learn More</button>
+            <?php endif; ?>
           </div>
         <?php endforeach; ?>
       </div>

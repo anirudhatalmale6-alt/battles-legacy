@@ -27,12 +27,18 @@ function ent_migrate() {
   sample INT NOT NULL DEFAULT 0, sort INT NOT NULL DEFAULT 0, status VARCHAR(20) NOT NULL DEFAULT 'published',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )$ENG",
+"enterprise_finance" => "CREATE TABLE IF NOT EXISTS enterprise_finance (
+  id $AI, icon VARCHAR(30) NOT NULL DEFAULT 'seed', title VARCHAR(160) NOT NULL, tips TEXT, link VARCHAR(255) DEFAULT '',
+  sample INT NOT NULL DEFAULT 0, sort INT NOT NULL DEFAULT 0, status VARCHAR(20) NOT NULL DEFAULT 'published',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)$ENG",
     ];
     foreach ($tables as $sql) db()->exec($sql);
     foreach ([
       "CREATE INDEX idx_entbiz_status ON enterprise_businesses(status)",
       "CREATE INDEX idx_entvid_status ON enterprise_videos(status)",
       "CREATE INDEX idx_entsay_status ON enterprise_sayings(status)",
+      "CREATE INDEX idx_entfin_status ON enterprise_finance(status)",
     ] as $s) { try { db()->exec($s); } catch (Exception $e) {} }
     ent_seed();
     return array_keys($tables);
@@ -83,6 +89,18 @@ function ent_seed() {
             q("INSERT INTO enterprise_sayings (quote,author,sample,sort) VALUES (?,?,1,?)", [$s[0],$s[1],$i++]);
         }
     }
+    if (!one("SELECT id FROM enterprise_finance LIMIT 1")) {
+        $fin = [
+          ['seed','Build Wealth',"Budget Wisely\nSave Consistently\nInvest Early\nAvoid Debt Traps"],
+          ['home','Buy & Own',"Homeownership Tips\nReal Estate Investing\nBuilding Equity\nFamily Property"],
+          ['shield','Protect Your Future',"Insurance Essentials\nEmergency Fund\nEstate Planning\nWills & Trusts"],
+          ['cap','Invest in Education',"College Savings Plans\nScholarships\nStudent Loan Tips\nSkill Development"],
+        ];
+        $i = 0;
+        foreach ($fin as $c) {
+            q("INSERT INTO enterprise_finance (icon,title,tips,sample,sort) VALUES (?,?,?,1,?)", [$c[0],$c[1],$c[2],$i++]);
+        }
+    }
 }
 
 /* ---- read helpers (published only unless $all) ---- */
@@ -97,6 +115,24 @@ function ent_videos($all = false) {
 function ent_sayings($all = false) {
     $w = $all ? '' : "WHERE status='published'";
     return all("SELECT * FROM enterprise_sayings $w ORDER BY sort, id");
+}
+function ent_finance($all = false) {
+    $w = $all ? '' : "WHERE status='published'";
+    return all("SELECT * FROM enterprise_finance $w ORDER BY sort, id");
+}
+/** icon choices for the finance cards (key => friendly label) */
+function ent_fin_icons() {
+    return ['seed'=>'Plant / Growth','home'=>'House','shield'=>'Shield','cap'=>'Graduation cap','bank'=>'Bank',
+            'chart'=>'Chart','star'=>'Star','heart'=>'Heart','bulb'=>'Lightbulb','case'=>'Briefcase','users'=>'People'];
+}
+/** split a tips blob (one per line) into a clean array */
+function ent_tips($blob) {
+    $out = [];
+    foreach (preg_split('/\r\n|\r|\n/', (string)$blob) as $line) {
+        $line = trim($line);
+        if ($line !== '') $out[] = $line;
+    }
+    return $out;
 }
 
 /** initials monogram from a business name */

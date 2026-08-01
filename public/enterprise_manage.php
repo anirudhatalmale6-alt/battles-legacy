@@ -45,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $act = $_POST['action'] ?? '';
     if (strpos($act, 'vid') === 0) $tab = 'videos';
     elseif (strpos($act, 'say') === 0) $tab = 'sayings';
+    elseif (strpos($act, 'fin') === 0) $tab = 'financial';
     else $tab = 'businesses';
     $id = (int)($_POST['id'] ?? 0);
 
@@ -123,6 +124,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } elseif ($act === 'say_delete' && $id) {
         q("DELETE FROM enterprise_sayings WHERE id=?", [$id]); flash('Saying removed.');
+
+    /* ---------- FINANCIAL GUIDANCE ---------- */
+    } elseif ($act === 'fin_save') {
+        $title = trim($_POST['title'] ?? '');
+        if ($title === '') { flash('A guidance card needs a title.'); }
+        else {
+            $icon   = array_key_exists($_POST['icon'] ?? '', ent_fin_icons()) ? $_POST['icon'] : 'seed';
+            $tips   = trim($_POST['tips'] ?? '');
+            $link   = trim($_POST['link'] ?? '');
+            $status = ($_POST['status'] ?? 'published') === 'hidden' ? 'hidden' : 'published';
+            if ($id) {
+                q("UPDATE enterprise_finance SET icon=?,title=?,tips=?,link=?,sort=?,status=?,sample=0 WHERE id=?",
+                  [$icon, $title, $tips, $link, (int)($_POST['sort']??0), $status, $id]);
+                flash('Guidance card updated.');
+            } else {
+                q("INSERT INTO enterprise_finance (icon,title,tips,link,sample,sort,status) VALUES (?,?,?,?,0,?,?)",
+                  [$icon, $title, $tips, $link, ent_next_sort('enterprise_finance'), $status]);
+                flash('Guidance card added.');
+            }
+        }
+    } elseif ($act === 'fin_delete' && $id) {
+        q("DELETE FROM enterprise_finance WHERE id=?", [$id]); flash('Guidance card removed.');
     }
     } catch (Exception $ex) {
         flash('Sorry — that could not be saved. Please try again; if one field is very long, try shortening it a little.');
@@ -130,14 +153,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: enterprise_manage.php?tab=' . $tab); exit;
 }
 
-$tab = in_array($_GET['tab'] ?? '', ['businesses','videos','sayings'], true) ? $_GET['tab'] : 'businesses';
+$tab = in_array($_GET['tab'] ?? '', ['businesses','videos','sayings','financial'], true) ? $_GET['tab'] : 'businesses';
 $BIZ = ent_businesses(true);
 $VIDS = ent_videos(true);
 $SAYS = ent_sayings(true);
+$FINC = ent_finance(true);
 
 function em_type_opts($sel) {
     $o = '';
     foreach (['Business','Profession'] as $t) $o .= '<option'.($sel===$t?' selected':'').'>'.$t.'</option>';
+    return $o;
+}
+function em_icon_opts($sel) {
+    $o = '';
+    foreach (ent_fin_icons() as $k => $lbl) $o .= '<option value="'.e($k).'"'.($sel===$k?' selected':'').'>'.e($lbl).'</option>';
     return $o;
 }
 function em_status_opts($sel) {
@@ -158,6 +187,7 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
   <a href="?tab=businesses" class="<?= $tab==='businesses'?'on':'' ?>">Businesses (<?= count($BIZ) ?>)</a>
   <a href="?tab=videos" class="<?= $tab==='videos'?'on':'' ?>">Videos (<?= count($VIDS) ?>)</a>
   <a href="?tab=sayings" class="<?= $tab==='sayings'?'on':'' ?>">Sayings (<?= count($SAYS) ?>)</a>
+  <a href="?tab=financial" class="<?= $tab==='financial'?'on':'' ?>">Financial Guidance (<?= count($FINC) ?>)</a>
 </div>
 
 <?php if ($tab === 'businesses'): ?>
@@ -261,7 +291,7 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
     </div>
   <?php endforeach; ?>
 
-<?php else: /* sayings */ ?>
+<?php elseif ($tab === 'sayings'): ?>
   <div class="panel em-add">
     <h2>Add a saying</h2>
     <form method="post" class="em-form">
@@ -290,6 +320,46 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
           <div><label>Visibility</label><select name="status"><?= em_status_opts($s['status']) ?></select></div>
         </div>
         <button class="btn gold" name="action" value="say_save" style="margin-top:12px">Save changes</button>
+      </form>
+    </div>
+  <?php endforeach; ?>
+
+<?php else: /* financial guidance */ ?>
+  <div class="panel em-add">
+    <h2>Add a financial guidance card</h2>
+    <form method="post" class="em-form">
+      <?= csrf_field() ?><input type="hidden" name="id" value="0">
+      <div class="em-grid">
+        <div><label>Title *</label><input type="text" name="title" required placeholder="e.g. Build Wealth"></div>
+        <div><label>Icon</label><select name="icon"><?= em_icon_opts('seed') ?></select></div>
+      </div>
+      <label>Tips <span class="lbl-hint">(one per line)</span></label>
+      <textarea name="tips" placeholder="Budget Wisely&#10;Save Consistently&#10;Invest Early&#10;Avoid Debt Traps"></textarea>
+      <label>&ldquo;Learn More&rdquo; link (optional)</label>
+      <input type="text" name="link" placeholder="https://...">
+      <button class="btn gold" name="action" value="fin_save" style="margin-top:12px">Add card</button>
+    </form>
+  </div>
+
+  <?php foreach ($FINC as $c): ?>
+    <div class="panel em-row">
+      <form method="post" class="em-form">
+        <?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$c['id'] ?>">
+        <div class="em-rowhead">
+          <h3><?= e($c['title']) ?><?= $c['sample']?' <span class="em-tag">Example</span>':'' ?><?= $c['status']==='hidden'?' <span class="em-tag hid">Hidden</span>':'' ?></h3>
+          <button class="btn danger" name="action" value="fin_delete" onclick="return confirm('Remove this card?')">Delete</button>
+        </div>
+        <div class="em-grid">
+          <div><label>Title *</label><input type="text" name="title" required value="<?= e($c['title']) ?>"></div>
+          <div><label>Icon</label><select name="icon"><?= em_icon_opts($c['icon']) ?></select></div>
+          <div><label>Order</label><input type="number" name="sort" value="<?= (int)$c['sort'] ?>"></div>
+          <div><label>Visibility</label><select name="status"><?= em_status_opts($c['status']) ?></select></div>
+        </div>
+        <label>Tips <span class="lbl-hint">(one per line)</span></label>
+        <textarea name="tips"><?= e($c['tips']) ?></textarea>
+        <label>&ldquo;Learn More&rdquo; link (optional)</label>
+        <input type="text" name="link" value="<?= e($c['link']) ?>" placeholder="https://...">
+        <button class="btn gold" name="action" value="fin_save" style="margin-top:12px">Save changes</button>
       </form>
     </div>
   <?php endforeach; ?>
