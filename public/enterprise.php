@@ -1,15 +1,20 @@
 <?php
 require __DIR__ . '/../src/bootstrap.php';
+require_once __DIR__ . '/../src/enterprise_data.php';
 
-/* ============================================================
-   ENTERPRISE — built to match the approved design.
-   Driven by simple arrays so it converts cleanly into a
-   self-service admin screen (add / edit / remove businesses,
-   videos, sayings) once the look is signed off.
-   Sample businesses are illustrative (tagged "Example").
-   ============================================================ */
+/* Content is managed from enterprise_manage.php (admin) and stored in the
+   enterprise_* tables. Pillars / financial tips / action row are static. */
+try {
+    ent_migrate();
+    $BIZ  = ent_businesses();
+    $VIDS = ent_videos();
+    $SAYS = ent_sayings();
+} catch (Exception $ex) {
+    $BIZ = $VIDS = $SAYS = [];
+}
+$FEAT = $VIDS ? $VIDS[0] : null;
+$REST = $VIDS ? array_slice($VIDS, 1) : [];
 
-/* --- Five pillars (top icon bar) --- */
 $PILLARS = [
   ['icon'=>'bulb',  'title'=>'Entrepreneurs',          'text'=>'Building businesses, creating opportunities, and leading with vision.'],
   ['icon'=>'case',  'title'=>'Business Professionals', 'text'=>'Excellence in every field, leading with skill, integrity, and purpose.'],
@@ -18,26 +23,6 @@ $PILLARS = [
   ['icon'=>'star',  'title'=>'Member Spotlights',      'text'=>'Celebrating the achievements of our family and the impact we make.'],
 ];
 
-/* --- Featured family businesses (sample directory) --- */
-$BIZ = [
-  ['img'=>'gmw',     'mono'=>'GMW', 'name'=>'GMW Transportation',        'who'=>'Bill Holmes',          'cat'=>'Airport Transportation',        'loc'=>'Dallas, TX',      'blurb'=>'Private airport transportation to DFW &amp; Love Field. Dependable, professional, and on time.'],
-  ['img'=>'threads', 'mono'=>'T&amp;G', 'name'=>'Threads &amp; Grace Boutique','who'=>'Danielle Battles',     'cat'=>"Women's Fashion &amp; Accessories",'loc'=>'Fort Worth, TX', 'blurb'=>'Stylish fashion for every season. Empowering women to look and feel their best.'],
-  ['img'=>'law',     'mono'=>'BLG', 'name'=>'Battles Law Group',          'who'=>'Tanisha Battles, Esq.','cat'=>'Personal Injury &bull; Estate Planning','loc'=>'Houston, TX','blurb'=>'Dedicated legal representation with compassion, integrity, and results.'],
-  ['img'=>'cafe',    'mono'=>'B',   'name'=>'Battles Table Caf&eacute;',  'who'=>'James Battles Jr.',    'cat'=>'Caf&eacute; &amp; Catering',    'loc'=>'Frisco, TX',     'blurb'=>'Delicious food. Warm atmosphere. Bringing people together one meal at a time.'],
-  ['img'=>'ksj',     'mono'=>'KSJ', 'name'=>'KSJ Consulting',             'who'=>'Katrina Smith-Jackson','cat'=>'Business Strategy &bull; Leadership','loc'=>'Atlanta, GA', 'blurb'=>'Helping organizations grow through strategy, leadership and operational excellence.'],
-  ['img'=>'sons',    'mono'=>'B&amp;S','name'=>'Battles &amp; Sons Construction','who'=>'Robert Battles',  'cat'=>'General Contracting',           'loc'=>'Arlington, TX',  'blurb'=>'Quality construction. Strong foundations. Building for generations to come.'],
-];
-
-/* --- Featured videos --- */
-$VID_FEATURE = ['title'=>'Legacy in Action', 'sub'=>'Words of Wisdom from Our Elders', 'dur'=>'5:42'];
-$VIDEOS = [
-  ['title'=>'Building a Business With Faith &amp; Purpose', 'dur'=>'4:18'],
-  ['title'=>'Next Generation Entrepreneurs',                'dur'=>'3:57'],
-  ['title'=>'Financial Freedom Starts Now',                 'dur'=>'6:21'],
-  ['title'=>'Our Story. Our Legacy. Our Future.',           'dur'=>'4:09'],
-];
-
-/* --- Financial guidance cards --- */
 $FINANCE = [
   ['icon'=>'seed',   'title'=>'Build Wealth',        'tips'=>['Budget Wisely','Save Consistently','Invest Early','Avoid Debt Traps']],
   ['icon'=>'home',   'title'=>'Buy &amp; Own',       'tips'=>['Homeownership Tips','Real Estate Investing','Building Equity','Family Property']],
@@ -45,7 +30,6 @@ $FINANCE = [
   ['icon'=>'cap',    'title'=>'Invest in Education', 'tips'=>['College Savings Plans','Scholarships','Student Loan Tips','Skill Development']],
 ];
 
-/* --- Bottom action row --- */
 $ACTIONS = [
   ['icon'=>'search', 'title'=>'Hire Family First',   'text'=>'Need a service or professional? Search our family business directory and support one another.', 'cta'=>'Search Directory'],
   ['icon'=>'doc',    'title'=>'Business Resources',  'text'=>'Access templates, guides, funding resources, legal forms, and tools to help you grow.',        'cta'=>'Browse Resources'],
@@ -81,6 +65,13 @@ function ent_icon($k) {
 
 page_head('Enterprise', ['body_class' => 'home ent']);
 ?>
+<?php if (role_at_least('admin')): ?>
+  <div class="ent2-adminbar">
+    <span>You're signed in as an editor.</span>
+    <a class="ent2-editbtn" href="enterprise_manage.php">&#9998; Manage this page</a>
+  </div>
+<?php endif; ?>
+
 <!-- HERO -->
 <section class="ent2-hero">
   <img class="ent2-hero-img" src="assets/enterprise/hero-band.jpg"
@@ -106,6 +97,15 @@ page_head('Enterprise', ['body_class' => 'home ent']);
   <?php endforeach; ?>
 </section>
 
+<?php if ($SAYS): ?>
+<!-- ROTATING SAYING -->
+<section class="ent2-sayband">
+  <span class="say-mark">&ldquo;</span>
+  <blockquote id="say-text"><?= e($SAYS[0]['quote']) ?></blockquote>
+  <?php if ($SAYS[0]['author']): ?><cite id="say-who"><?= e($SAYS[0]['author']) ?></cite><?php else: ?><cite id="say-who"></cite><?php endif; ?>
+</section>
+<?php endif; ?>
+
 <!-- FEATURED FAMILY BUSINESSES -->
 <section class="ent2-bizwrap" id="family-in-business">
   <div class="ent2-bizhead">
@@ -115,35 +115,42 @@ page_head('Enterprise', ['body_class' => 'home ent']);
   <form class="biz-search" onsubmit="return false;">
     <input type="text" placeholder="Search businesses by name, profession, or location...">
     <select aria-label="Category">
-      <option>All Categories</option>
-      <option>Business</option>
-      <option>Profession</option>
-      <option>Trades &amp; Construction</option>
-      <option>Food &amp; Hospitality</option>
-      <option>Professional Services</option>
+      <option>All Categories</option><option>Business</option><option>Profession</option>
     </select>
     <button type="submit" class="ent2-btn">Search</button>
   </form>
+  <?php if ($BIZ): ?>
   <div class="biz-grid">
     <?php foreach ($BIZ as $b): ?>
       <article class="biz-card">
-        <div class="biz-photo" style="background-image:url('assets/enterprise/biz_<?= e($b['img']) ?>.jpg')">
-          <span class="ent-ex">Example</span>
-          <span class="biz-mono"><?= $b['mono'] /* authored */ ?></span>
+        <div class="biz-photo"<?= $b['photo'] ? ' style="background-image:url(\''.e($b['photo']).'\')"' : ' data-empty="1"' ?>>
+          <?php if ($b['sample']): ?><span class="ent-ex">Example</span><?php endif; ?>
+          <span class="biz-mono"><?= ent_mono($b['name']) ?></span>
         </div>
         <div class="biz-body">
-          <h3><?= $b['name'] /* authored */ ?></h3>
-          <div class="biz-who"><?= $b['who'] /* authored */ ?></div>
-          <div class="biz-cat"><?= $b['cat'] /* authored */ ?></div>
-          <div class="biz-loc"><?= $b['loc'] /* authored */ ?></div>
-          <p class="biz-blurb"><?= $b['blurb'] /* authored */ ?></p>
-          <div class="biz-ico"><?= ent_icon('globe') . ent_icon('phone') . ent_icon('mail') ?></div>
-          <button type="button" class="ent2-btn biz-view">View Business</button>
+          <h3><?= e($b['name']) ?></h3>
+          <?php if ($b['owner']): ?><div class="biz-who"><?= e($b['owner']) ?></div><?php endif; ?>
+          <?php if ($b['category']): ?><div class="biz-cat"><?= e($b['category']) ?></div><?php endif; ?>
+          <?php if ($b['location']): ?><div class="biz-loc"><?= e($b['location']) ?></div><?php endif; ?>
+          <?php if ($b['blurb']): ?><p class="biz-blurb"><?= e($b['blurb']) ?></p><?php endif; ?>
+          <div class="biz-ico">
+            <?php
+              $web = trim($b['link']); if ($web && !preg_match('~^https?://~i', $web)) $web = 'http://' . $web;
+              echo $web ? '<a href="'.e($web).'" target="_blank" rel="noopener">'.ent_icon('globe').'</a>' : '<span class="off">'.ent_icon('globe').'</span>';
+              echo $b['phone'] ? '<a href="tel:'.e(preg_replace('/[^0-9+]/','',$b['phone'])).'">'.ent_icon('phone').'</a>' : '<span class="off">'.ent_icon('phone').'</span>';
+              echo $b['email'] ? '<a href="mailto:'.e($b['email']).'">'.ent_icon('mail').'</a>' : '<span class="off">'.ent_icon('mail').'</span>';
+            ?>
+          </div>
+          <?php if ($web): ?><a class="ent2-btn biz-view" href="<?= e($web) ?>" target="_blank" rel="noopener">View Business</a>
+          <?php else: ?><button type="button" class="ent2-btn biz-view">View Business</button><?php endif; ?>
         </div>
       </article>
     <?php endforeach; ?>
   </div>
   <button type="button" class="ent2-btn center" style="margin-top:24px;">View All Family Businesses &rarr;</button>
+  <?php else: ?>
+    <p class="ent2-note" style="text-align:center">No businesses added yet.</p>
+  <?php endif; ?>
 </section>
 
 <!-- MAIN: videos + finance -->
@@ -153,22 +160,25 @@ page_head('Enterprise', ['body_class' => 'home ent']);
     <!-- Featured Videos -->
     <section class="ent2-panel">
       <div class="ent2-sec-title"><?= ent_icon('film') ?> Featured Videos</div>
-      <div class="ent2-vid-feature">
+      <?php if ($FEAT): ?>
+      <?php $fu = trim($FEAT['url']); ?>
+      <?php if ($fu): ?><a class="ent2-vid-feature" href="<?= e($fu) ?>" target="_blank" rel="noopener"><?php else: ?><div class="ent2-vid-feature"><?php endif; ?>
         <span class="ent2-vf-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
         <div class="ent2-vf-cap">
-          <h3><?= e($VID_FEATURE['title']) ?></h3>
-          <p><?= e($VID_FEATURE['sub']) ?> &nbsp;<span class="dur"><?= e($VID_FEATURE['dur']) ?></span></p>
+          <h3><?= e($FEAT['title']) ?></h3>
+          <p><?= e($FEAT['description']) ?> <?php if ($FEAT['duration']): ?>&nbsp;<span class="dur"><?= e($FEAT['duration']) ?></span><?php endif; ?></p>
         </div>
-      </div>
+      <?php if ($fu): ?></a><?php else: ?></div><?php endif; ?>
+      <?php endif; ?>
       <div class="ent2-vlist">
-        <?php foreach ($VIDEOS as $v): ?>
-          <div class="ent2-vrow">
+        <?php foreach ($REST as $v): $vu = trim($v['url']); ?>
+          <?php if ($vu): ?><a class="ent2-vrow" href="<?= e($vu) ?>" target="_blank" rel="noopener"><?php else: ?><div class="ent2-vrow"><?php endif; ?>
             <div class="ent2-vthumb"></div>
             <div class="ent2-vmeta">
-              <h4><?= $v['title'] /* authored above */ ?></h4>
-              <span class="dur"><?= e($v['dur']) ?></span>
+              <h4><?= e($v['title']) ?></h4>
+              <?php if ($v['duration']): ?><span class="dur"><?= e($v['duration']) ?></span><?php endif; ?>
             </div>
-          </div>
+          <?php if ($vu): ?></a><?php else: ?></div><?php endif; ?>
         <?php endforeach; ?>
       </div>
       <button type="button" class="ent2-btn center">View All Videos &rsaquo;</button>
@@ -207,12 +217,28 @@ page_head('Enterprise', ['body_class' => 'home ent']);
     <div class="ent2-submit">
       <h3>Submit Your Business</h3>
       <p>Are you a business owner? Add your business to our directory and be featured!</p>
-      <button type="button" class="ent2-btn">Submit Business</button>
+      <?php if (role_at_least('admin')): ?>
+        <a class="ent2-btn" href="enterprise_manage.php">Submit Business</a>
+      <?php else: ?>
+        <button type="button" class="ent2-btn">Submit Business</button>
+      <?php endif; ?>
     </div>
   </div>
-  <p class="ent2-note">This page is live with sample content so you can see the full design in place.
-     Once you're happy with the look, I'll wire up the admin screen &mdash; you'll log in and add, edit,
-     or remove businesses, videos and sayings yourself, no coding, and they'll appear here instantly.</p>
 </section>
+
+<?php if ($SAYS): ?>
+<script>
+(function(){
+  var S = <?= json_encode(array_map(function($s){ return [$s['quote'], $s['author']]; }, $SAYS), JSON_UNESCAPED_UNICODE) ?>;
+  if (!S || S.length < 2) return;
+  var t=document.getElementById('say-text'), w=document.getElementById('say-who'),
+      box=document.querySelector('.ent2-sayband'), i=0;
+  setInterval(function(){
+    i=(i+1)%S.length; box.classList.add('fade');
+    setTimeout(function(){ t.textContent=S[i][0]; w.textContent=S[i][1]||''; box.classList.remove('fade'); }, 500);
+  }, 6000);
+})();
+</script>
+<?php endif; ?>
 
 <?php legacy_footer(); page_foot();

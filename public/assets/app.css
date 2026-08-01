@@ -553,3 +553,64 @@ a.ent2-pillar{text-decoration:none;display:block;}
   .ent2-pillar{border-right:none;}
   .ent2-acts{grid-template-columns:1fr;}
 }
+
+/* ===== Enterprise: admin bar, saying band, biz icon states ===== */
+.ent2-adminbar{width:100vw;margin-left:calc(-50vw + 50%);background:#2c0f0b;color:#e7d6b6;
+  display:flex;align-items:center;justify-content:center;gap:16px;padding:9px 18px;font-size:13px;
+  border-bottom:1px solid rgba(201,162,75,.3);font-family:'EB Garamond',serif;}
+.ent2-editbtn{color:var(--maroon);background:var(--gold);border:1px solid var(--gold);border-radius:6px;
+  padding:5px 14px;font-size:13px;text-decoration:none;font-family:'EB Garamond',serif;}
+.ent2-editbtn:hover{background:var(--gold2);}
+.ent2-sayband{width:100vw;margin-left:calc(-50vw + 50%);background:linear-gradient(180deg,#3a1410,#2c0f0b);
+  text-align:center;padding:26px 24px 30px;border-bottom:1px solid rgba(201,162,75,.35);}
+.say-mark{font-family:'Cormorant Garamond',serif;color:var(--gold);opacity:.5;font-size:56px;line-height:0;display:block;height:22px;}
+.ent2-sayband blockquote{font-family:'Cormorant Garamond',serif;font-style:italic;color:#f6ead0;font-size:24px;
+  line-height:1.4;max-width:48ch;margin:6px auto 8px;transition:opacity .5s;}
+.ent2-sayband cite{font-family:'Dancing Script',cursive;color:var(--gold2);font-size:21px;font-style:normal;transition:opacity .5s;}
+.ent2-sayband.fade blockquote,.ent2-sayband.fade cite{opacity:0;}
+.biz-ico a,.biz-ico span.off{display:inline-flex;}
+.biz-ico span.off{opacity:.3;}
+.biz-ico a{transition:transform .15s;}
+.biz-ico a:hover{transform:translateY(-1px);}
+.biz-photo[data-empty]{background:linear-gradient(135deg,#3a0d12,#5c1a1f 55%,#241014);}
+a.biz-view{text-decoration:none;}
+
+/* ===== Manage Enterprise (admin editor) ===== */
+.em-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 8px;border-bottom:2px solid #e2d3b0;padding-bottom:0;}
+.em-tabs a{text-decoration:none;padding:9px 18px;border-radius:8px 8px 0 0;background:#efe3c8;color:#6e4a24;
+  font-family:'EB Garamond',serif;font-size:15px;border:1px solid #e2d3b0;border-bottom:none;margin-bottom:-2px;}
+.em-tabs a.on{background:#5c1a1f;color:var(--gold2);border-color:#5c1a1f;}
+.em-add{margin-top:16px;border-left:3px solid var(--gold);}
+.em-row{margin-top:16px;}
+.em-rowhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px;}
+.em-rowhead h3{margin:0;font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:21px;}
+.em-tag{display:inline-block;font-size:11px;letter-spacing:.5px;text-transform:uppercase;vertical-align:middle;
+  background:#e7d3a6;color:#7a5a20;border:1px solid #cbb079;border-radius:20px;padding:2px 8px;margin-left:6px;font-family:'EB Garamond',serif;}
+.em-tag.hid{background:#e3d3d3;color:#7a3b3b;border-color:#c9a3a3;}
+.em-tag.feat{background:#4a141a;color:var(--gold2);border-color:var(--gold);}
+.em-form .em-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 16px;margin-bottom:6px;}
+.em-form label{display:block;margin:8px 0 3px;font-size:13px;color:#5a4326;font-weight:600;font-family:'EB Garamond',serif;}
+.em-form input[type=text],.em-form input[type=email],.em-form input[type=number],.em-form select,.em-form textarea{width:100%;}
+.em-form textarea{min-height:70px;}
+.em-media{display:flex;gap:16px;align-items:flex-start;margin:8px 0 4px;flex-wrap:wrap;}
+.em-thumb{width:170px;height:104px;flex:0 0 auto;border-radius:8px;background-size:cover;background-position:center top;
+  background-color:#efe3c8;border:1px solid #d9c39a;display:flex;align-items:center;justify-content:center;color:#a58a55;font-size:12px;}
+.em-mediactl{flex:1 1 220px;}
+.em-check{display:inline-flex;align-items:center;gap:8px;font-weight:600;color:#5a4326;font-size:13px;}
+.em-check input{width:auto;}
+.btn.danger{background:#7a2f1c;color:#f4e0d5;border:1px solid #98422b;}
+.btn.danger:hover{background:#98422b;}
+@media(max-width:640px){ .em-form .em-grid{grid-template-columns:1fr;} }
+
+/* Manage Enterprise runs on a light parchment theme for easy editing */
+body.em{background:radial-gradient(130% 100% at 50% 0%, #efe0c2, #e6d2ac 70%, #dcc59a);color:#4a3620;}
+body.em h1{color:#5c1a1f;}
+body.em h2{color:#5c1a1f;}
+body.em .lede{color:#6e4a24;}
+body.em .lede a{color:#8f2b1f;text-decoration:underline;}
+body.em .panel{background:#f9f1de;border:1px solid #d9c39a;box-shadow:0 3px 14px rgba(60,30,10,.08);}
+body.em input[type=text],body.em input[type=email],body.em input[type=number],
+body.em input[type=tel],body.em select,body.em textarea{background:#fff;border:1px solid #cbb079;color:#3a2a18;font-size:15px;}
+body.em .em-form label{text-transform:none;letter-spacing:normal;color:#5a4326;}
+body.em .flash{background:#e9f4e0;border:1px solid #a9c98a;color:#3d6a24;}
+body.em .err{background:#f6e0dc;border:1px solid #d8a99f;color:#7a2f1c;}
