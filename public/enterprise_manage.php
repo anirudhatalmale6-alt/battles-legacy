@@ -29,6 +29,16 @@ function ent_next_sort($table) {
     return ($r && $r['m'] !== null) ? ((int)$r['m'] + 1) : 0;
 }
 
+/** Trim text to at most $max words (server-side backstop for the word cap). */
+function ent_cap_words($s, $max = 120) {
+    $s = trim($s);
+    if ($s === '') return '';
+    $words = preg_split('/\s+/', $s);
+    if (count($words) <= $max) return $s;
+    return implode(' ', array_slice($words, 0, $max));
+}
+const ENT_BLURB_MAXWORDS = 120;
+
 $tab = 'businesses';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
@@ -50,9 +60,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($perr) flash($perr);
             $cat_type = ($_POST['cat_type'] ?? 'Business') === 'Profession' ? 'Profession' : 'Business';
             $status   = ($_POST['status'] ?? 'published') === 'hidden' ? 'hidden' : 'published';
+            $blurb    = ent_cap_words($_POST['blurb'] ?? '', ENT_BLURB_MAXWORDS);
             $f = [
               trim($_POST['name'] ?? ''), trim($_POST['owner'] ?? ''), trim($_POST['category'] ?? ''),
-              $cat_type, trim($_POST['location'] ?? ''), trim($_POST['blurb'] ?? ''),
+              $cat_type, trim($_POST['location'] ?? ''), $blurb,
               trim($_POST['link'] ?? ''), trim($_POST['phone'] ?? ''), trim($_POST['email'] ?? ''),
               $photo, (int)($_POST['sort'] ?? 0), $status,
             ];
@@ -64,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 q("INSERT INTO enterprise_businesses (name,owner,category,cat_type,location,blurb,link,phone,email,photo,sample,sort,status)
                    VALUES (?,?,?,?,?,?,?,?,?,?,0,?,?)",
                   [trim($_POST['name']??''),trim($_POST['owner']??''),trim($_POST['category']??''),$cat_type,
-                   trim($_POST['location']??''),trim($_POST['blurb']??''),trim($_POST['link']??''),
+                   trim($_POST['location']??''),$blurb,trim($_POST['link']??''),
                    trim($_POST['phone']??''),trim($_POST['email']??''),$photo,
                    ent_next_sort('enterprise_businesses'),$status]);
                 flash('Business added — open the Enterprise page to see it live.');
@@ -164,8 +175,9 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
         <div><label>Phone (optional)</label><input type="text" name="phone"></div>
         <div><label>Email (optional)</label><input type="text" name="email"></div>
       </div>
-      <label>Short description</label>
-      <textarea name="blurb" placeholder="A sentence or two about the business."></textarea>
+      <label>Short description <span class="lbl-hint">(up to 120 words)</span></label>
+      <textarea name="blurb" data-wc placeholder="A sentence or two about the business."></textarea>
+      <div class="em-wc"><b>0</b> / 120 words</div>
       <label>Photo (optional — JPG/PNG, up to 12 MB)</label>
       <input type="file" name="photo" accept="image/*">
       <button class="btn gold" name="action" value="biz_save" style="margin-top:12px">Add business</button>
@@ -199,8 +211,9 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
           <div><label>Order</label><input type="number" name="sort" value="<?= (int)$b['sort'] ?>"></div>
           <div><label>Visibility</label><select name="status"><?= em_status_opts($b['status']) ?></select></div>
         </div>
-        <label>Short description</label>
-        <textarea name="blurb"><?= e($b['blurb']) ?></textarea>
+        <label>Short description <span class="lbl-hint">(up to 120 words)</span></label>
+        <textarea name="blurb" data-wc><?= e($b['blurb']) ?></textarea>
+        <div class="em-wc"><b>0</b> / 120 words</div>
         <button class="btn gold" name="action" value="biz_save" style="margin-top:12px">Save changes</button>
       </form>
     </div>
@@ -281,5 +294,28 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
     </div>
   <?php endforeach; ?>
 <?php endif; ?>
+
+<script>
+(function(){
+  var MAX = 120;
+  document.querySelectorAll('textarea[data-wc]').forEach(function(ta){
+    var wc = (ta.nextElementSibling && ta.nextElementSibling.classList.contains('em-wc'))
+      ? ta.nextElementSibling : ta.parentNode.querySelector('.em-wc');
+    if (!wc) return;
+    var num = wc.querySelector('b');
+    var form = ta.closest('form');
+    var saveBtn = form ? form.querySelector('button[value=biz_save]') : null;
+    function upd(){
+      var v = ta.value.trim();
+      var n = v ? v.split(/\s+/).length : 0;
+      if (num) num.textContent = n;
+      var over = n > MAX;
+      wc.classList.toggle('over', over);
+      if (saveBtn) saveBtn.disabled = over;
+    }
+    ta.addEventListener('input', upd); upd();
+  });
+})();
+</script>
 
 <?php page_foot();

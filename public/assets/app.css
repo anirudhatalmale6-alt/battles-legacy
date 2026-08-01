@@ -738,3 +738,9 @@ body.tribute .chip:hover{background:var(--gold);color:var(--maroon);}
   .tae-grid{grid-template-columns:1fr;}
 }
 @media(max-width:560px){ .trib-headwrap h1{font-size:34px;} .trib-facts{grid-template-columns:1fr;} }
+
+/* Enterprise editor — word counter */
+.lbl-hint{color:#9a6a1f;font-weight:400;font-style:italic;font-size:12px;}
+.em-wc{font-size:12px;color:#9a6a1f;margin:4px 0 2px;font-family:'EB Garamond',serif;}
+.em-wc.over{color:#b0341f;font-weight:600;}
+.em-wc.over::after{content:" — please shorten to 120 words to save";}
