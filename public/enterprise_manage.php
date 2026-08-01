@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = (int)($_POST['id'] ?? 0);
 
     /* ---------- BUSINESSES ---------- */
+    try {
     if ($act === 'biz_save') {
         $name = trim($_POST['name'] ?? '');
         if ($name === '') { flash('Please fill in the Name field — it is required to save a business.'); }
@@ -111,6 +112,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } elseif ($act === 'say_delete' && $id) {
         q("DELETE FROM enterprise_sayings WHERE id=?", [$id]); flash('Saying removed.');
+    }
+    } catch (Exception $ex) {
+        flash('Sorry — that could not be saved. Please try again; if one field is very long, try shortening it a little.');
     }
     header('Location: enterprise_manage.php?tab=' . $tab); exit;
 }

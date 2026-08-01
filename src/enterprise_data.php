@@ -12,7 +12,7 @@ function ent_migrate() {
     $tables = [
 "enterprise_businesses" => "CREATE TABLE IF NOT EXISTS enterprise_businesses (
   id $AI, name VARCHAR(160) NOT NULL, owner VARCHAR(160) DEFAULT '', category VARCHAR(160) DEFAULT '',
-  cat_type VARCHAR(20) NOT NULL DEFAULT 'Business', location VARCHAR(120) DEFAULT '', blurb VARCHAR(700) DEFAULT '',
+  cat_type VARCHAR(20) NOT NULL DEFAULT 'Business', location VARCHAR(160) DEFAULT '', blurb TEXT,
   link VARCHAR(255) DEFAULT '', phone VARCHAR(60) DEFAULT '', email VARCHAR(190) DEFAULT '', photo VARCHAR(255) DEFAULT '',
   sample INT NOT NULL DEFAULT 0, sort INT NOT NULL DEFAULT 0, status VARCHAR(20) NOT NULL DEFAULT 'published',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
