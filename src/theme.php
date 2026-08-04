@@ -15,7 +15,7 @@ function page_head($title, $opts = []) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=EB+Garamond&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/app.css?v=<?= @filemtime(__DIR__ . '/../public/assets/app.css') ?: date('Ymd') ?>">
 </head>
 <body class="<?= trim(($full ? 'full ' : '') . $bodyClass) ?>">
 <header class="nav">
