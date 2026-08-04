@@ -808,3 +808,29 @@ body.tribute .chip:hover{background:var(--gold);color:var(--maroon);}
 .mem-adminnote{text-align:center;margin:0 0 14px;color:var(--gold2);font-size:14px;}
 .mem-adminnote a{color:var(--gold2);text-decoration:underline;}
 .mem-tip{color:var(--gold-soft);font-size:12px;font-style:italic;}
+
+/* ---- Enterprise: pending-review queue + member submission form ---- */
+.em-tabs a.has-pend{background:#f3e2c0;color:#7a3b12;}
+.em-tabs a.has-pend.on{background:#5c1a1f;color:var(--gold2);}
+.em-penddot{display:inline-block;min-width:18px;height:18px;line-height:18px;text-align:center;padding:0 5px;
+  border-radius:10px;background:#b3452f;color:#fff;font-size:12px;font-weight:700;margin-left:2px;vertical-align:1px;}
+.em-tag.pend{background:#f0d9b5;color:#7a4b12;border-color:#d9b877;}
+.em-pend .em-rowhead{align-items:flex-start;flex-wrap:wrap;}
+.em-by{font-size:13px;color:#8a6a3a;font-style:italic;font-family:'EB Garamond',serif;}
+.em-pendbody{display:flex;gap:16px;align-items:flex-start;margin:6px 0 12px;}
+.em-penddet{font-family:'EB Garamond',serif;color:#4a3a24;font-size:15px;line-height:1.5;}
+.em-penddet div{margin:2px 0;}
+.em-penddet b{color:#5c1a1f;}
+.em-pendblurb{margin:8px 0 0;font-style:italic;color:#3a2c18;}
+.em-pendtips{margin:6px 0 0;padding-left:18px;}
+.em-pendtips li{margin:2px 0;}
+.em-pendbtns{display:flex;gap:10px;flex-wrap:wrap;border-top:1px dashed #e2d3b0;padding-top:12px;}
+.em-pendbtns .btn{padding:9px 18px;}
+@media(max-width:640px){ .em-pendbody{flex-direction:column;} }
+
+/* member submission form */
+.sub-mine{list-style:none;padding:0;margin:6px 0 0;font-family:'EB Garamond',serif;}
+.sub-mine li{padding:8px 0;border-bottom:1px solid #eadfc6;color:#4a3a24;}
+.sub-kind{display:inline-block;font-size:11px;letter-spacing:.5px;text-transform:uppercase;background:#efe3c8;
+  color:#6e4a24;border:1px solid #d9c79a;border-radius:5px;padding:1px 7px;margin-right:6px;}
+.sub-wait{color:#9a6a1f;font-style:italic;font-size:14px;}

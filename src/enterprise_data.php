@@ -40,8 +40,60 @@ function ent_migrate() {
       "CREATE INDEX idx_entsay_status ON enterprise_sayings(status)",
       "CREATE INDEX idx_entfin_status ON enterprise_finance(status)",
     ] as $s) { try { db()->exec($s); } catch (Exception $e) {} }
+    // who submitted an entry (blank for admin-entered items); idempotent add
+    foreach (['enterprise_businesses','enterprise_videos','enterprise_sayings','enterprise_finance'] as $t) {
+        try { db()->exec("ALTER TABLE $t ADD COLUMN submitted_by VARCHAR(160) DEFAULT ''"); } catch (Exception $e) {}
+    }
     ent_seed();
     return array_keys($tables);
+}
+
+/** table name for a pending-item type code (biz/vid/say/fin) */
+function ent_pend_table($t) {
+    return [
+      'biz' => 'enterprise_businesses', 'vid' => 'enterprise_videos',
+      'say' => 'enterprise_sayings',    'fin' => 'enterprise_finance',
+    ][$t] ?? '';
+}
+
+/** all family-submitted entries awaiting review, newest first, tagged with _type */
+function ent_pending_all() {
+    $out = [];
+    foreach (['biz'=>'enterprise_businesses','vid'=>'enterprise_videos','say'=>'enterprise_sayings','fin'=>'enterprise_finance'] as $code => $tbl) {
+        foreach (all("SELECT * FROM $tbl WHERE status='pending' ORDER BY created_at DESC, id DESC") as $r) {
+            $r['_type'] = $code; $out[] = $r;
+        }
+    }
+    return $out;
+}
+
+/** count of entries awaiting review across all sections */
+function ent_pending_count() {
+    $n = 0;
+    foreach (['enterprise_businesses','enterprise_videos','enterprise_sayings','enterprise_finance'] as $t) {
+        $r = one("SELECT COUNT(*) c FROM $t WHERE status='pending'");
+        $n += $r ? (int)$r['c'] : 0;
+    }
+    return $n;
+}
+
+/** Save a family-submitted photo (used by the member submission form).
+ *  Returns [relPath, errorString]. Mirrors the admin uploader's rules. */
+function ent_store_photo($field = 'photo') {
+    $rel = 'assets/enterprise/uploads';
+    if (empty($_FILES[$field]) || $_FILES[$field]['error'] === UPLOAD_ERR_NO_FILE) return ['', ''];
+    if ($_FILES[$field]['error'] !== UPLOAD_ERR_OK) return ['', 'The photo could not be uploaded — please try again.'];
+    $tmp  = $_FILES[$field]['tmp_name'];
+    $info = @getimagesize($tmp);
+    $allowed = ['image/jpeg'=>'jpg','image/png'=>'png','image/gif'=>'gif','image/webp'=>'webp'];
+    if (!$info || !isset($allowed[$info['mime']])) return ['', 'That file is not a photo (JPG, PNG, GIF or WEBP only).'];
+    if ($_FILES[$field]['size'] > 12 * 1024 * 1024) return ['', 'That image is larger than 12 MB — please pick a smaller one.'];
+    $ext   = $allowed[$info['mime']];
+    $fname = date('Ymd_His') . '_' . substr(md5(uniqid('', true)), 0, 6) . '.' . $ext;
+    $absDir = dirname(__DIR__) . '/public/' . $rel;
+    @mkdir($absDir, 0775, true);
+    if (!move_uploaded_file($tmp, $absDir . '/' . $fname)) return ['', 'Sorry — the photo could not be saved.'];
+    return [$rel . '/' . $fname, ''];
 }
 
 /** Seed the sample content once (only when a table is empty). */

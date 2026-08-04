@@ -214,11 +214,11 @@ page_head('Enterprise', ['body_class' => 'home ent']);
     <?php endforeach; ?>
     <div class="ent2-submit">
       <h3>Submit Your Business</h3>
-      <p>Are you a business owner? Add your business to our directory and be featured!</p>
-      <?php if (role_at_least('admin')): ?>
-        <a class="ent2-btn" href="enterprise_manage.php">Submit Business</a>
+      <p>Are you a business owner? Add your business, a video, or a resource &mdash; we&rsquo;ll review it and feature it here!</p>
+      <?php if (logged_in()): ?>
+        <a class="ent2-btn" href="enterprise_submit.php">Submit for Review</a>
       <?php else: ?>
-        <button type="button" class="ent2-btn">Submit Business</button>
+        <a class="ent2-btn" href="login.php">Sign In to Submit</a>
       <?php endif; ?>
     </div>
   </div>

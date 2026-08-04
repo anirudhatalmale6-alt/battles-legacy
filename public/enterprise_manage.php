@@ -146,6 +146,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } elseif ($act === 'fin_delete' && $id) {
         q("DELETE FROM enterprise_finance WHERE id=?", [$id]); flash('Guidance card removed.');
+
+    /* ---------- PENDING SUBMISSIONS (family-submitted, awaiting review) ---------- */
+    } elseif ($act === 'pend_approve') {
+        $tab = 'pending';
+        $tbl = ent_pend_table($_POST['ptype'] ?? '');
+        if ($tbl && $id) {
+            q("UPDATE $tbl SET status='published', sort=? WHERE id=? AND status='pending'", [ent_next_sort($tbl), $id]);
+            flash('Approved — it is now live on the Enterprise page.');
+        }
+    } elseif ($act === 'pend_decline' && $id) {
+        $tab = 'pending';
+        $tbl = ent_pend_table($_POST['ptype'] ?? '');
+        if ($tbl) {
+            if ($tbl === 'enterprise_businesses') { // clean up any uploaded photo
+                $r = one("SELECT photo FROM enterprise_businesses WHERE id=? AND status='pending'", [$id]);
+                if ($r && !empty($r['photo']) && strpos($r['photo'], 'uploads/') !== false) {
+                    $abs = __DIR__ . '/' . $r['photo']; if (is_file($abs)) @unlink($abs);
+                }
+            }
+            q("DELETE FROM $tbl WHERE id=? AND status='pending'", [$id]);
+            flash('Submission declined and removed.');
+        }
     }
     } catch (Exception $ex) {
         flash('Sorry — that could not be saved. Please try again; if one field is very long, try shortening it a little.');
@@ -153,11 +175,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: enterprise_manage.php?tab=' . $tab); exit;
 }
 
-$tab = in_array($_GET['tab'] ?? '', ['businesses','videos','sayings','financial'], true) ? $_GET['tab'] : 'businesses';
+$tab = in_array($_GET['tab'] ?? '', ['businesses','videos','sayings','financial','pending'], true) ? $_GET['tab'] : 'businesses';
 $BIZ = ent_businesses(true);
 $VIDS = ent_videos(true);
 $SAYS = ent_sayings(true);
 $FINC = ent_finance(true);
+$PEND = ent_pending_all();
+$PENDN = count($PEND);
+// the manage lists show published + hidden, not pending items awaiting review
+$BIZ  = array_values(array_filter($BIZ,  function($r){ return ($r['status'] ?? '') !== 'pending'; }));
+$VIDS = array_values(array_filter($VIDS, function($r){ return ($r['status'] ?? '') !== 'pending'; }));
+$SAYS = array_values(array_filter($SAYS, function($r){ return ($r['status'] ?? '') !== 'pending'; }));
+$FINC = array_values(array_filter($FINC, function($r){ return ($r['status'] ?? '') !== 'pending'; }));
 
 function em_type_opts($sel) {
     $o = '';
@@ -184,13 +213,76 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
    <span class="muted" style="margin-left:10px">Opens in a new tab. If a change doesn't show, refresh that tab.</span></p>
 
 <div class="em-tabs">
+  <a href="?tab=pending" class="<?= $tab==='pending'?'on':'' ?><?= $PENDN?' has-pend':'' ?>">Pending review<?= $PENDN ? ' <span class="em-penddot">'.$PENDN.'</span>' : ' (0)' ?></a>
   <a href="?tab=businesses" class="<?= $tab==='businesses'?'on':'' ?>">Businesses (<?= count($BIZ) ?>)</a>
   <a href="?tab=videos" class="<?= $tab==='videos'?'on':'' ?>">Videos (<?= count($VIDS) ?>)</a>
   <a href="?tab=sayings" class="<?= $tab==='sayings'?'on':'' ?>">Sayings (<?= count($SAYS) ?>)</a>
   <a href="?tab=financial" class="<?= $tab==='financial'?'on':'' ?>">Financial Guidance (<?= count($FINC) ?>)</a>
 </div>
 
-<?php if ($tab === 'businesses'): ?>
+<?php if ($tab === 'pending'): ?>
+  <div class="panel em-add">
+    <h2>Family submissions awaiting your review</h2>
+    <?php if ($PENDN): ?>
+      <p class="lede" style="margin:0">These were submitted by family members. Click <b>Approve</b> to publish an entry to the Enterprise page, or <b>Decline</b> to remove it. Nothing here is visible to anyone else until you approve it.</p>
+    <?php else: ?>
+      <p class="lede" style="margin:0">Nothing waiting right now. When a family member submits a business, video, resource, or saying, it will appear here for you to approve.</p>
+    <?php endif; ?>
+  </div>
+
+  <?php foreach ($PEND as $p):
+    $kind = ['biz'=>'Business','vid'=>'Video','fin'=>'Financial resource','say'=>'Saying'][$p['_type']] ?? 'Entry';
+    $by   = trim($p['submitted_by'] ?? '');
+  ?>
+    <div class="panel em-row em-pend">
+      <div class="em-rowhead">
+        <h3><span class="em-tag pend"><?= e($kind) ?></span>
+          <?php if ($p['_type']==='biz'): ?><?= e($p['name']) ?>
+          <?php elseif ($p['_type']==='say'): ?>&ldquo;<?= e(mb_strimwidth($p['quote'],0,70,'…')) ?>&rdquo;
+          <?php else: ?><?= e($p['title']) ?><?php endif; ?>
+        </h3>
+        <span class="em-by"><?= $by ? 'Submitted by ' . e($by) : 'Submitted by a family member' ?></span>
+      </div>
+
+      <div class="em-pendbody">
+        <?php if ($p['_type']==='biz'): ?>
+          <?php if (!empty($p['photo'])): ?><div class="em-thumb" style="background-image:url('<?= e($p['photo']) ?>')"></div><?php endif; ?>
+          <div class="em-penddet">
+            <?php if ($p['owner']): ?><div><b>Owner:</b> <?= e($p['owner']) ?></div><?php endif; ?>
+            <?php if ($p['category']): ?><div><b>Category:</b> <?= e($p['category']) ?> <span class="muted">(<?= e($p['cat_type']) ?>)</span></div><?php endif; ?>
+            <?php if ($p['location']): ?><div><b>Location:</b> <?= e($p['location']) ?></div><?php endif; ?>
+            <?php if ($p['link']): ?><div><b>Website:</b> <?= e($p['link']) ?></div><?php endif; ?>
+            <?php if ($p['phone']): ?><div><b>Phone:</b> <?= e($p['phone']) ?></div><?php endif; ?>
+            <?php if ($p['email']): ?><div><b>Email:</b> <?= e($p['email']) ?></div><?php endif; ?>
+            <?php if ($p['blurb']): ?><p class="em-pendblurb"><?= e($p['blurb']) ?></p><?php endif; ?>
+          </div>
+        <?php elseif ($p['_type']==='vid'): ?>
+          <div class="em-penddet">
+            <?php if ($p['url']): ?><div><b>Link:</b> <?= e($p['url']) ?></div><?php endif; ?>
+            <?php if ($p['duration']): ?><div><b>Length:</b> <?= e($p['duration']) ?></div><?php endif; ?>
+            <?php if ($p['description']): ?><p class="em-pendblurb"><?= e($p['description']) ?></p><?php endif; ?>
+          </div>
+        <?php elseif ($p['_type']==='fin'): ?>
+          <div class="em-penddet">
+            <?php $tips = ent_tips($p['tips']); if ($tips): ?><ul class="em-pendtips"><?php foreach ($tips as $t): ?><li><?= e($t) ?></li><?php endforeach; ?></ul><?php endif; ?>
+            <?php if ($p['link']): ?><div><b>Link:</b> <?= e($p['link']) ?></div><?php endif; ?>
+          </div>
+        <?php elseif ($p['_type']==='say'): ?>
+          <div class="em-penddet">
+            <p class="em-pendblurb">&ldquo;<?= e($p['quote']) ?>&rdquo;</p>
+            <?php if ($p['author']): ?><div><b>&mdash; <?= e($p['author']) ?></b></div><?php endif; ?>
+          </div>
+        <?php endif; ?>
+      </div>
+
+      <div class="em-pendbtns">
+        <form method="post" style="display:inline"><?= csrf_field() ?><input type="hidden" name="ptype" value="<?= e($p['_type']) ?>"><input type="hidden" name="id" value="<?= (int)$p['id'] ?>"><button class="btn gold" name="action" value="pend_approve">&#10003; Approve &amp; publish</button></form>
+        <form method="post" style="display:inline" onsubmit="return confirm('Decline and remove this submission?')"><?= csrf_field() ?><input type="hidden" name="ptype" value="<?= e($p['_type']) ?>"><input type="hidden" name="id" value="<?= (int)$p['id'] ?>"><button class="btn danger" name="action" value="pend_decline">Decline</button></form>
+      </div>
+    </div>
+  <?php endforeach; ?>
+
+<?php elseif ($tab === 'businesses'): ?>
   <div class="panel em-add">
     <h2>Add a business or profession</h2>
     <form method="post" enctype="multipart/form-data" class="em-form">
