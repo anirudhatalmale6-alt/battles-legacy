@@ -743,7 +743,7 @@ body.tribute .chip:hover{background:var(--gold);color:var(--maroon);}
 .lbl-hint{color:#9a6a1f;font-weight:400;font-style:italic;font-size:12px;}
 .em-wc{font-size:12px;color:#9a6a1f;margin:4px 0 2px;font-family:'EB Garamond',serif;}
 .em-wc.over{color:#b0341f;font-weight:600;}
-.em-wc.over::after{content:" — please shorten to 120 words to save";}
+.em-wc.over::after{content:" — please shorten to 130 words to save";}
 
 /* ===== Memorial landing v2 — hero image + Celebrating bar ===== */
 .mem-hero2{width:100vw;margin-left:calc(-50vw + 50%);border-bottom:2px solid var(--gold);background:#241009;}
@@ -834,3 +834,147 @@ body.tribute .chip:hover{background:var(--gold);color:var(--maroon);}
 .sub-kind{display:inline-block;font-size:11px;letter-spacing:.5px;text-transform:uppercase;background:#efe3c8;
   color:#6e4a24;border:1px solid #d9c79a;border-radius:5px;padding:1px 7px;margin-right:6px;}
 .sub-wait{color:#9a6a1f;font-style:italic;font-size:14px;}
+
+/* ===================== Faith page ===================== */
+body.faith{background:#ece0c6;color:#3a2c18;}
+.faith-grid{display:grid;grid-template-columns:312px 1fr;width:100vw;margin-left:calc(-50vw + 50%);align-items:stretch;}
+.faith-values,.faith-verse{width:100vw;margin-left:calc(-50vw + 50%);}
+
+/* ---- left: Prayer of Salvation (navy) ---- */
+.faith-side{background:linear-gradient(180deg,#241c46,#191233 60%,#120c24);color:#efe9ff;padding:26px 22px 34px;border-right:2px solid var(--gold);}
+.fs-head{text-align:center;margin-bottom:16px;}
+.fs-fig{width:54px;height:54px;margin:0 auto 8px;border-radius:50%;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;background:rgba(201,162,75,.12);}
+.fs-fig svg{width:28px;height:28px;fill:none;stroke:var(--gold2);stroke-width:1.6;}
+.fs-head h2{font-family:'Cormorant Garamond',serif;color:#fff;font-size:30px;line-height:1;margin:0;font-weight:600;letter-spacing:1px;text-transform:uppercase;}
+.fs-head h2 span{color:var(--gold2);}
+.fs-card{background:#fffdf8;color:#2c2233;border-radius:12px;padding:16px 15px;box-shadow:0 6px 18px rgba(0,0,0,.25);}
+.fs-line{display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #efe6d4;}
+.fs-line:last-of-type{border-bottom:none;}
+.fs-ic{flex:none;width:34px;height:34px;border-radius:50%;background:#241c46;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+.fs-ic svg{width:18px;height:18px;fill:none;stroke:var(--gold2);stroke-width:1.7;}
+.fs-ic.gold{background:var(--gold);}
+.fs-ic.gold svg{stroke:#241c46;}
+.fs-line p{font-size:14px;line-height:1.45;margin:0;}
+.fs-lead{color:#3a2c18;font-family:'Cormorant Garamond',serif;font-size:17px;letter-spacing:.3px;}
+.fs-line p b{color:#7a1f26;}
+.fs-thanks{display:flex;gap:11px;align-items:flex-start;margin-top:12px;background:linear-gradient(180deg,#f6e6bd,#efd89a);border-radius:10px;padding:12px;}
+.fs-thanks p{margin:0;font-size:14px;font-weight:600;color:#4a3410;line-height:1.4;text-transform:uppercase;letter-spacing:.4px;}
+.fs-amen{text-align:center;margin:16px 0 6px;background:var(--gold);color:#241c46;font-weight:700;padding:8px;border-radius:8px;font-family:'Cormorant Garamond',serif;font-size:18px;}
+.fs-amen .script{color:#7a1f26;font-size:22px;}
+.fs-need{text-align:center;margin-top:22px;}
+.fs-need h3{font-family:'Cormorant Garamond',serif;color:#fff;font-size:22px;margin:0 0 4px;}
+.fs-need p{font-size:14px;color:#cfc6ec;margin:0 0 12px;}
+.fs-photo{margin:18px 0 14px;border-radius:12px;overflow:hidden;border:1px solid rgba(201,162,75,.4);}
+.fs-photo img{display:block;width:100%;height:auto;}
+.fs-verse{font-family:'Cormorant Garamond',serif;font-style:italic;color:#d9cffb;font-size:15px;line-height:1.5;text-align:center;margin:0;}
+.fs-verse cite{display:block;font-style:normal;color:var(--gold2);font-size:13px;margin-top:8px;letter-spacing:1px;}
+
+/* ---- right: main body ---- */
+.faith-body{padding:0 clamp(16px,3.5vw,46px) 46px;min-width:0;}
+
+/* hero */
+.faith-hero{display:grid;grid-template-columns:1.05fr .95fr;gap:0;margin:0 0 26px;background:linear-gradient(180deg,#f3e6c8,#ecdcb6);border-bottom:2px solid var(--gold);border-radius:0 0 14px 14px;overflow:hidden;width:100%;}
+.fh-img{width:100%;height:100%;object-fit:cover;min-height:300px;}
+.fh-text{padding:34px 30px;}
+.fh-text h1{font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:clamp(34px,4.4vw,52px);line-height:1.02;margin:0;font-weight:600;}
+.fh-text h1 .script{display:block;color:var(--gold);font-size:1.05em;font-weight:600;}
+.fh-orn{color:var(--gold);letter-spacing:3px;margin:10px 0 12px;}
+.fh-sub{font-size:18px;color:#4a3a24;max-width:44ch;margin:0 0 14px;line-height:1.4;}
+.fh-quote{font-family:'Cormorant Garamond',serif;font-style:italic;color:#7a1f26;font-size:21px;margin:0 0 18px;line-height:1.3;}
+.fh-quote cite{display:block;font-style:normal;font-size:15px;color:#8a6a3a;margin-top:4px;letter-spacing:.5px;}
+.fh-watch{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(180deg,#d8b662,#c9a24b);color:#3a2410;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:18px;padding:10px 22px;border-radius:30px;text-decoration:none;border:1px solid #b8912f;}
+.fh-watch:hover{filter:brightness(1.05);}
+.fh-play svg{width:22px;height:22px;fill:none;stroke:#3a2410;stroke-width:1.7;vertical-align:middle;}
+.fh-note{font-size:13px;color:#8a6a3a;margin:8px 0 0;font-style:italic;}
+
+/* panels */
+.faith-two{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:22px;max-width:1080px;}
+.fpanel{background:#fffdf8;border:1px solid #e6d8bd;border-radius:14px;padding:22px 22px 24px;box-shadow:0 3px 14px rgba(120,80,20,.10);display:flex;flex-direction:column;}
+.fp-title{display:flex;align-items:center;gap:10px;font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:24px;font-weight:600;}
+.fp-title.small{font-size:20px;}
+.fp-title svg{width:26px;height:26px;fill:none;stroke:var(--gold);stroke-width:1.6;flex:none;}
+.fp-sub{font-size:15px;color:#6a5a3e;margin:6px 0 14px;line-height:1.5;}
+
+/* ministry family categories */
+.fmin{display:flex;flex-wrap:wrap;gap:14px 8px;justify-content:space-between;margin:6px 0 18px;}
+.fmin-cat{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1 1 60px;text-align:center;}
+.fmin-ic{width:46px;height:46px;border-radius:50%;background:#f1e6cd;border:1px solid #dcc79a;display:flex;align-items:center;justify-content:center;}
+.fmin-ic svg{width:24px;height:24px;fill:none;stroke:#5c1a1f;stroke-width:1.6;}
+.fmin-cat span:last-child{font-size:13px;color:#5a4326;font-weight:600;}
+
+/* prayer request form */
+.fp-sent{background:#e8f3e5;border:1px solid #b7d8ac;color:#2f5a24;border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:15px;}
+.fp-sent.err{background:#f8e7e3;border-color:#e0b3aa;color:#8a2e1f;}
+.fpray{display:flex;flex-direction:column;gap:10px;}
+.fpray input[type=text],.fpray textarea{width:100%;background:#fff;border:1px solid #d8c8a6;border-radius:8px;padding:11px 13px;font-family:'EB Garamond',serif;font-size:15px;color:#3a2c18;}
+.fpray textarea{min-height:96px;resize:vertical;}
+.fp-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;}
+.fp-check{display:flex;align-items:center;gap:8px;font-size:14px;color:#5a4326;text-transform:none;letter-spacing:normal;margin:0;font-weight:500;}
+.fp-check input{width:auto;}
+.fpray .btn2{align-self:flex-start;margin-top:4px;}
+
+/* scripture of the week */
+.faith-two.scrip{grid-template-columns:.9fr 1.1fr;}
+.fweek{padding:0;overflow:hidden;}
+.fweek img{width:100%;height:190px;object-fit:cover;}
+.fw-body{padding:18px 22px 22px;display:flex;flex-direction:column;flex:1;}
+.fw-body h3{font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:22px;margin:0 0 8px;text-align:center;}
+.fw-body blockquote{font-family:'Cormorant Garamond',serif;font-style:italic;color:#3a2c18;font-size:20px;text-align:center;margin:0 0 16px;line-height:1.35;}
+.fw-body blockquote cite{display:block;font-style:normal;font-size:14px;color:#8a6a3a;margin-top:6px;}
+.fw-body .btn2{align-self:center;margin-top:auto;}
+
+/* scripture library */
+.flib-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;margin:10px 0 14px;}
+.flib-h{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.flib-ic{width:30px;height:30px;border-radius:50%;background:#f1e6cd;border:1px solid #dcc79a;display:flex;align-items:center;justify-content:center;flex:none;}
+.flib-ic svg{width:16px;height:16px;fill:none;stroke:#5c1a1f;stroke-width:1.7;}
+.flib-h b{font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:18px;}
+.flib-cat ul{list-style:none;margin:0;padding:0 0 0 38px;}
+.flib-cat li{font-size:14px;color:#6a5a3e;padding:1px 0;}
+.flib-all{align-self:center;margin-top:auto;color:#7a1f26;font-weight:600;text-decoration:none;font-family:'Cormorant Garamond',serif;font-size:16px;}
+.flib-all:hover{color:var(--gold);}
+
+/* three cards */
+.faith-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1080px;}
+.fcard{border-radius:14px;padding:22px 20px 24px;border:1px solid #e6d8bd;display:flex;flex-direction:column;text-align:center;box-shadow:0 3px 14px rgba(120,80,20,.10);}
+.fcard.praise{background:linear-gradient(180deg,#fbeede,#f6e2c9);}
+.fcard.devos{background:linear-gradient(180deg,#eef0e4,#e4e8d2);}
+.fcard.memory{background:linear-gradient(180deg,#f3eef7,#eae2f0);}
+.fc-ic{width:52px;height:52px;border-radius:50%;margin:0 auto 10px;background:#fff;border:1px solid #dcc79a;display:flex;align-items:center;justify-content:center;}
+.fc-ic svg{width:26px;height:26px;fill:none;stroke:#5c1a1f;stroke-width:1.6;}
+.fcard h3{font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:21px;margin:0 0 6px;}
+.fcard p{font-size:14px;color:#5a4a34;line-height:1.5;margin:0 0 16px;}
+.fcard .btn2{align-self:center;margin-top:auto;}
+
+/* value strip */
+.faith-values{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;background:linear-gradient(180deg,#201a3d,#150f2a);padding:24px clamp(16px,4vw,54px);border-top:2px solid var(--gold);}
+.fv{display:flex;align-items:center;gap:12px;justify-content:center;}
+.fv-ic{width:46px;height:46px;border-radius:50%;flex:none;background:rgba(201,162,75,.14);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;}
+.fv-ic svg{width:24px;height:24px;fill:none;stroke:var(--gold2);stroke-width:1.6;}
+.fv b{display:block;color:#fff;font-family:'Cormorant Garamond',serif;font-size:17px;}
+.fv span{display:block;color:#c9c0e6;font-size:12.5px;line-height:1.3;}
+
+/* closing verse */
+.faith-verse{background:linear-gradient(180deg,#2a1e4d,#1c1436);color:var(--gold2);text-align:center;padding:22px 24px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;}
+.fvq{color:var(--gold);font-size:34px;vertical-align:-8px;margin-right:6px;}
+.fvr{display:block;font-style:normal;color:#d8c48a;font-size:14px;letter-spacing:2px;margin-top:6px;}
+
+/* admin faith_manage prayer rows */
+.fpr-body{font-family:'EB Garamond',serif;color:#3a2c18;font-size:16px;line-height:1.55;background:#fffdf8;border:1px solid #ecdfc4;border-radius:8px;padding:12px 14px;margin:6px 0 8px;}
+.fpr.done{opacity:.72;}
+.fpr-contact{font-size:14px;color:#2f5a24;margin:0 0 8px;}
+
+/* responsive */
+@media(max-width:1000px){
+  .faith-grid{grid-template-columns:1fr;}
+  .faith-side{border-right:none;border-bottom:2px solid var(--gold);}
+  .faith-two,.faith-two.scrip{grid-template-columns:1fr;}
+  .faith-cards{grid-template-columns:1fr;}
+  .faith-values{grid-template-columns:1fr 1fr;gap:16px 8px;}
+}
+@media(max-width:720px){
+  .faith-hero{grid-template-columns:1fr;}
+  .fh-img{order:-1;max-height:240px;}
+  .flib-grid{grid-template-columns:1fr;}
+}
+@media(max-width:520px){ .faith-values{grid-template-columns:1fr;} }

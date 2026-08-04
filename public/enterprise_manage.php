@@ -30,14 +30,14 @@ function ent_next_sort($table) {
 }
 
 /** Trim text to at most $max words (server-side backstop for the word cap). */
-function ent_cap_words($s, $max = 120) {
+function ent_cap_words($s, $max = 130) {
     $s = trim($s);
     if ($s === '') return '';
     $words = preg_split('/\s+/', $s);
     if (count($words) <= $max) return $s;
     return implode(' ', array_slice($words, 0, $max));
 }
-const ENT_BLURB_MAXWORDS = 120;
+const ENT_BLURB_MAXWORDS = 130;
 
 $tab = 'businesses';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -297,9 +297,9 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
         <div><label>Phone (optional)</label><input type="text" name="phone"></div>
         <div><label>Email (optional)</label><input type="text" name="email"></div>
       </div>
-      <label>Short description <span class="lbl-hint">(up to 120 words)</span></label>
+      <label>Short description <span class="lbl-hint">(up to 130 words)</span></label>
       <textarea name="blurb" data-wc placeholder="A sentence or two about the business."></textarea>
-      <div class="em-wc"><b>0</b> / 120 words</div>
+      <div class="em-wc"><b>0</b> / 130 words</div>
       <label>Photo (optional — JPG/PNG, up to 12 MB)</label>
       <input type="file" name="photo" accept="image/*">
       <button class="btn gold" name="action" value="biz_save" style="margin-top:12px">Add business</button>
@@ -333,9 +333,9 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
           <div><label>Order</label><input type="number" name="sort" value="<?= (int)$b['sort'] ?>"></div>
           <div><label>Visibility</label><select name="status"><?= em_status_opts($b['status']) ?></select></div>
         </div>
-        <label>Short description <span class="lbl-hint">(up to 120 words)</span></label>
+        <label>Short description <span class="lbl-hint">(up to 130 words)</span></label>
         <textarea name="blurb" data-wc><?= e($b['blurb']) ?></textarea>
-        <div class="em-wc"><b>0</b> / 120 words</div>
+        <div class="em-wc"><b>0</b> / 130 words</div>
         <button class="btn gold" name="action" value="biz_save" style="margin-top:12px">Save changes</button>
       </form>
     </div>
@@ -459,7 +459,7 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
 
 <script>
 (function(){
-  var MAX = 120;
+  var MAX = 130;
   document.querySelectorAll('textarea[data-wc]').forEach(function(ta){
     var wc = (ta.nextElementSibling && ta.nextElementSibling.classList.contains('em-wc'))
       ? ta.nextElementSibling : ta.parentNode.querySelector('.em-wc');

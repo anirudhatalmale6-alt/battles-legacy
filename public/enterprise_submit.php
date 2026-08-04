@@ -8,7 +8,7 @@ $u   = current_user();
 $who = trim($u['name'] ?? '') ?: trim($u['email'] ?? '') ?: 'Family member';
 
 /** trim to at most $max words (local backstop for the description cap) */
-function esub_cap($s, $max = 120) {
+function esub_cap($s, $max = 130) {
     $s = trim($s);
     if ($s === '') return '';
     $w = preg_split('/\s+/', $s);
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($perr) { $err = $perr; }
                 else {
                     $cat_type = ($_POST['cat_type'] ?? 'Business') === 'Profession' ? 'Profession' : 'Business';
-                    $blurb    = esub_cap($_POST['blurb'] ?? '', 120);
+                    $blurb    = esub_cap($_POST['blurb'] ?? '', 130);
                     q("INSERT INTO enterprise_businesses (name,owner,category,cat_type,location,blurb,link,phone,email,photo,sample,sort,status,submitted_by)
                        VALUES (?,?,?,?,?,?,?,?,?,?,0,0,'pending',?)",
                       [$name, trim($_POST['owner']??''), trim($_POST['category']??''), $cat_type, trim($_POST['location']??''),
@@ -119,9 +119,9 @@ page_head('Submit to the Enterprise Page', ['body_class' => 'em']);
         <div><label>Phone (optional)</label><input type="text" name="phone" value="<?= esub_old('phone') ?>"></div>
         <div><label>Email (optional)</label><input type="text" name="email" value="<?= esub_old('email') ?>"></div>
       </div>
-      <label>Short description <span class="lbl-hint">(up to 120 words)</span></label>
+      <label>Short description <span class="lbl-hint">(up to 130 words)</span></label>
       <textarea name="blurb" data-wc placeholder="A sentence or two about the business."><?= esub_old('blurb') ?></textarea>
-      <div class="em-wc"><b>0</b> / 120 words</div>
+      <div class="em-wc"><b>0</b> / 130 words</div>
       <label>Photo / logo (optional &mdash; JPG/PNG, up to 12 MB)</label>
       <input type="file" name="photo" accept="image/*">
     </div>
@@ -200,7 +200,7 @@ page_head('Submit to the Enterprise Page', ['body_class' => 'em']);
   });
 
   // live word counter on the description
-  var MAX = 120;
+  var MAX = 130;
   document.querySelectorAll('textarea[data-wc]').forEach(function(ta){
     var wc = ta.parentNode.querySelector('.em-wc'); if(!wc) return;
     var num = wc.querySelector('b');
