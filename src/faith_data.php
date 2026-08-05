@@ -15,6 +15,66 @@ function faith_migrate() {
       user_id INT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )$ENG");
     try { db()->exec("CREATE INDEX idx_fp_status ON faith_prayers(status)"); } catch (Exception $e) {}
+
+    // Ministry family — a few featured ministers (past & present), each with a photo + profile.
+    db()->exec("CREATE TABLE IF NOT EXISTS faith_ministers (
+      id $AI, name VARCHAR(160) NOT NULL, role VARCHAR(160) DEFAULT '', era VARCHAR(20) NOT NULL DEFAULT 'present',
+      church VARCHAR(200) DEFAULT '', years VARCHAR(80) DEFAULT '', bio TEXT, photo VARCHAR(255) DEFAULT '',
+      sort INT NOT NULL DEFAULT 0, status VARCHAR(20) NOT NULL DEFAULT 'published',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )$ENG");
+
+    // Prayer warriors — family who sign up to pray over the requests.
+    db()->exec("CREATE TABLE IF NOT EXISTS faith_warriors (
+      id $AI, name VARCHAR(160) NOT NULL, contact VARCHAR(190) DEFAULT '', note VARCHAR(600) DEFAULT '',
+      user_id INT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )$ENG");
+}
+
+/* ---------------- Ministry family ---------------- */
+function faith_ministers($all = false) {
+    $w = $all ? '' : "WHERE status='published'";
+    return all("SELECT * FROM faith_ministers $w ORDER BY sort, id");
+}
+function faith_minister($id) { return one("SELECT * FROM faith_ministers WHERE id=?", [(int)$id]); }
+function faith_minister_next_sort() {
+    $r = one("SELECT MAX(sort) m FROM faith_ministers");
+    return ($r && $r['m'] !== null) ? ((int)$r['m'] + 1) : 0;
+}
+function faith_delete_minister($id) { q("DELETE FROM faith_ministers WHERE id=?", [(int)$id]); }
+
+/* ---------------- Prayer warriors ---------------- */
+function faith_add_warrior($name, $contact, $note, $user_id) {
+    q("INSERT INTO faith_warriors (name,contact,note,user_id) VALUES (?,?,?,?)",
+      [$name, $contact, mb_substr($note, 0, 600), $user_id]);
+}
+function faith_warriors()      { return all("SELECT * FROM faith_warriors ORDER BY created_at DESC, id DESC"); }
+function faith_warrior_count() { $r = one("SELECT COUNT(*) c FROM faith_warriors"); return $r ? (int)$r['c'] : 0; }
+function faith_delete_warrior($id) { q("DELETE FROM faith_warriors WHERE id=?", [(int)$id]); }
+
+/** Save a minister photo (JPG/PNG/GIF/WEBP <=12MB) -> assets/faith/ministers/. Returns [relPath, error]. */
+function faith_store_photo($field = 'photo', $existing = '') {
+    $rel = 'assets/faith/ministers';
+    if (empty($_FILES[$field]) || $_FILES[$field]['error'] === UPLOAD_ERR_NO_FILE) return [$existing, ''];
+    if ($_FILES[$field]['error'] !== UPLOAD_ERR_OK) return [$existing, 'The photo could not be uploaded — please try again.'];
+    $tmp  = $_FILES[$field]['tmp_name'];
+    $info = @getimagesize($tmp);
+    $allowed = ['image/jpeg'=>'jpg','image/png'=>'png','image/gif'=>'gif','image/webp'=>'webp'];
+    if (!$info || !isset($allowed[$info['mime']])) return [$existing, 'That file is not a photo (JPG, PNG, GIF or WEBP only).'];
+    if ($_FILES[$field]['size'] > 12 * 1024 * 1024) return [$existing, 'That image is larger than 12 MB — please pick a smaller one.'];
+    $ext   = $allowed[$info['mime']];
+    $fname = date('Ymd_His') . '_' . substr(md5(uniqid('', true)), 0, 6) . '.' . $ext;
+    $absDir = dirname(__DIR__) . '/public/' . $rel;
+    @mkdir($absDir, 0775, true);
+    if (!move_uploaded_file($tmp, $absDir . '/' . $fname)) return [$existing, 'Sorry — the photo could not be saved.'];
+    return [$rel . '/' . $fname, ''];
+}
+function faith_mono($name) {
+    $clean = trim(preg_replace('/\s+/', ' ', strip_tags($name)));
+    $parts = array_values(array_filter(explode(' ', $clean)));
+    if (!$parts) return '&#10013;';
+    $ini = strtoupper(substr($parts[0],0,1) . (count($parts)>1 ? substr(end($parts),0,1) : ''));
+    return $ini !== '' ? e($ini) : '&#10013;';
 }
 
 /** store a submitted prayer request */

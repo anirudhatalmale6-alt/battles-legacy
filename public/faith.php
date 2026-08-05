@@ -3,23 +3,36 @@ require __DIR__ . '/../src/bootstrap.php';
 require_once __DIR__ . '/../src/faith_data.php';
 faith_migrate();
 
-/* ---- prayer request submission (family submits; William reviews) ---- */
-$sent = ($_GET['sent'] ?? '') === '1';
-$perr = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'prayer_submit') {
+/* ---- prayer request + prayer-warrior signup (family submits) ---- */
+$sent  = ($_GET['sent'] ?? '') === '1';
+$wsent = ($_GET['warrior'] ?? '') === '1';
+$perr = ''; $werr = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
     if (!empty($_POST['website'])) { header('Location: faith.php'); exit; } // honeypot
-    $body = trim($_POST['body'] ?? '');
-    if ($body === '') { $perr = 'Please write your prayer request before submitting.'; }
-    else {
-        $u = current_user();
-        faith_add_prayer(
-            trim($_POST['name'] ?? ''), trim($_POST['subject'] ?? ''), mb_substr($body, 0, 2000),
-            !empty($_POST['is_private']), !empty($_POST['may_contact']), $u['id'] ?? null
-        );
-        header('Location: faith.php?sent=1#prayer'); exit;
+    $act = $_POST['action'] ?? '';
+    if ($act === 'prayer_submit') {
+        $body = trim($_POST['body'] ?? '');
+        if ($body === '') { $perr = 'Please write your prayer request before submitting.'; }
+        else {
+            $u = current_user();
+            faith_add_prayer(
+                trim($_POST['name'] ?? ''), trim($_POST['subject'] ?? ''), mb_substr($body, 0, 2000),
+                !empty($_POST['is_private']), !empty($_POST['may_contact']), $u['id'] ?? null
+            );
+            header('Location: faith.php?sent=1#prayer'); exit;
+        }
+    } elseif ($act === 'warrior_signup') {
+        $wname = trim($_POST['wname'] ?? '');
+        if ($wname === '') { $werr = 'Please add your name to sign up.'; }
+        else {
+            $u = current_user();
+            faith_add_warrior($wname, trim($_POST['wcontact'] ?? ''), trim($_POST['wnote'] ?? ''), $u['id'] ?? null);
+            header('Location: faith.php?warrior=1#warrior'); exit;
+        }
     }
 }
+$MINISTERS = faith_ministers();
 
 /* ---- authored content (matches the mockup; can be made editable later) ---- */
 $SALVATION = [
@@ -114,9 +127,9 @@ page_head('Faith', ['body_class' => 'home faith']);
     <div class="fs-amen">In Jesus&rsquo; Name, Amen! <span class="script">Hallelujah!</span></div>
 
     <div class="fs-need">
-      <h3>Need Prayer?</h3>
-      <p>Our family prayer warriors are here for you. You are never alone.</p>
-      <a class="btn gold" href="#prayer">Submit a Prayer Request</a>
+      <h3>Become a Prayer Warrior</h3>
+      <p>Stand in the gap for our family. Sign up to lift up the prayer requests that come in. You are never alone.</p>
+      <a class="btn gold" href="#warrior">Sign Up to Be a Prayer Warrior</a>
     </div>
     <div class="fs-photo"><img src="assets/faith/pray1.jpg" alt="A family member in prayer"></div>
     <blockquote class="fs-verse">&ldquo;Call unto me, and I will answer thee, and shew thee great and mighty things, which thou knowest not.&rdquo;
@@ -141,15 +154,27 @@ page_head('Faith', ['body_class' => 'home faith']);
 
     <!-- HONORING OUR MINISTRY FAMILY + PRAYER REQUESTS -->
     <div class="faith-two">
-      <section class="fpanel">
+      <section class="fpanel" id="ministry">
         <div class="fp-title"><?= faith_icon('people') ?> Honoring Our Ministry Family</div>
-        <p class="fp-sub">We honor the men and women &mdash; past and present &mdash; who have answered the call to serve God through ministry.</p>
-        <div class="fmin">
-          <?php foreach ($MINISTRY as $m): ?>
-            <div class="fmin-cat"><span class="fmin-ic"><?= faith_icon($m['icon']) ?></span><span><?= e($m['label']) ?></span></div>
-          <?php endforeach; ?>
-        </div>
-        <a class="btn2 solid" href="#ministry">View Our Ministry Family</a>
+        <p class="fp-sub">We honor the men and women &mdash; past and present &mdash; who answered the call to serve God through ministry. Click a photo to read their story.</p>
+        <?php if ($MINISTERS): ?>
+          <div class="fmins">
+            <?php foreach ($MINISTERS as $m): ?>
+              <a class="fmin-card" href="minister.php?id=<?= (int)$m['id'] ?>">
+                <span class="fmin-photo"<?= $m['photo'] ? ' style="background-image:url(\''.e($m['photo']).'\')"' : ' data-empty="1"' ?>>
+                  <?php if (!$m['photo']): ?><span class="fmin-mono"><?= faith_mono($m['name']) ?></span><?php endif; ?>
+                  <?php if ($m['era'] === 'past'): ?><span class="fmin-era">In Memory</span><?php endif; ?>
+                </span>
+                <span class="fmin-name"><?= e($m['name']) ?></span>
+                <?php if ($m['role']): ?><span class="fmin-role"><?= e($m['role']) ?></span><?php endif; ?>
+              </a>
+            <?php endforeach; ?>
+          </div>
+        <?php elseif ($isAdmin): ?>
+          <p class="fp-empty">No ministers added yet. Open <a href="faith_manage.php?tab=ministers">Prayers &amp; Ministry</a> to add ministers &mdash; each with a photo and a profile.</p>
+        <?php else: ?>
+          <p class="fp-empty">Our ministry family will be honored here soon.</p>
+        <?php endif; ?>
       </section>
 
       <section class="fpanel" id="prayer">
@@ -171,6 +196,24 @@ page_head('Faith', ['body_class' => 'home faith']);
         </form>
       </section>
     </div>
+
+    <!-- PRAYER WARRIOR SIGNUP -->
+    <section class="fpanel fwarrior" id="warrior">
+      <div class="fp-title"><?= faith_icon('hands') ?> Sign Up to Be a Prayer Warrior</div>
+      <p class="fp-sub">Prayer warriors stand in faith with our family, lifting up the requests that come in. Add your name to join the team.</p>
+      <?php if ($wsent): ?><div class="fp-sent"><b>Welcome, prayer warrior!</b> Thank you for standing with our family in prayer.</div><?php endif; ?>
+      <?php if ($werr): ?><div class="fp-sent err"><?= e($werr) ?></div><?php endif; ?>
+      <form method="post" class="fpray fwar">
+        <?= csrf_field() ?><input type="hidden" name="action" value="warrior_signup">
+        <input type="text" name="website" class="fp-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="fwar-grid">
+          <input type="text" name="wname" placeholder="Your Name" value="<?= e(current_user()['name'] ?? '') ?>">
+          <input type="text" name="wcontact" placeholder="Email or phone (optional)">
+        </div>
+        <textarea name="wnote" placeholder="Anything you'd like to share (optional)"></textarea>
+        <button type="submit" class="btn2 solid">Sign Me Up</button>
+      </form>
+    </section>
 
     <!-- SCRIPTURE OF THE WEEK + LIBRARY -->
     <div class="faith-two scrip">
