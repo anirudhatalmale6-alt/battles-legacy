@@ -1138,3 +1138,37 @@ body.fnews{background:#efe3c9;color:#3a2c18;}
   .fn-three{grid-template-columns:1fr;}
 }
 @media(max-width:560px){ .fn-strip{grid-template-columns:1fr 1fr;} }
+
+/* ---- Family News: populated columns + recent updates ---- */
+.fn-list{list-style:none;margin:6px 0 14px;padding:0;}
+.fn-list li{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px solid #efe6d4;}
+.fn-list li:last-child{border-bottom:none;}
+.fn-av{flex:none;width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#5c1a1f,#3a0d12);color:var(--gold2);
+  display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:17px;}
+.fn-av.q,.fn-av.r{background:#f1e6cd;border:1px solid #dcc79a;}
+.fn-av svg{width:20px;height:20px;fill:none;stroke:#5c1a1f;stroke-width:1.7;}
+.fn-li{flex:1;min-width:0;}
+.fn-li p{margin:0;font-size:14px;color:#3a2c18;line-height:1.4;font-family:'EB Garamond',serif;}
+.fn-li p.fn-rtitle{font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:17px;line-height:1.15;}
+.fn-by{display:block;font-size:12px;color:#9a6a1f;margin-top:3px;}
+.fn-like{flex:none;display:inline-flex;align-items:center;gap:4px;font-size:12.5px;color:#8a5f16;white-space:nowrap;}
+.fn-like svg{width:14px;height:14px;fill:none;stroke:#b06a86;stroke-width:1.8;}
+.fn-col .btn2,.fn-allbtn{align-self:stretch;text-align:center;margin-top:auto;}
+.fn-allbtn{width:100%;margin-top:14px;}
+
+/* stay connected + recent updates */
+.fn-connect{display:grid;grid-template-columns:300px 1fr;gap:22px;align-items:start;}
+.fn-stay{text-align:center;align-items:center;}
+.fn-stay .fn-head{justify-content:center;width:100%;}
+.fn-updates{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.fn-update{display:flex;gap:10px;align-items:flex-start;}
+.fn-uthumb{flex:none;width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#5c1a1f,#3a0d12);display:flex;align-items:center;justify-content:center;}
+.fn-uthumb svg{width:22px;height:22px;fill:none;stroke:var(--gold2);stroke-width:1.6;}
+@media(max-width:900px){
+  .fn-connect{grid-template-columns:1fr;}
+  .fn-updates{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:560px){ .fn-updates{grid-template-columns:1fr;} }
+
+/* size any inline icon inside a .btn2 button (e.g. Post an Update) */
+.btn2 svg{width:16px;height:16px;vertical-align:-3px;margin-right:6px;fill:none;stroke:currentColor;stroke-width:1.7;}
