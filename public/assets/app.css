@@ -1047,3 +1047,11 @@ body.sec{background:#ece0c6;color:#3a2c18;}
 .tr-tbl td.k{color:#5c1a1f;font-weight:600;width:34%;}
 .tr-tbl tr.chg td.old{color:#9a3b2f;text-decoration:line-through;}
 .tr-tbl tr.chg td.new{color:#2f6a2a;font-weight:600;}
+
+/* ---- relative disconnect (× beside a chip) + delete-person ---- */
+.relwrap{display:inline-flex;align-items:center;margin:3px 6px 3px 0;}
+.relwrap .chip{margin:0;}
+.reldc{display:inline;margin:0 0 0 -4px;}
+.reldc button{background:#3a0d12;color:#e0a99a;border:1px solid rgba(201,162,75,.4);border-left:none;
+  border-radius:0 16px 16px 0;height:100%;padding:5px 9px 6px;cursor:pointer;font-size:14px;line-height:1;}
+.reldc button:hover{background:#7a2e1f;color:#fff;}

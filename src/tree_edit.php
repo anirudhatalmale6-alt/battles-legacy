@@ -262,6 +262,81 @@ function te_link_existing($pidA, $pidB, $rel) {
     return [false, 'Please choose how they are related.'];
 }
 
+/** remove a family entirely and unlink its fid from every person's fams/famc */
+function te_drop_family($fid) {
+    if (!$fid) return;
+    foreach (all("SELECT pid,fams,famc FROM persons") as $p) {
+        foreach (['fams','famc'] as $col) {
+            $arr = json_decode($p[$col] ?: '[]', true) ?: [];
+            if (in_array($fid, $arr)) q("UPDATE persons SET $col=? WHERE pid=?", [json_encode(array_values(array_diff($arr, [$fid]))), $p['pid']]);
+        }
+    }
+    q("DELETE FROM families WHERE fid=?", [$fid]);
+}
+
+/** delete a person entirely: detach from every family, drop now-empty families,
+ *  remove their photos, then delete the person. returns [ok, message] */
+function te_delete_person($pid) {
+    $p = one("SELECT * FROM persons WHERE pid=?", [$pid]);
+    if (!$p) return [false, 'That person is not in the tree.'];
+    foreach (all("SELECT * FROM families WHERE husb=? OR wife=?", [$pid, $pid]) as $f) {
+        $chil = json_decode($f['chil'] ?: '[]', true) ?: [];
+        $husb = $f['husb'] === $pid ? '' : $f['husb'];
+        $wife = $f['wife'] === $pid ? '' : $f['wife'];
+        if ($husb === '' && $wife === '' && !$chil) { te_drop_family($f['fid']); }
+        else { q("UPDATE families SET husb=?,wife=? WHERE fid=?", [$husb, $wife, $f['fid']]); }
+    }
+    // remove from any family's children list
+    foreach (all("SELECT fid,husb,wife,chil FROM families") as $f) {
+        $chil = json_decode($f['chil'] ?: '[]', true) ?: [];
+        if (in_array($pid, $chil)) {
+            $chil = array_values(array_diff($chil, [$pid]));
+            if (!$chil && $f['husb'] === '' && $f['wife'] === '') te_drop_family($f['fid']);
+            else q("UPDATE families SET chil=? WHERE fid=?", [json_encode($chil), $f['fid']]);
+        }
+    }
+    // photos (files + rows)
+    foreach (all("SELECT * FROM photos WHERE pid=?", [$pid]) as $ph) {
+        if (!empty($ph['path'])) { $abs = dirname(__DIR__) . '/public/' . $ph['path']; if (is_file($abs)) @unlink($abs); }
+    }
+    q("DELETE FROM photos WHERE pid=?", [$pid]);
+    q("DELETE FROM persons WHERE pid=?", [$pid]);
+    return [true, ($p['name'] ?: 'That person') . ' has been removed from the tree.'];
+}
+
+/** sever a single relationship between $pid and $other ($type: spouse|child|parent from $pid's view) */
+function te_disconnect($pid, $other, $type) {
+    if (!$pid || !$other) return [false, 'Nothing to disconnect.'];
+    if ($type === 'spouse') {
+        foreach (te_json($pid, 'fams') as $fid) {
+            $f = one("SELECT * FROM families WHERE fid=?", [$fid]);
+            if (!$f || ($f['husb'] !== $other && $f['wife'] !== $other)) continue;
+            $chil = json_decode($f['chil'] ?: '[]', true) ?: [];
+            if ($chil) { // keep the family (children stay with $pid); just remove the spouse
+                $husb = $f['husb'] === $other ? '' : $f['husb'];
+                $wife = $f['wife'] === $other ? '' : $f['wife'];
+                q("UPDATE families SET husb=?,wife=? WHERE fid=?", [$husb, $wife, $fid]);
+                $of = te_json($other, 'fams'); te_set_json($other, 'fams', array_diff($of, [$fid]));
+            } else { te_drop_family($fid); }
+            return [true, 'Spouse connection removed.'];
+        }
+        return [false, 'They are not connected as spouses.'];
+    }
+    // child / parent: figure out which family joins them
+    $parent = $type === 'child' ? $pid : $other;
+    $child  = $type === 'child' ? $other : $pid;
+    foreach (te_json($child, 'famc') as $fid) {
+        $f = one("SELECT * FROM families WHERE fid=?", [$fid]);
+        if (!$f || ($f['husb'] !== $parent && $f['wife'] !== $parent)) continue;
+        $chil = array_values(array_diff(json_decode($f['chil'] ?: '[]', true) ?: [], [$child]));
+        q("UPDATE families SET chil=? WHERE fid=?", [json_encode($chil), $fid]);
+        te_set_json($child, 'famc', array_diff(te_json($child, 'famc'), [$fid]));
+        if (!$chil && $f['husb'] === '' && $f['wife'] === '') te_drop_family($fid);
+        return [true, 'Parent/child connection removed.'];
+    }
+    return [false, 'They are not connected that way.'];
+}
+
 /** all people (except $exclude) as [pid,label] for a connect picker, ordered by name */
 function te_people_options($exclude = '') {
     $out = [];

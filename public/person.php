@@ -51,6 +51,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && role_at_least('moderator')) {
         list($ok, $msg) = te_link_existing($pid, trim($_POST['other_pid'] ?? ''), $rel);
         flash($msg);
         header('Location: person.php?pid=' . urlencode($pid)); exit;
+    } elseif (($_POST['action'] ?? '') === 'disconnect') {
+        $rtype = in_array($_POST['rtype'] ?? '', ['spouse','child','parent'], true) ? $_POST['rtype'] : '';
+        list($ok, $msg) = te_disconnect($pid, trim($_POST['other_pid'] ?? ''), $rtype);
+        flash($msg);
+        header('Location: person.php?pid=' . urlencode($pid)); exit;
+    } elseif (($_POST['action'] ?? '') === 'delete_person') {
+        list($ok, $msg) = te_delete_person($pid);
+        flash($msg);
+        header('Location: ' . ($ok ? 'tree.php' : 'person.php?pid=' . urlencode($pid))); exit;
     } elseif (($_POST['action'] ?? '') === 'delete_photo') {
         $phid = (int)($_POST['photo_id'] ?? 0);
         $ph = one("SELECT * FROM photos WHERE id=? AND pid=?", [$phid, $pid]);
@@ -119,6 +128,17 @@ function chip_link($rp) {
     $y = yr($rp['birth_date']); $y = $y ? " ($y)" : '';
     return '<a class="chip" href="person.php?pid=' . e($rp['pid']) . '">' . e($nm) . e($y) . '</a>';
 }
+/** relative chip + (admin) a small "disconnect" button */
+function rel_chip($rp, $type) {
+    $out = '<span class="relwrap">' . chip_link($rp);
+    if (role_at_least('moderator')) {
+        $out .= '<form method="post" class="reldc" onsubmit="return confirm(\'Remove the connection to ' . e(addslashes(person_display_name($rp))) . '? This only unlinks them here — it does not delete them from the tree.\')">'
+              . csrf_field()
+              . '<input type="hidden" name="action" value="disconnect"><input type="hidden" name="rtype" value="' . e($type) . '"><input type="hidden" name="other_pid" value="' . e($rp['pid']) . '">'
+              . '<button type="submit" title="Remove this connection">&times;</button></form>';
+    }
+    return $out . '</span>';
+}
 
 /** vital-fields form grid (c_* names), prefilled from a person row or blank */
 function render_vitals($src = []) {
@@ -164,9 +184,9 @@ page_head($name);
   </div>
 
   <?php if ($parents || $spouses || $children): ?>
-    <?php if ($parents): ?><h2 style="font-size:20px;margin-top:20px">Parents</h2><?php foreach ($parents as $rp) echo chip_link($rp); endif; ?>
-    <?php if ($spouses): ?><h2 style="font-size:20px;margin-top:16px">Spouse</h2><?php foreach ($spouses as $rp) echo chip_link($rp); endif; ?>
-    <?php if ($children): ?><h2 style="font-size:20px;margin-top:16px">Children (<?= count($children) ?>)</h2><?php foreach ($children as $rp) echo chip_link($rp); endif; ?>
+    <?php if ($parents): ?><h2 style="font-size:20px;margin-top:20px">Parents</h2><?php foreach ($parents as $rp) echo rel_chip($rp, 'parent'); endif; ?>
+    <?php if ($spouses): ?><h2 style="font-size:20px;margin-top:16px">Spouse</h2><?php foreach ($spouses as $rp) echo rel_chip($rp, 'spouse'); endif; ?>
+    <?php if ($children): ?><h2 style="font-size:20px;margin-top:16px">Children (<?= count($children) ?>)</h2><?php foreach ($children as $rp) echo rel_chip($rp, 'child'); endif; ?>
   <?php endif; ?>
 </div>
 
@@ -247,6 +267,15 @@ page_head($name);
   });
 })();
 </script>
+
+<div class="panel" style="margin-top:20px;border-left:3px solid #7a2e1f">
+  <h2 style="font-size:20px;margin-top:0">Remove this person</h2>
+  <p class="muted" style="margin:0 0 12px">If <b><?= e($name) ?></b> was added by mistake or is a duplicate, you can remove them from the tree. Their connections and photos are removed too. This can&rsquo;t be undone.</p>
+  <form method="post" onsubmit="return confirm('Remove <?= e(addslashes($name)) ?> from the tree permanently? This cannot be undone.')">
+    <?= csrf_field() ?><input type="hidden" name="action" value="delete_person">
+    <button class="btn danger" type="submit">Remove <?= e(explode(' ', $name)[0]) ?> from the tree</button>
+  </form>
+</div>
 
 <?php elseif (logged_in()): /* ---- family member: claim self + suggest close-relative edits ---- */ ?>
   <?php if ($me === ''): ?>
