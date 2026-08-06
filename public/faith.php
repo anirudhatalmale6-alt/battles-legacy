@@ -100,6 +100,7 @@ page_head('Faith', ['body_class' => 'home faith']);
 <?php if ($isAdmin): ?>
   <div class="ent2-adminbar">
     <span>You're signed in as an editor.</span>
+    <a class="ent2-editbtn" href="faith_manage.php?tab=ministers">&#9998; Manage ministers</a>
     <a class="ent2-editbtn" href="faith_manage.php">&#128591; Prayer requests<?= $pendPrayers ? ' (' . $pendPrayers . ')' : '' ?></a>
   </div>
 <?php endif; ?>
@@ -171,10 +172,19 @@ page_head('Faith', ['body_class' => 'home faith']);
             <?php endforeach; ?>
           </div>
         <?php elseif ($isAdmin): ?>
-          <p class="fp-empty">No ministers added yet. Open <a href="faith_manage.php?tab=ministers">Prayers &amp; Ministry</a> to add ministers &mdash; each with a photo and a profile.</p>
+          <p class="fp-empty">No ministers added yet &mdash; use &ldquo;Add or edit ministers&rdquo; below to add them, each with a photo and a profile.</p>
         <?php else: ?>
           <p class="fp-empty">Our ministry family will be honored here soon.</p>
         <?php endif; ?>
+        <div class="fmin fmin-legend">
+          <?php foreach ($MINISTRY as $mc): ?>
+            <div class="fmin-cat"><span class="fmin-ic"><?= faith_icon($mc['icon']) ?></span><span><?= e($mc['label']) ?></span></div>
+          <?php endforeach; ?>
+        </div>
+        <div class="fmin-actions">
+          <a class="btn2 solid" href="ministers.php">View Our Ministry Family</a>
+          <?php if ($isAdmin): ?><a class="btn2" href="faith_manage.php?tab=ministers">&#9998; Add or edit ministers</a><?php endif; ?>
+        </div>
       </section>
 
       <section class="fpanel" id="prayer">
@@ -258,7 +268,7 @@ page_head('Faith', ['body_class' => 'home faith']);
         <span class="fc-ic"><?= faith_icon('lily') ?></span>
         <h3>In Loving Memory</h3>
         <p>Remembering our spiritual leaders who faithfully served God and have gone home to be with the Lord.</p>
-        <a class="btn2 solid" href="memorial.php">View Ministry Memorials</a>
+        <a class="btn2 solid" href="ministers.php?era=past">View Ministry Memorials</a>
       </div>
     </div>
 

@@ -1055,3 +1055,14 @@ body.sec{background:#ece0c6;color:#3a2c18;}
 .reldc button{background:#3a0d12;color:#e0a99a;border:1px solid rgba(201,162,75,.4);border-left:none;
   border-radius:0 16px 16px 0;height:100%;padding:5px 9px 6px;cursor:pointer;font-size:14px;line-height:1;}
 .reldc button:hover{background:#7a2e1f;color:#fff;}
+
+/* ---- Faith: ministry legend + actions + dedicated ministers page ---- */
+.fmin-legend{border-top:1px solid #eadfc6;margin-top:16px;padding-top:14px;}
+.fmin-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;}
+.fmin-actions .btn2{align-self:auto;margin-top:0;}
+.mlist-head{text-align:center;margin:6px 0 18px;}
+.mlist-head h1{color:#5c1a1f;}
+.mlist-orn{color:var(--gold);letter-spacing:3px;margin:6px 0 8px;}
+.mlist-head p{max-width:60ch;margin:0 auto;color:#6a5a3e;font-size:16px;line-height:1.5;}
+.mlist-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:22px;}
+.mlist-grid .fmin-photo{width:130px;height:130px;}
