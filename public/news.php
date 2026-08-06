@@ -87,7 +87,7 @@ page_head('Family News', ['body_class' => 'home fnews']);
               <?php if ($p['date_label']): ?><div class="fn-date"><?= e($p['date_label']) ?></div><?php endif; ?>
               <h3><?= e($p['title']) ?></h3>
               <?php if ($p['body']): ?><p><?= e($p['body']) ?></p><?php endif; ?>
-              <div class="fn-meta"><span><?= news_icon('heart') ?> Like (<?= (int)$p['likes'] ?>)</span><span><?= news_icon('chat') ?> Comment (<?= (int)$p['comments'] ?>)</span></div>
+              <div class="fn-meta"><span title="Likes"><?= news_icon('heart') ?> <?= (int)$p['likes'] ?></span><span title="Comments"><?= news_icon('chat') ?> <?= (int)$p['comments'] ?></span></div>
             </div>
           </article>
         <?php endforeach; ?>
