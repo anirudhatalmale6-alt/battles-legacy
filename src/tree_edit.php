@@ -211,6 +211,68 @@ function te_apply_suggestion($id) {
     return $ok;
 }
 
+/** Connect two people who are BOTH already in the tree.
+ *  $rel (from $pidA's view): 'spouse' | 'child' (B is A's child) | 'parent' (B is A's parent).
+ *  Returns [bool ok, string message]. */
+function te_link_existing($pidA, $pidB, $rel) {
+    if (!$pidA || !$pidB || $pidA === $pidB) return [false, 'Please choose a different person to connect.'];
+    $A = one("SELECT * FROM persons WHERE pid=?", [$pidA]);
+    $B = one("SELECT * FROM persons WHERE pid=?", [$pidB]);
+    if (!$A || !$B) return [false, 'One of those people is not in the tree.'];
+
+    if ($rel === 'spouse') {
+        foreach (te_json($pidA, 'fams') as $fid) {
+            $f = one("SELECT * FROM families WHERE fid=?", [$fid]);
+            if ($f && ($f['husb'] === $pidB || $f['wife'] === $pidB)) return [false, $A['name'] . ' and ' . $B['name'] . ' are already connected as spouses.'];
+        }
+        $fid = te_new_fid();
+        $aM = strtoupper($A['sex']) === 'M'; $bM = strtoupper($B['sex']) === 'M';
+        if ($aM && !$bM)      { $husb = $pidA; $wife = $pidB; }
+        elseif ($bM && !$aM)  { $husb = $pidB; $wife = $pidA; }
+        else                  { $husb = $pidA; $wife = $pidB; }
+        q("INSERT INTO families (fid,husb,wife,marr_date,marr_place,chil) VALUES (?,?,?,?,?,?)", [$fid, $husb, $wife, '', '', '[]']);
+        $af = te_json($pidA, 'fams'); $af[] = $fid; te_set_json($pidA, 'fams', $af);
+        $bf = te_json($pidB, 'fams'); $bf[] = $fid; te_set_json($pidB, 'fams', $bf);
+        return [true, $A['name'] . ' and ' . $B['name'] . ' are now connected as spouses.'];
+    }
+
+    if ($rel === 'child' || $rel === 'parent') {
+        $parent = $rel === 'child' ? $pidA : $pidB;
+        $child  = $rel === 'child' ? $pidB : $pidA;
+        foreach (te_json($child, 'famc') as $fid) {
+            $f = one("SELECT * FROM families WHERE fid=?", [$fid]);
+            if ($f && ($f['husb'] === $parent || $f['wife'] === $parent)) return [false, 'They are already connected as parent and child.'];
+        }
+        $pfams = te_json($parent, 'fams');
+        if ($pfams) { $fid = $pfams[0]; }
+        else {
+            $fid  = te_new_fid();
+            $pRow = one("SELECT sex FROM persons WHERE pid=?", [$parent]);
+            if (strtoupper($pRow['sex']) === 'F') { $husb = ''; $wife = $parent; } else { $husb = $parent; $wife = ''; }
+            q("INSERT INTO families (fid,husb,wife,marr_date,marr_place,chil) VALUES (?,?,?,?,?,?)", [$fid, $husb, $wife, '', '', '[]']);
+            $pf = te_json($parent, 'fams'); $pf[] = $fid; te_set_json($parent, 'fams', $pf);
+        }
+        $fam  = one("SELECT chil FROM families WHERE fid=?", [$fid]);
+        $chil = json_decode($fam['chil'] ?: '[]', true) ?: []; $chil[] = $child;
+        q("UPDATE families SET chil=? WHERE fid=?", [json_encode(array_values(array_unique($chil))), $fid]);
+        $cf = te_json($child, 'famc'); $cf[] = $fid; te_set_json($child, 'famc', $cf);
+        $pn = one("SELECT name FROM persons WHERE pid=?", [$parent]); $cn = one("SELECT name FROM persons WHERE pid=?", [$child]);
+        return [true, ($cn['name'] ?? 'They') . ' is now connected as ' . ($pn['name'] ?? 'their parent') . '\'s child.'];
+    }
+    return [false, 'Please choose how they are related.'];
+}
+
+/** all people (except $exclude) as [pid,label] for a connect picker, ordered by name */
+function te_people_options($exclude = '') {
+    $out = [];
+    foreach (all("SELECT pid,name,birth_date FROM persons ORDER BY name") as $p) {
+        if ($p['pid'] === $exclude) continue;
+        $y = ''; if (preg_match('/\d{4}/', (string)$p['birth_date'], $m)) $y = ' (' . $m[0] . ')';
+        $out[] = ['pid' => $p['pid'], 'label' => ($p['name'] ?: 'Unknown') . $y];
+    }
+    return $out;
+}
+
 /** the families where $pid is a parent, with a readable spouse label (for the "add child to…" picker) */
 function te_parent_families($pid) {
     $out = [];

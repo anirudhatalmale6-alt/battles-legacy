@@ -46,6 +46,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && role_at_least('moderator')) {
             }
         }
         header('Location: person.php?pid=' . urlencode($pid)); exit;
+    } elseif (($_POST['action'] ?? '') === 'link_existing') {
+        $rel = in_array($_POST['rel'] ?? '', ['spouse','child','parent'], true) ? $_POST['rel'] : '';
+        list($ok, $msg) = te_link_existing($pid, trim($_POST['other_pid'] ?? ''), $rel);
+        flash($msg);
+        header('Location: person.php?pid=' . urlencode($pid)); exit;
     } elseif (($_POST['action'] ?? '') === 'delete_photo') {
         $phid = (int)($_POST['photo_id'] ?? 0);
         $ph = one("SELECT * FROM photos WHERE id=? AND pid=?", [$phid, $pid]);
@@ -205,6 +210,43 @@ page_head($name);
     </form>
   </div>
 </div>
+
+<div class="panel addfam" style="margin-top:20px">
+  <h2>Connect someone already in the tree</h2>
+  <p class="muted" style="margin:0 0 12px">If both people are already in the tree, connect them here &mdash; for example, mark <?= e(explode(' ', $name)[0]) ?> and their spouse, or link a child to a parent. (To add someone who is <em>not</em> in the tree yet, use the boxes above.)</p>
+  <form method="post" class="af-connect">
+    <?= csrf_field() ?><input type="hidden" name="action" value="link_existing">
+    <div class="af-grid">
+      <div>
+        <label>The person I pick&hellip;</label>
+        <select name="rel">
+          <option value="spouse">is <?= e(explode(' ', $name)[0]) ?>&rsquo;s spouse</option>
+          <option value="child">is <?= e(explode(' ', $name)[0]) ?>&rsquo;s child</option>
+          <option value="parent">is <?= e(explode(' ', $name)[0]) ?>&rsquo;s parent</option>
+        </select>
+      </div>
+      <div>
+        <label>Person to connect</label>
+        <input type="text" id="connfilter" placeholder="Type a name to filter&hellip;" autocomplete="off">
+        <select name="other_pid" id="connsel" required>
+          <?php foreach (te_people_options($pid) as $o): ?><option value="<?= e($o['pid']) ?>"><?= e($o['label']) ?></option><?php endforeach; ?>
+        </select>
+      </div>
+    </div>
+    <button class="btn gold" type="submit" style="margin-top:10px">Connect them</button>
+  </form>
+</div>
+<script>
+(function(){
+  var f=document.getElementById('connfilter'), s=document.getElementById('connsel');
+  if(!f||!s) return;
+  var opts=Array.prototype.slice.call(s.options).map(function(o){return {t:o.text.toLowerCase(), o:o};});
+  f.addEventListener('input',function(){
+    var q=f.value.toLowerCase().trim(); s.innerHTML='';
+    opts.forEach(function(x){ if(!q || x.t.indexOf(q)>-1) s.appendChild(x.o); });
+  });
+})();
+</script>
 
 <?php elseif (logged_in()): /* ---- family member: claim self + suggest close-relative edits ---- */ ?>
   <?php if ($me === ''): ?>
