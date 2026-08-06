@@ -30,7 +30,7 @@ function page_head($title, $opts = []) {
     <a href="faith.php">Faith</a>
     <a href="enterprise.php">Enterprise</a>
     <a href="section.php?s=health">Health</a>
-    <a href="section.php?s=news">Family News</a>
+    <a href="news.php">Family News</a>
     <a href="memorial.php">Memorial</a>
     <a href="section.php?s=aahistory">African American History</a>
     <?php if ($u): ?>

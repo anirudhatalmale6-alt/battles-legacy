@@ -1,0 +1,166 @@
+<?php
+require __DIR__ . '/../src/bootstrap.php';
+require_once __DIR__ . '/../src/news_data.php';
+require_role('admin');
+news_migrate();
+
+function nm_next_sort($table) { $r = one("SELECT MAX(sort) m FROM $table"); return ($r && $r['m'] !== null) ? ((int)$r['m'] + 1) : 0; }
+
+$tab = 'news';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    csrf_check();
+    $act = $_POST['action'] ?? '';
+    $id  = (int)($_POST['id'] ?? 0);
+    if (strpos($act, 'event') === 0) $tab = 'events';
+    try {
+        if ($act === 'post_save') {
+            $title = trim($_POST['title'] ?? '');
+            if ($title === '') { flash('An announcement needs a title.'); }
+            else {
+                $cur = $id ? one("SELECT photo FROM news_posts WHERE id=?", [$id]) : null;
+                list($photo, $perr) = news_store_photo('photo', $cur['photo'] ?? '');
+                if (!empty($_POST['remove_photo'])) $photo = '';
+                if ($perr) flash($perr);
+                $cat    = array_key_exists($_POST['category'] ?? '', news_cats()) ? $_POST['category'] : 'news';
+                $status = ($_POST['status'] ?? 'published') === 'hidden' ? 'hidden' : 'published';
+                $f = [$cat, trim($_POST['date_label']??''), $title, trim($_POST['body']??''), $photo,
+                      (int)($_POST['likes']??0), (int)($_POST['comments']??0), (int)($_POST['sort']??0), $status];
+                if ($id) {
+                    q("UPDATE news_posts SET category=?,date_label=?,title=?,body=?,photo=?,likes=?,comments=?,sort=?,status=?,sample=0 WHERE id=?", array_merge($f, [$id]));
+                    flash('Announcement updated.');
+                } else {
+                    q("INSERT INTO news_posts (category,date_label,title,body,photo,likes,comments,sort,status,sample) VALUES (?,?,?,?,?,?,?,?,?,0)",
+                      [$cat, trim($_POST['date_label']??''), $title, trim($_POST['body']??''), $photo, (int)($_POST['likes']??0), (int)($_POST['comments']??0), nm_next_sort('news_posts'), $status]);
+                    flash('Announcement added — open the Family News page to see it.');
+                }
+            }
+        } elseif ($act === 'post_delete' && $id) {
+            $r = one("SELECT photo FROM news_posts WHERE id=?", [$id]);
+            if ($r && !empty($r['photo']) && strpos($r['photo'], 'uploads/') !== false) { $abs = __DIR__ . '/' . $r['photo']; if (is_file($abs)) @unlink($abs); }
+            q("DELETE FROM news_posts WHERE id=?", [$id]); flash('Announcement removed.');
+        } elseif ($act === 'event_save') {
+            $title = trim($_POST['title'] ?? '');
+            if ($title === '') { flash('An event needs a title.'); }
+            else {
+                $status = ($_POST['status'] ?? 'published') === 'hidden' ? 'hidden' : 'published';
+                $f = [strtoupper(trim($_POST['mon']??'')), trim($_POST['day']??''), $title, trim($_POST['place']??''), trim($_POST['time_label']??''), (int)($_POST['sort']??0), $status];
+                if ($id) {
+                    q("UPDATE news_events SET mon=?,day=?,title=?,place=?,time_label=?,sort=?,status=?,sample=0 WHERE id=?", array_merge($f, [$id]));
+                    flash('Event updated.');
+                } else {
+                    q("INSERT INTO news_events (mon,day,title,place,time_label,sort,status,sample) VALUES (?,?,?,?,?,?,?,0)",
+                      [strtoupper(trim($_POST['mon']??'')), trim($_POST['day']??''), $title, trim($_POST['place']??''), trim($_POST['time_label']??''), nm_next_sort('news_events'), $status]);
+                    flash('Event added.');
+                }
+            }
+        } elseif ($act === 'event_delete' && $id) {
+            q("DELETE FROM news_events WHERE id=?", [$id]); flash('Event removed.');
+        }
+    } catch (Exception $ex) { flash('Sorry — that could not be saved. Please try again.'); }
+    header('Location: news_manage.php?tab=' . $tab); exit;
+}
+
+$tab   = in_array($_GET['tab'] ?? '', ['news','events'], true) ? $_GET['tab'] : 'news';
+$POSTS = news_posts(true);
+$EVTS  = news_events(true);
+
+function nm_cat_opts($sel) { $o=''; foreach (news_cats() as $k=>$c) $o .= '<option value="'.e($k).'"'.($sel===$k?' selected':'').'>'.e($c[0]).'</option>'; return $o; }
+function nm_status_opts($sel){ $o=''; foreach (['published'=>'Visible on the page','hidden'=>'Hidden'] as $v=>$l) $o .= '<option value="'.$v.'"'.($sel===$v?' selected':'').'>'.$l.'</option>'; return $o; }
+
+page_head('Manage Family News', ['body_class' => 'em']);
+?>
+<h1>Manage Family News</h1>
+<p class="lede">Add, edit, or remove the news announcements and upcoming events shown on the Family News page. Entries marked &ldquo;Example&rdquo; are samples &mdash; edit one (or add your own) and the tag goes away.</p>
+<p style="margin:10px 0 4px"><a class="btn gold" href="news.php" target="_blank" rel="noopener">View the Family News page &#8599;</a></p>
+
+<div class="em-tabs">
+  <a href="?tab=news" class="<?= $tab==='news'?'on':'' ?>">Announcements (<?= count($POSTS) ?>)</a>
+  <a href="?tab=events" class="<?= $tab==='events'?'on':'' ?>">Upcoming Events (<?= count($EVTS) ?>)</a>
+</div>
+
+<?php if ($tab === 'news'): ?>
+  <div class="panel em-add">
+    <h2>Add an announcement</h2>
+    <form method="post" enctype="multipart/form-data" class="em-form">
+      <?= csrf_field() ?><input type="hidden" name="id" value="0">
+      <div class="em-grid">
+        <div><label>Title *</label><input type="text" name="title" required placeholder="e.g. Congratulations to Sydney Battles!"></div>
+        <div><label>Category</label><select name="category"><?= nm_cat_opts('news') ?></select></div>
+        <div><label>Date (as shown)</label><input type="text" name="date_label" placeholder="e.g. May 15, 2024"></div>
+        <div><label>Photo (JPG/PNG, up to 12 MB)</label><input type="file" name="photo" accept="image/*"></div>
+      </div>
+      <label>Details</label>
+      <textarea name="body" placeholder="A sentence or two about the news."></textarea>
+      <button class="btn gold" name="action" value="post_save" style="margin-top:12px">Add announcement</button>
+    </form>
+  </div>
+  <?php foreach ($POSTS as $p): ?>
+    <div class="panel em-row">
+      <form method="post" enctype="multipart/form-data" class="em-form">
+        <?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$p['id'] ?>">
+        <div class="em-rowhead">
+          <h3><?= e($p['title']) ?><?= $p['sample']?' <span class="em-tag">Example</span>':'' ?><?= $p['status']==='hidden'?' <span class="em-tag hid">Hidden</span>':'' ?></h3>
+          <button class="btn danger" name="action" value="post_delete" onclick="return confirm('Remove this announcement?')">Delete</button>
+        </div>
+        <div class="em-media">
+          <div class="em-thumb"<?= $p['photo'] ? ' style="background-image:url(\''.e($p['photo']).'\')"' : '' ?>><?= $p['photo']?'':'No photo' ?></div>
+          <div class="em-mediactl">
+            <label>Replace photo</label><input type="file" name="photo" accept="image/*">
+            <?php if ($p['photo']): ?><label class="em-check"><input type="checkbox" name="remove_photo" value="1"> Remove current photo</label><?php endif; ?>
+          </div>
+        </div>
+        <div class="em-grid">
+          <div><label>Title *</label><input type="text" name="title" required value="<?= e($p['title']) ?>"></div>
+          <div><label>Category</label><select name="category"><?= nm_cat_opts($p['category']) ?></select></div>
+          <div><label>Date (as shown)</label><input type="text" name="date_label" value="<?= e($p['date_label']) ?>"></div>
+          <div><label>Order</label><input type="number" name="sort" value="<?= (int)$p['sort'] ?>"></div>
+          <div><label>Likes</label><input type="number" name="likes" value="<?= (int)$p['likes'] ?>"></div>
+          <div><label>Comments</label><input type="number" name="comments" value="<?= (int)$p['comments'] ?>"></div>
+          <div><label>Visibility</label><select name="status"><?= nm_status_opts($p['status']) ?></select></div>
+        </div>
+        <label>Details</label>
+        <textarea name="body"><?= e($p['body']) ?></textarea>
+        <button class="btn gold" name="action" value="post_save" style="margin-top:12px">Save changes</button>
+      </form>
+    </div>
+  <?php endforeach; ?>
+
+<?php else: ?>
+  <div class="panel em-add">
+    <h2>Add an event</h2>
+    <form method="post" class="em-form">
+      <?= csrf_field() ?><input type="hidden" name="id" value="0">
+      <div class="em-grid">
+        <div><label>Title *</label><input type="text" name="title" required placeholder="e.g. Family Reunion 2024"></div>
+        <div><label>Place</label><input type="text" name="place" placeholder="e.g. Tyler Rose Garden Center, Tyler, TX"></div>
+        <div><label>Month (short)</label><input type="text" name="mon" maxlength="4" placeholder="e.g. JUN"></div>
+        <div><label>Day</label><input type="text" name="day" maxlength="4" placeholder="e.g. 21"></div>
+        <div><label>Time</label><input type="text" name="time_label" placeholder="e.g. 10:00 AM – 4:00 PM"></div>
+      </div>
+      <button class="btn gold" name="action" value="event_save" style="margin-top:12px">Add event</button>
+    </form>
+  </div>
+  <?php foreach ($EVTS as $ev): ?>
+    <div class="panel em-row">
+      <form method="post" class="em-form">
+        <?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$ev['id'] ?>">
+        <div class="em-rowhead">
+          <h3><?= e($ev['mon']) ?> <?= e($ev['day']) ?> &middot; <?= e($ev['title']) ?><?= $ev['sample']?' <span class="em-tag">Example</span>':'' ?><?= $ev['status']==='hidden'?' <span class="em-tag hid">Hidden</span>':'' ?></h3>
+          <button class="btn danger" name="action" value="event_delete" onclick="return confirm('Remove this event?')">Delete</button>
+        </div>
+        <div class="em-grid">
+          <div><label>Title *</label><input type="text" name="title" required value="<?= e($ev['title']) ?>"></div>
+          <div><label>Place</label><input type="text" name="place" value="<?= e($ev['place']) ?>"></div>
+          <div><label>Month (short)</label><input type="text" name="mon" maxlength="4" value="<?= e($ev['mon']) ?>"></div>
+          <div><label>Day</label><input type="text" name="day" maxlength="4" value="<?= e($ev['day']) ?>"></div>
+          <div><label>Time</label><input type="text" name="time_label" value="<?= e($ev['time_label']) ?>"></div>
+          <div><label>Order</label><input type="number" name="sort" value="<?= (int)$ev['sort'] ?>"></div>
+          <div><label>Visibility</label><select name="status"><?= nm_status_opts($ev['status']) ?></select></div>
+        </div>
+        <button class="btn gold" name="action" value="event_save" style="margin-top:12px">Save changes</button>
+      </form>
+    </div>
+  <?php endforeach; ?>
+<?php endif; ?>
+
+<?php page_foot();
