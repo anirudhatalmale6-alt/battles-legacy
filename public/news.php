@@ -1,10 +1,17 @@
 <?php
 require __DIR__ . '/../src/bootstrap.php';
 require_once __DIR__ . '/../src/news_data.php';
-try { news_migrate(); $POSTS = news_posts(); $EVENTS = news_events(); }
-catch (Exception $ex) { $POSTS = $EVENTS = []; }
+require_once __DIR__ . '/../src/community_data.php';
+try {
+    news_migrate(); community_migrate();
+    $POSTS = news_posts(); $EVENTS = news_events();
+    $QLIST = comm_list('question', 'published', 3);
+    $RLIST = comm_list('recipe',   'published', 3);
+    $ULIST = comm_list('update',   'published', 4);
+} catch (Exception $ex) { $POSTS = $EVENTS = $QLIST = $RLIST = $ULIST = []; }
 
 $isAdmin = role_at_least('admin');
+$PENDSUB = $isAdmin ? comm_pending_count() : 0;
 
 /* line-icon set */
 function news_icon($k) {
@@ -36,29 +43,8 @@ $STRIP = [
   ['hands','Prayers','Lift up one another in faith'],
 ];
 
-/* sample content for the lower panels (matches the mockup; editable modules can be wired later) */
-$PRAYERS = [
-  ['Please keep my mother, Patricia, in your prayers as she recovers from surgery.','Tamisha B.','May 15, 2024',24],
-  ['Pray for safe travels for our family as we come together for the reunion.','James B.','May 14, 2024',18],
-  ['Prayers for wisdom and guidance as I start this new business venture.','Danielle B.','May 13, 2024',15],
-];
-$QUESTIONS = [
-  ['Does anyone have information about our ancestor Susan Mipus?','Robert Battles','May 14, 2024',7],
-  ['Can anyone share photos from the 1985 family reunion in Tyler?','Angela Johnson','May 13, 2024',12],
-  ['Looking for recipes from Grandma Louisa&rsquo;s cookbook.','Monique Battles','May 12, 2024',5],
-];
-$RECIPES = [
-  ['Grandma Louisa&rsquo;s Sweet Potato Pie','Patricia H.',42],
-  ['Uncle Calvin&rsquo;s Famous BBQ Ribs','Michael B.',38],
-  ['Aunt Settie&rsquo;s Cornbread Dressing','Diane K.',29],
-];
-$UPDATES = [
-  ['The Johnson cousins reunited in Atlanta!','May 16, 2024'],
-  ['Happy Mother&rsquo;s Day to all our amazing mothers!','May 12, 2024'],
-  ['Visited the historic Garfield School in Tyler.','May 10, 2024'],
-  ['Family prayer call tonight at 8 PM. All are welcome!','May 9, 2024'],
-];
-function fn_ini($name) { $p = preg_split('/\s+/', trim($name)); return e(strtoupper(substr($p[0] ?? '', 0, 1) . (isset($p[1]) ? substr($p[1], 0, 1) : ''))); }
+$logged = logged_in();
+$subUrl = function ($kind) use ($logged) { return $logged ? "community_submit.php?kind=$kind" : 'login.php'; };
 
 page_head('Family News', ['body_class' => 'home fnews']);
 ?>
@@ -66,6 +52,7 @@ page_head('Family News', ['body_class' => 'home fnews']);
   <div class="ent2-adminbar">
     <span>You're signed in as an editor.</span>
     <a class="ent2-editbtn" href="news_manage.php">&#9998; Manage Family News</a>
+    <a class="ent2-editbtn" href="news_manage.php?tab=submissions">&#128172; Family submissions<?= $PENDSUB ? ' ('.$PENDSUB.')' : '' ?></a>
   </div>
 <?php endif; ?>
 
@@ -142,39 +129,37 @@ page_head('Family News', ['body_class' => 'home fnews']);
 <div class="fn-wrap">
   <div class="fn-three">
     <section class="fn-col">
-      <div class="fn-head sm"><h3><?= news_icon('hands') ?> Prayer Requests</h3><a class="fn-viewall" href="faith.php#prayer">View All &rsaquo;</a></div>
-      <ul class="fn-list">
-        <?php foreach ($PRAYERS as $p): ?>
-          <li><span class="fn-av"><?= fn_ini($p[1]) ?></span>
-            <div class="fn-li"><p><?= $p[0] /* authored */ ?></p><span class="fn-by">Requested by <?= e($p[1]) ?> &middot; <?= e($p[2]) ?></span></div>
-            <span class="fn-like"><?= news_icon('heart') ?> <?= (int)$p[3] ?></span></li>
-        <?php endforeach; ?>
-      </ul>
+      <div class="fn-head sm"><h3><?= news_icon('hands') ?> Prayer Requests</h3></div>
+      <p class="fn-cmt">Lift one another up. Share a prayer request and our prayer warriors will stand with you &mdash; requests are handled privately on the Faith page.</p>
       <a class="btn2 solid" href="faith.php#prayer">Submit a Prayer Request</a>
     </section>
+
     <section class="fn-col">
-      <div class="fn-head sm"><h3><?= news_icon('question') ?> Ask Questions</h3><a class="fn-viewall" href="#" onclick="return fnSoon(this)">View All &rsaquo;</a></div>
+      <div class="fn-head sm"><h3><?= news_icon('question') ?> Ask Questions</h3><a class="fn-viewall" href="community_list.php?kind=question">View All &rsaquo;</a></div>
+      <?php if ($QLIST): ?>
       <ul class="fn-list">
-        <?php foreach ($QUESTIONS as $q): ?>
+        <?php foreach ($QLIST as $q): ?>
           <li><span class="fn-av q"><?= news_icon('question') ?></span>
-            <div class="fn-li"><p><?= $q[0] /* authored */ ?></p><span class="fn-by">Asked by <?= e($q[1]) ?> &middot; <?= e($q[2]) ?></span></div>
-            <span class="fn-like"><?= news_icon('chat') ?> <?= (int)$q[3] ?></span></li>
+            <div class="fn-li"><p><a href="community_view.php?id=<?= (int)$q['id'] ?>"><?= e(mb_strimwidth($q['body'],0,90,'…')) ?></a></p><span class="fn-by">Asked by <?= e($q['author']) ?> &middot; <?= e(comm_ago($q['created_at'])) ?></span></div>
+            <a class="fn-like" href="community_view.php?id=<?= (int)$q['id'] ?>"><?= news_icon('chat') ?> <?= comm_answer_count($q['id']) ?></a></li>
         <?php endforeach; ?>
       </ul>
-      <a class="btn2 solid" href="#" onclick="return fnSoon(this)">Ask a Question</a>
-      <span class="fn-soon">Coming soon</span>
+      <?php else: ?><p class="fn-cmt">No questions yet &mdash; be the first to ask the family.</p><?php endif; ?>
+      <a class="btn2 solid" href="<?= e($subUrl('question')) ?>">Ask a Question</a>
     </section>
+
     <section class="fn-col">
-      <div class="fn-head sm"><h3><?= news_icon('recipe') ?> Share a Recipe</h3><a class="fn-viewall" href="#" onclick="return fnSoon(this)">View All &rsaquo;</a></div>
+      <div class="fn-head sm"><h3><?= news_icon('recipe') ?> Share a Recipe</h3><a class="fn-viewall" href="community_list.php?kind=recipe">View All &rsaquo;</a></div>
+      <?php if ($RLIST): ?>
       <ul class="fn-list">
-        <?php foreach ($RECIPES as $r): ?>
+        <?php foreach ($RLIST as $r): ?>
           <li><span class="fn-av r"><?= news_icon('recipe') ?></span>
-            <div class="fn-li"><p class="fn-rtitle"><?= $r[0] /* authored */ ?></p><span class="fn-by">Shared by <?= e($r[1]) ?></span></div>
-            <span class="fn-like"><?= news_icon('heart') ?> <?= (int)$r[2] ?></span></li>
+            <div class="fn-li"><p class="fn-rtitle"><a href="community_view.php?id=<?= (int)$r['id'] ?>"><?= e($r['title']) ?></a></p><span class="fn-by">Shared by <?= e($r['author']) ?></span></div>
+            <span class="fn-like"><?= news_icon('heart') ?> <?= (int)$r['likes'] ?></span></li>
         <?php endforeach; ?>
       </ul>
-      <a class="btn2 solid" href="#" onclick="return fnSoon(this)">Share a Recipe</a>
-      <span class="fn-soon">Coming soon</span>
+      <?php else: ?><p class="fn-cmt">No recipes yet &mdash; share a family favorite.</p><?php endif; ?>
+      <a class="btn2 solid" href="<?= e($subUrl('recipe')) ?>">Share a Recipe</a>
     </section>
   </div>
 </div>
@@ -185,16 +170,17 @@ page_head('Family News', ['body_class' => 'home fnews']);
     <section class="fn-col fn-stay">
       <div class="fn-head sm"><h3><?= news_icon('people') ?> Stay Connected</h3></div>
       <p class="fn-cmt">Share updates, photos, and words of encouragement. Let&rsquo;s keep our family strong and connected!</p>
-      <a class="btn2 solid" href="#" onclick="return fnSoon(this)"><?= news_icon('plus') ?> Post an Update</a>
-      <span class="fn-soon">Coming soon</span>
+      <a class="btn2 solid" href="<?= e($subUrl('update')) ?>"><?= news_icon('plus') ?> Post an Update</a>
     </section>
     <section class="fn-col fn-recent">
-      <div class="fn-head sm"><h3>Recent Family Updates</h3><a class="fn-viewall" href="#" onclick="return fnSoon(this)">View All &rsaquo;</a></div>
+      <div class="fn-head sm"><h3>Recent Family Updates</h3><a class="fn-viewall" href="community_list.php?kind=update">View All &rsaquo;</a></div>
+      <?php if ($ULIST): ?>
       <div class="fn-updates">
-        <?php foreach ($UPDATES as $u): ?>
-          <div class="fn-update"><span class="fn-uthumb"><?= news_icon('people') ?></span><div class="fn-li"><p><?= $u[0] /* authored */ ?></p><span class="fn-by"><?= e($u[1]) ?></span></div></div>
+        <?php foreach ($ULIST as $u): ?>
+          <div class="fn-update"><span class="fn-uthumb"<?= $u['photo'] ? ' style="background-image:url(\''.e($u['photo']).'\');background-size:cover"' : '' ?>><?= $u['photo']?'':news_icon('people') ?></span><div class="fn-li"><p><?= e(mb_strimwidth($u['body'],0,110,'…')) ?></p><span class="fn-by"><?= e($u['author']) ?> &middot; <?= e(comm_ago($u['created_at'])) ?></span></div></div>
         <?php endforeach; ?>
       </div>
+      <?php else: ?><p class="fn-cmt" style="margin:0">No updates yet &mdash; be the first to share family news.</p><?php endif; ?>
     </section>
   </div>
 </div>

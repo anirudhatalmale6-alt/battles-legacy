@@ -1172,3 +1172,25 @@ body.fnews{background:#efe3c9;color:#3a2c18;}
 
 /* size any inline icon inside a .btn2 button (e.g. Post an Update) */
 .btn2 svg{width:16px;height:16px;vertical-align:-3px;margin-right:6px;fill:none;stroke:currentColor;stroke-width:1.7;}
+
+/* ---- community: links in news lists + list/view pages ---- */
+.fn-li a{color:inherit;text-decoration:none;}
+.fn-li a:hover{color:#7a1f26;}
+a.fn-like{text-decoration:none;}
+.cl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;padding-bottom:8px;}
+.cl-item{display:flex;flex-direction:column;}
+.cl-photo{height:160px;border-radius:10px;background:#e9dcc0 center/cover;margin-bottom:12px;}
+.cl-title{font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:22px;margin:0 0 2px;}
+.cl-q{font-family:'Cormorant Garamond',serif;font-style:italic;color:#3a2c18;font-size:19px;line-height:1.35;margin:0 0 6px;}
+.cl-body{font-family:'EB Garamond',serif;color:#4a3a24;font-size:15px;line-height:1.55;margin:8px 0 12px;}
+.cl-item .btn2{align-self:flex-start;margin-top:auto;}
+.cl-like{margin-top:12px;}
+.cl-like button{background:#fff;border:1px solid #d8c8a6;border-radius:20px;padding:6px 14px;color:#8a5f16;cursor:pointer;font-size:14px;font-family:'EB Garamond',serif;}
+.cl-like button:hover:not([disabled]){background:#f3e7c9;color:#7a1f26;}
+.cl-like button[disabled]{opacity:.7;cursor:default;}
+.cv-main{margin-bottom:6px;}
+.cv-photo{height:240px;margin-bottom:12px;}
+.cv-q{font-family:'Cormorant Garamond',serif;font-style:italic;color:#5c1a1f;font-size:26px;line-height:1.3;margin:0 0 6px;}
+.cv-recipe{font-family:'EB Garamond',serif;color:#3a2c18;font-size:16.5px;line-height:1.7;white-space:pre-line;margin-top:12px;}
+.cv-answer{margin-top:10px;}
+.cv-answer p{font-family:'EB Garamond',serif;color:#3a2c18;font-size:16px;line-height:1.6;margin:0 0 6px;}

@@ -1,8 +1,10 @@
 <?php
 require __DIR__ . '/../src/bootstrap.php';
 require_once __DIR__ . '/../src/news_data.php';
+require_once __DIR__ . '/../src/community_data.php';
 require_role('admin');
 news_migrate();
+community_migrate();
 
 function nm_next_sort($table) { $r = one("SELECT MAX(sort) m FROM $table"); return ($r && $r['m'] !== null) ? ((int)$r['m'] + 1) : 0; }
 
@@ -12,8 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $act = $_POST['action'] ?? '';
     $id  = (int)($_POST['id'] ?? 0);
     if (strpos($act, 'event') === 0) $tab = 'events';
+    elseif (strpos($act, 'comm') === 0) $tab = 'submissions';
     try {
-        if ($act === 'post_save') {
+        if ($act === 'comm_approve' && $id) { comm_approve($id); flash('Approved — it is live now.'); }
+        elseif ($act === 'comm_decline' && $id) { comm_decline($id); flash('Declined.'); }
+        elseif ($act === 'comm_delete' && $id) { comm_delete($id); flash('Removed.'); }
+        elseif ($act === 'post_save') {
             $title = trim($_POST['title'] ?? '');
             if ($title === '') { flash('An announcement needs a title.'); }
             else {
@@ -60,9 +66,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: news_manage.php?tab=' . $tab); exit;
 }
 
-$tab   = in_array($_GET['tab'] ?? '', ['news','events'], true) ? $_GET['tab'] : 'news';
+$tab   = in_array($_GET['tab'] ?? '', ['news','events','submissions'], true) ? $_GET['tab'] : 'news';
 $POSTS = news_posts(true);
 $EVTS  = news_events(true);
+$PENDING = comm_pending();
+$PN = count($PENDING);
 
 function nm_cat_opts($sel) { $o=''; foreach (news_cats() as $k=>$c) $o .= '<option value="'.e($k).'"'.($sel===$k?' selected':'').'>'.e($c[0]).'</option>'; return $o; }
 function nm_status_opts($sel){ $o=''; foreach (['published'=>'Visible on the page','hidden'=>'Hidden'] as $v=>$l) $o .= '<option value="'.$v.'"'.($sel===$v?' selected':'').'>'.$l.'</option>'; return $o; }
@@ -76,6 +84,7 @@ page_head('Manage Family News', ['body_class' => 'em']);
 <div class="em-tabs">
   <a href="?tab=news" class="<?= $tab==='news'?'on':'' ?>">Announcements (<?= count($POSTS) ?>)</a>
   <a href="?tab=events" class="<?= $tab==='events'?'on':'' ?>">Upcoming Events (<?= count($EVTS) ?>)</a>
+  <a href="?tab=submissions" class="<?= $tab==='submissions'?'on':'' ?>">Family Submissions<?= $PN ? ' <span class="em-penddot">'.$PN.'</span>' : ' (0)' ?></a>
 </div>
 
 <?php if ($tab === 'news'): ?>
@@ -125,7 +134,7 @@ page_head('Manage Family News', ['body_class' => 'em']);
     </div>
   <?php endforeach; ?>
 
-<?php else: ?>
+<?php elseif ($tab === 'events'): ?>
   <div class="panel em-add">
     <h2>Add an event</h2>
     <form method="post" class="em-form">
@@ -161,6 +170,31 @@ page_head('Manage Family News', ['body_class' => 'em']);
       </form>
     </div>
   <?php endforeach; ?>
+
+<?php else: /* Family Submissions */ ?>
+  <div class="panel em-add">
+    <h2>Family submissions awaiting your review</h2>
+    <p class="lede" style="margin:0">Questions, recipes, updates, and answers submitted by family members. Approve to publish, or decline. Nothing is visible to others until you approve it.</p>
+  </div>
+  <?php if (!$PENDING): ?>
+    <div class="panel"><p class="lede" style="margin:0">Nothing waiting. When a family member submits a question, recipe, update, or answer, it will appear here.</p></div>
+  <?php else: $KN = ['question'=>'Question','recipe'=>'Recipe','update'=>'Update','answer'=>'Answer']; foreach ($PENDING as $s): ?>
+    <div class="panel em-row">
+      <div class="em-rowhead">
+        <h3><span class="em-tag feat"><?= e($KN[$s['kind']] ?? $s['kind']) ?></span>
+          <?php if ($s['kind']==='recipe'): ?><?= e($s['title']) ?><?php elseif ($s['kind']==='answer'): $q=comm_one($s['parent_id']); ?>Answer<?= $q ? ' to: '.e(mb_strimwidth($q['body'],0,60,'…')) : '' ?><?php else: ?><?= e(mb_strimwidth($s['body'],0,70,'…')) ?><?php endif; ?>
+        </h3>
+        <span class="em-by">From <?= e($s['author']) ?> &middot; <?= e(comm_ago($s['created_at'])) ?></span>
+      </div>
+      <?php if ($s['photo']): ?><div class="em-thumb" style="background-image:url('<?= e($s['photo']) ?>');margin-bottom:8px"></div><?php endif; ?>
+      <?php if ($s['body']): ?><p class="fpr-body"><?= nl2br(e($s['body'])) ?></p><?php endif; ?>
+      <div class="em-pendbtns">
+        <form method="post" style="display:inline"><?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$s['id'] ?>"><button class="btn gold" name="action" value="comm_approve">&#10003; Approve &amp; publish</button></form>
+        <form method="post" style="display:inline"><?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$s['id'] ?>"><button class="btn" name="action" value="comm_decline">Decline</button></form>
+        <form method="post" style="display:inline" onsubmit="return confirm('Delete this submission permanently?')"><?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$s['id'] ?>"><button class="btn danger" name="action" value="comm_delete">Delete</button></form>
+      </div>
+    </div>
+  <?php endforeach; endif; ?>
 <?php endif; ?>
 
 <?php page_foot();
