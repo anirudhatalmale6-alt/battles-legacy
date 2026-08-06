@@ -1,6 +1,7 @@
 <?php
 require __DIR__ . '/../src/bootstrap.php';
 require_once __DIR__ . '/../src/tree_edit.php';
+te_migrate();
 
 $pid = $_GET['pid'] ?? '';
 $p = one("SELECT * FROM persons WHERE pid=?", [$pid]);
@@ -63,6 +64,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && role_at_least('moderator')) {
     header('Location: person.php?pid=' . urlencode($pid)); exit;
 }
 
+// Members (non-admin) can CLAIM their own person, and SUGGEST adds/edits for
+// their close relatives. Every suggestion waits for admin approval.
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && logged_in() && !role_at_least('moderator')) {
+    csrf_check();
+    $u   = current_user();
+    $me  = te_user_pid($u);
+    $act = $_POST['action'] ?? '';
+    if ($act === 'claim_me') {
+        if ($me === '') { te_set_user_pid($u['id'], $pid); flash('Thanks — your account is now connected to your place in the family tree.'); }
+        else { flash('Your account is already connected to a person in the tree. Ask William if it needs changing.'); }
+    } elseif ($act === 'suggest_edit') {
+        if (te_can_edit($me, $pid)) { te_add_suggestion('edit', $pid, te_clean_fields($_POST), $u); flash('Thank you — your suggested correction has been sent to William for approval.'); }
+        else { flash('You can only suggest changes for your close relatives.'); }
+    } elseif (in_array($act, ['suggest_child','suggest_spouse','suggest_sibling'], true)) {
+        // these act on the member's own family, so only from their own profile
+        if ($me !== '' && $me === $pid) {
+            $kind = ['suggest_child'=>'add_child','suggest_spouse'=>'add_spouse','suggest_sibling'=>'add_sibling'][$act];
+            $fields = te_clean_fields($_POST);
+            if (trim($fields['given']) === '' && trim($fields['surname']) === '') flash('Please enter at least a first or last name.');
+            else { te_add_suggestion($kind, $me, $fields, $u); flash('Thank you — your suggestion has been sent to William for approval.'); }
+        } else { flash('You can add to your own family from your own profile page.'); }
+    }
+    header('Location: person.php?pid=' . urlencode($pid)); exit;
+}
+
 $name = person_display_name($p);
 $photos = person_photos($pid);
 $occ = json_decode($p['occupation'] ?: '[]', true);
@@ -89,6 +115,28 @@ function chip_link($rp) {
     return '<a class="chip" href="person.php?pid=' . e($rp['pid']) . '">' . e($nm) . e($y) . '</a>';
 }
 
+/** vital-fields form grid (c_* names), prefilled from a person row or blank */
+function render_vitals($src = []) {
+    $g = e($src['given'] ?? ''); $s = e($src['surname'] ?? '');
+    $sex = strtoupper($src['sex'] ?? '');
+    $bd = e($src['birth_date'] ?? ''); $bp = e($src['birth_place'] ?? '');
+    $dd = e($src['death_date'] ?? ''); $dp = e($src['death_place'] ?? '');
+    $liv = !empty($src['living']) ? ' checked' : '';
+    ?>
+    <div class="af-grid">
+      <div><label>First name</label><input type="text" name="c_given" value="<?= $g ?>"></div>
+      <div><label>Last name</label><input type="text" name="c_surname" value="<?= $s ?>"></div>
+      <div><label>Sex</label><select name="c_sex"><option value="">—</option><option value="M"<?= $sex==='M'?' selected':'' ?>>Male</option><option value="F"<?= $sex==='F'?' selected':'' ?>>Female</option></select></div>
+      <div><label>Birth year / date</label><input type="text" name="c_birth" value="<?= $bd ?>" placeholder="e.g. 1978"></div>
+      <div><label>Birthplace (optional)</label><input type="text" name="c_birthplace" value="<?= $bp ?>" placeholder="e.g. Dallas, TX"></div>
+      <div><label>Died (optional)</label><input type="text" name="c_death" value="<?= $dd ?>" placeholder="year / date, if applicable"></div>
+      <div><label>Death place (optional)</label><input type="text" name="c_deathplace" value="<?= $dp ?>" placeholder="e.g. Houston, TX"></div>
+    </div>
+    <label class="af-check"><input type="checkbox" name="c_living" value="1"<?= $liv ?>> Living family member (hidden from public visitors)</label>
+    <?php
+}
+
+$me = logged_in() ? te_user_pid(current_user()) : '';
 page_head($name);
 ?>
 <a href="tree.php" class="muted">← Back to the tree</a>
@@ -157,6 +205,52 @@ page_head($name);
     </form>
   </div>
 </div>
+
+<?php elseif (logged_in()): /* ---- family member: claim self + suggest close-relative edits ---- */ ?>
+  <?php if ($me === ''): ?>
+    <div class="panel addfam" style="margin-top:20px">
+      <h2>Is this you?</h2>
+      <p class="muted" style="margin:0 0 12px">Connect your account to your own place in the family tree. Once connected, you can suggest additions and corrections for your close relatives &mdash; your parents, brothers and sisters, spouse, and children &mdash; and William approves them.</p>
+      <p class="muted" style="margin:0 0 12px">If <b style="color:var(--gold2)"><?= e($name) ?></b> is you, connect it here. If not, open your own profile in the tree and connect it there.</p>
+      <form method="post" onsubmit="return confirm('Connect your account to <?= e(addslashes($name)) ?>?')">
+        <?= csrf_field() ?><input type="hidden" name="action" value="claim_me">
+        <button class="btn gold" type="submit">This is me &mdash; connect my account</button>
+      </form>
+    </div>
+  <?php elseif ($me === $pid): ?>
+    <div class="panel addfam" style="margin-top:20px">
+      <h2>Your family</h2>
+      <p class="muted" style="margin:0 0 12px">Suggest adding to your family or correcting your own details. Everything you suggest is sent to William to approve before it appears on the tree.</p>
+      <details class="af-det">
+        <summary>&#128118; Suggest adding a child</summary>
+        <form method="post" class="addfam-form"><?= csrf_field() ?><input type="hidden" name="action" value="suggest_child"><?php render_vitals(['surname'=>$p['surname']]); ?><button class="btn gold" type="submit" style="margin-top:10px">Send suggestion</button></form>
+      </details>
+      <details class="af-det">
+        <summary>&#128141; Suggest adding a spouse</summary>
+        <form method="post" class="addfam-form"><?= csrf_field() ?><input type="hidden" name="action" value="suggest_spouse"><?php render_vitals(); ?><button class="btn gold" type="submit" style="margin-top:10px">Send suggestion</button></form>
+      </details>
+      <?php if (json_decode($p['famc'] ?: '[]', true)): ?>
+      <details class="af-det">
+        <summary>&#128106; Suggest adding a brother or sister</summary>
+        <form method="post" class="addfam-form"><?= csrf_field() ?><input type="hidden" name="action" value="suggest_sibling"><?php render_vitals(['surname'=>$p['surname']]); ?><button class="btn gold" type="submit" style="margin-top:10px">Send suggestion</button></form>
+      </details>
+      <?php endif; ?>
+      <details class="af-det">
+        <summary>&#9998; Suggest a correction to your own details</summary>
+        <form method="post" class="addfam-form"><?= csrf_field() ?><input type="hidden" name="action" value="suggest_edit"><?php render_vitals($p); ?><button class="btn gold" type="submit" style="margin-top:10px">Send suggestion</button></form>
+      </details>
+    </div>
+  <?php elseif (te_can_edit($me, $pid)): ?>
+    <div class="panel addfam" style="margin-top:20px">
+      <h2>Suggest a correction</h2>
+      <p class="muted" style="margin:0 0 12px"><?= e(explode(' ', $name)[0]) ?> is one of your close relatives, so you can suggest a correction to their details. It goes to William to approve.</p>
+      <form method="post" class="addfam-form"><?= csrf_field() ?><input type="hidden" name="action" value="suggest_edit"><?php render_vitals($p); ?><button class="btn gold" type="submit" style="margin-top:10px">Send suggestion</button></form>
+    </div>
+  <?php else: ?>
+    <div class="panel" style="margin-top:20px">
+      <p class="muted" style="margin:0">You can suggest additions and corrections for your close relatives (your parents, brothers and sisters, spouse, and children). <a href="person.php?pid=<?= e($me) ?>" style="color:var(--gold2)">Open your own profile</a> to add to your family.</p>
+    </div>
+  <?php endif; ?>
 <?php endif; ?>
 
 <div class="panel" style="margin-top:20px">

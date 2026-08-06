@@ -37,6 +37,7 @@ function page_head($title, $opts = []) {
       <a href="upload.php">Add a Photo</a>
       <?php if (role_at_least('moderator')): ?>
         <a href="moderate.php">Review Queue<?php $c = one("SELECT COUNT(*) c FROM photos WHERE status='pending'"); if ($c && $c['c']) echo ' <b class="badge">' . (int)$c['c'] . '</b>'; ?></a>
+        <a href="tree_review.php">Tree Edits<?php try { $tc = one("SELECT COUNT(*) c FROM tree_suggestions WHERE status='pending'"); if ($tc && (int)$tc['c']) echo ' <b class="badge">' . (int)$tc['c'] . '</b>'; } catch (Exception $e) {} ?></a>
       <?php endif; ?>
       <?php if (role_at_least('admin')): ?><a href="admin.php">Members</a><a href="enterprise_manage.php">Edit Enterprise</a><a href="faith_manage.php">Prayers<?php if (function_exists('faith_prayer_count')) { $fc = @faith_prayer_count(); if ($fc) echo ' <b class="badge">' . (int)$fc . '</b>'; } ?></a><?php endif; ?>
       <span class="who"><?= e($u['name']) ?> · <?= e(ucfirst($u['role'])) ?></span>

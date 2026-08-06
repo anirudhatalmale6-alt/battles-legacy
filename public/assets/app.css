@@ -1033,3 +1033,17 @@ body.sec{background:#ece0c6;color:#3a2c18;}
 .af-check{display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:normal;color:var(--gold-soft);font-size:13px;margin-top:10px;}
 .af-check input{width:auto;}
 @media(max-width:820px){ .addfam-cols{grid-template-columns:1fr;} }
+
+/* ---- member tree suggestions (person page <details> + review table) ---- */
+.af-det{border:1px solid rgba(201,162,75,.35);border-radius:8px;margin-top:10px;background:#1c0608;}
+.af-det>summary{cursor:pointer;padding:11px 14px;font-family:'Cormorant Garamond',serif;color:var(--gold2);font-size:18px;list-style:none;}
+.af-det>summary::-webkit-details-marker{display:none;}
+.af-det>summary:hover{color:#fff;}
+.af-det[open]>summary{border-bottom:1px solid rgba(201,162,75,.25);}
+.af-det .addfam-form{padding:12px 14px 16px;}
+.tr-tbl{width:100%;border-collapse:collapse;margin:6px 0 12px;font-family:'EB Garamond',serif;}
+.tr-tbl th{text-align:left;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#8a5f16;padding:4px 10px;border-bottom:1px solid #e6d8bd;}
+.tr-tbl td{padding:5px 10px;border-bottom:1px solid #efe6d4;font-size:15px;color:#3a2c18;vertical-align:top;}
+.tr-tbl td.k{color:#5c1a1f;font-weight:600;width:34%;}
+.tr-tbl tr.chg td.old{color:#9a3b2f;text-decoration:line-through;}
+.tr-tbl tr.chg td.new{color:#2f6a2a;font-weight:600;}
