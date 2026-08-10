@@ -15,6 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         q("INSERT INTO invites (token,name,email,role,invited_by,expires_at) VALUES (?,?,?,?,?, ?)",
           [$token, $name, $email, $role, $me['id'], date('Y-m-d H:i:s', time() + 30*86400)]);
         flash('Invitation created — copy the link below and send it to ' . ($name ?: $email) . '.');
+    } elseif ($act === 'rename') {
+        $uid = (int)($_POST['uid'] ?? 0);
+        $newname = trim($_POST['newname'] ?? '');
+        if ($newname === '') { flash('Please enter a name.'); }
+        elseif ($uid) { q("UPDATE users SET name=? WHERE id=?", [mb_substr($newname,0,120), $uid]); flash('Name updated to ' . $newname . '.'); }
     } elseif ($act === 'role') {
         $uid = (int)$_POST['uid'];
         $role = in_array($_POST['newrole'] ?? '', ['member','moderator','admin'], true) ? $_POST['newrole'] : 'member';
@@ -107,7 +112,14 @@ page_head('Members');
     <tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr>
     <?php foreach ($users as $u): ?>
       <tr>
-        <td><?= e($u['name']) ?><?= $u['id'] == $me['id'] ? ' <span class="muted">(you)</span>' : '' ?></td>
+        <td>
+          <form method="post" class="rename-form">
+            <?= csrf_field() ?><input type="hidden" name="action" value="rename"><input type="hidden" name="uid" value="<?= (int)$u['id'] ?>">
+            <input type="text" name="newname" value="<?= e($u['name']) ?>" aria-label="Name">
+            <button type="submit" title="Save this name">Save</button>
+          </form>
+          <?= $u['id'] == $me['id'] ? '<span class="muted" style="font-size:12px">(you)</span>' : '' ?>
+        </td>
         <td class="muted"><?= e($u['email']) ?></td>
         <td>
           <?php if ($u['id'] == $me['id']): ?><span class="pill admin"><?= e(ucfirst($u['role'])) ?></span>
