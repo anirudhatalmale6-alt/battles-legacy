@@ -6,6 +6,8 @@ function page_head($title, $opts = []) {
     $bodyClass = $opts['body_class'] ?? ''; // extra body class (e.g. 'home')
     $u = current_user();
     $site = config('site_name');
+    // private, built-in visit counter (never interrupts the page)
+    if (is_file(__DIR__ . '/stats_data.php')) { require_once __DIR__ . '/stats_data.php'; stats_record($title); }
     ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,7 +41,7 @@ function page_head($title, $opts = []) {
         <a href="moderate.php">Review Queue<?php $c = one("SELECT COUNT(*) c FROM photos WHERE status='pending'"); if ($c && $c['c']) echo ' <b class="badge">' . (int)$c['c'] . '</b>'; ?></a>
         <a href="tree_review.php">Tree Edits<?php try { $tc = one("SELECT COUNT(*) c FROM tree_suggestions WHERE status='pending'"); if ($tc && (int)$tc['c']) echo ' <b class="badge">' . (int)$tc['c'] . '</b>'; } catch (Exception $e) {} ?></a>
       <?php endif; ?>
-      <?php if (role_at_least('admin')): ?><a href="admin.php">Members</a><a href="enterprise_manage.php">Edit Enterprise</a><a href="faith_manage.php">Prayers<?php if (function_exists('faith_prayer_count')) { $fc = @faith_prayer_count(); if ($fc) echo ' <b class="badge">' . (int)$fc . '</b>'; } ?></a><?php endif; ?>
+      <?php if (role_at_least('admin')): ?><a href="admin.php">Members</a><a href="enterprise_manage.php">Edit Enterprise</a><a href="stats.php">Visitors</a><a href="faith_manage.php">Prayers<?php if (function_exists('faith_prayer_count')) { $fc = @faith_prayer_count(); if ($fc) echo ' <b class="badge">' . (int)$fc . '</b>'; } ?></a><?php endif; ?>
       <span class="who"><?= e($u['name']) ?> · <?= e(ucfirst($u['role'])) ?></span>
       <a class="btn-ghost" href="logout.php">Sign out</a>
     <?php else: ?>

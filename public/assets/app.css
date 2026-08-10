@@ -1414,3 +1414,25 @@ body.aah{background:#f4efe6;color:#2e2740;}
   .aah-people,.aah-people.four{grid-template-columns:repeat(2,1fr);}
   .aah-tl{grid-template-columns:1fr 1fr;}
 }
+
+/* ---- AAH: real public-domain portraits + credit line ---- */
+.aah-person .aah-face[style*="background-image"]{background-size:cover;background-position:center top;color:transparent;}
+.aah-mini{flex:none;width:38px;height:38px;border-radius:50%;background:#e9dcc0 center top/cover;border:1px solid #dcc79a;}
+.aah-credit{max-width:1200px;margin:0 auto;padding:0 clamp(14px,3.5vw,40px) 22px;color:#8a8298;font-size:12.5px;font-style:italic;text-align:center;}
+
+/* ---- visitor statistics (admin) ---- */
+.st-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:14px 0 18px;}
+.st-card{background:#fffdf8;border:1px solid #e2d9c6;border-radius:12px;padding:18px 20px;text-align:center;box-shadow:0 3px 12px rgba(120,80,20,.10);}
+.st-card b{display:block;font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:34px;line-height:1;}
+.st-card span{display:block;color:#7a6a4a;font-size:13.5px;margin-top:4px;}
+.st-chart{display:flex;align-items:flex-end;gap:5px;height:150px;padding-top:8px;}
+.st-bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;}
+.st-bar span{display:block;width:100%;background:linear-gradient(180deg,#d8b662,#a97f2c);border-radius:4px 4px 0 0;min-height:2px;}
+.st-bar em{font-style:normal;font-size:10.5px;color:#9a8a6a;margin-top:4px;}
+.st-two{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.st-tbl{width:100%;border-collapse:collapse;font-family:'EB Garamond',serif;}
+.st-tbl th{text-align:left;font-size:11.5px;letter-spacing:.5px;text-transform:uppercase;color:#8a5f16;padding:5px 8px;border-bottom:1px solid #e6d8bd;}
+.st-tbl td{padding:7px 8px;border-bottom:1px solid #efe6d4;font-size:14.5px;color:#3a2c18;vertical-align:top;}
+.st-tbl td b{color:#5c1a1f;}
+.st-file{display:block;font-size:11.5px;color:#9a8a6a;}
+@media(max-width:900px){ .st-cards{grid-template-columns:1fr;} .st-two{grid-template-columns:1fr;} }

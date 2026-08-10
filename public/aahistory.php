@@ -32,6 +32,12 @@ function aah_icon($k) {
   ];
   return '<svg viewBox="0 0 24 24" aria-hidden="true">' . ($p[$k] ?? '<circle cx="12" cy="12" r="8"/>') . '</svg>';
 }
+function aah_face($name, $slug) {
+    if ($slug && is_file(__DIR__ . '/assets/aahistory/' . $slug . '.jpg')) {
+        return '<span class="aah-face" style="background-image:url(\'assets/aahistory/' . e($slug) . '.jpg\')"></span>';
+    }
+    return '<span class="aah-face">' . aah_mono($name) . '</span>';
+}
 function aah_mono($name) {
   $parts = array_values(array_filter(preg_split('/\s+/', trim($name))));
   if (!$parts) return '&#10022;';
@@ -45,38 +51,38 @@ $NAV = [
   ['sport','Sports','#sports'], ['clock','Timeline','#timeline'],
 ];
 $TRAILBLAZERS = [
-  ['Frederick Douglass','Abolitionist &amp; Author'],
-  ['Harriet Tubman','Freedom Fighter &amp; Humanitarian'],
-  ['Booker T. Washington','Educator &amp; Advisor'],
-  ['Madam C.J. Walker','Entrepreneur &amp; Philanthropist'],
-  ['Thurgood Marshall','Supreme Court Justice'],
+  ['Frederick Douglass','Abolitionist &amp; Author','douglass'],
+  ['Harriet Tubman','Freedom Fighter &amp; Humanitarian','tubman'],
+  ['Booker T. Washington','Educator &amp; Advisor','washington'],
+  ['Madam C.J. Walker','Entrepreneur &amp; Philanthropist','walker'],
+  ['Thurgood Marshall','Supreme Court Justice','marshall'],
 ];
 $INVENTIONS = [
-  ['Lewis Latimer','Improved the light bulb and electrical systems'],
-  ['Alexander Miles','Invented the automatic elevator doors'],
-  ['Garrett Morgan','Invented the traffic signal'],
-  ['Thomas L. Jennings','Invented the dry cleaning process'],
+  ['Lewis Latimer','Improved the light bulb and electrical systems','latimer'],
+  ['Alexander Miles','Invented the automatic elevator doors','miles'],
+  ['Garrett Morgan','Invented the traffic signal','morgan'],
+  ['Thomas L. Jennings','Invented the dry cleaning process',''],
 ];
 $CIVIL = ['Fought for equality','Challenged injustice','Changed laws','Inspired generations'];
 $POLITICS = [
-  ['Shirley Chisholm','1st Black Woman in Congress'],
-  ['Barack Obama','44th President of the United States'],
-  ['Kamala Harris','1st Black &amp; South Asian Vice President'],
-  ['Colin Powell','Chairman of the Joint Chiefs of Staff'],
-  ['Condoleezza Rice','1st Black Woman Secretary of State'],
+  ['Shirley Chisholm','1st Black Woman in Congress','chisholm'],
+  ['Barack Obama','44th President of the United States','obama'],
+  ['Kamala Harris','1st Black &amp; South Asian Vice President','harris'],
+  ['Colin Powell','Chairman of the Joint Chiefs of Staff','powell'],
+  ['Condoleezza Rice','1st Black Woman Secretary of State','rice'],
 ];
 $ACHIEVEMENTS = ['The 13th, 14th &amp; 15th Amendments','Brown v. Board of Education (1954)','The Civil Rights Act (1964)','The Voting Rights Act (1965)','End of Legal Segregation'];
 $ARTS = [['arts','Music'],['arts','Visual Arts'],['book','Literature &amp; Theater'],['star','Dance']];
 $SCIENCE = [
-  ['Dr. Daniel Hale Williams','Pioneered open-heart surgery'],
-  ['Dr. Mae Jemison','1st Black Woman in Space'],
-  ['George Washington Carver','Innovative Scientist &amp; Inventor'],
+  ['Dr. Daniel Hale Williams','Pioneered open-heart surgery','williams'],
+  ['Dr. Mae Jemison','1st Black Woman in Space','jemison'],
+  ['George Washington Carver','Innovative Scientist &amp; Inventor','carver'],
 ];
 $SPORTS = [
-  ['Jackie Robinson','Broke baseball&rsquo;s colour barrier, 1947'],
-  ['Wilma Rudolph','Three Olympic golds, 1960'],
-  ['Muhammad Ali','Champion in the ring and for conscience'],
-  ['Althea Gibson','1st Black champion at Wimbledon'],
+  ['Jackie Robinson','Broke baseball&rsquo;s colour barrier, 1947','robinson'],
+  ['Wilma Rudolph','Three Olympic golds, 1960',''],
+  ['Muhammad Ali','Champion in the ring and for conscience','ali'],
+  ['Althea Gibson','1st Black champion at Wimbledon','gibson'],
 ];
 $TIMELINE = [
   ['ship','1619','First enslaved Africans arrive in America'],
@@ -123,7 +129,7 @@ page_head('African American History', ['body_class' => 'home aah']);
       <p class="aah-note">Courageous men and women who broke barriers and paved the way.</p>
       <div class="aah-people">
         <?php foreach ($TRAILBLAZERS as $t): ?>
-          <div class="aah-person"><span class="aah-face"><?= aah_mono($t[0]) ?></span><b><?= e($t[0]) ?></b><span><?= $t[1] /* authored */ ?></span></div>
+          <div class="aah-person"><?= aah_face($t[0], $t[2] ?? '') ?><b><?= e($t[0]) ?></b><span><?= $t[1] /* authored */ ?></span></div>
         <?php endforeach; ?>
       </div>
     </section>
@@ -133,7 +139,7 @@ page_head('African American History', ['body_class' => 'home aah']);
       <p class="aah-note">Brilliant minds. Powerful ideas. Real impact.</p>
       <div class="aah-people four">
         <?php foreach ($INVENTIONS as $t): ?>
-          <div class="aah-person"><span class="aah-face inv"><?= aah_icon('bulb') ?></span><b><?= e($t[0]) ?></b><span><?= e($t[1]) ?></span></div>
+          <div class="aah-person"><?= ($t[2] ?? '') ? aah_face($t[0],$t[2]) : '<span class="aah-face inv">'.aah_icon('bulb').'</span>' ?><b><?= e($t[0]) ?></b><span><?= e($t[1]) ?></span></div>
         <?php endforeach; ?>
       </div>
     </section>
@@ -154,7 +160,7 @@ page_head('African American History', ['body_class' => 'home aah']);
       <p class="aah-note">Leaders who have served, represented, and paved the way.</p>
       <div class="aah-people">
         <?php foreach ($POLITICS as $t): ?>
-          <div class="aah-person"><span class="aah-face"><?= aah_mono($t[0]) ?></span><b><?= e($t[0]) ?></b><span><?= $t[1] /* authored */ ?></span></div>
+          <div class="aah-person"><?= aah_face($t[0], $t[2] ?? '') ?><b><?= e($t[0]) ?></b><span><?= $t[1] /* authored */ ?></span></div>
         <?php endforeach; ?>
       </div>
     </section>
@@ -182,7 +188,7 @@ page_head('African American History', ['body_class' => 'home aah']);
       <h2 class="sm">Science &amp; Medicine</h2>
       <p class="aah-note">Pioneers in discovery and healing.</p>
       <ul class="aah-list">
-        <?php foreach ($SCIENCE as $s): ?><li><span class="aah-ci"><?= aah_icon('check') ?></span><div><b><?= e($s[0]) ?></b><span class="aah-role"><?= $s[1] /* authored */ ?></span></div></li><?php endforeach; ?>
+        <?php foreach ($SCIENCE as $s): ?><li><?= ($s[2] ?? '') ? '<span class="aah-mini" style="background-image:url(\'assets/aahistory/'.e($s[2]).'.jpg\')"></span>' : '<span class="aah-ci">'.aah_icon('check').'</span>' ?><div><b><?= e($s[0]) ?></b><span class="aah-role"><?= $s[1] /* authored */ ?></span></div></li><?php endforeach; ?>
       </ul>
     </section>
   </div>
@@ -193,7 +199,7 @@ page_head('African American History', ['body_class' => 'home aah']);
     <p class="aah-note">Champions who changed the game &mdash; and the country.</p>
     <div class="aah-people four">
       <?php foreach ($SPORTS as $t): ?>
-        <div class="aah-person"><span class="aah-face"><?= aah_mono($t[0]) ?></span><b><?= e($t[0]) ?></b><span><?= $t[1] /* authored */ ?></span></div>
+        <div class="aah-person"><?= aah_face($t[0], $t[2] ?? '') ?><b><?= e($t[0]) ?></b><span><?= $t[1] /* authored */ ?></span></div>
       <?php endforeach; ?>
     </div>
   </section>
@@ -240,6 +246,10 @@ page_head('African American History', ['body_class' => 'home aah']);
     </section>
   </div>
 </div>
+
+<section class="aah-credit">
+  Historical photographs are in the public domain (Library of Congress, U.S. federal government portraits and Wikimedia Commons).
+</section>
 
 <!-- CLOSING -->
 <section class="aah-closing">
