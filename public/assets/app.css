@@ -1443,3 +1443,57 @@ body.aah{background:#f4efe6;color:#2e2740;}
 .rename-form button{background:transparent;border:1px solid rgba(201,162,75,.5);color:var(--gold2);border-radius:6px;
   padding:6px 11px;cursor:pointer;font-family:'Cormorant Garamond',serif;font-size:14px;}
 .rename-form button:hover{background:var(--gold);color:var(--maroon);}
+
+/* ===================== Close Family view ===================== */
+body.closefam{background:#efe4cc;color:#3a2c18;}
+.cf-bar{width:100vw;margin-left:calc(-50vw + 50%);background:linear-gradient(180deg,#4a141a,#3a0d12);border-bottom:2px solid var(--gold);}
+.cf-barin{max-width:1200px;margin:0 auto;padding:16px clamp(14px,3.5vw,40px);display:flex;gap:18px;align-items:center;flex-wrap:wrap;}
+.cf-barin h1{color:var(--gold2);font-size:26px;margin:0;}
+.cf-barin p{color:var(--gold-soft);font-size:14px;margin:3px 0 0;max-width:62ch;}
+.cf-actions{margin-left:auto;display:flex;gap:10px;align-items:center;position:relative;flex-wrap:wrap;}
+.cf-actions input{background:#1c0608;border:1px solid rgba(201,162,75,.5);color:var(--cream);border-radius:8px;padding:9px 13px;width:210px;font-family:'EB Garamond',serif;}
+.cf-actions .btn2{margin-top:0;align-self:auto;}
+.cf-res{display:none;position:absolute;top:46px;left:0;width:260px;background:#fffdf8;border:1px solid #d9c79a;border-radius:8px;box-shadow:0 8px 22px rgba(0,0,0,.3);z-index:30;max-height:300px;overflow:auto;}
+.cf-res a{display:block;padding:8px 12px;color:#3a2c18;text-decoration:none;font-family:'EB Garamond',serif;font-size:15px;border-bottom:1px solid #efe6d4;}
+.cf-res a:last-child{border-bottom:none;}
+.cf-res a:hover{background:#f3e7c9;color:#7a1f26;}
+.cf-res em{color:#9a6a1f;font-style:normal;font-size:13px;}
+
+.cf-wrap{max-width:1200px;margin:0 auto;padding:24px clamp(14px,3.5vw,40px) 40px;}
+.cf-gen{text-align:center;margin:0;}
+.cf-lbl{display:inline-block;font-size:11.5px;letter-spacing:1.2px;text-transform:uppercase;color:#8a5f16;
+  background:#f7eed8;border:1px solid #e0cba0;border-radius:14px;padding:3px 14px;margin-bottom:12px;}
+.cf-link{width:2px;height:26px;background:linear-gradient(180deg,var(--gold),rgba(201,162,75,.25));margin:0 auto;}
+.ft-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+.ft{display:flex;flex-direction:column;align-items:center;width:118px;text-decoration:none;
+  background:#fffdf8;border:1px solid #e0cba0;border-radius:12px;padding:12px 8px 11px;box-shadow:0 2px 9px rgba(120,80,20,.10);
+  transition:transform .12s,box-shadow .12s;}
+a.ft:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(120,80,20,.22);border-color:var(--gold);}
+.ft-face{width:62px;height:62px;border-radius:50%;background:#e9dcc0 center top/cover;border:2px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;margin-bottom:7px;}
+.ft-mono{background:linear-gradient(135deg,#5c1a1f,#3a0d12);color:var(--gold2);font-family:'Cormorant Garamond',serif;font-size:22px;}
+.ft-name{font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:15px;line-height:1.14;text-align:center;}
+.ft-yrs{color:#9a6a1f;font-size:11.5px;margin-top:2px;}
+.ft.sm{width:98px;padding:9px 6px;}
+.ft.sm .ft-face{width:48px;height:48px;}
+.ft.sm .ft-name{font-size:13.5px;}
+.ft.sib{background:#fbf3e2;}
+.ft.spouse{background:#f7eee4;border-color:#d9b9a3;}
+.ft.spouse::after{content:"spouse";display:block;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:#a86a4a;margin-top:3px;}
+.cf-focus .ft.me{width:168px;background:linear-gradient(180deg,#fffdf8,#f6e9cd);border:2px solid var(--gold);
+  box-shadow:0 6px 20px rgba(120,80,20,.26);padding:16px 12px 14px;}
+.cf-focus .ft.me .ft-face{width:86px;height:86px;}
+.cf-focus .ft.me .ft-name{font-size:19px;}
+.ft-profile{display:block;margin-top:8px;font-size:12px;color:#7a1f26;text-decoration:none;font-family:'Cormorant Garamond',serif;}
+.ft-profile:hover{color:var(--gold);}
+.cf-none{text-align:center;color:#7a6a4a;font-style:italic;font-family:'EB Garamond',serif;}
+.cf-none a{color:#7a1f26;}
+@media(max-width:640px){
+  .cf-actions{margin-left:0;width:100%;}
+  .cf-actions input{width:100%;}
+  .ft{width:96px;} .ft.sm{width:84px;}
+  .cf-focus .ft.me{width:100%;max-width:220px;}
+}
+.treebar .tools .treebtn{display:inline-block;background:transparent;border:1px solid rgba(201,162,75,.5);color:var(--gold2);
+  border-radius:6px;padding:7px 13px;text-decoration:none;font-family:'Cormorant Garamond',serif;font-size:15px;margin-left:6px;}
+.treebar .tools .treebtn:hover{background:var(--gold);color:var(--maroon);}

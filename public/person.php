@@ -165,6 +165,7 @@ $me = logged_in() ? te_user_pid(current_user()) : '';
 page_head($name);
 ?>
 <a href="tree.php" class="muted">← Back to the tree</a>
+<a href="family.php?pid=<?= e($pid) ?>" class="muted" style="margin-left:16px">◈ See close family on one screen</a>
 <div class="panel" style="margin-top:12px">
   <div class="profile-head">
     <div class="avatar"><?php if ($photos): ?><img src="<?= e($photos[0]['path']) ?>" alt=""><?php else: ?><span><?= e(strtoupper(substr($p['given'],0,1) . substr($p['surname'],0,1))) ?></span><?php endif; ?></div>

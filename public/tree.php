@@ -10,6 +10,7 @@ page_head('Family Tree', ['full' => true]);
     <div class="tools">
       <button onclick="expandAll()">Expand all</button>
       <button onclick="focusOn(ROOT_DEFAULT)">Reset</button>
+      <a class="treebtn" id="closefambtn" href="family.php">Close family view</a>
     </div>
   </div>
   <div class="stagewrap">
@@ -26,6 +27,7 @@ page_head('Family Tree', ['full' => true]);
       <div id="dfacts"></div>
       <div class="rel" id="drel"></div>
       <a class="focusbtn" id="profilebtn" href="#">◈ View full profile &amp; photos</a>
+      <a class="focusbtn" id="closefam2" href="#">◈ See close family on one screen</a>
       <button class="focusbtn" onclick="focusOn(SEL)" style="background:linear-gradient(180deg,#4a141a,#360d11)">Center the tree here</button>
       <div class="note" id="dnote"></div>
     </div>
@@ -197,6 +199,9 @@ function showDetail(pid){
   const pb=document.getElementById('profilebtn');
   pb.href='person.php?pid='+encodeURIComponent(pid);
   pb.style.display=(window.IS_MEMBER||!p.living)?'block':'none';
+  const cf=document.getElementById('closefam2');
+  if(cf){ cf.href='family.php?pid='+encodeURIComponent(pid);
+          cf.style.display=(window.IS_MEMBER||!p.living)?'block':'none'; }
   document.getElementById('dnote').textContent = window.IS_MEMBER
     ? 'Open the full profile to see every photo, or add one of your own.'
     : 'Photos and memories attach to each person once family members log in.';
