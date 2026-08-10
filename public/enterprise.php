@@ -109,16 +109,20 @@ page_head('Enterprise', ['body_class' => 'home ent']);
   <form class="biz-search" onsubmit="return false;">
     <input type="text" placeholder="Search businesses by name, profession, or location...">
     <select aria-label="Category">
-      <option>All Categories</option><option>Business</option><option>Profession</option>
+      <option>All Categories</option>
+      <?php foreach (ent_types() as $v => $lbl): ?><option value="<?= e($v) ?>"><?= e($lbl) ?></option><?php endforeach; ?>
     </select>
     <button type="submit" class="ent2-btn">Search</button>
   </form>
   <?php if ($BIZ): ?>
   <div class="biz-grid">
     <?php foreach ($BIZ as $b): ?>
+      <?php $btype = $b['cat_type']; $isWork = ($btype === 'Book' || $btype === 'Article');
+            $fit = (($b['photo_fit'] ?? 'cover') === 'contain') ? ' fit' : ''; ?>
       <article class="biz-card">
-        <div class="biz-photo"<?= $b['photo'] ? ' style="background-image:url(\''.e($b['photo']).'\')"' : ' data-empty="1"' ?>>
+        <div class="biz-photo<?= $fit ?>"<?= $b['photo'] ? ' style="background-image:url(\''.e($b['photo']).'\')"' : ' data-empty="1"' ?>>
           <?php if ($b['sample']): ?><span class="ent-ex">Example</span><?php endif; ?>
+          <?php if ($isWork): ?><span class="biz-type"><?= $btype === 'Book' ? 'Published Book' : 'Published Article' ?></span><?php endif; ?>
           <span class="biz-mono"><?= ent_mono($b['name']) ?></span>
         </div>
         <div class="biz-body">
@@ -135,8 +139,9 @@ page_head('Enterprise', ['body_class' => 'home ent']);
               echo $b['email'] ? '<a href="mailto:'.e($b['email']).'">'.ent_icon('mail').'</a>' : '<span class="off">'.ent_icon('mail').'</span>';
             ?>
           </div>
-          <?php if ($web): ?><a class="ent2-btn biz-view" href="<?= e($web) ?>" target="_blank" rel="noopener">View Business</a>
-          <?php else: ?><button type="button" class="ent2-btn biz-view">View Business</button><?php endif; ?>
+          <?php $cta = ent_cta($btype); ?>
+          <?php if ($web): ?><a class="ent2-btn biz-view" href="<?= e($web) ?>" target="_blank" rel="noopener"><?= e($cta) ?></a>
+          <?php else: ?><button type="button" class="ent2-btn biz-view"><?= e($cta) ?></button><?php endif; ?>
         </div>
       </article>
     <?php endforeach; ?>

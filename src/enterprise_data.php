@@ -44,6 +44,8 @@ function ent_migrate() {
     foreach (['enterprise_businesses','enterprise_videos','enterprise_sayings','enterprise_finance'] as $t) {
         try { db()->exec("ALTER TABLE $t ADD COLUMN submitted_by VARCHAR(160) DEFAULT ''"); } catch (Exception $e) {}
     }
+    // how the card photo is displayed: 'cover' (fill, may crop) or 'contain' (show whole photo)
+    try { db()->exec("ALTER TABLE enterprise_businesses ADD COLUMN photo_fit VARCHAR(10) NOT NULL DEFAULT 'cover'"); } catch (Exception $e) {}
     ent_seed();
     return array_keys($tables);
 }
@@ -172,6 +174,23 @@ function ent_finance($all = false) {
     $w = $all ? '' : "WHERE status='published'";
     return all("SELECT * FROM enterprise_finance $w ORDER BY sort, id");
 }
+/** entry types shown on the Enterprise page (value => friendly label) */
+function ent_types() {
+    return [
+      'Business'   => 'Business',
+      'Profession' => 'Profession',
+      'Book'       => 'Published Book',
+      'Article'    => 'Published Article',
+    ];
+}
+function ent_type_ok($t) { return array_key_exists($t, ent_types()); }
+/** the call-to-action label for a card, by type */
+function ent_cta($type) {
+    if ($type === 'Book')    return 'View the Book';
+    if ($type === 'Article') return 'Read the Article';
+    return 'View Business';
+}
+
 /** icon choices for the finance cards (key => friendly label) */
 function ent_fin_icons() {
     return ['seed'=>'Plant / Growth','home'=>'House','shield'=>'Shield','cap'=>'Graduation cap','bank'=>'Bank',

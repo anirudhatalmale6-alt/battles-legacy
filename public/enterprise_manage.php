@@ -59,27 +59,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             list($photo, $perr) = ent_save_photo($cur['photo'] ?? '');
             if (!empty($_POST['remove_photo'])) $photo = '';
             if ($perr) flash($perr);
-            $cat_type = ($_POST['cat_type'] ?? 'Business') === 'Profession' ? 'Profession' : 'Business';
+            $cat_type = ent_type_ok($_POST['cat_type'] ?? '') ? $_POST['cat_type'] : 'Business';
             $status   = ($_POST['status'] ?? 'published') === 'hidden' ? 'hidden' : 'published';
+            $pfit     = ($_POST['photo_fit'] ?? 'cover') === 'contain' ? 'contain' : 'cover';
             $blurb    = ent_cap_words($_POST['blurb'] ?? '', ENT_BLURB_MAXWORDS);
             $f = [
               trim($_POST['name'] ?? ''), trim($_POST['owner'] ?? ''), trim($_POST['category'] ?? ''),
               $cat_type, trim($_POST['location'] ?? ''), $blurb,
               trim($_POST['link'] ?? ''), trim($_POST['phone'] ?? ''), trim($_POST['email'] ?? ''),
-              $photo, (int)($_POST['sort'] ?? 0), $status,
+              $photo, (int)($_POST['sort'] ?? 0), $status, $pfit,
             ];
             if ($id) {
-                q("UPDATE enterprise_businesses SET name=?,owner=?,category=?,cat_type=?,location=?,blurb=?,link=?,phone=?,email=?,photo=?,sort=?,status=?,sample=0 WHERE id=?",
+                q("UPDATE enterprise_businesses SET name=?,owner=?,category=?,cat_type=?,location=?,blurb=?,link=?,phone=?,email=?,photo=?,sort=?,status=?,photo_fit=?,sample=0 WHERE id=?",
                   array_merge($f, [$id]));
                 flash('Business updated.');
             } else {
-                q("INSERT INTO enterprise_businesses (name,owner,category,cat_type,location,blurb,link,phone,email,photo,sample,sort,status)
-                   VALUES (?,?,?,?,?,?,?,?,?,?,0,?,?)",
+                q("INSERT INTO enterprise_businesses (name,owner,category,cat_type,location,blurb,link,phone,email,photo,sample,sort,status,photo_fit)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,0,?,?,?)",
                   [trim($_POST['name']??''),trim($_POST['owner']??''),trim($_POST['category']??''),$cat_type,
                    trim($_POST['location']??''),$blurb,trim($_POST['link']??''),
                    trim($_POST['phone']??''),trim($_POST['email']??''),$photo,
-                   ent_next_sort('enterprise_businesses'),$status]);
-                flash('Business added — open the Enterprise page to see it live.');
+                   ent_next_sort('enterprise_businesses'),$status,$pfit]);
+                flash('Added — open the Enterprise page to see it live.');
             }
         }
     } elseif ($act === 'biz_delete' && $id) {
@@ -190,7 +191,13 @@ $FINC = array_values(array_filter($FINC, function($r){ return ($r['status'] ?? '
 
 function em_type_opts($sel) {
     $o = '';
-    foreach (['Business','Profession'] as $t) $o .= '<option'.($sel===$t?' selected':'').'>'.$t.'</option>';
+    foreach (ent_types() as $v => $lbl) $o .= '<option value="'.e($v).'"'.($sel===$v?' selected':'').'>'.e($lbl).'</option>';
+    return $o;
+}
+function em_fit_opts($sel) {
+    $o = '';
+    foreach (['cover'=>'Fill the space (may crop the edges)','contain'=>'Show the whole photo (nothing cut off)'] as $v=>$lbl)
+        $o .= '<option value="'.$v.'"'.($sel===$v?' selected':'').'>'.e($lbl).'</option>';
     return $o;
 }
 function em_icon_opts($sel) {
@@ -302,7 +309,9 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
       <div class="em-wc"><b>0</b> / 130 words</div>
       <label>Photo (optional — JPG/PNG, up to 12 MB)</label>
       <input type="file" name="photo" accept="image/*">
-      <button class="btn gold" name="action" value="biz_save" style="margin-top:12px">Add business</button>
+      <label>How should the photo show? <span class="lbl-hint">(for a book, use the cover; &ldquo;whole photo&rdquo; keeps nothing cut off)</span></label>
+      <select name="photo_fit"><?= em_fit_opts('cover') ?></select>
+      <button class="btn gold" name="action" value="biz_save" style="margin-top:12px">Add entry</button>
     </form>
   </div>
 
@@ -318,6 +327,8 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
           <div class="em-thumb"<?= $b['photo'] ? ' style="background-image:url(\''.e($b['photo']).'\')"' : '' ?>><?= $b['photo']?'':'No photo' ?></div>
           <div class="em-mediactl">
             <label>Replace photo</label><input type="file" name="photo" accept="image/*">
+            <label>How should the photo show?</label>
+            <select name="photo_fit"><?= em_fit_opts($b['photo_fit'] ?? 'cover') ?></select>
             <?php if ($b['photo']): ?><label class="em-check"><input type="checkbox" name="remove_photo" value="1"> Remove current photo</label><?php endif; ?>
           </div>
         </div>

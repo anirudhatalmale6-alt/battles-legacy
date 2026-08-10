@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 list($photo, $perr) = ent_store_photo('photo');
                 if ($perr) { $err = $perr; }
                 else {
-                    $cat_type = ($_POST['cat_type'] ?? 'Business') === 'Profession' ? 'Profession' : 'Business';
+                    $cat_type = ent_type_ok($_POST['cat_type'] ?? '') ? $_POST['cat_type'] : 'Business';
                     $blurb    = esub_cap($_POST['blurb'] ?? '', 130);
                     q("INSERT INTO enterprise_businesses (name,owner,category,cat_type,location,blurb,link,phone,email,photo,sample,sort,status,submitted_by)
                        VALUES (?,?,?,?,?,?,?,?,?,?,0,0,'pending',?)",
@@ -113,7 +113,7 @@ page_head('Submit to the Enterprise Page', ['body_class' => 'em']);
         <div><label>Business / profession name *</label><input type="text" name="name" value="<?= esub_old('name') ?>" placeholder="e.g. Holmes Airport Transportation"></div>
         <div><label>Owner / family member</label><input type="text" name="owner" value="<?= esub_old('owner') ?>" placeholder="e.g. Bill Holmes"></div>
         <div><label>Category / profession</label><input type="text" name="category" value="<?= esub_old('category') ?>" placeholder="e.g. Airport Transportation"></div>
-        <div><label>Type</label><select name="cat_type"><option>Business</option><option<?= ($_POST['cat_type']??'')==='Profession'?' selected':'' ?>>Profession</option></select></div>
+        <div><label>Type</label><select name="cat_type"><?php foreach (ent_types() as $v=>$lbl): ?><option value="<?= e($v) ?>"<?= ($_POST['cat_type']??'')===$v?' selected':'' ?>><?= e($lbl) ?></option><?php endforeach; ?></select></div>
         <div><label>Location</label><input type="text" name="location" value="<?= esub_old('location') ?>" placeholder="e.g. Dallas, TX"></div>
         <div><label>Website (optional)</label><input type="text" name="link" value="<?= esub_old('link') ?>" placeholder="https://..."></div>
         <div><label>Phone (optional)</label><input type="text" name="phone" value="<?= esub_old('phone') ?>"></div>
