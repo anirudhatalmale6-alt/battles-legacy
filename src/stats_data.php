@@ -8,6 +8,7 @@ require_once __DIR__ . '/db.php';
 function stats_migrate() {
     static $done = false;
     if ($done) return; $done = true;
+    try {
     $driver = db_driver();
     $AI  = $driver === 'sqlite' ? 'INTEGER PRIMARY KEY AUTOINCREMENT' : 'INT AUTO_INCREMENT PRIMARY KEY';
     $ENG = $driver === 'sqlite' ? '' : ' ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
@@ -18,8 +19,9 @@ function stats_migrate() {
     )$ENG");
     foreach (["CREATE INDEX idx_pv_day ON page_views(day)",
               "CREATE INDEX idx_pv_page ON page_views(page)"] as $s) {
-        try { db()->exec($s); } catch (Exception $e) {}
+        try { db()->exec($s); } catch (\Throwable $e) {}
     }
+    } catch (\Throwable $e) { /* statistics must never break the site */ }
 }
 
 /** pages we never count (admin screens, the tracker's own page, assets) */
@@ -32,6 +34,7 @@ function stats_ignored($page) {
 /** record one page view; called from page_head(). Never breaks the page. */
 function stats_record($title = '') {
     try {
+        if (!function_exists('db')) return;
         $page = basename(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: 'index.php');
         if ($page === '' ) $page = 'index.php';
         if (stats_ignored($page)) return;
@@ -44,8 +47,8 @@ function stats_record($title = '') {
         $visitor = substr(hash('sha256', $ip . '|' . $ua . '|battles-salt'), 0, 32);
         $u = function_exists('current_user') ? current_user() : null;
         q("INSERT INTO page_views (page,title,visitor,member,day) VALUES (?,?,?,?,?)",
-          [$page, mb_substr($title, 0, 160), $visitor, $u['name'] ?? '', date('Y-m-d')]);
-    } catch (Exception $e) { /* statistics must never interrupt a page */ }
+          [$page, substr((string)$title, 0, 160), $visitor, $u['name'] ?? '', date('Y-m-d')]);
+    } catch (\Throwable $e) { /* statistics must never interrupt a page */ }
 }
 
 /* ---------- reporting helpers ---------- */
