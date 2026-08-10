@@ -47,7 +47,12 @@ foreach (all("SELECT * FROM families") as $f) {
 
 // Photo maps — one representative photo per person the viewer is allowed to see.
 $photos = [];
-$rows = all("SELECT pid, path FROM photos WHERE status='approved' ORDER BY is_primary DESC, id");
+// the chosen main photo wins; fall back gracefully if the is_primary column is absent
+try {
+    $rows = all("SELECT pid, path FROM photos WHERE status='approved' ORDER BY is_primary DESC, id");
+} catch (\Throwable $e) {
+    $rows = all("SELECT pid, path FROM photos WHERE status='approved' ORDER BY id");
+}
 foreach ($rows as $r) {
     if (isset($photos[$r['pid']])) continue;  // the chosen main photo (is_primary, else first) wins
     $liv = (int)($indi[$r['pid']]['living'] ?? 0) === 1;
