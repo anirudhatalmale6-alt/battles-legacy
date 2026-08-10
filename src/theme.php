@@ -32,7 +32,7 @@ function page_head($title, $opts = []) {
     <a href="health.php">Health</a>
     <a href="news.php">Family News</a>
     <a href="memorial.php">Memorial</a>
-    <a href="section.php?s=aahistory">African American History</a>
+    <a href="aahistory.php">African American History</a>
     <?php if ($u): ?>
       <a href="upload.php">Add a Photo</a>
       <?php if (role_at_least('moderator')): ?>

@@ -2,7 +2,7 @@
 require __DIR__ . '/../src/bootstrap.php';
 
 /* Sections that already have their own full pages — send visitors straight there. */
-$realPages = ['history'=>'history.php','faith'=>'faith.php','enterprise'=>'enterprise.php','memorial'=>'memorial.php','news'=>'news.php','health'=>'health.php'];
+$realPages = ['history'=>'history.php','faith'=>'faith.php','enterprise'=>'enterprise.php','memorial'=>'memorial.php','news'=>'news.php','health'=>'health.php','aahistory'=>'aahistory.php'];
 $s = $_GET['s'] ?? '';
 if (isset($realPages[$s])) { header('Location: ' . $realPages[$s]); exit; }
 

@@ -1313,3 +1313,104 @@ body.hlth{background:#f2ece1;color:#2e2740;}
   background-color:#f6eeda;height:auto;min-height:190px;}
 .biz-type{position:absolute;top:9px;left:9px;background:#3f2f66;color:#fff;font-size:9.5px;letter-spacing:.5px;
   text-transform:uppercase;padding:3px 9px;border-radius:5px;font-weight:600;}
+
+/* ---- signed-in member shortcuts bar on the home page ---- */
+.memberbar{width:100vw;margin-left:calc(-50vw + 50%);background:linear-gradient(180deg,#4a141a,#3a0d12);border-bottom:1px solid rgba(201,162,75,.45);}
+.mb-inner{max-width:1180px;margin:0 auto;padding:12px clamp(14px,4vw,40px);display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+.mb-hi{color:var(--cream);font-family:'EB Garamond',serif;font-size:15px;}
+.mb-hi b{color:var(--gold2);}
+.mb-hi span{display:block;color:var(--gold-soft);font-size:12.5px;}
+.mb-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;}
+.mb-links a{color:var(--gold2);text-decoration:none;border:1px solid rgba(201,162,75,.5);border-radius:6px;padding:6px 14px;font-family:'Cormorant Garamond',serif;font-size:15px;}
+.mb-links a:hover{background:var(--gold);color:var(--maroon);}
+@media(max-width:640px){ .mb-links{margin-left:0;} }
+
+/* ===================== African American History ===================== */
+body.aah{background:#f4efe6;color:#2e2740;}
+.aah-hero,.aah-closing{width:100vw;margin-left:calc(-50vw + 50%);}
+.aah-hero{background:
+   radial-gradient(120% 130% at 18% 20%, rgba(201,162,75,.20), rgba(201,162,75,0) 60%),
+   linear-gradient(135deg,#2a2016,#1d160f 55%,#140f0a);
+  border-bottom:3px solid var(--gold);padding:52px clamp(16px,5vw,70px);}
+.aah-hero-in{max-width:1180px;margin:0 auto;}
+.aah-hero h1{font-family:'Cormorant Garamond',serif;color:#fff;font-size:clamp(36px,6vw,64px);line-height:1;margin:0;letter-spacing:1px;text-transform:uppercase;}
+.aah-hero h1 span{color:var(--gold);}
+.aah-orn{color:var(--gold);font-size:18px;margin:12px 0 10px;}
+.aah-tag{font-family:'Cormorant Garamond',serif;color:var(--gold2);font-size:clamp(19px,2.4vw,25px);margin:0 0 10px;}
+.aah-sub{color:#d8cdbb;font-size:16px;line-height:1.6;max-width:62ch;margin:0;}
+
+.aah-nav{max-width:1200px;margin:18px auto 0;padding:0 clamp(14px,3.5vw,40px);display:grid;grid-template-columns:repeat(8,1fr);
+  background:#fffdf8;border:1px solid #e3dac9;border-radius:12px;box-shadow:0 3px 12px rgba(60,40,20,.10);overflow:hidden;}
+.aah-navitem{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 5px;text-decoration:none;border-right:1px solid #efe8da;text-align:center;}
+.aah-navitem:last-child{border-right:none;}
+.aah-navitem:hover{background:#f7f1e6;}
+.aah-nic svg{width:23px;height:23px;fill:none;stroke:#5c1a1f;stroke-width:1.5;}
+.aah-navitem span:last-child{font-size:12px;color:#4a3a24;line-height:1.2;}
+
+.aah-wrap{max-width:1200px;margin:0 auto;padding:20px clamp(14px,3.5vw,40px) 10px;}
+.aah-two{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+.aah-three{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:20px;align-items:start;}
+.aah-card{background:#fffdf8;border:1px solid #e3dac9;border-radius:12px;padding:20px 22px 22px;box-shadow:0 3px 12px rgba(60,40,20,.10);display:flex;flex-direction:column;}
+.aah-card h2{font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:23px;margin:0 0 4px;letter-spacing:.3px;text-transform:uppercase;}
+.aah-card h2.sm{font-size:19px;display:flex;align-items:center;gap:8px;}
+.aah-card h2.center{text-align:center;justify-content:center;}
+.aah-card h2 svg{width:20px;height:20px;fill:none;stroke:var(--gold);stroke-width:1.6;}
+.aah-note{color:#6a6280;font-size:14px;margin:0 0 14px;}
+
+.aah-people{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+.aah-people.four{grid-template-columns:repeat(4,1fr);}
+.aah-person{text-align:center;}
+.aah-person .aah-face{display:flex!important;align-items:center;justify-content:center;width:100%;aspect-ratio:3/4;border-radius:8px;margin-bottom:7px;
+  background:linear-gradient(160deg,#7a6038,#3a2a17);color:#f0dfae;font-family:'Cormorant Garamond',serif;font-size:30px!important;
+  letter-spacing:1px;border:1px solid #d9c79a;line-height:1;}
+.aah-face.inv{background:linear-gradient(160deg,#4a3a66,#241c46);}
+.aah-face svg{width:26px;height:26px;fill:none;stroke:var(--gold2);stroke-width:1.5;}
+.aah-person b{display:block;color:#3f2f66;font-family:'Cormorant Garamond',serif;font-size:15px;line-height:1.15;}
+.aah-person > span:last-child{display:block;color:#6a6280;font-size:11.5px;line-height:1.3;}
+
+.aah-list{list-style:none;margin:0;padding:0;}
+.aah-list li{display:flex;gap:9px;align-items:flex-start;padding:6px 0;font-size:14.5px;color:#3a3450;font-family:'EB Garamond',serif;}
+.aah-ci svg{width:17px;height:17px;fill:none;stroke:#8a5f16;stroke-width:1.7;}
+.aah-list.star .aah-ci svg{stroke:var(--gold);}
+.aah-list b{color:#3f2f66;}
+.aah-role{display:block;color:#6a6280;font-size:12.5px;}
+
+.aah-arts{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.aah-art{text-align:center;}
+.aah-aic{width:44px;height:44px;margin:0 auto 5px;border-radius:50%;background:#f1e6cd;border:1px solid #dcc79a;display:flex;align-items:center;justify-content:center;}
+.aah-aic svg{width:22px;height:22px;fill:none;stroke:#5c1a1f;stroke-width:1.6;}
+.aah-art span{display:block;font-size:12.5px;color:#4a3a24;}
+
+.aah-timeline{margin-bottom:20px;}
+.aah-tl{display:grid;grid-template-columns:repeat(8,1fr);gap:10px;margin-top:8px;}
+.aah-tli{text-align:center;position:relative;}
+.aah-tli:not(:last-child)::after{content:"";position:absolute;top:20px;left:60%;width:80%;height:1px;background:#dcc79a;}
+.aah-tic{width:40px;height:40px;margin:0 auto 6px;border-radius:50%;background:#fffdf8;border:1px solid #dcc79a;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;}
+.aah-tic svg{width:20px;height:20px;fill:none;stroke:var(--gold);stroke-width:1.5;}
+.aah-tli b{display:block;color:#5c1a1f;font-family:'Cormorant Garamond',serif;font-size:17px;}
+.aah-tli span{display:block;color:#6a6280;font-size:11.5px;line-height:1.3;}
+
+.aah-quote{background:linear-gradient(135deg,#2a2016,#1d160f);border-color:#3a2a17;justify-content:center;}
+.aah-quote blockquote{font-family:'Cormorant Garamond',serif;font-style:italic;color:#efe4d0;font-size:19px;line-height:1.5;margin:0;}
+.aah-quote cite{display:block;font-style:normal;color:var(--gold2);font-size:14px;margin-top:10px;}
+.aah-inv{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.aah-invi{text-align:center;text-decoration:none;}
+.aah-invi b{display:block;color:#3f2f66;font-family:'Cormorant Garamond',serif;font-size:14.5px;margin-top:2px;}
+.aah-invi span:last-child{display:block;color:#6a6280;font-size:11.5px;line-height:1.3;}
+.aah-invi:hover .aah-aic{background:var(--gold);}
+.aah-card .btn2{align-self:flex-start;margin-top:auto;}
+.aah-closing{background:linear-gradient(180deg,#2a2016,#160f0a);color:var(--gold2);text-align:center;padding:24px;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:21px;border-top:3px solid var(--gold);}
+
+@media(max-width:1000px){
+  .aah-nav{grid-template-columns:repeat(4,1fr);}
+  .aah-navitem{border-bottom:1px solid #efe8da;}
+  .aah-two,.aah-three{grid-template-columns:1fr;}
+  .aah-tl{grid-template-columns:repeat(4,1fr);}
+  .aah-tli::after{display:none;}
+}
+@media(max-width:640px){
+  .aah-nav{grid-template-columns:repeat(2,1fr);}
+  .aah-people,.aah-people.four{grid-template-columns:repeat(2,1fr);}
+  .aah-tl{grid-template-columns:1fr 1fr;}
+}
