@@ -23,7 +23,7 @@ function news_migrate() {
     )$ENG");
     // 'cover' crops the photo to fill the card; 'whole' shows all of it (portrait
     // posters and memorial cards would otherwise be cropped to an unreadable band)
-    db_add_column('news_posts', 'photo_fit', "VARCHAR(10) DEFAULT 'cover'");
+    if (db_add_column('news_posts', 'photo_fit', "VARCHAR(10) DEFAULT 'cover'")) news_autofit_all();
     news_seed();
 }
 
@@ -151,6 +151,17 @@ function news_store_photo($field = 'photo', $existing = '') {
     $now = @getimagesize($dest) ?: $info;
     $fit = ($now[1] > $now[0] * 1.15) ? 'whole' : 'cover';   // taller than wide -> show it all
     return [$rel . '/' . $fname, '', $fit];
+}
+
+/** Set the right fit for photos that were uploaded before the setting existed. */
+function news_autofit_all() {
+    foreach (all("SELECT id, photo FROM news_posts WHERE photo <> ''") as $r) {
+        $abs = dirname(__DIR__) . '/public/' . $r['photo'];
+        if (!is_file($abs)) continue;
+        $sz = @getimagesize($abs);
+        if (!$sz) continue;
+        if ($sz[1] > $sz[0] * 1.15) q("UPDATE news_posts SET photo_fit='whole' WHERE id=?", [$r['id']]);
+    }
 }
 
 /** Scale a too-large upload down in place (keeps pages fast; ignored if GD is absent). */

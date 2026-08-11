@@ -1064,7 +1064,8 @@ body.sec{background:#ece0c6;color:#3a2c18;}
 .spouseset{display:inline-flex;align-items:center;gap:6px;}
 .spouseset select,.spouseset input{font-family:'EB Garamond',serif;font-size:13px;padding:4px 6px;
   border:1px solid #d9c8a6;border-radius:6px;background:#fffdf8;color:#3a2c18;}
-.spouseset .btn{padding:4px 12px;font-size:13px;}
+.spouseset .btn{padding:4px 12px;font-size:13px;margin:0;}
+.spouseset select{min-width:172px;}
 @media(max-width:620px){ .spouseset{width:100%;} }
 
 /* ---- Faith: ministry legend + actions + dedicated ministers page ---- */
