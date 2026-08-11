@@ -70,6 +70,8 @@ page_head('Family Tree', ['full' => true]);
 .node .nm{font-family:'Cormorant Garamond';font-weight:600;font-size:17px;line-height:1.05;color:var(--wine)}
 .node .yr{font-size:12.5px;color:var(--muted);margin-top:2px}
 .node .sp{font-size:12px;color:#8a5a2a;margin-top:3px;font-style:italic;line-height:1.15}
+.node .sp .ex{color:#98795a;opacity:.85}
+.node .sp .ex::before{content:'';display:inline-block;width:10px;border-top:1.5px dashed #b08c5c;vertical-align:middle;margin-right:4px}
 .caret{position:absolute;left:50%;bottom:-13px;transform:translateX(-50%);width:26px;height:26px;border-radius:50%;background:var(--wine);color:var(--gold2);border:1px solid var(--gold);font-size:14px;display:grid;place-items:center;cursor:pointer;z-index:3}
 .caret:hover{background:var(--gold);color:var(--maroon)}
 .caret .n{font-size:10px;position:absolute;top:-7px;right:-15px;background:var(--maroon);color:var(--gold2);border-radius:8px;padding:0 5px;border:1px solid var(--gold)}
@@ -104,7 +106,12 @@ document.getElementById('statline').textContent =
   Object.keys(I).length + " relatives · " + Object.keys(F).length + " families" + (window.IS_MEMBER ? " · signed in as family" : " · public preview");
 
 function childrenOf(pid){const seen=new Set(),out=[];(I[pid]?.fams||[]).forEach(fid=>{(F[fid]?.chil||[]).forEach(c=>{if(I[c]&&!seen.has(c)){seen.add(c);out.push(c);}});});out.sort(byAge);return out;}
-function spousesOf(pid){const out=[];(I[pid]?.fams||[]).forEach(fid=>{const f=F[fid];if(!f)return;const s=f.husb===pid?f.wife:f.husb;if(s&&I[s])out.push(s);});return out;}
+/* spouses come back with their marriage status so an ex-spouse never reads as a current one */
+const REL_SHORT={divorced:'div.',separated:'sep.',partner:'ptnr.',former:'frmr.'};
+const REL_LONG ={divorced:'Divorced',separated:'Separated',partner:'Partner',former:'Former partner',widowed:'Widowed'};
+const REL_ENDED={divorced:1,separated:1,former:1};
+function spouseRecs(pid){const out=[];(I[pid]?.fams||[]).forEach(fid=>{const f=F[fid];if(!f)return;const s=f.husb===pid?f.wife:f.husb;if(s&&I[s])out.push({pid:s,rel:f.rel||'',end:f.relEnd||''});});return out;}
+function spousesOf(pid){return spouseRecs(pid).map(r=>r.pid);}
 function parentsOf(pid){const out=[];(I[pid]?.famc||[]).forEach(fid=>{const f=F[fid];if(!f)return;if(f.husb&&I[f.husb])out.push(f.husb);if(f.wife&&I[f.wife])out.push(f.wife);});return out;}
 function yr(d){if(!d)return"";const m=d.match(/\d{4}/);return m?m[0]:"";}
 /* sort people oldest-first by birth year; unknown years go last, then alphabetical */
@@ -142,11 +149,12 @@ function render(){
     const p=I[n.pid];const el=document.createElement('div');
     el.className='node'+(n.pid===ROOT?' root':'')+(n.pid===SEL?' sel':'');
     el.style.left=n.x+'px';el.style.top=n.y+'px';
-    const sp=spousesOf(n.pid).map(s=>I[s].name).slice(0,1);
+    const spr=spouseRecs(n.pid).slice(0,1);
+    const sp=spr.map(r=>`<span class="${REL_ENDED[r.rel]?'ex':''}" title="${REL_LONG[r.rel]||'Married'}${r.end?' '+r.end:''}">${REL_SHORT[r.rel]||'m.'} ${I[r.pid].name}</span>`);
     el.innerHTML=`<div class="gen-badge">Gen ${n.depth+1}</div>
       <div class="av${PHOTOS[n.pid]?' clickable':''}" title="${PHOTOS[n.pid]?'Click to enlarge':''}">${avatarHTML(n.pid)}</div>
       <div class="nm">${p.name}</div><div class="yr">${lifespan(p)||'&nbsp;'}</div>
-      ${sp.length?`<div class="sp">m. ${sp[0]}</div>`:''}
+      ${sp.length?`<div class="sp">${sp[0]}</div>`:''}
       ${n.kids>0?`<div class="caret" title="${n.open?'Collapse':'Expand'} ${n.kids} children">${n.open?'▴':'▾'}<span class="n">${n.kids}</span></div>`:''}`;
     el.addEventListener('click',e=>{
       if(e.target.closest('.caret'))return;
@@ -191,9 +199,12 @@ function showDetail(pid){
   if(p.sex)facts+=fact('Sex',p.sex==='M'?'Male':p.sex==='F'?'Female':p.sex);
   if(p.living&&!window.IS_MEMBER)facts+='<div class="fact"><div class="k">Living relative</div><div class="v" style="font-size:14px">Hidden in the public preview. Sign in as family to see full details.</div></div>';
   document.getElementById('dfacts').innerHTML=facts||'<div class="fact"><div class="v">No further details yet — a great place for a family memory.</div></div>';
-  let rel='';const par=parentsOf(pid),sp=spousesOf(pid),ch=childrenOf(pid);
+  let rel='';const par=parentsOf(pid),spr=spouseRecs(pid),ch=childrenOf(pid);
   if(par.length)rel+=relBlock('Parents',par);
-  if(sp.length)rel+=relBlock('Spouse',sp);
+  const now=spr.filter(r=>!REL_ENDED[r.rel]), was=spr.filter(r=>REL_ENDED[r.rel]);
+  if(now.length)rel+=relBlock(now.length>1?'Spouses':'Spouse',now.map(r=>r.pid));
+  if(was.length)rel+=relBlock(was.length>1?'Former spouses':'Former spouse',was.map(r=>r.pid),
+                              was.map(r=>(REL_LONG[r.rel]||'')+(r.end?' '+r.end:'')));
   if(ch.length)rel+=relBlock('Children ('+ch.length+')',ch);
   document.getElementById('drel').innerHTML=rel;
   const pb=document.getElementById('profilebtn');
@@ -208,7 +219,10 @@ function showDetail(pid){
   document.getElementById('detail').classList.add('show');
 }
 function fact(k,v){return `<div class="fact"><div class="k">${k}</div><div class="v">${v}</div></div>`;}
-function relBlock(t,ids){return `<h4>${t}</h4>`+ids.map(id=>`<span class="chip" onclick="jump('${id}')">${I[id].name}${yr(I[id].birth.date)?' <span style="opacity:.6">('+yr(I[id].birth.date)+')</span>':''}</span>`).join('');}
+function relBlock(t,ids,notes){return `<h4>${t}</h4>`+ids.map((id,i)=>{
+  const n=notes&&notes[i]?` <span style="opacity:.65;font-style:italic">· ${notes[i]}</span>`:'';
+  return `<span class="chip" onclick="jump('${id}')">${I[id].name}${yr(I[id].birth.date)?' <span style="opacity:.6">('+yr(I[id].birth.date)+')</span>':''}${n}</span>`;
+}).join('');}
 function jump(pid){if(!nodes.find(n=>n.pid===pid)){focusOn(pid);}else{expanded.add(pid);layout();selectPerson(pid);}}
 function hideDetail(){document.getElementById('detail').classList.remove('show');}
 

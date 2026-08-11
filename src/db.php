@@ -40,3 +40,30 @@ function q($sql, $params = []) {
 function one($sql, $params = []) { $r = q($sql, $params)->fetch(); return $r === false ? null : $r; }
 function all($sql, $params = []) { return q($sql, $params)->fetchAll(); }
 function insert_id() { return db()->lastInsertId(); }
+
+/** Does $table have $col? Cached per request so migrations cost one cheap query, not a failed ALTER. */
+function db_has_column($table, $col, $remember = null) {
+    static $cache = [];
+    $key = $table . '.' . $col;
+    if ($remember !== null) return $cache[$key] = (bool) $remember;
+    if (isset($cache[$key])) return $cache[$key];
+    $found = false;
+    try {
+        if (db_driver() === 'sqlite') {
+            foreach (all("PRAGMA table_info(" . $table . ")") as $r) {
+                if (strcasecmp($r['name'], $col) === 0) { $found = true; break; }
+            }
+        } else {
+            $found = (bool) one("SHOW COLUMNS FROM `$table` LIKE ?", [$col]);
+        }
+    } catch (\Throwable $e) { $found = false; }
+    return $cache[$key] = $found;
+}
+
+/** Add a column only if it is missing. Safe to call on every request. */
+function db_add_column($table, $col, $def) {
+    if (db_has_column($table, $col)) return false;
+    try { db()->exec("ALTER TABLE `$table` ADD COLUMN `$col` $def"); } catch (\Throwable $e) { return false; }
+    db_has_column($table, $col, true);
+    return true;
+}

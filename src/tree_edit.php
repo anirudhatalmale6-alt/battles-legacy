@@ -3,6 +3,47 @@
  *  the existing family records. Mirrors the GEDCOM data shape used by data.php. */
 require_once __DIR__ . '/db.php';
 
+/* ---------------------------------------------------------------------------
+ * Marriage / partnership status. A GEDCOM family record only says two people
+ * were joined, never whether they still are — so the tree used to show an
+ * ex-husband exactly like a current one. These two columns carry that.
+ * ------------------------------------------------------------------------- */
+/** status key => [short label for the tree, long label for a profile] */
+function te_rel_statuses() {
+    return [
+      ''          => ['m.',    'Spouse'],
+      'married'   => ['m.',    'Spouse'],
+      'divorced'  => ['div.',  'Former spouse (divorced)'],
+      'separated' => ['sep.',  'Separated'],
+      'widowed'   => ['m.',    'Spouse (widowed)'],
+      'partner'   => ['ptnr.', 'Partner'],
+      'former'    => ['frmr.', 'Former partner'],
+    ];
+}
+function te_rel_ok($s) { return array_key_exists((string)$s, te_rel_statuses()) ? (string)$s : ''; }
+function te_rel_short($s) { $m = te_rel_statuses(); return ($m[te_rel_ok($s)])[0]; }
+function te_rel_long($s)  { $m = te_rel_statuses(); return ($m[te_rel_ok($s)])[1]; }
+/** true for anything that ended — used to label and to draw the link differently */
+function te_rel_ended($s) { return in_array(te_rel_ok($s), ['divorced','separated','former'], true); }
+
+/** set the status of one family record (admin only) */
+function te_set_rel($fid, $status, $end = '') {
+    te_migrate();
+    if (!one("SELECT fid FROM families WHERE fid=?", [$fid])) return false;
+    q("UPDATE families SET rel_status=?, rel_end=? WHERE fid=?",
+      [te_rel_ok($status), substr(trim((string)$end), 0, 80), $fid]);
+    return true;
+}
+
+/** the family record that joins two people, or null */
+function te_couple_fid($pidA, $pidB) {
+    foreach (te_json($pidA, 'fams') as $fid) {
+        $f = one("SELECT * FROM families WHERE fid=?", [$fid]);
+        if ($f && ($f['husb'] === $pidB || $f['wife'] === $pidB)) return $fid;
+    }
+    return null;
+}
+
 /** next unique person id (@I<max+1>@), safe against the imported GEDCOM ids */
 function te_new_pid() {
     $max = 0;
@@ -95,6 +136,8 @@ function te_add_child($pid, $f, $fid = '') {
  * ============================================================ */
 
 function te_migrate() {
+    static $done = false;
+    if ($done) return; $done = true;
     $driver = db_driver();
     $AI  = $driver === 'sqlite' ? 'INTEGER PRIMARY KEY AUTOINCREMENT' : 'INT AUTO_INCREMENT PRIMARY KEY';
     $ENG = $driver === 'sqlite' ? '' : ' ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
@@ -105,7 +148,10 @@ function te_migrate() {
     )$ENG");
     try { db()->exec("CREATE INDEX idx_ts_status ON tree_suggestions(status)"); } catch (Exception $e) {}
     // link a member account to their own person in the tree
-    try { db()->exec("ALTER TABLE users ADD COLUMN pid VARCHAR(16) DEFAULT ''"); } catch (Exception $e) {}
+    db_add_column('users', 'pid', "VARCHAR(16) DEFAULT ''");
+    // marriage status: a GEDCOM family says two people were joined, never whether they still are
+    db_add_column('families', 'rel_status', "VARCHAR(20) DEFAULT ''");
+    db_add_column('families', 'rel_end',    "VARCHAR(80) DEFAULT ''");
 }
 
 /** the pid a member account is linked to (their own person), or '' */

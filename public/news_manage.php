@@ -23,20 +23,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $title = trim($_POST['title'] ?? '');
             if ($title === '') { flash('An announcement needs a title.'); }
             else {
-                $cur = $id ? one("SELECT photo FROM news_posts WHERE id=?", [$id]) : null;
-                list($photo, $perr) = news_store_photo('photo', $cur['photo'] ?? '');
+                $cur = $id ? one("SELECT photo, photo_fit FROM news_posts WHERE id=?", [$id]) : null;
+                list($photo, $perr, $autofit) = news_store_photo('photo', $cur['photo'] ?? '');
                 if (!empty($_POST['remove_photo'])) $photo = '';
                 if ($perr) flash($perr);
-                $cat    = array_key_exists($_POST['category'] ?? '', news_cats()) ? $_POST['category'] : 'news';
+                // a new upload picks its own best fit; otherwise honour the chooser
+                $fit = in_array($_POST['photo_fit'] ?? '', ['cover','whole'], true) ? $_POST['photo_fit'] : ($cur['photo_fit'] ?? 'cover');
+                if ($autofit && ($_POST['photo_fit'] ?? '') === ($_POST['photo_fit_prev'] ?? '')) $fit = $autofit;
+                $cat    = news_cat_ok($_POST['category'] ?? '');
                 $status = ($_POST['status'] ?? 'published') === 'hidden' ? 'hidden' : 'published';
-                $f = [$cat, trim($_POST['date_label']??''), $title, trim($_POST['body']??''), $photo,
+                $f = [$cat, trim($_POST['date_label']??''), $title, trim($_POST['body']??''), $photo, $fit,
                       (int)($_POST['likes']??0), (int)($_POST['comments']??0), (int)($_POST['sort']??0), $status];
                 if ($id) {
-                    q("UPDATE news_posts SET category=?,date_label=?,title=?,body=?,photo=?,likes=?,comments=?,sort=?,status=?,sample=0 WHERE id=?", array_merge($f, [$id]));
+                    q("UPDATE news_posts SET category=?,date_label=?,title=?,body=?,photo=?,photo_fit=?,likes=?,comments=?,sort=?,status=?,sample=0 WHERE id=?", array_merge($f, [$id]));
                     flash('Announcement updated.');
                 } else {
-                    q("INSERT INTO news_posts (category,date_label,title,body,photo,likes,comments,sort,status,sample) VALUES (?,?,?,?,?,?,?,?,?,0)",
-                      [$cat, trim($_POST['date_label']??''), $title, trim($_POST['body']??''), $photo, (int)($_POST['likes']??0), (int)($_POST['comments']??0), nm_next_sort('news_posts'), $status]);
+                    // new announcements sort to the top on their own — no renumbering needed
+                    q("INSERT INTO news_posts (category,date_label,title,body,photo,photo_fit,likes,comments,sort,status,sample) VALUES (?,?,?,?,?,?,?,?,?,?,0)",
+                      [$cat, trim($_POST['date_label']??''), $title, trim($_POST['body']??''), $photo, $fit, (int)($_POST['likes']??0), (int)($_POST['comments']??0), 0, $status]);
                     flash('Announcement added — open the Family News page to see it.');
                 }
             }
@@ -62,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($act === 'event_delete' && $id) {
             q("DELETE FROM news_events WHERE id=?", [$id]); flash('Event removed.');
         }
-    } catch (Exception $ex) { flash('Sorry — that could not be saved. Please try again.'); }
+    } catch (\Throwable $ex) { flash('Sorry — that could not be saved. Please try again.'); }
     header('Location: news_manage.php?tab=' . $tab); exit;
 }
 
@@ -72,7 +76,19 @@ $EVTS  = news_events(true);
 $PENDING = comm_pending();
 $PN = count($PENDING);
 
-function nm_cat_opts($sel) { $o=''; foreach (news_cats() as $k=>$c) $o .= '<option value="'.e($k).'"'.($sel===$k?' selected':'').'>'.e($c[0]).'</option>'; return $o; }
+function nm_cat_opts($sel) {
+    // plain-English hints so the right category is obvious at a glance
+    $hint = ['memory'=>'In Memory (a death / passing)','birth'=>'Birth (a new baby)','marriage'=>'Marriage (a wedding)',
+             'graduation'=>'Graduation','reunion'=>'Reunion','news'=>'News (anything else)','prayer'=>'Prayer',
+             'anniversary'=>'Anniversary','military'=>'Service / Military'];
+    $o=''; foreach (news_cats() as $k=>$c) $o .= '<option value="'.e($k).'"'.($sel===$k?' selected':'').'>'.e($hint[$k] ?? $c[0]).'</option>';
+    return $o;
+}
+function nm_fit_opts($sel) {
+    $o=''; foreach (['cover'=>'Fill the card (may crop the edges)','whole'=>'Show the whole photo (nothing cropped)'] as $v=>$l)
+        $o .= '<option value="'.$v.'"'.($sel===$v?' selected':'').'>'.$l.'</option>';
+    return $o;
+}
 function nm_status_opts($sel){ $o=''; foreach (['published'=>'Visible on the page','hidden'=>'Hidden'] as $v=>$l) $o .= '<option value="'.$v.'"'.($sel===$v?' selected':'').'>'.$l.'</option>'; return $o; }
 
 page_head('Manage Family News', ['body_class' => 'em']);
@@ -99,7 +115,10 @@ page_head('Manage Family News', ['body_class' => 'em']);
         <div><label>Photo (JPG/PNG, up to 12 MB)</label><input type="file" name="photo" accept="image/*"></div>
       </div>
       <label>Details</label>
-      <textarea name="body" placeholder="A sentence or two about the news."></textarea>
+      <textarea name="body" class="nm-count" placeholder="A sentence or two about the news. Write as much as you like — long tributes are welcome."></textarea>
+      <p class="nm-hint">Write as much as you want. The card on the Family News page shows the first ~190 characters and a
+        &ldquo;Read the full story&rdquo; link &mdash; the whole thing appears on the announcement&rsquo;s own page. Tall photos
+        (memorial cards, phone portraits) are shown whole automatically, never cropped.</p>
       <button class="btn gold" name="action" value="post_save" style="margin-top:12px">Add announcement</button>
     </form>
   </div>
@@ -112,24 +131,31 @@ page_head('Manage Family News', ['body_class' => 'em']);
           <button class="btn danger" name="action" value="post_delete" onclick="return confirm('Remove this announcement?')">Delete</button>
         </div>
         <div class="em-media">
-          <div class="em-thumb"<?= $p['photo'] ? ' style="background-image:url(\''.e($p['photo']).'\')"' : '' ?>><?= $p['photo']?'':'No photo' ?></div>
+          <div class="em-thumb"<?= $p['photo'] ? ' style="background-image:url(\''.e($p['photo']).'\');background-size:'.(($p['photo_fit'] ?? 'cover')==='whole'?'contain':'cover').';background-repeat:no-repeat"' : '' ?>><?= $p['photo']?'':'No photo' ?></div>
           <div class="em-mediactl">
             <label>Replace photo</label><input type="file" name="photo" accept="image/*">
+            <label style="margin-top:8px">How the photo shows</label>
+            <input type="hidden" name="photo_fit_prev" value="<?= e($p['photo_fit'] ?? 'cover') ?>">
+            <select name="photo_fit"><?= nm_fit_opts($p['photo_fit'] ?? 'cover') ?></select>
             <?php if ($p['photo']): ?><label class="em-check"><input type="checkbox" name="remove_photo" value="1"> Remove current photo</label><?php endif; ?>
+            <?php if ($p['photo']): ?><a class="nm-hint" href="<?= e($p['photo']) ?>" target="_blank" rel="noopener">Open the photo full size &#8599;</a><?php endif; ?>
           </div>
         </div>
         <div class="em-grid">
           <div><label>Title *</label><input type="text" name="title" required value="<?= e($p['title']) ?>"></div>
           <div><label>Category</label><select name="category"><?= nm_cat_opts($p['category']) ?></select></div>
           <div><label>Date (as shown)</label><input type="text" name="date_label" value="<?= e($p['date_label']) ?>"></div>
-          <div><label>Order</label><input type="number" name="sort" value="<?= (int)$p['sort'] ?>"></div>
+          <div><label>Order (0 = newest first)</label><input type="number" name="sort" value="<?= (int)$p['sort'] ?>"></div>
           <div><label>Likes</label><input type="number" name="likes" value="<?= (int)$p['likes'] ?>"></div>
           <div><label>Comments</label><input type="number" name="comments" value="<?= (int)$p['comments'] ?>"></div>
           <div><label>Visibility</label><select name="status"><?= nm_status_opts($p['status']) ?></select></div>
         </div>
         <label>Details</label>
-        <textarea name="body"><?= e($p['body']) ?></textarea>
-        <button class="btn gold" name="action" value="post_save" style="margin-top:12px">Save changes</button>
+        <textarea name="body" class="nm-count"><?= e($p['body']) ?></textarea>
+        <div class="nm-row">
+          <button class="btn gold" name="action" value="post_save" style="margin-top:12px">Save changes</button>
+          <a class="btn" href="news_view.php?id=<?= (int)$p['id'] ?>" target="_blank" rel="noopener" style="margin-top:12px">See this announcement &#8599;</a>
+        </div>
       </form>
     </div>
   <?php endforeach; ?>
@@ -196,5 +222,20 @@ page_head('Manage Family News', ['body_class' => 'em']);
     </div>
   <?php endforeach; endif; ?>
 <?php endif; ?>
+
+<script>
+/* live length note under each Details box — reassures that long entries are fine */
+document.querySelectorAll('textarea.nm-count').forEach(function(t){
+  var n=document.createElement('div'); n.className='nm-count-note';
+  t.parentNode.insertBefore(n, t.nextSibling);
+  function upd(){
+    var len=t.value.trim().length;
+    n.textContent = len===0 ? '' :
+      len<=190 ? len+' characters — the whole message fits on the card.'
+               : len+' characters — the card shows the first 190 with a “Read the full story” link.';
+  }
+  t.addEventListener('input',upd); upd();
+});
+</script>
 
 <?php page_foot();

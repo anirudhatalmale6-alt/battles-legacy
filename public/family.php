@@ -3,6 +3,8 @@
  *  grandparents and parents above, siblings and spouse beside, children and
  *  grandchildren below. A readable alternative to the full 772-person tree. */
 require __DIR__ . '/../src/bootstrap.php';
+require_once __DIR__ . '/../src/tree_edit.php';
+te_migrate();
 
 $pid = $_GET['pid'] ?? config('root_person');
 $p   = one("SELECT * FROM persons WHERE pid=?", [$pid]);
@@ -33,7 +35,10 @@ function fam_spouses($row) {
         $f = one("SELECT * FROM families WHERE fid=?", [$fid]);
         if (!$f) continue;
         $sp = ($f['husb'] === $row['pid']) ? $f['wife'] : $f['husb'];
-        if ($sp) { $r = fam_get($sp); if ($r) $out[$r['pid']] = $r; }
+        if ($sp) {
+            $r = fam_get($sp);
+            if ($r) { $r['_rel'] = $f['rel_status'] ?? ''; $r['_relend'] = $f['rel_end'] ?? ''; $out[$r['pid']] = $r; }
+        }
     }
     return array_values($out);
 }
@@ -86,11 +91,16 @@ function fam_tile($r, $cls = '') {
     $ls   = lifespan($r) ?: '';
     $ini  = strtoupper(substr($r['given'],0,1) . substr($r['surname'],0,1));
     if (trim($ini) === '') $ini = strtoupper(substr($r['name'],0,1));
+    if (!empty($r['_rel']) && te_rel_ended($r['_rel'])) $cls .= ' ex';
     $out  = '<a class="ft ' . $cls . '" href="family.php?pid=' . e($r['pid']) . '" title="See ' . e($name) . '\'s close family">';
     $out .= $ph ? '<span class="ft-face" style="background-image:url(\'' . e($ph) . '\')"></span>'
                 : '<span class="ft-face ft-mono">' . e($ini) . '</span>';
     $out .= '<span class="ft-name">' . e($name) . '</span>';
     if ($ls) $out .= '<span class="ft-yrs">' . e($ls) . '</span>';
+    if (!empty($r['_rel']) && te_rel_ended($r['_rel'])) {
+        $out .= '<span class="ft-ex">' . e(te_rel_long($r['_rel']))
+              . (!empty($r['_relend']) ? ' &middot; ' . e($r['_relend']) : '') . '</span>';
+    }
     $out .= '</a>';
     return $out;
 }

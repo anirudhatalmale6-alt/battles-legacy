@@ -1056,6 +1056,17 @@ body.sec{background:#ece0c6;color:#3a2c18;}
   border-radius:0 16px 16px 0;height:100%;padding:5px 9px 6px;cursor:pointer;font-size:14px;line-height:1;}
 .reldc button:hover{background:#7a2e1f;color:#fff;}
 
+/* ---- marriage status: current spouse vs former spouse ---- */
+.spouserow{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:6px 0;}
+.spouserow.ended .chip{border-style:dashed;opacity:.9;}
+.spousetag{font-family:'EB Garamond',serif;font-style:italic;font-size:13.5px;color:#d8b878;
+  background:rgba(201,162,75,.10);border:1px dashed rgba(201,162,75,.45);border-radius:12px;padding:2px 10px;}
+.spouseset{display:inline-flex;align-items:center;gap:6px;}
+.spouseset select,.spouseset input{font-family:'EB Garamond',serif;font-size:13px;padding:4px 6px;
+  border:1px solid #d9c8a6;border-radius:6px;background:#fffdf8;color:#3a2c18;}
+.spouseset .btn{padding:4px 12px;font-size:13px;}
+@media(max-width:620px){ .spouseset{width:100%;} }
+
 /* ---- Faith: ministry legend + actions + dedicated ministers page ---- */
 .fmin-legend{border-top:1px solid #eadfc6;margin-top:16px;padding-top:14px;}
 .fmin-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;}
@@ -1079,6 +1090,11 @@ body.fnews{background:#efe3c9;color:#3a2c18;}
 .fn-sic svg{width:22px;height:22px;fill:none;stroke:var(--gold2);stroke-width:1.6;}
 .fn-scat b{display:block;color:var(--gold2);font-family:'Cormorant Garamond',serif;font-size:16px;}
 .fn-scat span{display:block;color:#c9b483;font-size:11.5px;line-height:1.25;}
+/* each tile is a filter link into the full archive */
+.fn-scat{text-decoration:none;border-radius:10px;padding:6px 4px;transition:background .15s;}
+.fn-scat:hover{background:rgba(201,162,75,.12);}
+.fn-scat .fn-n{font-style:normal;font-size:12px;color:#1a130a;background:var(--gold2);
+  border-radius:9px;padding:0 6px;margin-left:5px;vertical-align:middle;}
 
 /* layout */
 .fn-wrap{max-width:1200px;margin:0 auto;padding:26px clamp(14px,3.5vw,40px) 0;}
@@ -1096,17 +1112,31 @@ body.fnews{background:#efe3c9;color:#3a2c18;}
 @media(max-width:1050px){ .fn-cards{grid-template-columns:repeat(2,1fr);} }
 @media(max-width:520px){ .fn-cards{grid-template-columns:1fr;} }
 .fn-card{background:#fffdf8;border:1px solid #e6d8bd;border-radius:12px;overflow:hidden;box-shadow:0 3px 12px rgba(120,80,20,.10);display:flex;flex-direction:column;}
-.fn-photo{position:relative;height:132px;background:#e9dcc0 center/cover;display:flex;align-items:center;justify-content:center;}
+.fn-photo{position:relative;height:180px;background:#e9dcc0 center/cover;display:flex;align-items:center;justify-content:center;}
 .fn-photo[data-empty]{background:linear-gradient(135deg,#5c1a1f,#3a0d12);}
 .fn-mono{font-family:'Cormorant Garamond',serif;color:var(--gold2);font-size:40px;}
 .fn-tag{position:absolute;top:9px;left:9px;color:#fff;font-size:9px;letter-spacing:.4px;text-transform:uppercase;padding:2px 7px;border-radius:5px;background:#5c1a1f;font-weight:600;}
 .fn-ex{position:absolute;bottom:9px;right:9px;background:rgba(0,0,0,.5);color:#fff;font-size:9px;text-transform:uppercase;letter-spacing:.5px;padding:2px 7px;border-radius:4px;}
 .c-birth{background:#b06a86;} .c-grad{background:#3f6fa3;} .c-marr{background:#3f7d5a;}
 .c-mem{background:#6b4a8a;}   .c-reun{background:#b3823a;} .c-news{background:#7a1f26;} .c-pray{background:#8a5f16;}
+.c-anniv{background:#a3506a;} .c-mil{background:#4a6b4a;}
 .fn-body{padding:13px 13px 15px;display:flex;flex-direction:column;flex:1;}
 .fn-date{font-size:12.5px;color:#9a6a1f;margin-bottom:4px;}
 .fn-body h3{font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:18px;margin:0 0 6px;line-height:1.12;}
-.fn-body p{font-size:13.5px;color:#4a3a24;line-height:1.45;margin:0 0 10px;font-family:'EB Garamond',serif;}
+.fn-body p{font-size:13.5px;color:#4a3a24;line-height:1.45;margin:0 0 8px;font-family:'EB Garamond',serif;}
+/* every card keeps the same height no matter how long the story is —
+   the full text lives on the announcement's own page */
+.fn-body h3 a{color:inherit;text-decoration:none;}
+.fn-body h3 a:hover{color:#7a1f26;}
+.fn-more{font-family:'Cormorant Garamond',serif;font-size:14.5px;color:#7a1f26;text-decoration:none;margin:0 0 10px;}
+.fn-more:hover{color:var(--gold);}
+/* portrait photos (memorial cards, phone portraits) show whole, on a soft blur of themselves */
+.fn-photo{overflow:hidden;text-decoration:none;}
+.fn-photo.fit{background-size:cover;}
+.fn-photo.fit::before{content:'';position:absolute;inset:0;background:inherit;background-size:cover;
+  filter:blur(14px) brightness(.72);transform:scale(1.25);}
+.fn-photoin{position:absolute;inset:6px;background:center/contain no-repeat;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));}
 .fn-meta{display:flex;gap:8px;justify-content:space-between;margin-top:auto;border-top:1px solid #efe6d4;padding-top:9px;}
 .fn-meta span{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;white-space:nowrap;color:#7a6a4a;}
 .fn-meta svg{width:15px;height:15px;fill:none;stroke:#9a6a1f;stroke-width:1.7;}
@@ -1480,6 +1510,9 @@ a.ft:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(120,80,20,.22);
 .ft.sib{background:#fbf3e2;}
 .ft.spouse{background:#f7eee4;border-color:#d9b9a3;}
 .ft.spouse::after{content:"spouse";display:block;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:#a86a4a;margin-top:3px;}
+.ft.spouse.ex{background:#f4f0e8;border-color:#cdbda6;border-style:dashed;}
+.ft.spouse.ex::after{content:none;}
+.ft-ex{display:block;font-size:10px;letter-spacing:.4px;text-transform:uppercase;color:#8a7355;margin-top:3px;text-align:center;}
 .cf-focus .ft.me{width:168px;background:linear-gradient(180deg,#fffdf8,#f6e9cd);border:2px solid var(--gold);
   box-shadow:0 6px 20px rgba(120,80,20,.26);padding:16px 12px 14px;}
 .cf-focus .ft.me .ft-face{width:86px;height:86px;}
@@ -1497,3 +1530,47 @@ a.ft:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(120,80,20,.22);
 .treebar .tools .treebtn{display:inline-block;background:transparent;border:1px solid rgba(201,162,75,.5);color:var(--gold2);
   border-radius:6px;padding:7px 13px;text-decoration:none;font-family:'Cormorant Garamond',serif;font-size:15px;margin-left:6px;}
 .treebar .tools .treebtn:hover{background:var(--gold);color:var(--maroon);}
+
+/* ---- Family News: full archive + single announcement page ---- */
+.fn-abar{background:linear-gradient(180deg,#2a1e10,#1a1208);border-bottom:2px solid var(--gold);
+  padding:22px clamp(14px,4vw,54px);}
+.fn-abarin{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap;}
+.fn-abar h1{color:var(--gold2);margin:4px 0 2px;font-size:32px;}
+.fn-abar p{color:#c9b483;margin:0;font-family:'EB Garamond',serif;font-size:15px;}
+.fn-back{display:inline-flex;align-items:center;gap:6px;color:#c9b483;text-decoration:none;font-size:14px;}
+.fn-back:hover{color:var(--gold2);}
+.fn-back svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;}
+.fn-chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px;}
+.fn-chip{display:inline-flex;align-items:center;gap:6px;background:#fffdf8;border:1px solid #e0cba0;
+  border-radius:18px;padding:5px 14px;color:#5c1a1f;text-decoration:none;font-family:'Cormorant Garamond',serif;font-size:16px;}
+.fn-chip i{font-style:normal;font-size:12px;color:#8a6a2a;background:#f3e7c9;border-radius:9px;padding:0 6px;}
+.fn-chip:hover{border-color:var(--gold);}
+.fn-chip.on{background:#5c1a1f;color:#f3e2b8;border-color:#5c1a1f;}
+.fn-chip.on i{background:rgba(255,255,255,.16);color:#f3e2b8;}
+.fn-cards.wide{grid-template-columns:repeat(4,1fr);padding-bottom:30px;}
+@media(max-width:1050px){ .fn-cards.wide{grid-template-columns:repeat(2,1fr);} }
+@media(max-width:520px){ .fn-cards.wide{grid-template-columns:1fr;} }
+.fn-allbtn{margin-top:18px;display:inline-block;}
+
+.nv-wrap{max-width:860px;margin:0 auto;padding:22px clamp(14px,3.5vw,40px) 40px;}
+.nv-head{margin:14px 0 18px;}
+.nv-head .fn-tag{position:static;display:inline-block;margin-bottom:8px;}
+.nv-head h1{color:#5c1a1f;margin:0 0 4px;font-size:38px;line-height:1.08;}
+.nv-date{color:#9a6a1f;font-size:15px;font-family:'EB Garamond',serif;}
+.nv-hidden{margin-top:6px;display:inline-block;background:#f6efe0;border:1px dashed #c9a24b;
+  border-radius:6px;padding:3px 10px;font-size:13px;color:#8a5f16;}
+.nv-photo{margin:0 0 20px;text-align:center;background:#f6efe0;border:1px solid #e6d8bd;
+  border-radius:12px;padding:12px;box-shadow:0 3px 12px rgba(120,80,20,.10);}
+.nv-photo img{max-width:100%;max-height:640px;border-radius:8px;display:inline-block;}
+.nv-body{font-family:'EB Garamond',serif;font-size:18px;line-height:1.72;color:#3f3120;
+  white-space:normal;}
+.nv-meta{display:flex;align-items:center;gap:16px;margin-top:22px;border-top:1px solid #e6d8bd;padding-top:14px;}
+.nv-meta span{display:inline-flex;align-items:center;gap:5px;color:#7a6a4a;font-size:14px;}
+.nv-meta svg{width:17px;height:17px;fill:none;stroke:#9a6a1f;stroke-width:1.7;}
+.nv-more{margin-top:34px;}
+.nv-more h2{color:#5c1a1f;font-size:24px;border-bottom:2px solid #e0cfa8;padding-bottom:8px;margin-bottom:14px;}
+.nv-more .fn-cards{grid-template-columns:repeat(3,1fr);}
+@media(max-width:760px){ .nv-more .fn-cards{grid-template-columns:1fr;} .nv-head h1{font-size:29px;} }
+.nm-hint{font-family:'EB Garamond',serif;font-size:13.5px;color:#7a6a4a;line-height:1.5;margin:8px 0 0;display:block;}
+.nm-count-note{font-size:12.5px;color:#8a7355;margin-top:5px;font-style:italic;}
+.nm-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}

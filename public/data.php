@@ -1,7 +1,9 @@
 <?php
 /** Emits window.GED / window.PHOTOS for the tree. Living relatives are redacted unless a family member is logged in. */
 require __DIR__ . '/../src/bootstrap.php';
+require_once __DIR__ . '/../src/tree_edit.php';
 header('Content-Type: application/javascript; charset=utf-8');
+try { te_migrate(); } catch (\Throwable $e) { /* the tree still draws without marriage status */ }
 
 $member = logged_in();
 
@@ -42,6 +44,8 @@ foreach (all("SELECT * FROM families") as $f) {
         'id' => $f['fid'], 'husb' => $f['husb'], 'wife' => $f['wife'],
         'chil' => json_decode($f['chil'] ?: '[]', true),
         'marr' => ['date' => $f['marr_date'], 'place' => $f['marr_place']],
+        'rel'  => $f['rel_status'] ?? '',   // '', married, divorced, separated, widowed, partner, former
+        'relEnd' => $f['rel_end'] ?? '',    // e.g. "1998" — when it ended
     ];
 }
 

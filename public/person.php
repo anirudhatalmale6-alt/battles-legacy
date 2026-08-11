@@ -51,6 +51,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && role_at_least('moderator')) {
         list($ok, $msg) = te_link_existing($pid, trim($_POST['other_pid'] ?? ''), $rel);
         flash($msg);
         header('Location: person.php?pid=' . urlencode($pid)); exit;
+    } elseif (($_POST['action'] ?? '') === 'set_rel') {
+        $fid = trim($_POST['fid'] ?? '');
+        // only a family this person actually belongs to
+        if (in_array($fid, json_decode($p['fams'] ?: '[]', true) ?: [], true)) {
+            te_set_rel($fid, $_POST['rel_status'] ?? '', $_POST['rel_end'] ?? '');
+            flash('Marriage status updated — the tree and profiles now show it.');
+        }
+        header('Location: person.php?pid=' . urlencode($pid)); exit;
     } elseif (($_POST['action'] ?? '') === 'disconnect') {
         $rtype = in_array($_POST['rtype'] ?? '', ['spouse','child','parent'], true) ? $_POST['rtype'] : '';
         list($ok, $msg) = te_disconnect($pid, trim($_POST['other_pid'] ?? ''), $rtype);
@@ -120,7 +128,10 @@ foreach (json_decode($p['fams'] ?: '[]', true) as $fid) {
     $f = one("SELECT * FROM families WHERE fid=?", [$fid]);
     if (!$f) continue;
     $sp = $f['husb'] === $pid ? $f['wife'] : $f['husb'];
-    if ($sp) { $rp = one("SELECT * FROM persons WHERE pid=?", [$sp]); if ($rp) $spouses[] = $rp; }
+    if ($sp) {
+        $rp = one("SELECT * FROM persons WHERE pid=?", [$sp]);
+        if ($rp) { $rp['_fid'] = $f['fid']; $rp['_rel'] = $f['rel_status'] ?? ''; $rp['_relend'] = $f['rel_end'] ?? ''; $spouses[] = $rp; }
+    }
     foreach (json_decode($f['chil'] ?: '[]', true) as $cid) { $rp = one("SELECT * FROM persons WHERE pid=?", [$cid]); if ($rp) $children[] = $rp; }
 }
 function chip_link($rp) {
@@ -138,6 +149,32 @@ function rel_chip($rp, $type) {
               . '<button type="submit" title="Remove this connection">&times;</button></form>';
     }
     return $out . '</span>';
+}
+
+/** a spouse chip: shows whether the marriage is current or ended, and (admin) lets you change it */
+function spouse_chip($rp) {
+    $ended = te_rel_ended($rp['_rel']);
+    $out  = '<div class="spouserow' . ($ended ? ' ended' : '') . '">';
+    $out .= rel_chip($rp, 'spouse');
+    if ($rp['_rel'] !== '' && $rp['_rel'] !== 'married') {
+        $out .= '<span class="spousetag">' . e(te_rel_long($rp['_rel']))
+              . ($rp['_relend'] ? ' &middot; ' . e($rp['_relend']) : '') . '</span>';
+    }
+    if (role_at_least('moderator')) {
+        $out .= '<form method="post" class="spouseset">' . csrf_field()
+              . '<input type="hidden" name="action" value="set_rel">'
+              . '<input type="hidden" name="fid" value="' . e($rp['_fid']) . '">'
+              . '<select name="rel_status">';
+        foreach ([''=>'Married / together','divorced'=>'Divorced','separated'=>'Separated',
+                  'widowed'=>'Widowed','partner'=>'Partner','former'=>'Former partner'] as $k => $lbl) {
+            $sel = ((string)$rp['_rel'] === $k || ($k === '' && $rp['_rel'] === 'married')) ? ' selected' : '';
+            $out .= '<option value="' . e($k) . '"' . $sel . '>' . e($lbl) . '</option>';
+        }
+        $out .= '</select><input type="text" name="rel_end" value="' . e($rp['_relend'])
+              . '" placeholder="year ended" size="9">'
+              . '<button type="submit" class="btn">Save</button></form>';
+    }
+    return $out . '</div>';
 }
 
 /** vital-fields form grid (c_* names), prefilled from a person row or blank */
@@ -186,7 +223,12 @@ page_head($name);
 
   <?php if ($parents || $spouses || $children): ?>
     <?php if ($parents): ?><h2 style="font-size:20px;margin-top:20px">Parents</h2><?php foreach ($parents as $rp) echo rel_chip($rp, 'parent'); endif; ?>
-    <?php if ($spouses): ?><h2 style="font-size:20px;margin-top:16px">Spouse</h2><?php foreach ($spouses as $rp) echo rel_chip($rp, 'spouse'); endif; ?>
+    <?php
+      $spNow = []; $spWas = [];
+      foreach ($spouses as $rp) { if (te_rel_ended($rp['_rel'])) $spWas[] = $rp; else $spNow[] = $rp; }
+    ?>
+    <?php if ($spNow): ?><h2 style="font-size:20px;margin-top:16px"><?= count($spNow) > 1 ? 'Spouses' : 'Spouse' ?></h2><?php foreach ($spNow as $rp) echo spouse_chip($rp); endif; ?>
+    <?php if ($spWas): ?><h2 style="font-size:20px;margin-top:16px"><?= count($spWas) > 1 ? 'Former spouses' : 'Former spouse' ?></h2><?php foreach ($spWas as $rp) echo spouse_chip($rp); endif; ?>
     <?php if ($children): ?><h2 style="font-size:20px;margin-top:16px">Children (<?= count($children) ?>)</h2><?php foreach ($children as $rp) echo rel_chip($rp, 'child'); endif; ?>
   <?php endif; ?>
 </div>
