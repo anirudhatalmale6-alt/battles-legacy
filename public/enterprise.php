@@ -181,7 +181,9 @@ page_head('Enterprise', ['body_class' => 'home ent']);
           <?php if ($vu): ?></a><?php else: ?></div><?php endif; ?>
         <?php endforeach; ?>
       </div>
-      <button type="button" class="ent2-btn center">View All Videos &rsaquo;</button>
+      <?php if (role_at_least('admin')): ?>
+        <a class="ent2-btn center" href="enterprise_manage.php?tab=videos">Add or edit videos &rsaquo;</a>
+      <?php endif; ?>
     </section>
 
     <!-- Financial Guidance -->

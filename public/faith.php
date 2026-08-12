@@ -139,7 +139,7 @@ page_head('Faith', ['body_class' => 'home faith']);
     <section class="fs-vids" id="videos">
       <div class="fs-vhead"><?= faith_icon('play') ?> <h3>Featured Videos</h3>
         <?php if ($isAdmin): ?><a class="fs-vedit" href="faith_manage.php?tab=videos">Manage &rsaquo;</a><?php endif; ?></div>
-      <?php if ($FVIDS): $FV = $FVIDS[0]; $FREST = array_slice($FVIDS, 1, 4); ?>
+      <?php if ($FVIDS): $FV = $FVIDS[0]; $FREST = array_slice($FVIDS, 1); /* all of them — hiding some with no way to reach them is worse than a longer list */ ?>
         <?php $fu = faith_video_url($FV); $fth = faith_video_thumb($FV); ?>
         <?php if ($fu): ?><a class="fs-vfeat" href="<?= e($fu) ?>" target="_blank" rel="noopener"<?php else: ?><div class="fs-vfeat"<?php endif; ?>
           <?= $fth ? ' style="background-image:url(\'' . e($fth) . '\')"' : '' ?>>
