@@ -1099,7 +1099,8 @@ body.fnews{background:#efe3c9;color:#3a2c18;}
 
 /* layout */
 .fn-wrap{max-width:1200px;margin:0 auto;padding:26px clamp(14px,3.5vw,40px) 0;}
-.fn-main-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start;}
+.fn-main-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;align-items:start;}
+.fn-news{min-width:0;}  /* let the rotating track scroll instead of stretching the column */
 .fn-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;border-bottom:2px solid #e0cfa8;padding-bottom:8px;}
 .fn-head h2{display:flex;align-items:center;gap:9px;color:#5c1a1f;margin:0;font-size:24px;}
 .fn-head.sm h3{display:flex;align-items:center;gap:8px;color:#5c1a1f;margin:0;font-family:'Cormorant Garamond',serif;font-size:20px;}
@@ -1752,3 +1753,30 @@ a.fs-vrow:hover{background:rgba(201,162,75,.12);}
 .fs-vmeta .dur{font-style:normal;font-size:11.5px;color:var(--gold-soft);}
 .fs-vempty{color:#cfc6ec;font-size:14px;line-height:1.5;margin:0;}
 .fs-vempty a{color:var(--gold2);text-decoration:underline;}
+
+/* ---- Family News: rotating announcements ---- */
+.fn-rot{position:relative;min-width:0;}
+/* until the script runs it is the same grid as before — no JS, no loss */
+.fn-rot.on .fn-track{display:flex;gap:16px;min-width:0;overflow-x:auto;scroll-snap-type:x mandatory;
+  scrollbar-width:none;-ms-overflow-style:none;padding-bottom:2px;}
+.fn-rot.on .fn-track::-webkit-scrollbar{display:none;}
+.fn-rot.on .fn-track>.fn-card{flex:0 0 calc((100% - 48px)/4);scroll-snap-align:start;}
+@media(max-width:1050px){ .fn-rot.on .fn-track>.fn-card{flex:0 0 calc((100% - 16px)/2);} }
+@media(max-width:520px){  .fn-rot.on .fn-track>.fn-card{flex:0 0 100%;} }
+.fn-arrow{display:none;position:absolute;top:82px;z-index:5;width:38px;height:38px;border-radius:50%;
+  border:1px solid #d9c39a;background:#fffdf8;color:#5c1a1f;font-size:24px;line-height:1;cursor:pointer;
+  box-shadow:0 3px 12px rgba(120,80,20,.22);transition:.15s;font-family:'Cormorant Garamond',serif;}
+.fn-rot.on .fn-arrow{display:flex;align-items:center;justify-content:center;}
+.fn-rot.on.single .fn-arrow{display:none;}
+.fn-arrow:hover{background:#5c1a1f;color:var(--gold2);border-color:#5c1a1f;}
+.fn-arrow.prev{left:-19px;padding-right:3px;} .fn-arrow.next{right:-19px;padding-left:3px;}
+@media(max-width:1240px){ .fn-arrow.prev{left:2px;} .fn-arrow.next{right:2px;} }
+/* on a phone the arrows would sit on top of the photo — swipe and the dots do the job */
+@media(max-width:620px){ .fn-rot.on .fn-arrow{display:none;} }
+.fn-dots{display:none;justify-content:center;gap:8px;margin-top:14px;}
+.fn-rot.on .fn-dots{display:flex;}
+.fn-rot.on.single .fn-dots{display:none;}
+.fn-dot{width:9px;height:9px;padding:0;border-radius:50%;border:1px solid #c9a24b;background:transparent;
+  cursor:pointer;transition:.15s;}
+.fn-dot:hover{background:rgba(201,162,75,.5);}
+.fn-dot.on{background:#5c1a1f;border-color:#5c1a1f;transform:scale(1.2);}

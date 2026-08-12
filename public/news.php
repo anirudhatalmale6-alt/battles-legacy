@@ -5,7 +5,7 @@ require_once __DIR__ . '/../src/community_data.php';
 $TOTAL = 0;
 try {
     news_migrate(); community_migrate();
-    $POSTS = news_posts(false, '', 8);   // latest eight; the rest live in the archive
+    $POSTS = news_posts(false, '', 12);  // three rotating pages of four; the rest live in the archive
     $TOTAL = news_count();
     $EVENTS = news_events();
     $QLIST = comm_list('question', 'published', 3);
@@ -63,8 +63,15 @@ page_head('Family News', ['body_class' => 'home fnews']);
         <a class="fn-viewall" href="news_all.php">View All News<?= $TOTAL ? ' ('.$TOTAL.')' : '' ?> &rsaquo;</a>
         <?php if ($isAdmin): ?><a class="fn-viewall" href="news_manage.php">Manage &rsaquo;</a><?php endif; ?></div>
       <?php if ($POSTS): ?>
-      <div class="fn-cards">
-        <?php foreach ($POSTS as $p) echo news_card($p); ?>
+      <!-- The announcements rotate a row at a time, so a busy month doesn't
+           turn this into a wall. Without JavaScript it stays a plain grid. -->
+      <div class="fn-rot" data-rotate="7000">
+        <button type="button" class="fn-arrow prev" aria-label="Previous announcements">&#8249;</button>
+        <div class="fn-cards fn-track">
+          <?php foreach ($POSTS as $p) echo news_card($p); ?>
+        </div>
+        <button type="button" class="fn-arrow next" aria-label="Next announcements">&#8250;</button>
+        <div class="fn-dots" role="tablist" aria-label="Announcement pages"></div>
       </div>
       <?php if ($TOTAL > count($POSTS)): ?>
         <a class="btn2 solid fn-allbtn" href="news_all.php">See all <?= (int)$TOTAL ?> announcements</a>
@@ -164,6 +171,89 @@ page_head('Family News', ['body_class' => 'home fnews']);
 
 <script>
 function fnSoon(a){ var c=a.closest('.fn-col,.fn-events'); var s=c?c.querySelector('.fn-soon'):null; if(s) s.classList.add('show'); return false; }
+
+/* Rotating announcements. The markup is a plain grid until this runs, so if a
+   phone blocks scripts the family still sees every card. */
+(function(){
+  var rot = document.querySelector('.fn-rot');
+  if (!rot) return;
+  var track = rot.querySelector('.fn-track'),
+      dots  = rot.querySelector('.fn-dots'),
+      prev  = rot.querySelector('.fn-arrow.prev'),
+      next  = rot.querySelector('.fn-arrow.next'),
+      cards = Array.prototype.slice.call(track.children),
+      still = window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+      wait  = parseInt(rot.getAttribute('data-rotate'), 10) || 7000,
+      page = 0, per = 1, pages = 1, timer = null, resume = null;
+
+  if (cards.length < 2) return;
+  rot.classList.add('on');
+
+  function step(){
+    var gap = parseFloat(getComputedStyle(track).columnGap || 16) || 16;
+    return cards[0].getBoundingClientRect().width + gap;
+  }
+  function measure(){
+    var s = step();
+    per   = Math.max(1, Math.round(track.clientWidth / s));
+    pages = Math.max(1, Math.ceil(cards.length / per));
+    if (page > pages - 1) page = pages - 1;
+    dots.innerHTML = '';
+    if (pages < 2) { rot.classList.add('single'); return; }
+    rot.classList.remove('single');
+    for (var i = 0; i < pages; i++) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'fn-dot' + (i === page ? ' on' : '');
+      b.setAttribute('aria-label', 'Announcements ' + (i + 1) + ' of ' + pages);
+      b.addEventListener('click', (function(n){ return function(){ hold(); go(n); }; })(i));
+      dots.appendChild(b);
+    }
+  }
+  function paint(){
+    var d = dots.children;
+    for (var i = 0; i < d.length; i++) d[i].classList.toggle('on', i === page);
+  }
+  /* the last page is usually a partial one — the browser clamps the scroll
+     there, so measure against the real maximum or the dots start lying */
+  function maxScroll(){ return Math.max(0, track.scrollWidth - track.clientWidth); }
+  function go(n){
+    page = (n + pages) % pages;
+    track.scrollTo({ left: Math.min(Math.round(page * per * step()), maxScroll()), behavior: still ? 'auto' : 'smooth' });
+    paint();
+  }
+  /* a click or a hover means they're reading — stop moving under them */
+  function stop(){ if (timer) { clearInterval(timer); timer = null; } }
+  function start(){ if (still || pages < 2 || timer) return; timer = setInterval(function(){ go(page + 1); }, wait); }
+  function hold(){ stop(); clearTimeout(resume); resume = setTimeout(start, 15000); }
+
+  prev.addEventListener('click', function(){ hold(); go(page - 1); });
+  next.addEventListener('click', function(){ hold(); go(page + 1); });
+  rot.addEventListener('mouseenter', stop);
+  rot.addEventListener('mouseleave', start);
+  rot.addEventListener('focusin', stop);
+  rot.addEventListener('touchstart', hold, { passive: true });
+  document.addEventListener('visibilitychange', function(){ document.hidden ? stop() : start(); });
+
+  /* a swipe changes scrollLeft directly — keep the dots honest */
+  var settle;
+  track.addEventListener('scroll', function(){
+    clearTimeout(settle);
+    settle = setTimeout(function(){
+      var max = maxScroll();
+      var n = max <= 0 ? 0 : Math.round(track.scrollLeft / max * (pages - 1));
+      if (n !== page && n >= 0 && n < pages) { page = n; paint(); }
+    }, 120);
+  }, { passive: true });
+
+  var resize;
+  window.addEventListener('resize', function(){
+    clearTimeout(resize);
+    resize = setTimeout(function(){ measure(); go(page); }, 150);
+  });
+
+  measure(); go(0); start();
+})();
 </script>
 
 <?php legacy_footer(); page_foot();
