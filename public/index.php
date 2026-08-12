@@ -143,5 +143,15 @@ page_head('Home', ['body_class' => 'home']);
     </div>
   </section>
 
+  <!-- everyone's project: the invitation to comment -->
+  <section class="askband">
+    <div class="ab-inner">
+      <h3>This is everyone&rsquo;s project.</h3>
+      <p>Have a look around, then tell us what you think &mdash; what you like, what you&rsquo;d change,
+         and what&rsquo;s missing. Every opinion and suggestion goes straight to William.</p>
+      <a class="btn gold" href="feedback.php">Share your thoughts</a>
+    </div>
+  </section>
+
   <?php legacy_footer();
 page_foot();

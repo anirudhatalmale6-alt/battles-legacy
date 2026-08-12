@@ -8,6 +8,8 @@ function page_head($title, $opts = []) {
     $site = config('site_name');
     // private, built-in visit counter (never interrupts the page)
     if (is_file(__DIR__ . '/stats_data.php')) { require_once __DIR__ . '/stats_data.php'; stats_record($title); }
+    // the suggestion tab + its unread badge; every call inside is failure-proof
+    if (is_file(__DIR__ . '/feedback_data.php')) require_once __DIR__ . '/feedback_data.php';
     ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,13 +37,14 @@ function page_head($title, $opts = []) {
     <a href="news.php">Family News</a>
     <a href="memorial.php">Memorial</a>
     <a href="aahistory.php">African American History</a>
+    <a href="feedback.php">Your Thoughts</a>
     <?php if ($u): ?>
       <a href="upload.php">Add a Photo</a>
       <?php if (role_at_least('moderator')): ?>
         <a href="moderate.php">Review Queue<?php $c = one("SELECT COUNT(*) c FROM photos WHERE status='pending'"); if ($c && $c['c']) echo ' <b class="badge">' . (int)$c['c'] . '</b>'; ?></a>
         <a href="tree_review.php">Tree Edits<?php try { $tc = one("SELECT COUNT(*) c FROM tree_suggestions WHERE status='pending'"); if ($tc && (int)$tc['c']) echo ' <b class="badge">' . (int)$tc['c'] . '</b>'; } catch (Exception $e) {} ?></a>
       <?php endif; ?>
-      <?php if (role_at_least('admin')): ?><a href="admin.php">Members</a><a href="enterprise_manage.php">Edit Enterprise</a><a href="stats.php">Visitors</a><a href="faith_manage.php">Prayers<?php if (function_exists('faith_prayer_count')) { $fc = @faith_prayer_count(); if ($fc) echo ' <b class="badge">' . (int)$fc . '</b>'; } ?></a><?php endif; ?>
+      <?php if (role_at_least('admin')): ?><a href="admin.php">Members</a><a href="enterprise_manage.php">Edit Enterprise</a><a href="stats.php">Visitors</a><a href="faith_manage.php">Prayers<?php if (function_exists('faith_prayer_count')) { $fc = @faith_prayer_count(); if ($fc) echo ' <b class="badge">' . (int)$fc . '</b>'; } ?></a><a href="feedback_manage.php">Feedback<?php if (function_exists('fb_new_count')) { $nb = fb_new_count(); if ($nb) echo ' <b class="badge">' . (int)$nb . '</b>'; } ?></a><?php endif; ?>
       <span class="who"><?= e($u['name']) ?> · <?= e(ucfirst($u['role'])) ?></span>
       <a class="btn-ghost" href="logout.php">Sign out</a>
     <?php else: ?>
@@ -57,9 +60,24 @@ function page_head($title, $opts = []) {
 function page_foot() {
     ?>
 </main>
+<?php feedback_tab(); ?>
 <footer class="foot">A private home for the Battles family history · Members only</footer>
 </body>
 </html>
+<?php
+}
+
+/** A quiet tab in the corner of every page so a reviewer never has to hunt for
+ *  the suggestion form. William can switch it off from his feedback inbox. */
+function feedback_tab() {
+    if (!function_exists('fb_tab_on') || !fb_tab_on()) return;
+    $here = basename($_SERVER['SCRIPT_NAME'] ?? '');
+    if ($here === 'feedback.php' || $here === 'feedback_manage.php' || $here === 'login.php') return;
+    ?>
+  <a class="fbtab" href="feedback.php" title="Tell us what you think">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H7l-4 3 1-5a8 8 0 1 1 17-6z"/></svg>
+    <span>Your thoughts</span>
+  </a>
 <?php
 }
 
@@ -83,7 +101,9 @@ function legacy_footer() {
         <a class="btn2 solid" href="login.php">Login</a>
       </div>
       <div class="hf-col">
-        <h4>Follow us on Faith, Family &amp; Love</h4>
+        <h4>&#128172; Tell Us What You Think</h4>
+        <p>This site belongs to all of us. Share an opinion, an idea, or something we should fix.</p>
+        <a class="btn2 solid" href="feedback.php">Share your thoughts</a>
         <p class="script hf-motto">Rooted in Faith. United in Love. Building Our Legacy.</p>
       </div>
       <div class="hf-col hf-brand">
