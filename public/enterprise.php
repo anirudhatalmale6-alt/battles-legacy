@@ -156,9 +156,13 @@ page_head('Enterprise', ['body_class' => 'home ent']);
 <div class="ent2-wrap">
   <div class="ent2-main">
 
-    <!-- Featured Videos -->
+    <!-- Featured Videos — hidden from visitors while there is nothing to watch -->
+    <?php if ($VIDS || role_at_least('admin')): ?>
     <section class="ent2-panel">
       <div class="ent2-sec-title"><?= ent_icon('film') ?> Featured Videos</div>
+      <?php if (!$VIDS): ?>
+        <p class="ent2-note" style="text-align:center">No videos here yet &mdash; add one and this section appears for the family.</p>
+      <?php endif; ?>
       <?php if ($FEAT): ?>
       <?php $fu = video_url($FEAT['url']); $fth = video_pic($FEAT); ?>
       <?php if ($fu): ?><a class="ent2-vid-feature<?= $fth ? ' hasimg' : '' ?>" href="<?= e($fu) ?>" target="_blank" rel="noopener"<?php else: ?><div class="ent2-vid-feature<?= $fth ? ' hasimg' : '' ?>"<?php endif; ?>
@@ -185,6 +189,7 @@ page_head('Enterprise', ['body_class' => 'home ent']);
         <a class="ent2-btn center" href="enterprise_manage.php?tab=videos">Add or edit videos &rsaquo;</a>
       <?php endif; ?>
     </section>
+    <?php endif; ?>
 
     <!-- Financial Guidance -->
     <section class="ent2-panel">

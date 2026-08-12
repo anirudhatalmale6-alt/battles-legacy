@@ -119,20 +119,10 @@ function ent_seed() {
               [$b[0],$b[1],$b[2],$b[3],$b[4],$b[5],$b[6],$b[7],$b[8],$b[9],$i++]);
         }
     }
-    if (!one("SELECT id FROM enterprise_videos LIMIT 1")) {
-        $vids = [
-          ['Legacy in Action','Words of Wisdom from Our Elders','','5:42',1],
-          ['Building a Business With Faith & Purpose','','','4:18',0],
-          ['Next Generation Entrepreneurs','','','3:57',0],
-          ['Financial Freedom Starts Now','','','6:21',0],
-          ['Our Story. Our Legacy. Our Future.','','','4:09',0],
-        ];
-        $i = 0;
-        foreach ($vids as $v) {
-            q("INSERT INTO enterprise_videos (title,description,url,duration,featured,sample,sort) VALUES (?,?,?,?,?,1,?)",
-              [$v[0],$v[1],$v[2],$v[3],$v[4],$i++]);
-        }
-    }
+    /* No sample videos. There used to be five placeholders here with no links —
+       William asked for them gone, and because this seeds whenever the table is
+       empty, deleting them just brought them straight back. An empty video list
+       is the correct empty state; the page hides the panel from visitors. */
     if (!one("SELECT id FROM enterprise_sayings LIMIT 1")) {
         $says = [
           ['Whatever you do, work at it with all your heart, as working for the Lord, not for human masters.','Colossians 3:23'],
