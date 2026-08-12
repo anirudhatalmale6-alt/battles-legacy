@@ -4,6 +4,7 @@
  *  the current sample entries once so the page looks unchanged. William
  *  then edits/replaces them from the manage screen. */
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/helpers.php';
 
 function ent_migrate() {
     $driver = db_driver();
@@ -46,6 +47,8 @@ function ent_migrate() {
     }
     // how the card photo is displayed: 'cover' (fill, may crop) or 'contain' (show whole photo)
     try { db()->exec("ALTER TABLE enterprise_businesses ADD COLUMN photo_fit VARCHAR(10) NOT NULL DEFAULT 'cover'"); } catch (Exception $e) {}
+    // a picture for a video whose link we can't read (Facebook, Vimeo, a private host)
+    db_add_column('enterprise_videos', 'photo', "VARCHAR(255) DEFAULT ''");
     ent_seed();
     return array_keys($tables);
 }

@@ -93,14 +93,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         else {
             $featured = !empty($_POST['featured']) ? 1 : 0;
             $status   = ($_POST['status'] ?? 'published') === 'hidden' ? 'hidden' : 'published';
+            $curV  = $id ? one("SELECT photo FROM enterprise_videos WHERE id=?", [$id]) : null;
+            list($vphoto, $vperr) = ent_store_photo('photo');
+            if ($vperr) flash($vperr);
+            if (!$vphoto) $vphoto = $curV['photo'] ?? '';
+            if (!empty($_POST['remove_photo'])) $vphoto = '';
             if ($featured) q("UPDATE enterprise_videos SET featured=0"); // only one featured
             if ($id) {
-                q("UPDATE enterprise_videos SET title=?,description=?,url=?,duration=?,featured=?,sort=?,status=?,sample=0 WHERE id=?",
+                q("UPDATE enterprise_videos SET title=?,description=?,url=?,duration=?,featured=?,sort=?,status=?,photo=?,sample=0 WHERE id=?",
                   [$title, trim($_POST['description']??''), trim($_POST['url']??''), trim($_POST['duration']??''), $featured, (int)($_POST['sort']??0), $status, $id]);
                 flash('Video updated.');
             } else {
-                q("INSERT INTO enterprise_videos (title,description,url,duration,featured,sample,sort,status) VALUES (?,?,?,?,?,0,?,?)",
-                  [$title, trim($_POST['description']??''), trim($_POST['url']??''), trim($_POST['duration']??''), $featured, ent_next_sort('enterprise_videos'), $status]);
+                q("INSERT INTO enterprise_videos (title,description,url,duration,featured,sample,sort,status,photo) VALUES (?,?,?,?,?,0,?,?,?)",
+                  [$title, trim($_POST['description']??''), trim($_POST['url']??''), trim($_POST['duration']??''), $featured, ent_next_sort('enterprise_videos'), $status, $vphoto]);
                 flash('Video added.');
             }
         }
@@ -355,7 +360,8 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
 <?php elseif ($tab === 'videos'): ?>
   <div class="panel em-add">
     <h2>Add a video</h2>
-    <form method="post" class="em-form">
+    <p class="muted" style="margin:0 0 8px">Paste a YouTube link and the picture appears on its own. For a Facebook, Vimeo or other link there is no picture to fetch &mdash; upload one below and it will be used instead.</p>
+    <form method="post" enctype="multipart/form-data" class="em-form">
       <?= csrf_field() ?><input type="hidden" name="id" value="0">
       <div class="em-grid">
         <div><label>Title *</label><input type="text" name="title" required placeholder="e.g. 2025 Family Reunion"></div>
@@ -365,6 +371,8 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
       <input type="text" name="url" placeholder="https://youtube.com/watch?v=...">
       <label>Short description</label>
       <textarea name="description" placeholder="What is this video about?"></textarea>
+      <label>Picture (optional &mdash; only needed if it isn't a YouTube link)</label>
+      <input type="file" name="photo" accept="image/*">
       <label class="em-check"><input type="checkbox" name="featured" value="1"> Make this the big featured video</label>
       <button class="btn gold" name="action" value="vid_save" style="margin-top:12px">Add video</button>
     </form>
@@ -372,7 +380,7 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
 
   <?php foreach ($VIDS as $v): ?>
     <div class="panel em-row">
-      <form method="post" class="em-form">
+      <form method="post" enctype="multipart/form-data" class="em-form">
         <?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$v['id'] ?>">
         <div class="em-rowhead">
           <h3><?= e($v['title']) ?><?= $v['featured']?' <span class="em-tag feat">Featured</span>':'' ?><?= $v['sample']?' <span class="em-tag">Example</span>':'' ?><?= $v['status']==='hidden'?' <span class="em-tag hid">Hidden</span>':'' ?></h3>
@@ -383,6 +391,17 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
           <div><label>Length</label><input type="text" name="duration" value="<?= e($v['duration']) ?>"></div>
           <div><label>Order</label><input type="number" name="sort" value="<?= (int)$v['sort'] ?>"></div>
           <div><label>Visibility</label><select name="status"><?= em_status_opts($v['status']) ?></select></div>
+        </div>
+        <?php $vth = video_pic($v); $auto = ($vth && empty($v['photo'])); ?>
+        <div class="em-media">
+          <div class="em-thumb"<?= $vth ? ' style="background-image:url(\''.e($vth).'\')"' : '' ?>><?= $vth ? '' : 'No picture' ?></div>
+          <div class="em-mediactl">
+            <p class="muted" style="margin:0 0 6px;font-size:13px"><?= $auto
+              ? 'This picture came from YouTube on its own. Upload one below to use a different picture.'
+              : ($vth ? 'Your uploaded picture.' : 'No picture for this link &mdash; upload one and it will be used.') ?></p>
+            <label>Upload a picture</label><input type="file" name="photo" accept="image/*">
+            <?php if (!empty($v['photo'])): ?><label class="em-check"><input type="checkbox" name="remove_photo" value="1"> Remove my picture</label><?php endif; ?>
+          </div>
         </div>
         <label>Video link (YouTube or Vimeo)</label>
         <input type="text" name="url" value="<?= e($v['url']) ?>" placeholder="https://youtube.com/watch?v=...">

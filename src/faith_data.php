@@ -3,6 +3,7 @@
  *  Idempotent migration; other Faith content (salvation prayer, ministry
  *  family, scripture library) is authored in faith.php for now. */
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/helpers.php';
 
 function faith_migrate() {
     $driver = db_driver();
@@ -37,6 +38,7 @@ function faith_migrate() {
       status VARCHAR(20) NOT NULL DEFAULT 'published', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )$ENG");
     try { db()->exec("CREATE INDEX idx_fv_status ON faith_videos(status)"); } catch (\Throwable $e) {}
+    db_add_column('faith_videos', 'photo', "VARCHAR(255) DEFAULT ''");
 }
 
 /* ---------------- Featured videos ---------------- */
@@ -63,25 +65,10 @@ function faith_set_featured($id) {
     q("UPDATE faith_videos SET featured=1 WHERE id=?", [(int)$id]);
 }
 
-/** Pull the YouTube/Vimeo id out of any of the shapes people paste. */
-function faith_yt_id($url) {
-    $url = trim((string)$url);
-    if ($url === '') return '';
-    if (preg_match('~(?:youtube\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/|live/)|youtu\.be/)([A-Za-z0-9_-]{11})~i', $url, $m)) return $m[1];
-    return '';
-}
-/** A real thumbnail when we can work one out, so the list isn't a row of grey boxes. */
-function faith_video_thumb($v) {
-    $id = faith_yt_id($v['url'] ?? '');
-    return $id ? 'https://img.youtube.com/vi/' . $id . '/hqdefault.jpg' : '';
-}
-/** Normalise a pasted link so "youtube.com/watch?v=x" still opens. */
-function faith_video_url($v) {
-    $u = trim((string)($v['url'] ?? ''));
-    if ($u === '') return '';
-    if (!preg_match('~^https?://~i', $u)) $u = 'https://' . $u;
-    return $u;
-}
+/* Link handling lives in helpers.php now — Enterprise uses the same rules. */
+function faith_yt_id($url)     { return yt_id($url); }
+function faith_video_thumb($v) { return video_pic($v); }
+function faith_video_url($v)   { return video_url($v['url'] ?? ''); }
 
 /* ---------------- Ministry family ---------------- */
 function faith_ministers($all = false) {
@@ -121,6 +108,23 @@ function faith_store_photo($field = 'photo', $existing = '') {
     if (!move_uploaded_file($tmp, $absDir . '/' . $fname)) return [$existing, 'Sorry — the photo could not be saved.'];
     return [$rel . '/' . $fname, ''];
 }
+/** Save a picture for a video whose link we can't read. Returns [relPath, error]. */
+function faith_store_video_photo($field = 'photo') {
+    $rel = 'assets/faith/videos';
+    if (empty($_FILES[$field]) || $_FILES[$field]['error'] === UPLOAD_ERR_NO_FILE) return ['', ''];
+    if ($_FILES[$field]['error'] !== UPLOAD_ERR_OK) return ['', 'The picture could not be uploaded — please try again.'];
+    $tmp  = $_FILES[$field]['tmp_name'];
+    $info = @getimagesize($tmp);
+    $allowed = ['image/jpeg'=>'jpg','image/png'=>'png','image/gif'=>'gif','image/webp'=>'webp'];
+    if (!$info || !isset($allowed[$info['mime']])) return ['', 'That file is not a picture (JPG, PNG, GIF or WEBP only).'];
+    if ($_FILES[$field]['size'] > 12 * 1024 * 1024) return ['', 'That picture is larger than 12 MB — please pick a smaller one.'];
+    $fname = date('Ymd_His') . '_' . substr(md5(uniqid('', true)), 0, 6) . '.' . $allowed[$info['mime']];
+    $absDir = dirname(__DIR__) . '/public/' . $rel;
+    @mkdir($absDir, 0775, true);
+    if (!move_uploaded_file($tmp, $absDir . '/' . $fname)) return ['', 'Sorry — the picture could not be saved.'];
+    return [$rel . '/' . $fname, ''];
+}
+
 function faith_mono($name) {
     $clean = trim(preg_replace('/\s+/', ' ', strip_tags($name)));
     $parts = array_values(array_filter(explode(' ', $clean)));

@@ -65,14 +65,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         elseif ($url === '')   { flash('Please paste the video link so people can watch it.'); }
         else {
             $status = ($_POST['status'] ?? 'published') === 'hidden' ? 'hidden' : 'published';
+            // a picture for links we can't read (Facebook, Vimeo); YouTube fills itself in
+            $curV = $id ? faith_video($id) : null;
+            list($vphoto, $vperr) = faith_store_video_photo('photo');
+            if ($vperr) flash($vperr);
+            if (!$vphoto) $vphoto = $curV['photo'] ?? '';
+            if (!empty($_POST['remove_photo'])) $vphoto = '';
             $f = [$title, trim($_POST['description'] ?? ''), $url, trim($_POST['duration'] ?? ''),
-                  (int)($_POST['sort'] ?? 0), $status];
+                  (int)($_POST['sort'] ?? 0), $status, $vphoto];
             if ($id) {
-                q("UPDATE faith_videos SET title=?,description=?,url=?,duration=?,sort=?,status=? WHERE id=?", array_merge($f, [$id]));
+                q("UPDATE faith_videos SET title=?,description=?,url=?,duration=?,sort=?,status=?,photo=? WHERE id=?", array_merge($f, [$id]));
                 flash('Video updated.');
             } else {
-                q("INSERT INTO faith_videos (title,description,url,duration,sort,status) VALUES (?,?,?,?,?,?)",
-                  [$title, trim($_POST['description'] ?? ''), $url, trim($_POST['duration'] ?? ''), faith_video_next_sort(), $status]);
+                q("INSERT INTO faith_videos (title,description,url,duration,sort,status,photo) VALUES (?,?,?,?,?,?,?)",
+                  [$title, trim($_POST['description'] ?? ''), $url, trim($_POST['duration'] ?? ''), faith_video_next_sort(), $status, $vphoto]);
                 $id = (int) insert_id();
                 flash('Video added — open the Faith page to see it.');
             }
@@ -211,8 +217,8 @@ page_head('Prayers & Ministry', ['body_class' => 'em']);
 <?php elseif ($tab === 'videos'): ?>
   <div class="panel em-add">
     <h2>Add a video</h2>
-    <p class="muted" style="margin:0 0 8px">Sermons, testimonies, songs &mdash; anything you want the family to watch. Paste the link from YouTube (or wherever it lives) and it appears on the left of the Faith page, under Become a Prayer Warrior. YouTube links get their picture automatically.</p>
-    <form method="post" class="em-form">
+    <p class="muted" style="margin:0 0 8px">Sermons, testimonies, songs &mdash; anything you want the family to watch. Paste the link and it appears on the left of the Faith page, under Become a Prayer Warrior. A YouTube link brings its own picture; for Facebook or Vimeo, upload one below.</p>
+    <form method="post" enctype="multipart/form-data" class="em-form">
       <?= csrf_field() ?><input type="hidden" name="id" value="0">
       <div class="em-grid">
         <div><label>Title *</label><input type="text" name="title" required placeholder="e.g. Sunday Message — Standing on the Promise"></div>
@@ -222,6 +228,8 @@ page_head('Prayers & Ministry', ['body_class' => 'em']);
       </div>
       <label>One line about it (optional)</label>
       <input type="text" name="description" placeholder="e.g. Rev. Battles preaching at the 2025 family reunion service">
+      <label>Picture (optional &mdash; only needed if it isn't a YouTube link)</label>
+      <input type="file" name="photo" accept="image/*">
       <label class="em-check"><input type="checkbox" name="make_featured" value="1"> Make this the big one at the top</label>
       <button class="btn gold" name="action" value="vid_save" style="margin-top:12px">Add video</button>
     </form>
@@ -233,7 +241,7 @@ page_head('Prayers & Ministry', ['body_class' => 'em']);
 
   <?php foreach ($VIDS as $v): ?>
     <div class="panel em-row">
-      <form method="post" class="em-form">
+      <form method="post" enctype="multipart/form-data" class="em-form">
         <?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$v['id'] ?>">
         <div class="em-rowhead">
           <h3><?= e($v['title']) ?><?= $v['featured'] ? ' <span class="em-tag feat">Big one at the top</span>' : '' ?><?= $v['status']==='hidden' ? ' <span class="em-tag hid">Hidden</span>' : '' ?></h3>
@@ -242,9 +250,14 @@ page_head('Prayers & Ministry', ['body_class' => 'em']);
         <div class="em-media">
           <div class="em-thumb"<?= faith_video_thumb($v) ? ' style="background-image:url(\''.e(faith_video_thumb($v)).'\')"' : '' ?>><?= faith_video_thumb($v) ? '' : 'No picture' ?></div>
           <div class="em-mediactl">
-            <p class="muted" style="margin:0 0 6px;font-size:13px">The picture comes from YouTube automatically. Other links show a play symbol instead.</p>
+            <?php $auto = (faith_video_thumb($v) && empty($v['photo'])); ?>
+            <p class="muted" style="margin:0 0 6px;font-size:13px"><?= $auto
+              ? 'This picture came from YouTube on its own. Upload one below to use a different picture.'
+              : (faith_video_thumb($v) ? 'Your uploaded picture.' : 'No picture for this link &mdash; upload one and it will be used.') ?></p>
+            <label>Upload a picture</label><input type="file" name="photo" accept="image/*">
+            <?php if (!empty($v['photo'])): ?><label class="em-check"><input type="checkbox" name="remove_photo" value="1"> Remove my picture</label><?php endif; ?>
             <?php if (!$v['featured']): ?>
-              <button class="btn2 solid" name="action" value="vid_feature">Make this the big one</button>
+              <button class="btn2 solid" name="action" value="vid_feature" style="margin-top:8px">Make this the big one</button>
             <?php endif; ?>
           </div>
         </div>

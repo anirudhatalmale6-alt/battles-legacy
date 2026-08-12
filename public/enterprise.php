@@ -160,8 +160,9 @@ page_head('Enterprise', ['body_class' => 'home ent']);
     <section class="ent2-panel">
       <div class="ent2-sec-title"><?= ent_icon('film') ?> Featured Videos</div>
       <?php if ($FEAT): ?>
-      <?php $fu = trim($FEAT['url']); ?>
-      <?php if ($fu): ?><a class="ent2-vid-feature" href="<?= e($fu) ?>" target="_blank" rel="noopener"><?php else: ?><div class="ent2-vid-feature"><?php endif; ?>
+      <?php $fu = video_url($FEAT['url']); $fth = video_pic($FEAT); ?>
+      <?php if ($fu): ?><a class="ent2-vid-feature<?= $fth ? ' hasimg' : '' ?>" href="<?= e($fu) ?>" target="_blank" rel="noopener"<?php else: ?><div class="ent2-vid-feature<?= $fth ? ' hasimg' : '' ?>"<?php endif; ?>
+        <?= $fth ? ' style="background-image:url(\'' . e($fth) . '\')"' : '' ?>>
         <span class="ent2-vf-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
         <div class="ent2-vf-cap">
           <h3><?= e($FEAT['title']) ?></h3>
@@ -170,9 +171,9 @@ page_head('Enterprise', ['body_class' => 'home ent']);
       <?php if ($fu): ?></a><?php else: ?></div><?php endif; ?>
       <?php endif; ?>
       <div class="ent2-vlist">
-        <?php foreach ($REST as $v): $vu = trim($v['url']); ?>
+        <?php foreach ($REST as $v): $vu = video_url($v['url']); $vth = video_pic($v); ?>
           <?php if ($vu): ?><a class="ent2-vrow" href="<?= e($vu) ?>" target="_blank" rel="noopener"><?php else: ?><div class="ent2-vrow"><?php endif; ?>
-            <div class="ent2-vthumb"></div>
+            <div class="ent2-vthumb<?= $vth ? ' hasimg' : '' ?>"<?= $vth ? ' style="background-image:url(\'' . e($vth) . '\')"' : '' ?>></div>
             <div class="ent2-vmeta">
               <h4><?= e($v['title']) ?></h4>
               <?php if ($v['duration']): ?><span class="dur"><?= e($v['duration']) ?></span><?php endif; ?>

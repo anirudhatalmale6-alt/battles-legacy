@@ -43,6 +43,37 @@ function flash($msg = null) {
     return $out;
 }
 
+/* ---- video links (shared by Faith and Enterprise) ---- */
+
+/** Pull the YouTube id out of any of the shapes people paste. */
+function yt_id($url) {
+    $url = trim((string)$url);
+    if ($url === '') return '';
+    if (preg_match('~(?:youtube\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/|live/)|youtu\.be/)([A-Za-z0-9_-]{11})~i', $url, $m)) return $m[1];
+    return '';
+}
+/** A real thumbnail when we can work one out, so lists aren't rows of grey boxes. */
+function video_thumb($url) {
+    $id = yt_id($url);
+    return $id ? 'https://img.youtube.com/vi/' . $id . '/hqdefault.jpg' : '';
+}
+/** Normalise a pasted link so "youtube.com/watch?v=x" still opens. */
+function video_url($url) {
+    $u = trim((string)$url);
+    if ($u === '') return '';
+    if (!preg_match('~^https?://~i', $u)) $u = 'https://' . $u;
+    return $u;
+}
+
+/** The picture for a video row: one you uploaded beats a YouTube auto-thumb.
+ *  Facebook and Vimeo links can't be read without their API, so for those an
+ *  uploaded picture is the only way to avoid a plain play symbol. */
+function video_pic($row) {
+    $own = trim((string)($row['photo'] ?? ''));
+    if ($own !== '') return $own;
+    return video_thumb($row['url'] ?? '');
+}
+
 function base_url() {
     $b = config('base_url');
     if ($b) return rtrim($b, '/');

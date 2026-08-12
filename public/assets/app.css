@@ -1780,3 +1780,11 @@ a.fs-vrow:hover{background:rgba(201,162,75,.12);}
   cursor:pointer;transition:.15s;}
 .fn-dot:hover{background:rgba(201,162,75,.5);}
 .fn-dot.on{background:#5c1a1f;border-color:#5c1a1f;transform:scale(1.2);}
+
+/* Enterprise videos: real YouTube pictures instead of grey boxes */
+/* the inline style supplies the image; these just make it sit right */
+.ent2-vid-feature.hasimg{background-size:cover;background-position:center;background-repeat:no-repeat;}
+.ent2-vid-feature.hasimg::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(20,6,8,.08) 30%,rgba(20,6,8,.5));}
+.ent2-vthumb.hasimg{background-size:cover;background-position:center;background-repeat:no-repeat;}
+.ent2-vthumb.hasimg::before{content:'';position:absolute;inset:0;background:rgba(20,6,8,.34);}
