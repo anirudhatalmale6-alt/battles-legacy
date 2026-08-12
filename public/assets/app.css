@@ -1788,3 +1788,6 @@ a.fs-vrow:hover{background:rgba(201,162,75,.12);}
   background:linear-gradient(180deg,rgba(20,6,8,.08) 30%,rgba(20,6,8,.5));}
 .ent2-vthumb.hasimg{background-size:cover;background-position:center;background-repeat:no-repeat;}
 .ent2-vthumb.hasimg::before{content:'';position:absolute;inset:0;background:rgba(20,6,8,.34);}
+
+/* the parchment admin theme needs a readable grey, not the dark-theme one */
+body.em .muted{color:#7a6b52;}

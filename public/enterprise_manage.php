@@ -367,7 +367,7 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
         <div><label>Title *</label><input type="text" name="title" required placeholder="e.g. 2025 Family Reunion"></div>
         <div><label>Length (optional)</label><input type="text" name="duration" placeholder="e.g. 4:18"></div>
       </div>
-      <label>Video link (YouTube or Vimeo)</label>
+      <label>Video link (YouTube, Facebook, Vimeo &mdash; any link)</label>
       <input type="text" name="url" placeholder="https://youtube.com/watch?v=...">
       <label>Short description</label>
       <textarea name="description" placeholder="What is this video about?"></textarea>
@@ -403,7 +403,7 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
             <?php if (!empty($v['photo'])): ?><label class="em-check"><input type="checkbox" name="remove_photo" value="1"> Remove my picture</label><?php endif; ?>
           </div>
         </div>
-        <label>Video link (YouTube or Vimeo)</label>
+        <label>Video link (YouTube, Facebook, Vimeo &mdash; any link)</label>
         <input type="text" name="url" value="<?= e($v['url']) ?>" placeholder="https://youtube.com/watch?v=...">
         <label>Short description</label>
         <textarea name="description"><?= e($v['description']) ?></textarea>
