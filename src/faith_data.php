@@ -29,6 +29,58 @@ function faith_migrate() {
       id $AI, name VARCHAR(160) NOT NULL, contact VARCHAR(190) DEFAULT '', note VARCHAR(600) DEFAULT '',
       user_id INT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )$ENG");
+
+    // Featured videos — sermons, testimonies, songs. Same idea as Enterprise.
+    db()->exec("CREATE TABLE IF NOT EXISTS faith_videos (
+      id $AI, title VARCHAR(200) NOT NULL, description VARCHAR(500) DEFAULT '', url VARCHAR(255) DEFAULT '',
+      duration VARCHAR(20) DEFAULT '', featured INT NOT NULL DEFAULT 0, sort INT NOT NULL DEFAULT 0,
+      status VARCHAR(20) NOT NULL DEFAULT 'published', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )$ENG");
+    try { db()->exec("CREATE INDEX idx_fv_status ON faith_videos(status)"); } catch (\Throwable $e) {}
+}
+
+/* ---------------- Featured videos ---------------- */
+function faith_videos($all = false) {
+    try {
+        $w = $all ? '' : "WHERE status='published'";
+        return all("SELECT * FROM faith_videos $w ORDER BY featured DESC, sort, id DESC");
+    } catch (\Throwable $e) { return []; }
+}
+function faith_video($id) { return one("SELECT * FROM faith_videos WHERE id=?", [(int)$id]); }
+function faith_video_next_sort() {
+    $r = one("SELECT MAX(sort) m FROM faith_videos");
+    return ($r && $r['m'] !== null) ? ((int)$r['m'] + 1) : 0;
+}
+function faith_delete_video($id) { q("DELETE FROM faith_videos WHERE id=?", [(int)$id]); }
+/** Is any video currently the big one? */
+function faith_one_featured() {
+    try { $r = one("SELECT id FROM faith_videos WHERE featured=1 AND status='published'"); return $r ? (int)$r['id'] : 0; }
+    catch (\Throwable $e) { return 0; }
+}
+/** Only one video wears the "featured" crown at a time. */
+function faith_set_featured($id) {
+    q("UPDATE faith_videos SET featured=0");
+    q("UPDATE faith_videos SET featured=1 WHERE id=?", [(int)$id]);
+}
+
+/** Pull the YouTube/Vimeo id out of any of the shapes people paste. */
+function faith_yt_id($url) {
+    $url = trim((string)$url);
+    if ($url === '') return '';
+    if (preg_match('~(?:youtube\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/|live/)|youtu\.be/)([A-Za-z0-9_-]{11})~i', $url, $m)) return $m[1];
+    return '';
+}
+/** A real thumbnail when we can work one out, so the list isn't a row of grey boxes. */
+function faith_video_thumb($v) {
+    $id = faith_yt_id($v['url'] ?? '');
+    return $id ? 'https://img.youtube.com/vi/' . $id . '/hqdefault.jpg' : '';
+}
+/** Normalise a pasted link so "youtube.com/watch?v=x" still opens. */
+function faith_video_url($v) {
+    $u = trim((string)($v['url'] ?? ''));
+    if ($u === '') return '';
+    if (!preg_match('~^https?://~i', $u)) $u = 'https://' . $u;
+    return $u;
 }
 
 /* ---------------- Ministry family ---------------- */

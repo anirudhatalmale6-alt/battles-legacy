@@ -94,6 +94,7 @@ function faith_icon($k) {
 
 $isAdmin = role_at_least('admin');
 $pendPrayers = $isAdmin ? faith_prayer_count() : 0;
+$FVIDS = faith_videos();   // featured first, then the rest
 
 page_head('Faith', ['body_class' => 'home faith']);
 ?>
@@ -132,6 +133,40 @@ page_head('Faith', ['body_class' => 'home faith']);
       <p>Stand in the gap for our family. Sign up to lift up the prayer requests that come in. You are never alone.</p>
       <a class="btn gold" href="#warrior">Sign Up to Be a Prayer Warrior</a>
     </div>
+
+    <!-- Featured Videos — sermons, testimonies, songs -->
+    <?php if ($FVIDS || $isAdmin): ?>
+    <section class="fs-vids" id="videos">
+      <div class="fs-vhead"><?= faith_icon('play') ?> <h3>Featured Videos</h3>
+        <?php if ($isAdmin): ?><a class="fs-vedit" href="faith_manage.php?tab=videos">Manage &rsaquo;</a><?php endif; ?></div>
+      <?php if ($FVIDS): $FV = $FVIDS[0]; $FREST = array_slice($FVIDS, 1, 4); ?>
+        <?php $fu = faith_video_url($FV); $fth = faith_video_thumb($FV); ?>
+        <?php if ($fu): ?><a class="fs-vfeat" href="<?= e($fu) ?>" target="_blank" rel="noopener"<?php else: ?><div class="fs-vfeat"<?php endif; ?>
+          <?= $fth ? ' style="background-image:url(\'' . e($fth) . '\')"' : '' ?>>
+          <span class="fs-vplay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+          <span class="fs-vcap">
+            <b><?= e($FV['title']) ?></b>
+            <?php if (trim((string)$FV['description']) !== ''): ?><i><?= e($FV['description']) ?></i><?php endif; ?>
+            <?php if ($FV['duration']): ?><em class="dur"><?= e($FV['duration']) ?></em><?php endif; ?>
+          </span>
+        <?php if ($fu): ?></a><?php else: ?></div><?php endif; ?>
+
+        <?php if ($FREST): ?>
+        <div class="fs-vlist">
+          <?php foreach ($FREST as $v): $vu = faith_video_url($v); $vt = faith_video_thumb($v); ?>
+            <?php if ($vu): ?><a class="fs-vrow" href="<?= e($vu) ?>" target="_blank" rel="noopener"><?php else: ?><div class="fs-vrow"><?php endif; ?>
+              <span class="fs-vthumb"<?= $vt ? ' style="background-image:url(\'' . e($vt) . '\')"' : '' ?>><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+              <span class="fs-vmeta"><b><?= e($v['title']) ?></b><?php if ($v['duration']): ?><em class="dur"><?= e($v['duration']) ?></em><?php endif; ?></span>
+            <?php if ($vu): ?></a><?php else: ?></div><?php endif; ?>
+          <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+      <?php else: ?>
+        <p class="fs-vempty">No videos yet &mdash; add a sermon, testimony or song from <a href="faith_manage.php?tab=videos">Manage</a> and it will show here.</p>
+      <?php endif; ?>
+    </section>
+    <?php endif; ?>
+
     <div class="fs-photo"><img src="assets/faith/pray1.jpg" alt="A family member in prayer"></div>
     <blockquote class="fs-verse">&ldquo;Call unto me, and I will answer thee, and shew thee great and mighty things, which thou knowest not.&rdquo;
       <cite>&mdash; Jeremiah 33:3</cite></blockquote>

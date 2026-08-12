@@ -4,7 +4,7 @@ require_once __DIR__ . '/../src/faith_data.php';
 require_role('admin');
 faith_migrate();
 
-$tab = in_array($_GET['tab'] ?? '', ['prayers','ministers','warriors'], true) ? $_GET['tab'] : 'prayers';
+$tab = in_array($_GET['tab'] ?? '', ['prayers','ministers','warriors','videos'], true) ? $_GET['tab'] : 'prayers';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
@@ -57,6 +57,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: faith_manage.php?tab=ministers'); exit;
     }
 
+    /* -------- featured videos -------- */
+    if ($act === 'vid_save') {
+        $title = trim($_POST['title'] ?? '');
+        $url   = trim($_POST['url'] ?? '');
+        if ($title === '')     { flash('A video needs a title.'); }
+        elseif ($url === '')   { flash('Please paste the video link so people can watch it.'); }
+        else {
+            $status = ($_POST['status'] ?? 'published') === 'hidden' ? 'hidden' : 'published';
+            $f = [$title, trim($_POST['description'] ?? ''), $url, trim($_POST['duration'] ?? ''),
+                  (int)($_POST['sort'] ?? 0), $status];
+            if ($id) {
+                q("UPDATE faith_videos SET title=?,description=?,url=?,duration=?,sort=?,status=? WHERE id=?", array_merge($f, [$id]));
+                flash('Video updated.');
+            } else {
+                q("INSERT INTO faith_videos (title,description,url,duration,sort,status) VALUES (?,?,?,?,?,?)",
+                  [$title, trim($_POST['description'] ?? ''), $url, trim($_POST['duration'] ?? ''), faith_video_next_sort(), $status]);
+                $id = (int) insert_id();
+                flash('Video added — open the Faith page to see it.');
+            }
+            // the first video added becomes the big one automatically
+            if (!empty($_POST['make_featured']) || !faith_one_featured()) faith_set_featured($id);
+        }
+        header('Location: faith_manage.php?tab=videos'); exit;
+    }
+    if ($act === 'vid_feature' && $id) { faith_set_featured($id); flash('That video is now the big one at the top.'); header('Location: faith_manage.php?tab=videos'); exit; }
+    if ($act === 'vid_delete'  && $id) { faith_delete_video($id);  flash('Video removed.');                          header('Location: faith_manage.php?tab=videos'); exit; }
+
     /* -------- prayer warriors -------- */
     if ($act === 'war_delete' && $id) { faith_delete_warrior($id); flash('Removed from the prayer warrior list.'); header('Location: faith_manage.php?tab=warriors'); exit; }
 
@@ -69,6 +96,7 @@ $activeN  = faith_prayer_count();
 $MINS     = faith_ministers(true);
 $WARRIORS = faith_warriors();
 $warN     = count($WARRIORS);
+$VIDS     = faith_videos(true);
 
 function fm_era_opts($sel) {
     $o = '';
@@ -91,6 +119,7 @@ page_head('Prayers & Ministry', ['body_class' => 'em']);
   <a href="?tab=prayers" class="<?= $tab==='prayers'?'on':'' ?>">Prayer requests<?= $activeN ? ' <span class="em-penddot">'.$activeN.'</span>' : ' (0)' ?></a>
   <a href="?tab=ministers" class="<?= $tab==='ministers'?'on':'' ?>">Ministry Family (<?= count($MINS) ?>)</a>
   <a href="?tab=warriors" class="<?= $tab==='warriors'?'on':'' ?>">Prayer Warriors (<?= $warN ?>)</a>
+  <a href="?tab=videos" class="<?= $tab==='videos'?'on':'' ?>">Featured Videos (<?= count($VIDS) ?>)</a>
 </div>
 
 <?php if ($tab === 'prayers'): ?>
@@ -175,6 +204,60 @@ page_head('Prayers & Ministry', ['body_class' => 'em']);
         <label>Their story / profile</label>
         <textarea name="bio"><?= e($m['bio']) ?></textarea>
         <button class="btn gold" name="action" value="min_save" style="margin-top:12px">Save changes</button>
+      </form>
+    </div>
+  <?php endforeach; ?>
+
+<?php elseif ($tab === 'videos'): ?>
+  <div class="panel em-add">
+    <h2>Add a video</h2>
+    <p class="muted" style="margin:0 0 8px">Sermons, testimonies, songs &mdash; anything you want the family to watch. Paste the link from YouTube (or wherever it lives) and it appears on the left of the Faith page, under Become a Prayer Warrior. YouTube links get their picture automatically.</p>
+    <form method="post" class="em-form">
+      <?= csrf_field() ?><input type="hidden" name="id" value="0">
+      <div class="em-grid">
+        <div><label>Title *</label><input type="text" name="title" required placeholder="e.g. Sunday Message — Standing on the Promise"></div>
+        <div><label>Video link *</label><input type="text" name="url" required placeholder="Paste the YouTube link here"></div>
+        <div><label>Length (optional)</label><input type="text" name="duration" placeholder="e.g. 32:15"></div>
+        <div><label>Visibility</label><select name="status"><?= fm_status_opts('published') ?></select></div>
+      </div>
+      <label>One line about it (optional)</label>
+      <input type="text" name="description" placeholder="e.g. Rev. Battles preaching at the 2025 family reunion service">
+      <label class="em-check"><input type="checkbox" name="make_featured" value="1"> Make this the big one at the top</label>
+      <button class="btn gold" name="action" value="vid_save" style="margin-top:12px">Add video</button>
+    </form>
+  </div>
+
+  <?php if (!$VIDS): ?>
+    <div class="panel"><p class="lede" style="margin:0">No videos yet. Add the first one above and it will show on the Faith page straight away.</p></div>
+  <?php endif; ?>
+
+  <?php foreach ($VIDS as $v): ?>
+    <div class="panel em-row">
+      <form method="post" class="em-form">
+        <?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$v['id'] ?>">
+        <div class="em-rowhead">
+          <h3><?= e($v['title']) ?><?= $v['featured'] ? ' <span class="em-tag feat">Big one at the top</span>' : '' ?><?= $v['status']==='hidden' ? ' <span class="em-tag hid">Hidden</span>' : '' ?></h3>
+          <button class="btn danger" name="action" value="vid_delete" onclick="return confirm('Remove this video?')">Delete</button>
+        </div>
+        <div class="em-media">
+          <div class="em-thumb"<?= faith_video_thumb($v) ? ' style="background-image:url(\''.e(faith_video_thumb($v)).'\')"' : '' ?>><?= faith_video_thumb($v) ? '' : 'No picture' ?></div>
+          <div class="em-mediactl">
+            <p class="muted" style="margin:0 0 6px;font-size:13px">The picture comes from YouTube automatically. Other links show a play symbol instead.</p>
+            <?php if (!$v['featured']): ?>
+              <button class="btn2 solid" name="action" value="vid_feature">Make this the big one</button>
+            <?php endif; ?>
+          </div>
+        </div>
+        <div class="em-grid">
+          <div><label>Title *</label><input type="text" name="title" required value="<?= e($v['title']) ?>"></div>
+          <div><label>Video link *</label><input type="text" name="url" required value="<?= e($v['url']) ?>"></div>
+          <div><label>Length</label><input type="text" name="duration" value="<?= e($v['duration']) ?>"></div>
+          <div><label>Order</label><input type="number" name="sort" value="<?= (int)$v['sort'] ?>"></div>
+          <div><label>Visibility</label><select name="status"><?= fm_status_opts($v['status']) ?></select></div>
+        </div>
+        <label>One line about it</label>
+        <input type="text" name="description" value="<?= e($v['description']) ?>">
+        <button class="btn gold" name="action" value="vid_save" style="margin-top:12px">Save changes</button>
       </form>
     </div>
   <?php endforeach; ?>
