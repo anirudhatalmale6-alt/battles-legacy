@@ -1459,39 +1459,47 @@ body.aah{background:#f4efe6;color:#2e2740;}
   .aah-tl{grid-template-columns:1fr 1fr;}
 }
 
-/* ---- AAH: banner music ---- */
-.aah-music{display:flex;align-items:center;gap:12px;margin-top:22px;flex-wrap:wrap;}
-.aah-mbtn{display:inline-flex;align-items:center;gap:10px;cursor:pointer;background:rgba(201,162,75,.12);
+/* ---- banner music (home + African American History share this) ---- */
+.mus{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.mus-hero{margin-top:22px;}
+.mus-btn{display:inline-flex;align-items:center;gap:10px;cursor:pointer;background:rgba(201,162,75,.12);
   border:1px solid rgba(201,162,75,.55);border-radius:999px;padding:9px 20px 9px 16px;color:var(--gold2);
   font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:.4px;text-transform:none;transition:background .2s,border-color .2s;}
-.aah-mbtn:hover{background:rgba(201,162,75,.24);border-color:var(--gold);}
-.aah-mbtn.on{background:var(--gold);border-color:var(--gold);color:#241a0c;}
-.aah-mtitle{color:#d8cdbb;font-family:'EB Garamond',serif;font-size:14.5px;font-style:italic;}
+.mus-btn:hover{background:rgba(201,162,75,.24);border-color:var(--gold);}
+.mus-btn.on{background:var(--gold);border-color:var(--gold);color:#241a0c;}
+.mus-title{color:#d8cdbb;font-family:'EB Garamond',serif;font-size:14.5px;font-style:italic;}
+.mus-lead{font-family:'Cormorant Garamond',serif;color:var(--gold2);font-size:17px;letter-spacing:.5px;text-transform:uppercase;}
 /* four little bars that only dance while the track is playing */
-.aah-eq{display:flex;align-items:flex-end;gap:2px;height:15px;}
-.aah-eq i{width:3px;height:5px;background:currentColor;border-radius:1px;}
-.aah-mbtn.on .aah-eq i{animation:aahEq .9s ease-in-out infinite;}
-.aah-mbtn.on .aah-eq i:nth-child(2){animation-delay:.15s;}
-.aah-mbtn.on .aah-eq i:nth-child(3){animation-delay:.3s;}
-.aah-mbtn.on .aah-eq i:nth-child(4){animation-delay:.45s;}
-@keyframes aahEq{0%,100%{height:4px;}50%{height:15px;}}
+.mus-eq{display:flex;align-items:flex-end;gap:2px;height:15px;}
+.mus-eq i{width:3px;height:5px;background:currentColor;border-radius:1px;}
+.mus-btn.on .mus-eq i{animation:musEq .9s ease-in-out infinite;}
+.mus-btn.on .mus-eq i:nth-child(2){animation-delay:.15s;}
+.mus-btn.on .mus-eq i:nth-child(3){animation-delay:.3s;}
+.mus-btn.on .mus-eq i:nth-child(4){animation-delay:.45s;}
+@keyframes musEq{0%,100%{height:4px;}50%{height:15px;}}
 /* the browser blocked the sound until they touch the page — say so gently */
-.aah-music.waiting .aah-mbtn{animation:aahPulse 1.7s ease-in-out infinite;}
-@keyframes aahPulse{0%,100%{box-shadow:0 0 0 0 rgba(201,162,75,.5);}50%{box-shadow:0 0 0 8px rgba(201,162,75,0);}}
-@media(prefers-reduced-motion:reduce){ .aah-mbtn.on .aah-eq i,.aah-music.waiting .aah-mbtn{animation:none;} }
+.mus.waiting .mus-btn{animation:musPulse 1.7s ease-in-out infinite;}
+@keyframes musPulse{0%,100%{box-shadow:0 0 0 0 rgba(201,162,75,.5);}50%{box-shadow:0 0 0 8px rgba(201,162,75,0);}}
+@media(prefers-reduced-motion:reduce){ .mus-btn.on .mus-eq i,.mus.waiting .mus-btn{animation:none;} }
 
-.aah-adminbar{max-width:1200px;margin:16px auto 0;padding:0 clamp(14px,3.5vw,40px);}
-.aah-adminbar details{background:#fffdf8;border:1px solid #e3dac9;border-radius:12px;box-shadow:0 3px 12px rgba(60,40,20,.10);}
-.aah-adminbar summary{cursor:pointer;padding:13px 18px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
-.aah-abt{font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:18px;letter-spacing:.3px;}
-.aah-abs{color:#8a8298;font-size:13px;}
-.aah-mform{padding:4px 18px 18px;display:grid;gap:12px;}
-.aah-mf{display:flex;flex-direction:column;gap:5px;font-size:13px;color:#5c4a2a;text-transform:none;letter-spacing:normal;}
-.aah-mf input[type=text]{padding:9px 11px;border:1px solid #d9cdb4;border-radius:8px;font-family:'EB Garamond',serif;font-size:15px;background:#fff;}
-.aah-mchk,.aah-mform .aah-mchk{display:flex;align-items:center;gap:8px;font-size:14px;color:#4a3a24;text-transform:none;letter-spacing:normal;}
-.aah-mnote{margin:0;color:#8a8298;font-size:12.5px;line-height:1.5;}
-.aah-mact{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
-.aah-mdel{background:none;border:none;color:#9a3b3b;font-size:13.5px;text-decoration:underline;cursor:pointer;padding:0;}
+/* the home page wears it as a band under the scene */
+.mus-band{width:100vw;margin-left:calc(-50vw + 50%);justify-content:center;gap:16px;
+  background:linear-gradient(180deg,#2a2016,#1a130c);border-top:1px solid rgba(201,162,75,.35);
+  border-bottom:3px solid var(--gold);padding:14px clamp(14px,4vw,40px);}
+@media(max-width:560px){ .mus-band{gap:10px;padding:12px 14px;} .mus-band .mus-lead{width:100%;text-align:center;font-size:15px;} }
+
+.mus-admin{max-width:1200px;margin:16px auto 0;padding:0 clamp(14px,3.5vw,40px);}
+.mus-admin details{background:#fffdf8;border:1px solid #e3dac9;border-radius:12px;box-shadow:0 3px 12px rgba(60,40,20,.10);}
+.mus-admin summary{cursor:pointer;padding:13px 18px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+.mus-abt{font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:18px;letter-spacing:.3px;}
+.mus-abs{color:#8a8298;font-size:13px;}
+.mus-form{padding:4px 18px 18px;display:grid;gap:12px;}
+.mus-f{display:flex;flex-direction:column;gap:5px;font-size:13px;color:#5c4a2a;text-transform:none;letter-spacing:normal;}
+.mus-f input[type=text]{padding:9px 11px;border:1px solid #d9cdb4;border-radius:8px;font-family:'EB Garamond',serif;font-size:15px;background:#fff;}
+.mus-chk{display:flex;align-items:center;gap:8px;font-size:14px;color:#4a3a24;text-transform:none;letter-spacing:normal;}
+.mus-note{margin:0;color:#8a8298;font-size:12.5px;line-height:1.5;}
+.mus-act{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.mus-del{background:none;border:none;color:#9a3b3b;font-size:13.5px;text-decoration:underline;cursor:pointer;padding:0;}
 
 /* ---- AAH: real public-domain portraits + credit line ---- */
 .aah-person .aah-face[style*="background-image"]{background-size:cover;background-position:center top;color:transparent;}

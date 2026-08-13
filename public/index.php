@@ -1,5 +1,7 @@
 <?php
 require __DIR__ . '/../src/bootstrap.php';
+require_once __DIR__ . '/../src/music.php';
+music_handle_post('home', 'index.php');
 $u = current_user();
 $np = one("SELECT COUNT(*) c FROM persons")['c'] ?? 0;
 $nph = one("SELECT COUNT(*) c FROM photos WHERE status='approved'")['c'] ?? 0;
@@ -17,6 +19,11 @@ page_head('Home', ['body_class' => 'home']);
     <!-- clickable Explore Our Family Tree button (baked into the scene) -->
     <a class="hot" style="left:39.5%;top:78%;width:20.5%;height:13%" href="tree.php" title="Explore the family tree"></a>
   </section>
+  <!-- The family anthem. It sits under the scene rather than on it, because
+       every part of that picture is already a link. -->
+  <?php music_player('home', ['class' => 'mus-band', 'lead' => 'Our Family Anthem']); ?>
+  <?php music_admin_box('home', 'Family anthem'); ?>
+
   <script>
   (function(){
     var IDS=['p01','p02','p03','p04','p05','p06','p07','p08','p09','p10','p11','p12','p13'];
@@ -152,6 +159,8 @@ page_head('Home', ['body_class' => 'home']);
       <a class="btn gold" href="feedback.php">Share your thoughts</a>
     </div>
   </section>
+
+  <?php music_script(); ?>
 
   <?php legacy_footer();
 page_foot();

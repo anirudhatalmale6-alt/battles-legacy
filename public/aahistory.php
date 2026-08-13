@@ -2,6 +2,7 @@
 require __DIR__ . '/../src/bootstrap.php';
 require_once __DIR__ . '/../src/community_data.php';
 require_once __DIR__ . '/../src/aah_data.php';
+require_once __DIR__ . '/../src/music.php';
 try { community_migrate(); $QLIST = comm_list('question', 'published', 3); }
 catch (Exception $ex) { $QLIST = []; }
 aah_migrate();
@@ -9,26 +10,8 @@ aah_migrate();
 $logged  = logged_in();
 $isAdmin = role_at_least('admin');
 
-/* ---- banner music settings (admin only) ---- */
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAdmin && ($_POST['act'] ?? '') === 'music') {
-    csrf_check();
-    if (!empty($_POST['remove'])) {
-        aah_remove_music();
-        flash('The banner music has been removed.');
-    } else {
-        list($rel, $err) = aah_store_music('track');
-        if ($err) {
-            flash($err);
-        } else {
-            if ($rel !== '') { aah_remove_music(); aah_meta_set('music_file', $rel); }
-            aah_meta_set('music_title', trim($_POST['music_title'] ?? ''));
-            aah_meta_set('music_auto', empty($_POST['music_auto']) ? '0' : '1');
-            flash($rel !== '' ? 'The music is on the banner now.' : 'Music settings saved.');
-        }
-    }
-    header('Location: aahistory.php'); exit;
-}
-$MUSIC = aah_music();
+/* ---- banner music (shared player; the home page has its own track) ---- */
+music_handle_post('aahistory', 'aahistory.php');
 
 function aah_icon($k) {
   $p = [
@@ -115,47 +98,11 @@ page_head('African American History', ['body_class' => 'home aah']);
     <p class="aah-sub">From resilience to triumph, our history is filled with courageous leaders, brilliant minds,
        and everyday people who shaped our nation and the world.</p>
 
-    <?php if ($MUSIC): ?>
-    <!-- Banner music. Browsers refuse to start sound before a visitor touches
-         the page, so it also arms itself on the first click, key or scroll. -->
-    <div class="aah-music" data-auto="<?= $MUSIC['auto'] ? '1' : '0' ?>">
-      <audio id="aahTrack" loop preload="auto" src="<?= e($MUSIC['file']) ?>"></audio>
-      <button type="button" class="aah-mbtn" id="aahMbtn" aria-pressed="false">
-        <span class="aah-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-        <span class="aah-mlab">Play the music</span>
-      </button>
-      <?php if (trim($MUSIC['title'])): ?><span class="aah-mtitle"><?= e($MUSIC['title']) ?></span><?php endif; ?>
-    </div>
-    <?php endif; ?>
+    <?php music_player('aahistory', ['class' => 'mus-hero']); ?>
   </div>
 </section>
 
-<?php if ($isAdmin): ?>
-<section class="aah-adminbar">
-  <details<?= $MUSIC ? '' : ' open' ?>>
-    <summary>
-      <span class="aah-abt">Banner music</span>
-      <span class="aah-abs"><?= $MUSIC ? 'Playing: ' . e($MUSIC['title'] ?: basename($MUSIC['file'])) : 'No track uploaded yet' ?></span>
-    </summary>
-    <form method="post" enctype="multipart/form-data" class="aah-mform">
-      <?= csrf_field() ?>
-      <input type="hidden" name="act" value="music">
-      <label class="aah-mf">Music file (MP3)<input type="file" name="track" accept="audio/*"></label>
-      <label class="aah-mf">Name of the track (shown beside the button)
-        <input type="text" name="music_title" maxlength="120" value="<?= e($MUSIC['title'] ?? '') ?>" placeholder="Lift Every Voice and Sing"></label>
-      <label class="aah-mchk"><input type="checkbox" name="music_auto" value="1"<?= (!$MUSIC || $MUSIC['auto']) ? ' checked' : '' ?>>
-        Start playing as soon as someone opens the page</label>
-      <p class="aah-mnote">A visitor can always stop it with the button on the banner, and their choice is remembered.
-        Some browsers and phones will not make sound until the visitor taps the page once — the button starts flashing gold when that happens.</p>
-      <div class="aah-mact">
-        <button class="btn2 solid" type="submit">Save</button>
-        <?php if ($MUSIC): ?><button class="aah-mdel" type="submit" name="remove" value="1"
-          onclick="return confirm('Remove the banner music?')">Remove the music</button><?php endif; ?>
-      </div>
-    </form>
-  </details>
-</section>
-<?php endif; ?>
+<?php music_admin_box('aahistory', 'Banner music'); ?>
 
 <!-- QUICK NAV -->
 <section class="aah-nav">
@@ -301,73 +248,6 @@ page_head('African American History', ['body_class' => 'home aah']);
   <span class="fvq">&ldquo;</span>The past is our teacher. The present is our responsibility. The future is our legacy.
 </section>
 
-<?php if ($MUSIC): ?>
-<script>
-(function(){
-  var box = document.querySelector('.aah-music');
-  var a   = document.getElementById('aahTrack');
-  var btn = document.getElementById('aahMbtn');
-  var lab = btn && btn.querySelector('.aah-mlab');
-  if (!box || !a || !btn) return;
-
-  var KEY = 'aah_music';                       // remember whether they wanted it
-  var pref = null;
-  try { pref = localStorage.getItem(KEY); } catch (e) {}
-  var wantAuto = box.getAttribute('data-auto') === '1' && pref !== 'off';
-  var armed = false;                           // waiting for the first tap
-
-  function paint(playing){
-    btn.classList.toggle('on', playing);
-    btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
-    if (lab) lab.textContent = playing ? 'Pause the music' : (armed ? 'Tap to play the music' : 'Play the music');
-  }
-  /* ease the volume up so it never startles anyone */
-  function fadeIn(){
-    a.volume = 0;
-    var v = 0, t = setInterval(function(){
-      v += 0.06; if (v >= 0.55) { v = 0.55; clearInterval(t); }
-      try { a.volume = v; } catch (e) { clearInterval(t); }
-    }, 70);
-  }
-  function play(remember){
-    var p = a.play();
-    if (p && p.catch) {
-      p.then(function(){ armed = false; box.classList.remove('waiting'); fadeIn(); paint(true);
-                         if (remember) { try { localStorage.setItem(KEY,'on'); } catch(e){} } })
-       .catch(function(){ arm(); });
-    } else { fadeIn(); paint(true); }
-  }
-  /* the browser said no until the visitor interacts — wait for that instead */
-  function arm(){
-    if (armed) return;
-    armed = true;
-    box.classList.add('waiting');
-    paint(false);
-    var go = function(ev){
-      if (ev && btn.contains(ev.target)) return;   // the button handles itself
-      off(); play(false);
-    };
-    var off = function(){
-      document.removeEventListener('click', go, true);
-      document.removeEventListener('keydown', go, true);
-      document.removeEventListener('touchend', go, true);
-    };
-    document.addEventListener('click', go, true);
-    document.addEventListener('keydown', go, true);
-    document.addEventListener('touchend', go, true);
-  }
-
-  btn.addEventListener('click', function(){
-    if (a.paused) { armed = false; box.classList.remove('waiting'); play(true); }
-    else { a.pause(); paint(false); try { localStorage.setItem(KEY,'off'); } catch(e){} }
-  });
-  a.addEventListener('pause', function(){ paint(false); });
-  a.addEventListener('play',  function(){ paint(true); });
-
-  paint(false);
-  if (wantAuto) play(false);
-})();
-</script>
-<?php endif; ?>
+<?php music_script(); ?>
 
 <?php legacy_footer(); page_foot();

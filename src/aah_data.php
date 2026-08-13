@@ -44,57 +44,7 @@ function aah_meta_set($k, $v) {
     } catch (\Throwable $e) {}
 }
 
-/** The banner track, or an empty array when none has been uploaded. */
-function aah_music() {
-    $file = trim(aah_meta('music_file', ''));
-    if ($file === '' || !is_file(dirname(__DIR__) . '/public/' . $file)) return [];
-    return [
-        'file'  => $file,
-        'title' => aah_meta('music_title', ''),
-        'auto'  => aah_meta('music_auto', '1') !== '0',
-    ];
-}
-
-/** Save an uploaded track -> assets/aahistory/music/. Returns [relPath, error]. */
-function aah_store_music($field = 'track') {
-    $rel = 'assets/aahistory/music';
-    if (empty($_FILES[$field]) || $_FILES[$field]['error'] === UPLOAD_ERR_NO_FILE) return ['', ''];
-    if ($_FILES[$field]['error'] === UPLOAD_ERR_INI_SIZE || $_FILES[$field]['error'] === UPLOAD_ERR_FORM_SIZE)
-        return ['', 'That file is bigger than the server allows — please use a track under 20 MB.'];
-    if ($_FILES[$field]['error'] !== UPLOAD_ERR_OK) return ['', 'The music could not be uploaded — please try again.'];
-    if ($_FILES[$field]['size'] > 20 * 1024 * 1024) return ['', 'That track is larger than 20 MB — please use a shorter or smaller file.'];
-
-    // Trust the extension only after the bytes look like audio/video we can serve.
-    $name = strtolower($_FILES[$field]['name']);
-    $ext  = pathinfo($name, PATHINFO_EXTENSION);
-    $ok   = ['mp3' => 'audio/mpeg', 'm4a' => 'audio/mp4', 'mp4' => 'audio/mp4', 'ogg' => 'audio/ogg', 'wav' => 'audio/wav'];
-    if (!isset($ok[$ext])) return ['', 'Please upload an MP3 (or M4A, OGG, WAV). Other kinds of file will not play in a browser.'];
-    $head = @file_get_contents($_FILES[$field]['tmp_name'], false, null, 0, 12);
-    if ($head === false || strlen($head) < 4) return ['', 'That file looks empty.'];
-    $looksAudio = (substr($head, 0, 3) === 'ID3')                       // mp3 with tags
-        || (ord($head[0]) === 0xFF && (ord($head[1]) & 0xE0) === 0xE0)  // raw mp3 frame
-        || (substr($head, 4, 4) === 'ftyp')                             // m4a / mp4
-        || (substr($head, 0, 4) === 'OggS')                             // ogg
-        || (substr($head, 0, 4) === 'RIFF');                            // wav
-    if (!$looksAudio) return ['', 'That does not look like an audio file — please upload the MP3 itself, not a link or a document.'];
-
-    $fname  = date('Ymd_His') . '_' . substr(md5(uniqid('', true)), 0, 6) . '.' . $ext;
-    $absDir = dirname(__DIR__) . '/public/' . $rel;
-    @mkdir($absDir, 0775, true);
-    if (!move_uploaded_file($_FILES[$field]['tmp_name'], $absDir . '/' . $fname)) return ['', 'Sorry — the music could not be saved.'];
-    return [$rel . '/' . $fname, ''];
-}
-
-/** Delete the current track's file as well as the setting, so nothing is orphaned. */
-function aah_remove_music() {
-    $file = trim(aah_meta('music_file', ''));
-    if ($file !== '' && strpos($file, 'assets/aahistory/music/') === 0) {
-        $abs = dirname(__DIR__) . '/public/' . $file;
-        if (is_file($abs)) @unlink($abs);
-    }
-    aah_meta_set('music_file', '');
-    aah_meta_set('music_title', '');
-}
+/* Banner music moved to src/music.php — the home page has its own track too. */
 
 /* ---------------- people ---------------- */
 function aah_people($category = '', $all = false) {
