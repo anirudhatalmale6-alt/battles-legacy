@@ -1953,3 +1953,9 @@ body.hlth :target{animation:hFlash 1.6s ease-out 1;}
 /* a health tip's own page */
 .cv-kind{display:inline-block;background:#f1e6cd;border:1px solid #dcc79a;color:#8a5f16;border-radius:999px;
   padding:3px 12px;font-size:11.5px;letter-spacing:.6px;text-transform:uppercase;}
+
+/* a shared graphic is often the whole point of the post — show all of it */
+.cv-pic{display:block;width:100%;height:auto;max-height:70vh;object-fit:contain;background:#f4efe6;
+  border:1px solid #e6d8bd;border-radius:10px;margin-bottom:12px;}
+.cv-remove{margin-top:14px;border-top:1px solid #efe6d4;padding-top:12px;}
+.cv-remove button{background:none;border:none;color:#9a3b3b;font-size:13.5px;text-decoration:underline;cursor:pointer;padding:0;}

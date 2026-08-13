@@ -15,6 +15,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'like'
     csrf_check(); comm_like((int)$item['id']);
     header('Location: community_view.php?id=' . (int)$item['id']); exit;
 }
+/* An admin's own posts publish straight away, so they never reach the pending
+   queue and there was no way to take one down again. */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'remove' && role_at_least('admin')) {
+    csrf_check();
+    $kind = $item['kind'];
+    comm_delete((int)$item['id']);
+    flash('Removed.');
+    header('Location: ' . ($kind === 'healthtip' ? 'health.php#familytips' : 'community_list.php?kind=' . $kind)); exit;
+}
 
 $isQ   = $item['kind'] === 'question';
 $isTip = $item['kind'] === 'healthtip';
@@ -37,13 +46,19 @@ page_head($heading, ['body_class' => 'home fnews']);
       <p class="cv-q">&ldquo;<?= e($item['body']) ?>&rdquo;</p>
       <div class="fn-by">Asked by <?= e($item['author']) ?> &middot; <?= e(comm_ago($item['created_at'])) ?></div>
     <?php else: ?>
-      <?php if ($item['photo']): ?><div class="cl-photo cv-photo" style="background-image:url('<?= e($item['photo']) ?>')"></div><?php endif; ?>
+      <?php if ($item['photo']): ?><img class="cv-pic" src="<?= e($item['photo']) ?>" alt="<?= e($item['title'] ?: 'Shared picture') ?>"><?php endif; ?>
       <?php if ($isTip): ?><span class="cv-kind">Health Tip</span><?php endif; ?>
       <h1 style="color:#5c1a1f;margin:6px 0 2px"><?= e($heading) ?></h1>
       <div class="fn-by">Shared by <?= e($item['author']) ?> &middot; <?= e(comm_ago($item['created_at'])) ?></div>
       <?php if ($item['body']): ?><div class="cv-recipe"><?= nl2br(e($item['body'])) ?></div><?php endif; ?>
       <form method="post" class="cl-like" style="margin-top:12px"><?= csrf_field() ?><input type="hidden" name="action" value="like">
         <button type="submit"<?= comm_liked($item['id']) ? ' disabled' : '' ?>>&#9825; <?= (int)$item['likes'] ?> &middot; <?= comm_liked($item['id']) ? 'Liked' : 'Like this' ?></button></form>
+    <?php endif; ?>
+    <?php if (role_at_least('admin')): ?>
+      <form method="post" class="cv-remove" onsubmit="return confirm('Remove this permanently?')">
+        <?= csrf_field() ?><input type="hidden" name="action" value="remove">
+        <button type="submit">Remove this</button>
+      </form>
     <?php endif; ?>
   </div>
 
