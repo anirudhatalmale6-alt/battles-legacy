@@ -6,7 +6,8 @@ try {
     health_migrate(); community_migrate();
     $TIPS = health_tips(); $EVENTS = health_events();
     $QLIST = comm_list('question', 'published', 3);
-} catch (Exception $ex) { $TIPS = $EVENTS = $QLIST = []; }
+    $FTIPS = comm_list('healthtip', 'published', 6);   // tips the family shared
+} catch (Exception $ex) { $TIPS = $EVENTS = $QLIST = $FTIPS = []; }
 
 $isAdmin = role_at_least('admin');
 $logged  = logged_in();
@@ -37,15 +38,17 @@ function h_icon($k) {
   return '<svg viewBox="0 0 24 24" aria-hidden="true">' . ($p[$k] ?? '<circle cx="12" cy="12" r="8"/>') . '</svg>';
 }
 
+/* Each pillar under the banner jumps to the part of the page it belongs to —
+   they used to be plain text and William asked whether they went anywhere. */
 $PILLARS = [
-  ['heart','Body','Take care of your body.'],
-  ['apple','Mind','Take care of your thoughts.'],
-  ['people','Family','Take care of each other.'],
-  ['cross','Faith','Take care of your spirit.'],
+  ['heart','Body','Take care of your body.','#exercise'],
+  ['apple','Mind','Take care of your thoughts.','#resources'],
+  ['people','Family','Take care of each other.','#familytips'],
+  ['cross','Faith','Take care of your spirit.','faith.php'],
 ];
 $QUICKNAV = [
   ['bulb','Health Tips','#tips'], ['dumbbell','Exercise','#exercise'], ['apple','Nutrition','#nutrition'],
-  ['steth','Doctor Visits','#checkups'], ['chat','Ask Questions','#ask'], ['book','Resources','#resources'], ['clip','Track Your Health','#track'],
+  ['steth','Doctor Visits','#checkups'], ['people','Family Tips','#familytips'], ['chat','Ask Questions','#ask'], ['book','Resources','#resources'], ['clip','Track Your Health','#track'],
 ];
 $CHECKUPS = ['Detect problems early','Prevent illness','Manage chronic conditions','Stay up to date on screenings','Live longer and healthier'];
 $EXERCISE = [
@@ -82,7 +85,7 @@ page_head('Health', ['body_class' => 'home hlth']);
 <!-- PILLARS (under hero, mobile-friendly repeat of the hero's four) -->
 <section class="h-pillars">
   <?php foreach ($PILLARS as $p): ?>
-    <div class="h-pill"><span class="h-pic"><?= h_icon($p[0]) ?></span><div><b><?= e($p[1]) ?></b><span><?= e($p[2]) ?></span></div></div>
+    <a class="h-pill" href="<?= e($p[3]) ?>"><span class="h-pic"><?= h_icon($p[0]) ?></span><div><b><?= e($p[1]) ?></b><span><?= e($p[2]) ?></span></div></a>
   <?php endforeach; ?>
 </section>
 
@@ -195,7 +198,7 @@ page_head('Health', ['body_class' => 'home hlth']);
           <div class="h-chali"><span class="h-exic"><?= h_icon($c[0]) ?></span><b><?= e($c[1]) ?></b><span><?= $c[2] /* authored */ ?></span></div>
         <?php endforeach; ?>
       </div>
-      <a class="btn2 solid" href="<?= $logged ? 'community_submit.php?kind=update' : 'login.php' ?>">I&rsquo;m In!</a>
+      <a class="btn2 solid" href="<?= $logged ? 'community_submit.php?kind=healthtip' : 'login.php' ?>">I&rsquo;m In!</a>
     </section>
 
     <section class="h-card h-pad h-events">
@@ -212,11 +215,36 @@ page_head('Health', ['body_class' => 'home hlth']);
     </section>
   </div>
 
+  <!-- FAMILY-SHARED TIPS -->
+  <section class="h-card h-pad h-fam" id="familytips">
+    <div class="h-famhead">
+      <h2 class="sm"><?= h_icon('people') ?> Tips From Our Family</h2>
+      <?php if ($FTIPS): ?><a class="h-browse" href="community_list.php?kind=healthtip">See them all &rarr;</a><?php endif; ?>
+    </div>
+    <p class="h-sub">What has actually worked for us. Anything you share here lands on this page.</p>
+    <?php if ($FTIPS): ?>
+      <div class="h-famgrid">
+        <?php foreach ($FTIPS as $t): ?>
+          <a class="h-fami" href="community_view.php?id=<?= (int)$t['id'] ?>">
+            <span class="h-famthumb"<?= $t['photo'] ? ' style="background-image:url(\''.e($t['photo']).'\')"' : '' ?>><?= $t['photo'] ? '' : h_icon('heart') ?></span>
+            <span class="h-famtxt">
+              <?php if (trim($t['title']) !== ''): ?><b><?= e($t['title']) ?></b><?php endif; ?>
+              <span class="h-fambody"><?= e(mb_strimwidth(preg_replace('/\s+/', ' ', $t['body']), 0, 120, '…')) ?></span>
+              <span class="fn-by"><?= e($t['author']) ?> &middot; <?= e(comm_ago($t['created_at'])) ?></span>
+            </span>
+          </a>
+        <?php endforeach; ?>
+      </div>
+    <?php else: ?>
+      <p class="h-note">No tips from the family yet &mdash; share the first one below and it appears right here.</p>
+    <?php endif; ?>
+  </section>
+
   <!-- SHARE A TIP -->
   <section class="h-share">
     <span class="h-shic"><?= h_icon('people') ?></span>
     <div><b>We&rsquo;re stronger when we take care of each other.</b><span>Share tips, encourage one another, and live healthy together.</span></div>
-    <a class="btn2 solid" href="<?= $logged ? 'community_submit.php?kind=update' : 'login.php' ?>"><?= h_icon('heart') ?> Share a Health Tip</a>
+    <a class="btn2 solid" href="<?= $logged ? 'community_submit.php?kind=healthtip' : 'login.php' ?>"><?= h_icon('heart') ?> Share a Health Tip</a>
   </section>
 </div>
 

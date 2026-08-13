@@ -1360,10 +1360,22 @@ body.hlth{background:#f2ece1;color:#2e2740;}
 /* ===================== African American History ===================== */
 body.aah{background:#f4efe6;color:#2e2740;}
 .aah-hero,.aah-closing{width:100vw;margin-left:calc(-50vw + 50%);}
+/* William's picture sits behind the banner. The scrim is heaviest on the left
+   so the title stays readable over it, and the crop keeps the faces in view
+   while the caption baked into the bottom of the picture falls out of frame. */
 .aah-hero{background:
-   radial-gradient(120% 130% at 18% 20%, rgba(201,162,75,.20), rgba(201,162,75,0) 60%),
+   linear-gradient(90deg, rgba(18,13,9,.95) 0%, rgba(18,13,9,.88) 34%, rgba(18,13,9,.52) 62%, rgba(18,13,9,.30) 100%),
+   url('aahistory/banner.jpg') center 20%/cover no-repeat,
    linear-gradient(135deg,#2a2016,#1d160f 55%,#140f0a);
   border-bottom:3px solid var(--gold);padding:52px clamp(16px,5vw,70px);}
+@media(max-width:760px){
+  /* a phone crops the picture hard, so the scrim runs top to bottom instead */
+  .aah-hero{background:
+     linear-gradient(180deg, rgba(18,13,9,.30) 0%, rgba(18,13,9,.72) 36%, rgba(18,13,9,.93) 62%),
+     url('aahistory/banner.jpg') center 12%/cover no-repeat,
+     linear-gradient(135deg,#2a2016,#1d160f 55%,#140f0a);
+    padding-top:130px;}
+}
 .aah-hero-in{max-width:1180px;margin:0 auto;}
 .aah-hero h1{font-family:'Cormorant Garamond',serif;color:#fff;font-size:clamp(36px,6vw,64px);line-height:1;margin:0;letter-spacing:1px;text-transform:uppercase;}
 .aah-hero h1 span{color:var(--gold);}
@@ -1844,6 +1856,34 @@ a.fs-vrow:hover{background:rgba(201,162,75,.12);}
   scrollbar-width:none;-ms-overflow-style:none;padding-bottom:2px;}
 .fn-rot.on .fn-track::-webkit-scrollbar{display:none;}
 .fn-rot.on .fn-track>.fn-card{flex:0 0 calc((100% - 48px)/4);scroll-snap-align:start;}
+
+/* ---- compact announcement cards ----
+   These were running to twice the height of the design: the teaser printed in
+   full and a separate read-more line sat under it, and every card in the row
+   stretched to the tallest one. Now the teaser stops at three lines and the
+   whole card is the link. */
+/* the announcements were squeezed into a 996px shell while the hero, the
+   category strip and the verse band all ran the full width — giving the row
+   its real width is half of what made the cards so tall */
+body.fnews .wrap{max-width:1240px;}
+.fn-card{position:relative;}
+.fn-body p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.fn-hit{position:absolute;inset:0;z-index:1;border-radius:12px;}
+.fn-hit span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+.fn-card:hover{box-shadow:0 6px 18px rgba(120,80,20,.20);}
+.fn-card:focus-within{outline:2px solid var(--gold);outline-offset:2px;}
+.fn-rot.on .fn-track>.fn-card .fn-photo{height:132px;}
+.fn-meta{position:relative;z-index:2;pointer-events:none;}
+@media(max-width:520px){ .fn-rot.on .fn-track>.fn-card .fn-photo{height:170px;} }
+
+/* a recipe shows its dish, the way the design does */
+.fn-av.pic{width:58px;height:46px;border-radius:8px;background:#e9dcc0 center/cover;border:1px solid #dcc79a;}
+.fn-list li:hover .fn-av.pic{border-color:var(--gold);}
+
+/* family updates open now, so they need to look like links */
+a.fn-update{text-decoration:none;color:inherit;border-radius:9px;padding:4px;margin:-4px;transition:background .15s;}
+a.fn-update:hover{background:#f7efdd;}
+a.fn-update:hover .fn-li p{text-decoration:underline;}
 @media(max-width:1050px){ .fn-rot.on .fn-track>.fn-card{flex:0 0 calc((100% - 16px)/2);} }
 @media(max-width:520px){  .fn-rot.on .fn-track>.fn-card{flex:0 0 100%;} }
 .fn-arrow{display:none;position:absolute;top:82px;z-index:5;width:38px;height:38px;border-radius:50%;
@@ -1874,3 +1914,42 @@ a.fs-vrow:hover{background:rgba(201,162,75,.12);}
 
 /* the parchment admin theme needs a readable grey, not the dark-theme one */
 body.em .muted{color:#7a6b52;}
+
+/* ===================== Health: family-shared tips ===================== */
+/* William shared a tip from this page and it landed in the general updates
+   with no way to open it. Tips now have a kind of their own and a home here. */
+.h-famhead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+.h-famhead .h-browse{margin-top:0;margin-left:auto;}
+.h-fam{margin-bottom:18px;}
+.h-famgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:6px;}
+.h-fami{display:flex;gap:12px;align-items:flex-start;text-decoration:none;background:#faf6ee;border:1px solid #e6dcc6;
+  border-radius:10px;padding:11px 12px;transition:border-color .15s,box-shadow .15s,transform .15s;}
+.h-fami:hover{border-color:var(--gold);box-shadow:0 5px 14px rgba(120,80,20,.14);transform:translateY(-2px);}
+.h-famthumb{flex:none;width:62px;height:62px;border-radius:9px;background:linear-gradient(135deg,#241c46,#120c24) center/cover;
+  display:flex;align-items:center;justify-content:center;border:1px solid #d9cdb4;}
+.h-famthumb svg{width:26px;height:26px;fill:none;stroke:var(--gold2);stroke-width:1.6;}
+.h-famtxt{min-width:0;display:block;}
+.h-famtxt b{display:block;font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:17px;line-height:1.15;margin-bottom:2px;}
+.h-fambody{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  font-family:'EB Garamond',serif;font-size:13.5px;line-height:1.4;color:#4a3a24;margin-bottom:3px;}
+.h-fami .fn-by{display:block;}
+@media(max-width:900px){ .h-famgrid{grid-template-columns:1fr 1fr;} }
+@media(max-width:600px){ .h-famgrid{grid-template-columns:1fr;} }
+
+/* the strip under the banner is made of links now — say so, and make the jump
+   visible, because landing on a section already in view reads as "nothing happened" */
+a.h-pill{text-decoration:none;border-radius:9px;padding:6px 8px;transition:background .15s;}
+a.h-pill:hover{background:rgba(201,162,75,.14);}
+body.hlth{scroll-behavior:smooth;}
+body.hlth .h-card,body.hlth .h-two,body.hlth .h-three{scroll-margin-top:22px;}
+body.hlth :target{animation:hFlash 1.6s ease-out 1;}
+@keyframes hFlash{0%{box-shadow:0 0 0 3px var(--gold);}70%{box-shadow:0 0 0 3px rgba(201,162,75,.45);}100%{box-shadow:0 0 0 3px rgba(201,162,75,0);}}
+@media(prefers-reduced-motion:reduce){ body.hlth{scroll-behavior:auto;} body.hlth :target{animation:none;} }
+.h-navitem{position:relative;}
+.h-navitem::after{content:'';position:absolute;left:50%;right:50%;bottom:6px;height:2px;background:var(--gold);
+  transition:left .18s,right .18s;}
+.h-navitem:hover::after{left:22%;right:22%;}
+
+/* a health tip's own page */
+.cv-kind{display:inline-block;background:#f1e6cd;border:1px solid #dcc79a;color:#8a5f16;border-radius:999px;
+  padding:3px 12px;font-size:11.5px;letter-spacing:.6px;text-transform:uppercase;}

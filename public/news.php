@@ -137,7 +137,7 @@ page_head('Family News', ['body_class' => 'home fnews']);
       <?php if ($RLIST): ?>
       <ul class="fn-list">
         <?php foreach ($RLIST as $r): ?>
-          <li><span class="fn-av r"><?= news_icon('recipe') ?></span>
+          <li><span class="fn-av r<?= $r['photo'] ? ' pic' : '' ?>"<?= $r['photo'] ? ' style="background-image:url(\''.e($r['photo']).'\')"' : '' ?>><?= $r['photo'] ? '' : news_icon('recipe') ?></span>
             <div class="fn-li"><p class="fn-rtitle"><a href="community_view.php?id=<?= (int)$r['id'] ?>"><?= e($r['title']) ?></a></p><span class="fn-by">Shared by <?= e($r['author']) ?></span></div>
             <span class="fn-like"><?= news_icon('heart') ?> <?= (int)$r['likes'] ?></span></li>
         <?php endforeach; ?>
@@ -161,7 +161,7 @@ page_head('Family News', ['body_class' => 'home fnews']);
       <?php if ($ULIST): ?>
       <div class="fn-updates">
         <?php foreach ($ULIST as $u): ?>
-          <div class="fn-update"><span class="fn-uthumb"<?= $u['photo'] ? ' style="background-image:url(\''.e($u['photo']).'\');background-size:cover"' : '' ?>><?= $u['photo']?'':news_icon('people') ?></span><div class="fn-li"><p><?= e(mb_strimwidth($u['body'],0,110,'…')) ?></p><span class="fn-by"><?= e($u['author']) ?> &middot; <?= e(comm_ago($u['created_at'])) ?></span></div></div>
+          <a class="fn-update" href="community_view.php?id=<?= (int)$u['id'] ?>"><span class="fn-uthumb"<?= $u['photo'] ? ' style="background-image:url(\''.e($u['photo']).'\');background-size:cover"' : '' ?>><?= $u['photo']?'':news_icon('people') ?></span><div class="fn-li"><p><?= e(mb_strimwidth($u['body'],0,110,'…')) ?></p><span class="fn-by"><?= e($u['author']) ?> &middot; <?= e(comm_ago($u['created_at'])) ?></span></div></a>
         <?php endforeach; ?>
       </div>
       <?php else: ?><p class="fn-cmt" style="margin:0">No updates yet &mdash; be the first to share family news.</p><?php endif; ?>

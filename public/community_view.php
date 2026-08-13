@@ -4,7 +4,7 @@ require_once __DIR__ . '/../src/community_data.php';
 community_migrate();
 
 $item = comm_one($_GET['id'] ?? 0);
-if (!$item || !in_array($item['kind'], ['question','recipe'], true) || ($item['status'] !== 'published' && !role_at_least('admin'))) {
+if (!$item || !in_array($item['kind'], ['question','recipe','update','healthtip'], true) || ($item['status'] !== 'published' && !role_at_least('admin'))) {
     http_response_code(404);
     page_head('Not found', ['body_class' => 'home fnews']);
     echo '<div class="fn-wrap" style="padding:30px 20px"><div class="fn-col"><p class="fn-cmt" style="margin:0">That isn&rsquo;t here. <a href="news.php">Back to Family News</a>.</p></div></div>';
@@ -16,12 +16,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'like'
     header('Location: community_view.php?id=' . (int)$item['id']); exit;
 }
 
-$isQ  = $item['kind'] === 'question';
-$listKind = $isQ ? 'question' : 'recipe';
-page_head($isQ ? 'Family Question' : e($item['title']), ['body_class' => 'home fnews']);
+$isQ   = $item['kind'] === 'question';
+$isTip = $item['kind'] === 'healthtip';
+$listKind = $item['kind'];
+$BACKS = [
+  'question'  => ['community_list.php?kind=question', 'Questions'],
+  'recipe'    => ['community_list.php?kind=recipe',   'Recipes'],
+  'update'    => ['community_list.php?kind=update',   'Family Updates'],
+  'healthtip' => ['health.php#familytips',            'Health'],
+];
+list($backUrl, $backLabel) = $BACKS[$item['kind']];
+$heading = $isQ ? 'Family Question' : (trim($item['title']) !== '' ? $item['title'] : ($isTip ? 'Family Health Tip' : 'Family Update'));
+page_head($heading, ['body_class' => 'home fnews']);
 ?>
 <div class="fn-wrap" style="padding-top:22px;max-width:820px">
-  <p style="margin:0 0 12px"><a class="btn" href="community_list.php?kind=<?= e($listKind) ?>">&larr; Back to <?= $isQ ? 'Questions' : 'Recipes' ?></a></p>
+  <p style="margin:0 0 12px"><a class="btn" href="<?= e($backUrl) ?>">&larr; Back to <?= e($backLabel) ?></a></p>
 
   <div class="fn-col cv-main">
     <?php if ($isQ): ?>
@@ -29,11 +38,12 @@ page_head($isQ ? 'Family Question' : e($item['title']), ['body_class' => 'home f
       <div class="fn-by">Asked by <?= e($item['author']) ?> &middot; <?= e(comm_ago($item['created_at'])) ?></div>
     <?php else: ?>
       <?php if ($item['photo']): ?><div class="cl-photo cv-photo" style="background-image:url('<?= e($item['photo']) ?>')"></div><?php endif; ?>
-      <h1 style="color:#5c1a1f;margin:6px 0 2px"><?= e($item['title']) ?></h1>
+      <?php if ($isTip): ?><span class="cv-kind">Health Tip</span><?php endif; ?>
+      <h1 style="color:#5c1a1f;margin:6px 0 2px"><?= e($heading) ?></h1>
       <div class="fn-by">Shared by <?= e($item['author']) ?> &middot; <?= e(comm_ago($item['created_at'])) ?></div>
       <?php if ($item['body']): ?><div class="cv-recipe"><?= nl2br(e($item['body'])) ?></div><?php endif; ?>
       <form method="post" class="cl-like" style="margin-top:12px"><?= csrf_field() ?><input type="hidden" name="action" value="like">
-        <button type="submit"<?= comm_liked($item['id']) ? ' disabled' : '' ?>>&#9825; <?= (int)$item['likes'] ?> &middot; <?= comm_liked($item['id']) ? 'Liked' : 'Like this recipe' ?></button></form>
+        <button type="submit"<?= comm_liked($item['id']) ? ' disabled' : '' ?>>&#9825; <?= (int)$item['likes'] ?> &middot; <?= comm_liked($item['id']) ? 'Liked' : 'Like this' ?></button></form>
     <?php endif; ?>
   </div>
 

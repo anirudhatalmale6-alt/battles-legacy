@@ -20,7 +20,9 @@ function community_migrate() {
 }
 
 function comm_kinds() {
-    return ['question'=>'Question','recipe'=>'Recipe','update'=>'Update','answer'=>'Answer'];
+    /* healthtip is its own kind so a tip shared from the Health page comes back
+       to the Health page, instead of disappearing into the general updates. */
+    return ['question'=>'Question','recipe'=>'Recipe','update'=>'Update','healthtip'=>'Health Tip','answer'=>'Answer'];
 }
 function comm_kind_ok($k) { return array_key_exists($k, comm_kinds()); }
 

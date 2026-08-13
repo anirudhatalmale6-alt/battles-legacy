@@ -223,8 +223,10 @@ function news_card($p) {
         <?php if ($p['date_label']): ?><div class="fn-date"><?= e($p['date_label']) ?></div><?php endif; ?>
         <h3><a href="<?= e($href) ?>"><?= e($p['title']) ?></a></h3>
         <?php if ($teaser): ?><p><?= e($teaser) ?></p><?php endif; ?>
-        <a class="fn-more" href="<?= e($href) ?>"><?= $more ? 'Read the full story' : 'Open' ?> &rsaquo;</a>
         <div class="fn-meta"><span title="Likes"><?= news_icon('heart') ?> <?= (int)$p['likes'] ?></span><span title="Comments"><?= news_icon('chat') ?> <?= (int)$p['comments'] ?></span></div>
+        <!-- the whole card opens the story; the mockup has no read-more line
+             and the extra line was what made these cards so tall -->
+        <a class="fn-hit" href="<?= e($href) ?>"><span><?= $more ? 'Read the full story' : 'Open' ?></span></a>
       </div>
     </article>
     <?php return ob_get_clean();

@@ -204,7 +204,7 @@ page_head('Manage Family News', ['body_class' => 'em']);
   </div>
   <?php if (!$PENDING): ?>
     <div class="panel"><p class="lede" style="margin:0">Nothing waiting. When a family member submits a question, recipe, update, or answer, it will appear here.</p></div>
-  <?php else: $KN = ['question'=>'Question','recipe'=>'Recipe','update'=>'Update','answer'=>'Answer']; foreach ($PENDING as $s): ?>
+  <?php else: $KN = ['question'=>'Question','recipe'=>'Recipe','update'=>'Update','healthtip'=>'Health Tip','answer'=>'Answer']; foreach ($PENDING as $s): ?>
     <div class="panel em-row">
       <div class="em-rowhead">
         <h3><span class="em-tag feat"><?= e($KN[$s['kind']] ?? $s['kind']) ?></span>
