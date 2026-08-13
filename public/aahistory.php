@@ -1,11 +1,34 @@
 <?php
 require __DIR__ . '/../src/bootstrap.php';
 require_once __DIR__ . '/../src/community_data.php';
+require_once __DIR__ . '/../src/aah_data.php';
 try { community_migrate(); $QLIST = comm_list('question', 'published', 3); }
 catch (Exception $ex) { $QLIST = []; }
+aah_migrate();
 
 $logged  = logged_in();
 $isAdmin = role_at_least('admin');
+
+/* ---- banner music settings (admin only) ---- */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAdmin && ($_POST['act'] ?? '') === 'music') {
+    csrf_check();
+    if (!empty($_POST['remove'])) {
+        aah_remove_music();
+        flash('The banner music has been removed.');
+    } else {
+        list($rel, $err) = aah_store_music('track');
+        if ($err) {
+            flash($err);
+        } else {
+            if ($rel !== '') { aah_remove_music(); aah_meta_set('music_file', $rel); }
+            aah_meta_set('music_title', trim($_POST['music_title'] ?? ''));
+            aah_meta_set('music_auto', empty($_POST['music_auto']) ? '0' : '1');
+            flash($rel !== '' ? 'The music is on the banner now.' : 'Music settings saved.');
+        }
+    }
+    header('Location: aahistory.php'); exit;
+}
+$MUSIC = aah_music();
 
 function aah_icon($k) {
   $p = [
@@ -32,58 +55,38 @@ function aah_icon($k) {
   ];
   return '<svg viewBox="0 0 24 24" aria-hidden="true">' . ($p[$k] ?? '<circle cx="12" cy="12" r="8"/>') . '</svg>';
 }
-function aah_face($name, $slug) {
-    if ($slug && is_file(__DIR__ . '/assets/aahistory/' . $slug . '.jpg')) {
-        return '<span class="aah-face" style="background-image:url(\'assets/aahistory/' . e($slug) . '.jpg\')"></span>';
-    }
-    return '<span class="aah-face">' . aah_mono($name) . '</span>';
-}
-function aah_mono($name) {
-  $parts = array_values(array_filter(preg_split('/\s+/', trim($name))));
-  if (!$parts) return '&#10022;';
-  $ini = strtoupper(substr($parts[0],0,1) . (count($parts)>1 ? substr(end($parts),0,1) : ''));
-  return e($ini);
-}
-
 $NAV = [
   ['star','Trailblazers','#trailblazers'], ['mega','Civil Rights','#civil'], ['bulb','Inventions &amp; Innovation','#inventions'],
   ['gov','Politics &amp; Leadership','#politics'], ['arts','Arts &amp; Culture','#arts'], ['sci','Science &amp; Medicine','#science'],
   ['sport','Sports','#sports'], ['clock','Timeline','#timeline'],
 ];
-$TRAILBLAZERS = [
-  ['Frederick Douglass','Abolitionist &amp; Author','douglass'],
-  ['Harriet Tubman','Freedom Fighter &amp; Humanitarian','tubman'],
-  ['Booker T. Washington','Educator &amp; Advisor','washington'],
-  ['Madam C.J. Walker','Entrepreneur &amp; Philanthropist','walker'],
-  ['Thurgood Marshall','Supreme Court Justice','marshall'],
-];
-$INVENTIONS = [
-  ['Lewis Latimer','Improved the light bulb and electrical systems','latimer'],
-  ['Alexander Miles','Invented the automatic elevator doors','miles'],
-  ['Garrett Morgan','Invented the traffic signal','morgan'],
-  ['Thomas L. Jennings','Invented the dry cleaning process',''],
-];
+/* Everyone on this page now lives in the database so each name has its own
+   page. Admins also see the ones they've hidden while they're still writing. */
+$TRAILBLAZERS = aah_people('trailblazers', $isAdmin);
+$INVENTIONS   = aah_people('inventions',   $isAdmin);
+$POLITICS     = aah_people('politics',     $isAdmin);
+$SCIENCE      = aah_people('science',      $isAdmin);
+$SPORTS       = aah_people('sports',       $isAdmin);
+
 $CIVIL = ['Fought for equality','Challenged injustice','Changed laws','Inspired generations'];
-$POLITICS = [
-  ['Shirley Chisholm','1st Black Woman in Congress','chisholm'],
-  ['Barack Obama','44th President of the United States','obama'],
-  ['Kamala Harris','1st Black &amp; South Asian Vice President','harris'],
-  ['Colin Powell','Chairman of the Joint Chiefs of Staff','powell'],
-  ['Condoleezza Rice','1st Black Woman Secretary of State','rice'],
-];
 $ACHIEVEMENTS = ['The 13th, 14th &amp; 15th Amendments','Brown v. Board of Education (1954)','The Civil Rights Act (1964)','The Voting Rights Act (1965)','End of Legal Segregation'];
 $ARTS = [['arts','Music'],['arts','Visual Arts'],['book','Literature &amp; Theater'],['star','Dance']];
-$SCIENCE = [
-  ['Dr. Daniel Hale Williams','Pioneered open-heart surgery','williams'],
-  ['Dr. Mae Jemison','1st Black Woman in Space','jemison'],
-  ['George Washington Carver','Innovative Scientist &amp; Inventor','carver'],
-];
-$SPORTS = [
-  ['Jackie Robinson','Broke baseball&rsquo;s colour barrier, 1947','robinson'],
-  ['Wilma Rudolph','Three Olympic golds, 1960',''],
-  ['Muhammad Ali','Champion in the ring and for conscience','ali'],
-  ['Althea Gibson','1st Black champion at Wimbledon','gibson'],
-];
+
+/** One clickable portrait tile. Every name opens its own page. */
+function aah_tile($p, $fallbackIcon = '') {
+    $face = $p['photo']
+        ? '<span class="aah-face" style="background-image:url(\'' . e($p['photo']) . '\')"></span>'
+        : ($fallbackIcon ? '<span class="aah-face inv">' . aah_icon($fallbackIcon) . '</span>'
+                         : '<span class="aah-face">' . aah_mono_name($p['name']) . '</span>');
+    $hidden = ($p['status'] ?? 'published') !== 'published' ? '<i class="aah-hid">hidden</i>' : '';
+    return '<a class="aah-person" href="aahperson.php?p=' . e($p['slug']) . '">'
+         . $face . '<b>' . e($p['name']) . $hidden . '</b><span>' . e($p['role']) . '</span></a>';
+}
+/** A quiet "add someone" link under each section — admins only, so it never
+ *  disturbs the grid the family sees. */
+function aah_addlink($cat) {
+    return '<a class="aah-addlink" href="aahperson.php?new=1&amp;cat=' . e($cat) . '">+ Add someone to this section</a>';
+}
 $TIMELINE = [
   ['ship','1619','First enslaved Africans arrive in America'],
   ['scroll','1863','Emancipation Proclamation'],
@@ -111,8 +114,48 @@ page_head('African American History', ['body_class' => 'home aah']);
     <p class="aah-tag">Honoring our past. Celebrating our present. Inspiring our future.</p>
     <p class="aah-sub">From resilience to triumph, our history is filled with courageous leaders, brilliant minds,
        and everyday people who shaped our nation and the world.</p>
+
+    <?php if ($MUSIC): ?>
+    <!-- Banner music. Browsers refuse to start sound before a visitor touches
+         the page, so it also arms itself on the first click, key or scroll. -->
+    <div class="aah-music" data-auto="<?= $MUSIC['auto'] ? '1' : '0' ?>">
+      <audio id="aahTrack" loop preload="auto" src="<?= e($MUSIC['file']) ?>"></audio>
+      <button type="button" class="aah-mbtn" id="aahMbtn" aria-pressed="false">
+        <span class="aah-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="aah-mlab">Play the music</span>
+      </button>
+      <?php if (trim($MUSIC['title'])): ?><span class="aah-mtitle"><?= e($MUSIC['title']) ?></span><?php endif; ?>
+    </div>
+    <?php endif; ?>
   </div>
 </section>
+
+<?php if ($isAdmin): ?>
+<section class="aah-adminbar">
+  <details<?= $MUSIC ? '' : ' open' ?>>
+    <summary>
+      <span class="aah-abt">Banner music</span>
+      <span class="aah-abs"><?= $MUSIC ? 'Playing: ' . e($MUSIC['title'] ?: basename($MUSIC['file'])) : 'No track uploaded yet' ?></span>
+    </summary>
+    <form method="post" enctype="multipart/form-data" class="aah-mform">
+      <?= csrf_field() ?>
+      <input type="hidden" name="act" value="music">
+      <label class="aah-mf">Music file (MP3)<input type="file" name="track" accept="audio/*"></label>
+      <label class="aah-mf">Name of the track (shown beside the button)
+        <input type="text" name="music_title" maxlength="120" value="<?= e($MUSIC['title'] ?? '') ?>" placeholder="Lift Every Voice and Sing"></label>
+      <label class="aah-mchk"><input type="checkbox" name="music_auto" value="1"<?= (!$MUSIC || $MUSIC['auto']) ? ' checked' : '' ?>>
+        Start playing as soon as someone opens the page</label>
+      <p class="aah-mnote">A visitor can always stop it with the button on the banner, and their choice is remembered.
+        Some browsers and phones will not make sound until the visitor taps the page once — the button starts flashing gold when that happens.</p>
+      <div class="aah-mact">
+        <button class="btn2 solid" type="submit">Save</button>
+        <?php if ($MUSIC): ?><button class="aah-mdel" type="submit" name="remove" value="1"
+          onclick="return confirm('Remove the banner music?')">Remove the music</button><?php endif; ?>
+      </div>
+    </form>
+  </details>
+</section>
+<?php endif; ?>
 
 <!-- QUICK NAV -->
 <section class="aah-nav">
@@ -128,20 +171,18 @@ page_head('African American History', ['body_class' => 'home aah']);
       <h2>Trailblazers Who Changed the World</h2>
       <p class="aah-note">Courageous men and women who broke barriers and paved the way.</p>
       <div class="aah-people">
-        <?php foreach ($TRAILBLAZERS as $t): ?>
-          <div class="aah-person"><?= aah_face($t[0], $t[2] ?? '') ?><b><?= e($t[0]) ?></b><span><?= $t[1] /* authored */ ?></span></div>
-        <?php endforeach; ?>
+        <?php foreach ($TRAILBLAZERS as $t): ?><?= aah_tile($t) ?><?php endforeach; ?>
       </div>
+      <?php if ($isAdmin) echo aah_addlink('trailblazers'); ?>
     </section>
 
     <section class="aah-card" id="inventions">
       <h2>Inventions &amp; Innovations</h2>
       <p class="aah-note">Brilliant minds. Powerful ideas. Real impact.</p>
       <div class="aah-people four">
-        <?php foreach ($INVENTIONS as $t): ?>
-          <div class="aah-person"><?= ($t[2] ?? '') ? aah_face($t[0],$t[2]) : '<span class="aah-face inv">'.aah_icon('bulb').'</span>' ?><b><?= e($t[0]) ?></b><span><?= e($t[1]) ?></span></div>
-        <?php endforeach; ?>
+        <?php foreach ($INVENTIONS as $t): ?><?= aah_tile($t, 'bulb') ?><?php endforeach; ?>
       </div>
+      <?php if ($isAdmin) echo aah_addlink('inventions'); ?>
     </section>
   </div>
 
@@ -159,10 +200,9 @@ page_head('African American History', ['body_class' => 'home aah']);
       <h2>Politics &amp; Leadership</h2>
       <p class="aah-note">Leaders who have served, represented, and paved the way.</p>
       <div class="aah-people">
-        <?php foreach ($POLITICS as $t): ?>
-          <div class="aah-person"><?= aah_face($t[0], $t[2] ?? '') ?><b><?= e($t[0]) ?></b><span><?= $t[1] /* authored */ ?></span></div>
-        <?php endforeach; ?>
+        <?php foreach ($POLITICS as $t): ?><?= aah_tile($t) ?><?php endforeach; ?>
       </div>
+      <?php if ($isAdmin) echo aah_addlink('politics'); ?>
     </section>
   </div>
 
@@ -188,8 +228,14 @@ page_head('African American History', ['body_class' => 'home aah']);
       <h2 class="sm">Science &amp; Medicine</h2>
       <p class="aah-note">Pioneers in discovery and healing.</p>
       <ul class="aah-list">
-        <?php foreach ($SCIENCE as $s): ?><li><?= ($s[2] ?? '') ? '<span class="aah-mini" style="background-image:url(\'assets/aahistory/'.e($s[2]).'.jpg\')"></span>' : '<span class="aah-ci">'.aah_icon('check').'</span>' ?><div><b><?= e($s[0]) ?></b><span class="aah-role"><?= $s[1] /* authored */ ?></span></div></li><?php endforeach; ?>
+        <?php foreach ($SCIENCE as $s): ?>
+          <li><a class="aah-lrow" href="aahperson.php?p=<?= e($s['slug']) ?>">
+            <?= $s['photo'] ? '<span class="aah-mini" style="background-image:url(\''.e($s['photo']).'\')"></span>' : '<span class="aah-ci">'.aah_icon('check').'</span>' ?>
+            <div><b><?= e($s['name']) ?></b><span class="aah-role"><?= e($s['role']) ?></span></div>
+          </a></li>
+        <?php endforeach; ?>
       </ul>
+      <?php if ($isAdmin) echo aah_addlink('science'); ?>
     </section>
   </div>
 
@@ -198,10 +244,9 @@ page_head('African American History', ['body_class' => 'home aah']);
     <h2 class="sm">Sports</h2>
     <p class="aah-note">Champions who changed the game &mdash; and the country.</p>
     <div class="aah-people four">
-      <?php foreach ($SPORTS as $t): ?>
-        <div class="aah-person"><?= aah_face($t[0], $t[2] ?? '') ?><b><?= e($t[0]) ?></b><span><?= $t[1] /* authored */ ?></span></div>
-      <?php endforeach; ?>
+      <?php foreach ($SPORTS as $t): ?><?= aah_tile($t) ?><?php endforeach; ?>
     </div>
+    <?php if ($isAdmin) echo aah_addlink('sports'); ?>
   </section>
 
   <!-- TIMELINE -->
@@ -255,5 +300,74 @@ page_head('African American History', ['body_class' => 'home aah']);
 <section class="aah-closing">
   <span class="fvq">&ldquo;</span>The past is our teacher. The present is our responsibility. The future is our legacy.
 </section>
+
+<?php if ($MUSIC): ?>
+<script>
+(function(){
+  var box = document.querySelector('.aah-music');
+  var a   = document.getElementById('aahTrack');
+  var btn = document.getElementById('aahMbtn');
+  var lab = btn && btn.querySelector('.aah-mlab');
+  if (!box || !a || !btn) return;
+
+  var KEY = 'aah_music';                       // remember whether they wanted it
+  var pref = null;
+  try { pref = localStorage.getItem(KEY); } catch (e) {}
+  var wantAuto = box.getAttribute('data-auto') === '1' && pref !== 'off';
+  var armed = false;                           // waiting for the first tap
+
+  function paint(playing){
+    btn.classList.toggle('on', playing);
+    btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+    if (lab) lab.textContent = playing ? 'Pause the music' : (armed ? 'Tap to play the music' : 'Play the music');
+  }
+  /* ease the volume up so it never startles anyone */
+  function fadeIn(){
+    a.volume = 0;
+    var v = 0, t = setInterval(function(){
+      v += 0.06; if (v >= 0.55) { v = 0.55; clearInterval(t); }
+      try { a.volume = v; } catch (e) { clearInterval(t); }
+    }, 70);
+  }
+  function play(remember){
+    var p = a.play();
+    if (p && p.catch) {
+      p.then(function(){ armed = false; box.classList.remove('waiting'); fadeIn(); paint(true);
+                         if (remember) { try { localStorage.setItem(KEY,'on'); } catch(e){} } })
+       .catch(function(){ arm(); });
+    } else { fadeIn(); paint(true); }
+  }
+  /* the browser said no until the visitor interacts — wait for that instead */
+  function arm(){
+    if (armed) return;
+    armed = true;
+    box.classList.add('waiting');
+    paint(false);
+    var go = function(ev){
+      if (ev && btn.contains(ev.target)) return;   // the button handles itself
+      off(); play(false);
+    };
+    var off = function(){
+      document.removeEventListener('click', go, true);
+      document.removeEventListener('keydown', go, true);
+      document.removeEventListener('touchend', go, true);
+    };
+    document.addEventListener('click', go, true);
+    document.addEventListener('keydown', go, true);
+    document.addEventListener('touchend', go, true);
+  }
+
+  btn.addEventListener('click', function(){
+    if (a.paused) { armed = false; box.classList.remove('waiting'); play(true); }
+    else { a.pause(); paint(false); try { localStorage.setItem(KEY,'off'); } catch(e){} }
+  });
+  a.addEventListener('pause', function(){ paint(false); });
+  a.addEventListener('play',  function(){ paint(true); });
+
+  paint(false);
+  if (wantAuto) play(false);
+})();
+</script>
+<?php endif; ?>
 
 <?php legacy_footer(); page_foot();
