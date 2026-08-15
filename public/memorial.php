@@ -1,7 +1,9 @@
 <?php
 require __DIR__ . '/../src/bootstrap.php';
 require_once __DIR__ . '/../src/memorial_data.php';
+require_once __DIR__ . '/../src/music.php';
 mem_migrate();
+music_handle_post('memorial', 'memorial.php');
 
 $isAdmin = role_at_least('moderator');
 
@@ -41,6 +43,9 @@ page_head('Memorial', ['body_class' => 'home mem']);
     <p>We honor the lives, love, and legacy of our family members who have gone before us. Their light continues to shine in us.</p>
   </div>
 </section>
+
+<?php music_player('memorial', ['class' => 'mus-band mus-mem', 'lead' => 'A Song of Remembrance']); ?>
+<?php music_admin_box('memorial', 'Memorial music'); ?>
 
 <section class="mem-bar">
   <div class="mb-left">
@@ -110,5 +115,7 @@ function memFilter(){
 }
 function memClear(){ var b=document.getElementById('memq'); if(b){ b.value=''; memFilter(); b.focus(); } }
 </script>
+
+<?php music_script(); ?>
 
 <?php legacy_footer(); page_foot();

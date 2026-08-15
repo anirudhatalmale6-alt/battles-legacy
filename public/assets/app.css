@@ -2152,3 +2152,6 @@ body.cal .foot{display:none;}
 .pm-sthumb img{width:100%;height:100%;object-fit:cover;display:block;}
 .pm-sname{flex:1;min-width:0;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .pm-sdim{flex:none;font-size:12px;color:#9a3b3b;}
+/* the memorial band is quieter than the home page one — this is a page people
+   arrive at to remember someone, not a fanfare */
+.mus-mem{background:linear-gradient(180deg,#2a1418,#1a0c0f);border-top:1px solid rgba(201,162,75,.30);}
