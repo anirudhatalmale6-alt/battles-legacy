@@ -35,6 +35,7 @@ function page_head($title, $opts = []) {
     <a href="enterprise.php">Enterprise</a>
     <a href="health.php">Health</a>
     <a href="news.php">Family News</a>
+    <a href="calendar.php">Calendar</a>
     <a href="memorial.php">Memorial</a>
     <a href="aahistory.php">African American History</a>
     <a href="feedback.php">Your Thoughts</a>

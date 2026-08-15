@@ -1967,3 +1967,120 @@ body.hlth :target{animation:hFlash 1.6s ease-out 1;}
   border:1px solid #e6d8bd;border-radius:10px;margin-bottom:12px;}
 .cv-remove{margin-top:14px;border-top:1px solid #efe6d4;padding-top:12px;}
 .cv-remove button{background:none;border:none;color:#9a3b3b;font-size:13.5px;text-decoration:underline;cursor:pointer;padding:0;}
+
+/* ============ Home cards: every picture is now a link ============ */
+.hc-media a{display:block;line-height:0;}
+/* the Featured Memorial is a standing portrait, not a landscape scene, so it
+   gets a taller window and sits on the face instead of the middle of the chest */
+.hc-media.tall img{height:220px;object-position:center 18%;}
+.hc-events li{position:relative;}
+.ev-k{display:block;font-style:normal;font-size:11.5px;letter-spacing:.4px;text-transform:uppercase;color:#9a7742;margin-top:2px;}
+.hc-priv{margin:0 0 12px;font-size:12.5px;color:#8a7350;font-style:italic;}
+
+/* ---- home page editor (admins) ---- */
+.home-admin{max-width:1240px;margin:0 auto;padding:4px 24px 10px;}
+.home-admin details{background:#fffdf8;border:1px solid #e3dac9;border-radius:12px;box-shadow:0 3px 12px rgba(60,40,20,.10);}
+.home-admin summary{cursor:pointer;padding:13px 18px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+.ha-t{font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:18px;letter-spacing:.3px;}
+.ha-s{color:#8a8298;font-size:13px;}
+.home-admin form{padding:4px 18px 18px;}
+.ha-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;}
+.ha-grid fieldset{border:1px solid #e6dcc6;border-radius:10px;padding:12px 14px 14px;margin:0;background:#fffaf0;}
+.ha-grid legend{font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:16px;padding:0 6px;}
+.ha-grid label{display:flex;flex-direction:column;gap:5px;font-size:13px;color:#5c4a2a;
+  text-transform:none;letter-spacing:normal;margin-bottom:11px;}
+.ha-grid input[type=text],.ha-grid textarea,.ha-grid select{padding:9px 11px;border:1px solid #d9cdb4;border-radius:8px;
+  font-family:'EB Garamond',serif;font-size:15px;background:#fff;color:#3a2a18;width:100%;}
+.ha-grid input[type=file]{color:#5c4a2a;font-size:13px;}
+.ha-grid textarea{resize:vertical;line-height:1.45;}
+.ha-note{margin:0;color:#8a8298;font-size:12.5px;line-height:1.5;}
+.ha-act{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:16px;}
+.ha-reset{background:none;border:none;color:#9a3b3b;font-size:13.5px;text-decoration:underline;cursor:pointer;padding:0;}
+
+/* ================== The family calendar ================== */
+.cal-hero{background:linear-gradient(135deg,#4a141a,#360d11 60%,#2a0b0e);border-bottom:3px solid var(--gold);
+  padding:44px clamp(16px,5vw,70px);}
+.cal-hi{max-width:1240px;margin:0 auto;}
+.cal-hi h1{font-family:'Cormorant Garamond',serif;color:var(--gold2);font-size:clamp(30px,4.4vw,46px);margin:0;letter-spacing:.5px;}
+.cal-hi p{color:#e9d9bb;font-size:15.5px;line-height:1.6;margin:10px 0 0;max-width:62ch;}
+.cal-wrap{max-width:1240px;}
+.cal-legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 16px;}
+.cal-lg{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:#5c4a2a;}
+.cal-lg i{width:11px;height:11px;border-radius:50%;display:inline-block;background:#b9a06a;}
+.cal-lg.bday i,.cal-day li.bday .cal-tag,.cal-up li.bday .cal-when{background:#2f6f4f;}
+.cal-lg.anniv i,.cal-day li.anniv .cal-tag,.cal-up li.anniv .cal-when{background:#8a5f16;}
+.cal-lg.remem i,.cal-day li.remem .cal-tag,.cal-up li.remem .cal-when{background:#5c1a1f;}
+.cal-lg.born i,.cal-day li.born .cal-tag,.cal-up li.born .cal-when{background:#4a5b7a;}
+.cal-lg.event i,.cal-day li.event .cal-tag,.cal-up li.event .cal-when{background:#7a3f6a;}
+
+.cal-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px;flex-wrap:wrap;}
+.cal-bar h2{font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:clamp(22px,3vw,30px);margin:0;}
+.cal-bar h2 span{font-family:'EB Garamond',serif;font-size:14px;color:#9a7742;font-style:italic;margin-left:6px;}
+.cal-nav{color:#5c1a1f;text-decoration:none;font-size:14.5px;border:1px solid #d9c39a;border-radius:8px;padding:7px 13px;background:#fbf3e2;}
+.cal-nav:hover{background:#5c1a1f;color:var(--gold2);border-color:#5c1a1f;}
+
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;background:#e6d8bd;
+  border:1px solid #d9c39a;border-radius:12px;padding:5px;}
+.cal-dow{text-align:center;font-size:12px;letter-spacing:.8px;text-transform:uppercase;color:#7a5a34;padding:6px 0;}
+.cal-cell{background:#fffaf0;border-radius:8px;min-height:96px;padding:6px 6px 7px;overflow:hidden;}
+.cal-cell.empty{background:transparent;}
+.cal-cell.now{outline:2px solid var(--gold);outline-offset:-2px;background:#fff6e2;}
+.cal-dnum{display:block;font-size:12.5px;color:#9a7742;margin-bottom:3px;}
+.cal-cell.now .cal-dnum{color:#5c1a1f;font-weight:600;}
+.cal-ev{display:flex;align-items:center;gap:5px;text-decoration:none;font-size:11.5px;line-height:1.25;
+  color:#3f2f1a;margin-bottom:3px;}
+.cal-ev i{flex:none;width:7px;height:7px;border-radius:50%;background:#b9a06a;}
+.cal-ev span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cal-ev:hover span{text-decoration:underline;}
+.cal-ev.bday i{background:#2f6f4f;} .cal-ev.anniv i{background:#8a5f16;}
+.cal-ev.remem i{background:#5c1a1f;} .cal-ev.born i{background:#4a5b7a;} .cal-ev.event i{background:#7a3f6a;}
+.cal-more{display:block;font-size:11px;color:#8a5f16;text-decoration:none;margin-top:1px;}
+.cal-more:hover{text-decoration:underline;}
+
+.cal-note{margin:14px 0 0;background:#fbf3e2;border:1px dashed #d9c39a;border-radius:10px;padding:11px 14px;
+  font-size:13.5px;color:#5c4a2a;}
+.cal-note a{color:#5c1a1f;}
+
+.cal-cols{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:24px;margin-top:26px;align-items:start;}
+.cal-list h3,.cal-side h3{font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:23px;margin:0 0 12px;}
+.cal-list h3 i{font-style:normal;font-size:14px;color:#9a7742;}
+.cal-day{display:flex;gap:14px;padding:12px 0;border-top:1px solid #ece0c8;}
+.cal-dh{flex:none;width:52px;text-align:center;}
+.cal-dh b{display:block;font-family:'Cormorant Garamond',serif;font-size:26px;color:#5c1a1f;line-height:1;}
+.cal-dh span{display:block;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:#9a7742;margin-top:2px;}
+.cal-day ul{list-style:none;margin:0;padding:0;flex:1;min-width:0;}
+.cal-day li{padding:5px 0;}
+.cal-day li a{color:#3a1712;text-decoration:none;font-size:15.5px;}
+.cal-day li a:hover{text-decoration:underline;}
+.cal-tag{display:inline-block;font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;color:#fff;
+  background:#b9a06a;border-radius:5px;padding:2px 7px;margin-right:8px;vertical-align:1px;}
+.cal-sub{display:block;color:#8a7350;font-size:13px;margin-top:1px;}
+
+.cal-side{background:#fbf3e2;border:1px solid #e0cba0;border-radius:12px;padding:16px 18px 18px;}
+.cal-up{list-style:none;margin:0 0 14px;padding:0;}
+.cal-up li{padding:9px 0;border-bottom:1px dashed #e0cba0;}
+.cal-up li:last-child{border-bottom:0;}
+.cal-up li a{color:#3a1712;text-decoration:none;font-size:15.5px;}
+.cal-up li a:hover{text-decoration:underline;}
+.cal-when{display:inline-block;font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;color:#fff;
+  background:#b9a06a;border-radius:5px;padding:2px 7px;margin-right:8px;vertical-align:1px;}
+.cal-hint{font-size:12.5px;color:#8a7350;line-height:1.55;margin:0 0 14px;}
+
+@media (max-width:900px){
+  .cal-cols{grid-template-columns:1fr;}
+  .cal-cell{min-height:80px;}
+  .cal-ev span{display:none;}
+  .cal-ev{display:inline-flex;margin-right:3px;}
+}
+@media (max-width:560px){
+  .cal-grid{gap:3px;padding:3px;}
+  .cal-cell{min-height:62px;padding:4px;}
+}
+
+/* the calendar is a light page like the tribute pages: the hero runs edge to
+   edge and the month sits on cream, not on the dark home-page background */
+body.cal{background:radial-gradient(130% 100% at 50% 0%, #f1e3c4, #e6d2ac 72%, #dcc59a);color:#4a3620;}
+body.cal .wrap{max-width:none;padding:0;}
+body.cal .wrap.cal-wrap{max-width:1240px;margin:0 auto;padding:26px 24px 56px;}
+body.cal .foot{display:none;}
+@media (min-width:901px){ .cal-side{position:sticky;top:16px;} }

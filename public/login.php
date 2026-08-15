@@ -24,6 +24,7 @@ page_head('Family Login');
   <input type="password" name="password" required>
   <button class="btn gold" style="width:100%">Sign in</button>
   <p class="muted" style="text-align:center;margin-top:16px">
+    <a href="forgot.php">Forgotten your password?</a><br>
     Have an invitation link? Open it to set up your account.<br>
     No account yet? Ask a family admin to invite you.
   </p>

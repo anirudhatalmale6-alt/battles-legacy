@@ -82,8 +82,8 @@ page_head('Family News', ['body_class' => 'home fnews']);
     </section>
 
     <!-- UPCOMING EVENTS -->
-    <aside class="fn-events">
-      <div class="fn-head"><h2><?= news_icon('calendar') ?> Upcoming Events</h2><a class="fn-viewall" href="#" onclick="return fnSoon(this)">View Calendar &rsaquo;</a></div>
+    <aside class="fn-events" id="events">
+      <div class="fn-head"><h2><?= news_icon('calendar') ?> Upcoming Events</h2><a class="fn-viewall" href="calendar.php">View Calendar &rsaquo;</a></div>
       <?php if ($EVENTS): ?>
         <?php foreach ($EVENTS as $ev): ?>
           <div class="fn-event">
@@ -95,7 +95,7 @@ page_head('Family News', ['body_class' => 'home fnews']);
             </div>
           </div>
         <?php endforeach; ?>
-        <button type="button" class="btn2 solid fn-allbtn" onclick="fnSoon(this)">View all Events</button>
+        <a class="btn2 solid fn-allbtn" href="calendar.php">Open the family calendar</a>
       <?php else: ?>
         <p class="fn-empty"><?= $isAdmin ? 'No events yet — add one from Manage Family News.' : 'Upcoming family events will appear here.' ?></p>
       <?php endif; ?>

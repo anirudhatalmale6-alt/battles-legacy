@@ -91,7 +91,15 @@ function install_gedcom($path) {
             while ($i < $N && $lines[$i][0] !== 0) {
                 [$lvl,,$t,$v] = $lines[$i];
                 if ($t==='NAME' && $lvl===1) {
-                    if (preg_match('/^(.*?)\/(.*?)\/?\s*$/', $v, $gm)) { $r['given']=trim($gm[1]); $r['surname']=trim($gm[2]); $r['name']=trim($r['given'].' '.$r['surname']); }
+                    /* GEDCOM writes "Augustus /Battles/ Jr." — the surname is between
+                       the slashes and anything after it is a suffix. The old pattern
+                       swallowed the closing slash into the surname, which is why 59
+                       people were displayed as "Augustus Battles/ Jr." */
+                    if (preg_match('~^(.*?)/([^/]*)/(.*)$~', $v, $gm)) {
+                        $r['given']=trim($gm[1]); $r['surname']=trim($gm[2]);
+                        $sfx=trim($gm[3]);
+                        $r['name']=trim($r['given'].' '.$r['surname'].($sfx!=='' ? ' '.$sfx : ''));
+                    }
                     else { $r['name']=trim($v); $r['given']=trim($v); }
                 } elseif ($t==='SEX' && $lvl===1) { $r['sex']=substr(trim($v),0,1);
                 } elseif ($t==='BIRT' && $lvl===1) { [$d,$p,$nx]=_ged_read_event($lines,$i,$N); $r['birth']=[$d,$p]; $i=$nx; continue;
@@ -235,4 +243,25 @@ function install_admin($name, $email, $pass) {
     if ($ex) q("UPDATE users SET name=?, pass_hash=?, role='admin', status='active' WHERE id=?", [$name,$hash,$ex['id']]);
     else q("INSERT INTO users (name,email,pass_hash,role,status) VALUES (?,?,?, 'admin','active')", [$name,$email,$hash]);
     return ['ok' => true, 'email' => $email];
+}
+
+/** One-off tidy-up for people imported before the NAME parser was fixed:
+ *  the closing GEDCOM slash was left glued to the surname, so a suffix came
+ *  out as "Battles/ Jr." instead of "Battles Jr.". Only touches rows that
+ *  still carry a slash, so it is safe to run again. */
+function install_fix_slashed_names($apply = false) {
+    $out = [];
+    foreach (all("SELECT pid,name,given,surname FROM persons WHERE name LIKE '%/%' OR surname LIKE '%/%'") as $p) {
+        $sur = (string)$p['surname'];
+        $sfx = '';
+        if (strpos($sur, '/') !== false) {
+            list($sur, $sfx) = array_map('trim', explode('/', $sur, 2));
+        }
+        $name = trim(trim((string)$p['given']) . ' ' . $sur . ($sfx !== '' ? ' ' . $sfx : ''));
+        $name = trim(preg_replace('/\s+/', ' ', str_replace('/', ' ', $name)));
+        if ($name === '' || ($name === $p['name'] && $sur === $p['surname'])) continue;
+        $out[] = ['pid' => $p['pid'], 'from' => $p['name'], 'to' => $name];
+        if ($apply) q("UPDATE persons SET name=?, surname=? WHERE pid=?", [$name, $sur, $p['pid']]);
+    }
+    return $out;
 }

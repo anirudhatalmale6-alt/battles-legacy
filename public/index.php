@@ -1,10 +1,59 @@
 <?php
 require __DIR__ . '/../src/bootstrap.php';
 require_once __DIR__ . '/../src/music.php';
+require_once __DIR__ . '/../src/site_meta.php';
+require_once __DIR__ . '/../src/calendar_data.php';
+require_once __DIR__ . '/../src/news_data.php';
 music_handle_post('home', 'index.php');
+
+/* ---- the home page editor (admins only) ------------------------------- */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['act'] ?? '') === 'homeedit' && role_at_least('admin')) {
+    csrf_check();
+    if (!empty($_POST['reset_defaults'])) {
+        foreach (['home_news_title','home_news_date','home_news_photo','home_mem_pid','home_mem_photo',
+                  'home_faith_verse','home_faith_ref','home_band_verse','home_band_ref'] as $k) sm_clear($k);
+        flash('The home page is back to its original wording.');
+    } else {
+        sm_set('home_news_title', mb_substr(trim($_POST['news_title'] ?? ''), 0, 120));
+        sm_set('home_news_date',  mb_substr(trim($_POST['news_date']  ?? ''), 0, 60));
+        sm_set('home_mem_pid',    trim($_POST['mem_pid'] ?? ''));
+        sm_set('home_faith_verse', mb_substr(trim($_POST['faith_verse'] ?? ''), 0, 600));
+        sm_set('home_faith_ref',   mb_substr(trim($_POST['faith_ref']   ?? ''), 0, 120));
+        sm_set('home_band_verse',  mb_substr(trim($_POST['band_verse']  ?? ''), 0, 600));
+        sm_set('home_band_ref',    mb_substr(trim($_POST['band_ref']    ?? ''), 0, 120));
+        $msgs = [];
+        foreach ([['news_photo','home_news_photo'], ['mem_photo','home_mem_photo']] as $pair) {
+            list($field, $key) = $pair;
+            list($rel, $err) = news_store_photo($field, sm($key, ''));
+            if ($err) $msgs[] = $err; elseif ($rel !== '' && $rel !== sm($key, '')) sm_set($key, $rel);
+        }
+        flash($msgs ? implode(' ', $msgs) : 'Home page updated.');
+    }
+    header('Location: index.php'); exit;
+}
+
 $u = current_user();
 $np = one("SELECT COUNT(*) c FROM persons")['c'] ?? 0;
 $nph = one("SELECT COUNT(*) c FROM photos WHERE status='approved'")['c'] ?? 0;
+
+/* ---- what the five cards show ----------------------------------------- */
+$NEWS_TITLE = sm('home_news_title', 'Battles Family Reunion');
+$NEWS_DATE  = sm('home_news_date',  'June 21, 2025');
+$NEWS_PHOTO = sm('home_news_photo', 'assets/home-news.jpg');
+
+$MEM_PID   = sm('home_mem_pid', '@I29@');            // Horatio Battles
+$MEM_PHOTO = sm('home_mem_photo', 'assets/home-memorial-horatio.jpg');
+$mp = $MEM_PID ? one("SELECT * FROM persons WHERE pid=?", [$MEM_PID]) : null;
+$MEM_NAME  = $mp ? person_display_name($mp) : 'Horatio Battles';
+$MEM_DATES = $mp ? (lifespan($mp) ?: '') : '1865 – 1944';
+
+$FAITH_VERSE = sm('home_faith_verse', '"Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go."');
+$FAITH_REF   = sm('home_faith_ref',   '— Joshua 1:9');
+$BAND_VERSE  = sm('home_band_verse',  '"One generation shall praise thy works to another, and shall declare thy mighty acts."');
+$BAND_REF    = sm('home_band_ref',    '— Psalm 145:4');
+
+try { $UPNEXT = cal_upcoming(4); } catch (\Throwable $ex) { $UPNEXT = []; }
+$isAdmin = role_at_least('admin');
 
 page_head('Home', ['body_class' => 'home']);
 ?>
@@ -72,6 +121,7 @@ page_head('Home', ['body_class' => 'home']);
         <span><?= (int)$np ?> people in the tree &middot; <?= (int)$nph ?> photographs</span></div>
       <nav class="mb-links">
         <a href="tree.php">Family Tree</a>
+        <a href="calendar.php">Family Calendar</a>
         <a href="upload.php">Add a Photo</a>
         <?php if (role_at_least('moderator')): ?><a href="moderate.php">Review Queue</a><?php endif; ?>
         <?php if (role_at_least('admin')): ?><a href="admin.php">Invite Family</a><?php endif; ?>
@@ -83,8 +133,8 @@ page_head('Home', ['body_class' => 'home']);
   <!-- scripture value strip -->
   <section class="valuestrip">
     <div class="vs-inner">
-      <blockquote class="vs-verse">"One generation shall praise thy works to another, and shall declare thy mighty acts."
-        <span>— Psalm 145:4</span></blockquote>
+      <blockquote class="vs-verse"><?= e($BAND_VERSE) ?>
+        <span><?= e($BAND_REF) ?></span></blockquote>
       <div class="vs-item">
         <span class="vs-ic"><svg viewBox="0 0 24 24"><path d="M12 3a5 5 0 0 0-4 8 4 4 0 0 0 1 7h6a4 4 0 0 0 1-7 5 5 0 0 0-4-8z"/><line x1="12" y1="13" x2="12" y2="22"/></svg></span>
         <div><h4>Our Roots</h4><p>Remember where we come from.</p></div>
@@ -104,51 +154,112 @@ page_head('Home', ['body_class' => 'home']);
     </div>
   </section>
 
-  <!-- feature cards -->
+  <!-- feature cards — every one of them now opens the page it is about -->
   <section class="homecards">
     <div class="hc-inner">
       <article class="hc">
         <h3>Family News</h3>
-        <div class="hc-media"><img src="assets/home-news.jpg" alt="Holmes Family Reunion group photo"></div>
-        <h5>Holmes Family Reunion</h5>
-        <p class="hc-sub">June 21, 2025</p>
-        <a class="btn2" href="login.php">Read More</a>
+        <div class="hc-media"><a href="news.php"><img src="<?= e($NEWS_PHOTO) ?>" alt="<?= e($NEWS_TITLE) ?>"></a></div>
+        <h5><?= e($NEWS_TITLE) ?></h5>
+        <?php if ($NEWS_DATE !== ''): ?><p class="hc-sub"><?= e($NEWS_DATE) ?></p><?php endif; ?>
+        <a class="btn2" href="news.php">Read More</a>
       </article>
 
       <article class="hc">
         <h3>Upcoming Events</h3>
-        <ul class="hc-events">
-          <li><span class="ev-d">May 25</span> Memorial Day Tribute</li>
-          <li><span class="ev-d">June 21</span> Holmes Family Reunion</li>
-          <li><span class="ev-d">July 4</span> Independence Day</li>
-          <li><span class="ev-d">Aug 15</span> Battles Legacy Scholarship Deadline</li>
-        </ul>
-        <a class="btn2" href="login.php">View Calendar</a>
+        <?php if ($UPNEXT): ?>
+          <ul class="hc-events">
+            <?php foreach ($UPNEXT as $o): ?>
+              <li><span class="ev-d"><?= e(cal_daylabel((int)$o['m'], (int)$o['d'])) ?></span>
+                <?= e($o['title']) ?>
+                <i class="ev-k"><?= e(cal_kinds()[$o['kind']][0] ?? 'Event') ?></i></li>
+            <?php endforeach; ?>
+          </ul>
+        <?php else: ?>
+          <ul class="hc-events"><li>Nothing on the calendar just yet.</li></ul>
+        <?php endif; ?>
+        <?php if (!$u): ?><p class="hc-priv">Sign in to see family birthdays and anniversaries.</p><?php endif; ?>
+        <a class="btn2" href="calendar.php">View Calendar</a>
       </article>
 
       <article class="hc">
         <h3>Featured Memorial</h3>
-        <div class="hc-media"><img src="assets/home-memorial.jpg" alt="Elizabeth Battles Holmes"></div>
-        <h5>Elizabeth Battles Holmes</h5>
-        <p class="hc-sub">Sept. 29, 1936 – June 17, 2022</p>
-        <a class="btn2" href="login.php">View Memorial</a>
+        <div class="hc-media tall"><a href="<?= $mp ? 'tribute.php?pid=' . e(urlencode($MEM_PID)) : 'memorial.php' ?>"><img src="<?= e($MEM_PHOTO) ?>" alt="<?= e($MEM_NAME) ?>"></a></div>
+        <h5><?= e($MEM_NAME) ?></h5>
+        <?php if ($MEM_DATES !== ''): ?><p class="hc-sub"><?= e($MEM_DATES) ?></p><?php endif; ?>
+        <a class="btn2" href="memorial.php">View Memorial</a>
       </article>
 
       <article class="hc">
         <h3>Family Tree</h3>
-        <div class="hc-media"><img src="assets/home-tree.jpg" alt="The Battles family tree"></div>
+        <div class="hc-media"><a href="tree.php"><img src="assets/home-tree.jpg" alt="The Battles family tree"></a></div>
         <p class="hc-text">Explore our family tree and discover your roots.</p>
         <a class="btn2" href="tree.php">Explore Tree</a>
       </article>
 
       <article class="hc">
         <h3>Faith Corner</h3>
-        <div class="hc-media"><img src="assets/home-faith.jpg" alt="Open Bible by candlelight"></div>
-        <p class="hc-text">"Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go."</p>
-        <p class="hc-sub">— Joshua 1:9</p>
+        <div class="hc-media"><a href="faith.php"><img src="assets/home-faith.jpg" alt="Open Bible by candlelight"></a></div>
+        <p class="hc-text"><?= e($FAITH_VERSE) ?></p>
+        <?php if ($FAITH_REF !== ''): ?><p class="hc-sub"><?= e($FAITH_REF) ?></p><?php endif; ?>
+        <a class="btn2" href="faith.php">Faith &amp; Family</a>
       </article>
     </div>
   </section>
+
+  <?php if ($isAdmin): ?>
+  <!-- Everything on the cards above is text William can change himself. -->
+  <section class="home-admin">
+    <details>
+      <summary><span class="ha-t">Edit the home page</span>
+        <span class="ha-s">The featured story, the memorial, and both scriptures</span></summary>
+      <form method="post" enctype="multipart/form-data">
+        <?= csrf_field() ?>
+        <input type="hidden" name="act" value="homeedit">
+
+        <div class="ha-grid">
+          <fieldset>
+            <legend>Family News card</legend>
+            <label>Headline<input type="text" name="news_title" maxlength="120" value="<?= e($NEWS_TITLE) ?>"></label>
+            <label>Date underneath<input type="text" name="news_date" maxlength="60" value="<?= e($NEWS_DATE) ?>" placeholder="June 21, 2025"></label>
+            <label>Change the picture<input type="file" name="news_photo" accept="image/*"></label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Featured Memorial card</legend>
+            <label>Who is featured
+              <select name="mem_pid">
+                <option value="">— choose someone —</option>
+                <?php foreach (all("SELECT pid,name FROM persons WHERE living=0 AND name<>'' ORDER BY name") as $d): ?>
+                  <option value="<?= e($d['pid']) ?>"<?= $d['pid'] === $MEM_PID ? ' selected' : '' ?>><?= e($d['name']) ?></option>
+                <?php endforeach; ?>
+              </select></label>
+            <label>Change the picture<input type="file" name="mem_photo" accept="image/*"></label>
+            <p class="ha-note">The name and dates come from that person&rsquo;s page in the tree, so they are always right.</p>
+          </fieldset>
+
+          <fieldset>
+            <legend>Faith Corner verse</legend>
+            <label>The verse<textarea name="faith_verse" rows="4" maxlength="600"><?= e($FAITH_VERSE) ?></textarea></label>
+            <label>Where it is from<input type="text" name="faith_ref" maxlength="120" value="<?= e($FAITH_REF) ?>" placeholder="— Joshua 1:9"></label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Scripture band</legend>
+            <label>The verse<textarea name="band_verse" rows="4" maxlength="600"><?= e($BAND_VERSE) ?></textarea></label>
+            <label>Where it is from<input type="text" name="band_ref" maxlength="120" value="<?= e($BAND_REF) ?>" placeholder="— Psalm 145:4"></label>
+          </fieldset>
+        </div>
+
+        <div class="ha-act">
+          <button class="btn2 solid" type="submit">Save the home page</button>
+          <button class="ha-reset" type="submit" name="reset_defaults" value="1"
+            onclick="return confirm('Put every one of these back the way it started?')">Reset to the original wording</button>
+        </div>
+      </form>
+    </details>
+  </section>
+  <?php endif; ?>
 
   <!-- everyone's project: the invitation to comment -->
   <section class="askband">

@@ -1,6 +1,7 @@
 <?php
 require __DIR__ . '/../src/bootstrap.php';
 require_once __DIR__ . '/../src/install.php';
+require_once __DIR__ . '/../src/pwreset.php';
 require_role('admin');
 $me = current_user();
 
@@ -31,6 +32,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($act === 'restore') {
         q("UPDATE users SET status='active' WHERE id=?", [(int)$_POST['uid']]);
         flash('Member restored.');
+    } elseif ($act === 'pwreset') {
+        /* A member who has forgotten their password and can't get the email —
+           this makes them the same one-time link, for William to pass on. */
+        $uid = (int)($_POST['uid'] ?? 0);
+        $who = $uid ? one("SELECT * FROM users WHERE id=?", [$uid]) : null;
+        if ($who) {
+            pwreset_create($who['id'], 'admin');
+            flash('Reset link created for ' . ($who['name'] ?: $who['email']) . ' — copy it from the list below and send it to them.');
+        }
+    } elseif ($act === 'pwcancel') {
+        $uid = (int)($_POST['uid'] ?? 0);
+        if ($uid) { try { q("UPDATE password_resets SET used_at=CURRENT_TIMESTAMP WHERE user_id=? AND used_at IS NULL", [$uid]); } catch (\Throwable $e) {} }
+        flash('Those reset links have been cancelled.');
     } elseif ($act === 'importphotos') {
         $dir = trim($_POST['photo_dir'] ?? '');
         $r = install_photos($dir);
@@ -49,6 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $users = all("SELECT * FROM users ORDER BY role='admin' DESC, role='moderator' DESC, name");
+$resets = pwreset_open();
 $invites = all("SELECT i.*, u.name AS by_name FROM invites i LEFT JOIN users u ON u.id=i.invited_by WHERE i.used_at IS NULL ORDER BY i.id DESC");
 
 page_head('Members');
@@ -106,8 +121,35 @@ page_head('Members');
 </div>
 <?php endif; ?>
 
+<?php if ($resets): ?>
+<div class="panel" style="margin-top:18px">
+  <h2>Password reset links</h2>
+  <p class="muted">A link works once and expires 24 hours after it was made. Send it to the person privately.
+    &ldquo;Asked for it&rdquo; means they used the Forgotten password form themselves.</p>
+  <table class="list">
+    <tr><th>Name</th><th>Where from</th><th>Link (click to select, then copy)</th><th></th></tr>
+    <?php foreach ($resets as $r): $url = base_url() . '/reset.php?token=' . $r['token']; ?>
+      <tr>
+        <td><?= e($r['name'] ?: $r['email']) ?></td>
+        <td class="muted"><?= $r['source'] === 'self'
+              ? 'Asked for it' . ($r['emailed'] ? ' · emailed' : ' · email not sent')
+              : 'You made it' ?></td>
+        <td><input type="text" readonly value="<?= e($url) ?>" onclick="this.select()" style="font-size:13px"></td>
+        <td>
+          <form method="post" style="margin:0">
+            <?= csrf_field() ?><input type="hidden" name="action" value="pwcancel"><input type="hidden" name="uid" value="<?= (int)$r['user_id'] ?>">
+            <button class="btn" style="margin:0;padding:5px 10px;font-size:14px">Cancel</button>
+          </form>
+        </td>
+      </tr>
+    <?php endforeach; ?>
+  </table>
+</div>
+<?php endif; ?>
+
 <div class="panel" style="margin-top:18px">
   <h2>Members (<?= count($users) ?>)</h2>
+  <p class="muted">Forgotten a password? Press <b>Reset link</b> beside their name and send them the link that appears above.</p>
   <table class="list">
     <tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr>
     <?php foreach ($users as $u): ?>
@@ -133,7 +175,13 @@ page_head('Members');
           <?php endif; ?>
         </td>
         <td><span class="pill <?= $u['status']==='active'?'approved':'pending' ?>"><?= e(ucfirst($u['status'])) ?></span></td>
-        <td>
+        <td style="white-space:nowrap">
+          <?php if ($u['status']==='active'): ?>
+          <form method="post" style="margin:0;display:inline">
+            <?= csrf_field() ?><input type="hidden" name="uid" value="<?= (int)$u['id'] ?>">
+            <button class="btn" name="action" value="pwreset" style="margin:0;padding:5px 10px;font-size:14px">Reset link</button>
+          </form>
+          <?php endif; ?>
           <?php if ($u['id'] != $me['id']): ?>
           <form method="post" style="margin:0;display:inline">
             <?= csrf_field() ?><input type="hidden" name="uid" value="<?= (int)$u['id'] ?>">
