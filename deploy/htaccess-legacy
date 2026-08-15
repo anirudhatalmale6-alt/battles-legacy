@@ -1,0 +1,19 @@
+# The Battles Legacy — routes /legacy/ into public/ and protects internals.
+# No PHP handler line: inherits the account default PHP (7.2, which has PDO/MySQL).
+RewriteEngine On
+RewriteBase /legacy/
+
+# Internals are never served.
+RewriteRule ^(src|bin|data|README\.md|config\.php|config\.example\.php|.*\.ged)(/|$) - [F,L]
+
+# The site moved to the bare domain, so send the old address there — once,
+# permanently. THE_REQUEST holds the ORIGINAL browser request line, so the
+# root's internal rewrite into legacy/public/ can never match this and loop.
+# (This has to live here rather than in the root .htaccess: when the path
+# resolves to a real file under public/, the rules in this file win.)
+RewriteCond %{THE_REQUEST} \s/legacy/(?:public/)?([^\s?]*) [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+RewriteCond %{REQUEST_URI} !^/legacy/public/
+RewriteRule ^(.*)$ public/$1 [L]
+DirectoryIndex index.php

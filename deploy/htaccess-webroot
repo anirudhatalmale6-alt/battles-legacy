@@ -1,0 +1,19 @@
+# The Battles Legacy — the family site answers at the bare domain.
+# The app itself still lives in legacy/public; nothing was moved or deleted.
+# The older TNG and WordPress files stay on disk, they simply are not served
+# at this address any more.
+
+RewriteEngine On
+RewriteBase /
+
+# Let's Encrypt has to keep reaching this or the certificate stops renewing.
+RewriteRule ^\.well-known/ - [L]
+
+# Never serve the application's internals, whichever way they are asked for.
+RewriteRule ^legacy/(src|bin|data|README\.md|config\.php|config\.example\.php|.*\.ged)(/|$) - [F,L]
+
+# Everything else is the family site.
+RewriteCond %{REQUEST_URI} !^/legacy/
+RewriteRule ^(.*)$ /legacy/public/$1 [L,QSA]
+
+DirectoryIndex index.php

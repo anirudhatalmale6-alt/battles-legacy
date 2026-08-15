@@ -214,7 +214,8 @@ page_head('In Memory of ' . $name, ['body_class' => 'home mem tribute']);
       <button class="btn gold" <?= !empty($_SESSION['lit'][$pid]) ? 'disabled' : '' ?>><?= !empty($_SESSION['lit'][$pid]) ? 'You lit a candle' : 'Light a Candle' ?></button>
     </form>
     <div class="trib-share">Share this memorial:
-      <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode(base_url() . '/legacy/tribute.php?pid=' . $pid) ?>" target="_blank" rel="noopener" title="Facebook">f</a>
+      <!-- base_url is the site's own address; the /legacy/ folder is no longer part of it -->
+      <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode(base_url() . '/tribute.php?pid=' . $pid) ?>" target="_blank" rel="noopener" title="Facebook">f</a>
       <button type="button" class="share-copy" onclick="tribCopy(this)" title="Copy link">&#128279;</button>
     </div>
   </div>
