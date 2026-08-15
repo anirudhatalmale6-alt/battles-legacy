@@ -155,8 +155,10 @@ function _first_last($name, $SUFFIX) {
     $t = array_values(array_filter(explode(' ', _norm($name)), function($w) use ($SUFFIX) { return !in_array($w,$SUFFIX,true); }));
     return count($t) < 2 ? null : $t[0].' '.end($t);
 }
-function install_photos($srcDir, $dry = false) {
+function install_photos($srcDir, $dry = false, $opts = []) {
     if (!is_dir($srcDir)) return ['ok' => false, 'error' => "Photo folder not found: $srcDir"];
+    $offset = max(0, (int)($opts['offset'] ?? 0));
+    $limit  = max(0, (int)($opts['limit']  ?? 0));   // 0 = the lot
     $SUFFIX = ['sr','jr','ii','iii','iv','v'];
     $OVERRIDES = [
         'anothany wynn'=>'@I252@', 'agustus battles'=>'@I35@',
@@ -180,6 +182,21 @@ function install_photos($srcDir, $dry = false) {
         'rory'=>'@I108@',            // Rory Micah Richmond
         'nathaniel battles tomb'=>'@I39@',  // Nathaniel Battles (grave photo)
         'gus battles headstone'=>'@I35@',   // Augustus `Gus` Battles (grave photo)
+        // Married names and nicknames, each confirmed against the tree rather
+        // than guessed — a wrong face on a relative's page is worse than none.
+        'jt battles'=>'@I7@',        // James `JT` Thomas Battles
+        'jing nicholson'=>'@I721@',  // Jing Purcell Nourse, married Darius Nicholson
+        'marjorie hobson'=>'@I506@', // Marjorie Fristoe, married Henry Hobson Sr
+        'barbara battles'=>'@I230@', // Barbara Moore, married James Earl Battles
+        'annie fristoe'=>'@I790@',   // Margaret Anne (Annie) Spence, married Frank Fristoe
+        'ladonica williams'=>'@I706@', // La Donica Janelle Williams (the file closes the space)
+        // Group photographs pin to the first person named; the caption keeps
+        // every name, so the others are still findable.
+        'brian chic'=>'@I28@',          // Brian Holmes & Shertoddra `Chic` Chandler
+        'hannah meagan'=>'@I474@',      // Hannah Lauren Richmond
+        'meagan hannah'=>'@I711@',      // Meagan Olivia Richmond
+        'meagan rory hannah'=>'@I711@',
+        'rory hannah meagan'=>'@I108@', // Rory Micah Richmond
     ];
     $people = all("SELECT pid,name,given,surname FROM persons");
     $byFull=[]; $byFL=[]; $byGiven=[];
@@ -213,8 +230,24 @@ function install_photos($srcDir, $dry = false) {
     // (so we never duplicate, but people whose pictures exist only as thumbnails still get them).
     $files = array_merge($full, $thumb);
     $isThumb = array_fill_keys($thumb, true);
-    $stats=['matched'=>0,'copied'=>0,'skipped'=>0,'unmatched'=>0,'thumb_used'=>0,'thumb_redundant'=>0]; $unmatched=[];
+    $total = count($files);
+    if ($offset || $limit) $files = array_slice($files, $offset, $limit ?: null);
+
+    $stats=['matched'=>0,'copied'=>0,'skipped'=>0,'unmatched'=>0,'thumb_used'=>0,'thumb_redundant'=>0,
+            'duplicate'=>0,'bytes'=>0]; $unmatched=[];
     $havePhoto=[]; foreach (all("SELECT DISTINCT pid FROM photos") as $r) $havePhoto[$r['pid']]=true;
+
+    /* The same picture is in that folder several times over — "Amy Battles 1.jpg",
+       "Amy Battles 1 (1).jpg", "Amy Battles 1 (2).jpg" are byte for byte identical.
+       Matching on the file NAME would put each of them on her page as a separate
+       photograph, so the test is the CONTENT: one hash per person, and a second
+       copy of a picture she already has is skipped. */
+    $seen = [];
+    foreach (all("SELECT pid, path FROM photos") as $r) {
+        $abs = $publicDir . $r['path'];
+        if (is_file($abs)) $seen[$r['pid'] . '|' . md5_file($abs)] = true;
+    }
+
     $exists = db()->prepare("SELECT id FROM photos WHERE pid=? AND filename=?");
     $insert = db()->prepare("INSERT INTO photos (pid,filename,path,caption,status,source) VALUES (?,?,?,?, 'approved','import')");
     foreach ($files as $f) {
@@ -222,15 +255,22 @@ function install_photos($srcDir, $dry = false) {
         $pid=$match($cleanName);
         if (!$pid) { $stats['unmatched']++; $unmatched[]=$f; continue; }
         if (!empty($isThumb[$f]) && !empty($havePhoto[$pid])) { $stats['thumb_redundant']++; continue; } // person already has a real photo
+        $src = $srcDir.'/'.$f;
+        $hash = @md5_file($src);
+        $key  = $pid . '|' . $hash;
+        if ($hash === false) { $stats['unmatched']++; $unmatched[]=$f.' (unreadable)'; continue; }
+        if (isset($seen[$key])) { $stats['duplicate']++; $havePhoto[$pid]=true; continue; }
         $stats['matched']++;
         if (!empty($isThumb[$f])) $stats['thumb_used']++;
+        $stats['bytes'] += (int)@filesize($src);
         $safe=preg_replace('/[^A-Za-z0-9._-]+/','_',$f);
         $relDir=config('photos_dir').'/'.trim($pid,'@'); $rel=$relDir.'/'.$safe;
-        $exists->execute([$pid,$f]); if ($exists->fetch()) { $stats['skipped']++; $havePhoto[$pid]=true; continue; }
-        if (!$dry) { @mkdir($publicDir.$relDir,0775,true); if (@copy($srcDir.'/'.$f,$publicDir.$rel)) $stats['copied']++; $insert->execute([$pid,$f,$rel,$cleanName]); }
-        $havePhoto[$pid]=true;
+        $exists->execute([$pid,$f]); if ($exists->fetch()) { $stats['skipped']++; $havePhoto[$pid]=true; $seen[$key]=true; continue; }
+        if (!$dry) { @mkdir($publicDir.$relDir,0775,true); if (@copy($src,$publicDir.$rel)) $stats['copied']++; $insert->execute([$pid,$f,$rel,$cleanName]); }
+        $havePhoto[$pid]=true; $seen[$key]=true;
     }
-    return ['ok' => true, 'stats' => $stats, 'unmatched' => $unmatched];
+    return ['ok' => true, 'stats' => $stats, 'unmatched' => $unmatched,
+            'total' => $total, 'offset' => $offset, 'done' => ($offset + count($files)) >= $total];
 }
 
 // ---------- Admin ----------
