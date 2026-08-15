@@ -35,13 +35,29 @@ page_head('Our Family Video', ['body_class' => 'fvid']);
 
     <div class="panel fvid-how">
       <h2>Putting it on Facebook</h2>
+      <p class="muted" style="margin:0 0 12px">A Facebook group banner can only be a still picture &mdash;
+        groups can&rsquo;t play a video up there. So the video goes in as a post, and there&rsquo;s a
+        matching banner below it for the top of the group.</p>
+      <h3 class="fvid-h3">The video &mdash; as a post</h3>
       <ol>
         <li><b>Download it first.</b> Press the gold button above. On a phone it may ask where to
           save it &mdash; Photos or Downloads is fine.</li>
         <li><b>Open your Battles Family group</b> and start a new post, the way you would for a photograph.</li>
         <li><b>Attach the video</b> from wherever you saved it, add a line or two, and post.</li>
+        <li><b>Then pin it.</b> Press the three dots on your own post and choose Pin post. It stays at
+          the top of the group for everyone, which is the next best thing to a moving banner.</li>
       </ol>
-      <p class="muted">It plays by itself as people scroll past, and they tap it for sound. If anyone
+
+      <h3 class="fvid-h3">The banner &mdash; the still picture</h3>
+      <div class="fvid-cover">
+        <img src="assets/video/facebook-cover.jpg" alt="The Battles Family — group banner">
+        <a class="btn gold" href="assets/video/facebook-cover.jpg" download="Battles-Family-Facebook-Banner.jpg">&#11015; Download the banner</a>
+      </div>
+      <p class="muted" style="margin:10px 0 14px">Made at the size Facebook wants for a group cover
+        (1640 &times; 856), with the wording kept to the middle so nothing important is cut off on a phone.
+        In the group, press the camera on the current banner and choose Upload photo.</p>
+
+      <p class="muted">The video plays by itself as people scroll past, and they tap it for sound. If anyone
         asks how to get on the site, send them to <b>thebattlesfamily.com</b> &mdash; there&rsquo;s an
         <i>Ask to join</i> link on the sign-in page, and the request comes to you.</p>
     </div>
