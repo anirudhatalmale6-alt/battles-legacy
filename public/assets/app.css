@@ -2084,3 +2084,8 @@ body.cal .wrap{max-width:none;padding:0;}
 body.cal .wrap.cal-wrap{max-width:1240px;margin:0 auto;padding:26px 24px 56px;}
 body.cal .foot{display:none;}
 @media (min-width:901px){ .cal-side{position:sticky;top:16px;} }
+
+/* correcting someone already in the tree — the panel William reaches for most */
+.af-edit{border-left:3px solid var(--gold);}
+.af-datehint{font-size:12.5px;line-height:1.5;margin:10px 0 4px;}
+.af-datehint b{color:var(--gold2);font-weight:normal;}

@@ -73,8 +73,8 @@ function te_create_person($f) {
     $pid     = te_new_pid();
     $given   = trim($f['given'] ?? '');
     $surname = trim($f['surname'] ?? '');
-    $name    = trim($given . ' ' . $surname);
-    if ($name === '') $name = 'Unknown';
+    $name    = te_full_name($f);
+    if (trim($f['death_date'] ?? '') !== '') $f['living'] = 0;
     q("INSERT INTO persons (pid,name,given,surname,sex,birth_date,birth_place,death_date,death_place,buri_date,buri_place,living,famc,fams,occupation,education,notes)
        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [$pid, $name, $given, $surname, ($f['sex'] ?? ''),
@@ -200,6 +200,7 @@ function te_clean_fields($src) {
     return [
       'given'      => trim($src['c_given'] ?? ''),
       'surname'    => trim($src['c_surname'] ?? ''),
+      'suffix'     => trim($src['c_suffix'] ?? ''),
       'sex'        => in_array(strtoupper($src['c_sex'] ?? ''), ['M','F'], true) ? strtoupper($src['c_sex']) : '',
       'birth_date' => trim($src['c_birth'] ?? ''),
       'birth_place'=> trim($src['c_birthplace'] ?? ''),
@@ -209,13 +210,38 @@ function te_clean_fields($src) {
     ];
 }
 
+/** "Jr." / "III" — whatever the stored full name carries beyond given + surname.
+ *  The tree came from GEDCOM, where the suffix is a third part of the name; it
+ *  has no column of its own, so it has to be recovered from the full name or a
+ *  save would quietly drop it. */
+function te_name_suffix($p) {
+    $full = trim((string)($p['name'] ?? ''));
+    $base = trim(trim((string)($p['given'] ?? '')) . ' ' . trim((string)($p['surname'] ?? '')));
+    if ($base === '' || $full === '' || strcasecmp($full, $base) === 0) return '';
+    if (stripos($full, $base) === 0) return trim(substr($full, strlen($base)));
+    return '';
+}
+
+/** The one place a person's display name is assembled. */
+function te_full_name($f) {
+    $name = trim(trim($f['given'] ?? '') . ' ' . trim($f['surname'] ?? ''));
+    $sfx  = trim($f['suffix'] ?? '');
+    if ($sfx !== '') $name = trim($name . ' ' . $sfx);
+    return $name !== '' ? $name : 'Unknown';
+}
+
 /** apply a vital-fields edit to a person */
 function te_update_person($pid, $f) {
     $given = trim($f['given'] ?? ''); $surname = trim($f['surname'] ?? '');
-    $name  = trim($given . ' ' . $surname); if ($name === '') $name = 'Unknown';
+    $name  = te_full_name($f);
+    /* A death date and "still living" cannot both be true. Trusting the date
+       means a passing recorded here also takes the person out of the private
+       living set and off the birthday list, which is what anyone would expect. */
+    $living = (int)($f['living'] ?? 0);
+    if (trim($f['death_date'] ?? '') !== '') $living = 0;
     q("UPDATE persons SET name=?,given=?,surname=?,sex=?,birth_date=?,birth_place=?,death_date=?,death_place=?,living=? WHERE pid=?",
       [$name,$given,$surname,($f['sex']??''),($f['birth_date']??''),($f['birth_place']??''),
-       ($f['death_date']??''),($f['death_place']??''),(int)($f['living']??0),$pid]);
+       ($f['death_date']??''),($f['death_place']??''),$living,$pid]);
 }
 
 /** add a sibling to $pid (a child of $pid's parents' family). returns new pid or null */

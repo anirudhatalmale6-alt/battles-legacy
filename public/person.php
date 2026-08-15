@@ -23,20 +23,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && role_at_least('moderator')) {
             q("UPDATE photos SET is_primary=1 WHERE id=?", [$phid]);
             flash('Main photo updated — it now shows in the tree and here.');
         }
+    } elseif (($_POST['action'] ?? '') === 'edit_person') {
+        /* Correcting someone already in the tree. This is the one thing the
+           profile could not do — you could add a person with dates, but never
+           put a date on someone who was already there. */
+        $nf = te_clean_fields($_POST);
+        if (trim($nf['given']) === '' && trim($nf['surname']) === '') {
+            flash('Please leave at least a first or last name.');
+        } else {
+            $wasLiving = (int)$p['living'] === 1;
+            te_update_person($pid, $nf);
+            $msg = 'Saved — ' . te_full_name($nf) . '\'s details are updated everywhere on the site.';
+            if ($wasLiving && trim($nf['death_date']) !== '')
+                $msg .= ' A date of death was entered, so they are no longer marked as living.';
+            flash($msg);
+        }
+        header('Location: person.php?pid=' . urlencode($pid)); exit;
     } elseif (in_array(($_POST['action'] ?? ''), ['add_child','add_spouse'], true)) {
         $given = trim($_POST['c_given'] ?? '');
         if ($given === '' && trim($_POST['c_surname'] ?? '') === '') {
             flash('Please enter at least a first or last name for the new person.');
         } else {
-            $nf = [
-              'given'      => $given,
-              'surname'    => trim($_POST['c_surname'] ?? ''),
-              'sex'        => in_array(strtoupper($_POST['c_sex'] ?? ''), ['M','F'], true) ? strtoupper($_POST['c_sex']) : '',
-              'birth_date' => trim($_POST['c_birth'] ?? ''),
-              'birth_place'=> trim($_POST['c_birthplace'] ?? ''),
-              'death_date' => trim($_POST['c_death'] ?? ''),
-              'living'     => !empty($_POST['c_living']) ? 1 : 0,
-            ];
+            $nf = te_clean_fields($_POST);
             if (($_POST['action']) === 'add_child') {
                 $new = te_add_child($pid, $nf, trim($_POST['c_fid'] ?? ''));
                 flash($new ? 'Child added to the family. Open their profile to add photos or more detail.' : 'Sorry — that could not be added.');
@@ -180,6 +188,7 @@ function spouse_chip($rp) {
 /** vital-fields form grid (c_* names), prefilled from a person row or blank */
 function render_vitals($src = []) {
     $g = e($src['given'] ?? ''); $s = e($src['surname'] ?? '');
+    $sfx = e(isset($src['name']) ? te_name_suffix($src) : ($src['suffix'] ?? ''));
     $sex = strtoupper($src['sex'] ?? '');
     $bd = e($src['birth_date'] ?? ''); $bp = e($src['birth_place'] ?? '');
     $dd = e($src['death_date'] ?? ''); $dp = e($src['death_place'] ?? '');
@@ -188,12 +197,15 @@ function render_vitals($src = []) {
     <div class="af-grid">
       <div><label>First name</label><input type="text" name="c_given" value="<?= $g ?>"></div>
       <div><label>Last name</label><input type="text" name="c_surname" value="<?= $s ?>"></div>
+      <div><label>Suffix (optional)</label><input type="text" name="c_suffix" value="<?= $sfx ?>" placeholder="Jr. / III"></div>
       <div><label>Sex</label><select name="c_sex"><option value="">—</option><option value="M"<?= $sex==='M'?' selected':'' ?>>Male</option><option value="F"<?= $sex==='F'?' selected':'' ?>>Female</option></select></div>
-      <div><label>Birth year / date</label><input type="text" name="c_birth" value="<?= $bd ?>" placeholder="e.g. 1978"></div>
+      <div><label>Born</label><input type="text" name="c_birth" value="<?= $bd ?>" placeholder="e.g. Jun 17 1922"></div>
       <div><label>Birthplace (optional)</label><input type="text" name="c_birthplace" value="<?= $bp ?>" placeholder="e.g. Dallas, TX"></div>
-      <div><label>Died (optional)</label><input type="text" name="c_death" value="<?= $dd ?>" placeholder="year / date, if applicable"></div>
+      <div><label>Died (optional)</label><input type="text" name="c_death" value="<?= $dd ?>" placeholder="e.g. Jan 05 1997"></div>
       <div><label>Death place (optional)</label><input type="text" name="c_deathplace" value="<?= $dp ?>" placeholder="e.g. Houston, TX"></div>
     </div>
+    <p class="muted af-datehint">Dates read best as <b>Jun 17 1922</b>. A year on its own (<b>1922</b>) or a month and
+      year (<b>Jun 1922</b>) are fine too &mdash; but only a full date can appear on the family calendar.</p>
     <label class="af-check"><input type="checkbox" name="c_living" value="1"<?= $liv ?>> Living family member (hidden from public visitors)</label>
     <?php
 }
@@ -234,6 +246,17 @@ page_head($name);
 </div>
 
 <?php if (role_at_least('moderator')): $pfams = te_parent_families($pid); ?>
+<div class="panel addfam af-edit" style="margin-top:20px">
+  <h2>&#9998; Edit <?= e($name) ?>&rsquo;s details</h2>
+  <p class="muted" style="margin:0 0 12px">Correct or fill in anything here &mdash; a birth date, a date of passing, a
+    spelling. It saves straight away and updates the tree, this page, the Memorial and the family calendar.</p>
+  <form method="post" class="addfam-form">
+    <?= csrf_field() ?><input type="hidden" name="action" value="edit_person">
+    <?php render_vitals($p); ?>
+    <button class="btn gold" type="submit" style="margin-top:10px">Save <?= e(explode(' ', $name)[0]) ?>&rsquo;s details</button>
+  </form>
+</div>
+
 <div class="panel addfam" style="margin-top:20px">
   <h2>Add a family member</h2>
   <p class="muted" style="margin:0 0 12px">Add someone who isn&rsquo;t in the tree yet &mdash; a child of <?= e(explode(' ', $name)[0]) ?>, or their spouse. They&rsquo;ll link in automatically, and you can open the new person afterward to add photos and details.</p>
@@ -241,34 +264,18 @@ page_head($name);
     <form method="post" class="addfam-form">
       <?= csrf_field() ?><input type="hidden" name="action" value="add_child">
       <h3>&#128118; Add a child</h3>
-      <div class="af-grid">
-        <div><label>First name</label><input type="text" name="c_given" placeholder="e.g. James"></div>
-        <div><label>Last name</label><input type="text" name="c_surname" value="<?= e($p['surname']) ?>"></div>
-        <div><label>Sex</label><select name="c_sex"><option value="">—</option><option value="M">Male</option><option value="F">Female</option></select></div>
-        <div><label>Birth year / date</label><input type="text" name="c_birth" placeholder="e.g. 1978"></div>
-        <div><label>Birthplace (optional)</label><input type="text" name="c_birthplace" placeholder="e.g. Dallas, TX"></div>
-        <div><label>Died (optional)</label><input type="text" name="c_death" placeholder="year / date, if applicable"></div>
-      </div>
+      <?php render_vitals(['surname' => $p['surname']]); ?>
       <?php if (count($pfams) > 1): ?>
         <label>Which family?</label>
         <select name="c_fid"><?php foreach ($pfams as $pf): ?><option value="<?= e($pf['fid']) ?>"><?= e($pf['label']) ?></option><?php endforeach; ?></select>
       <?php endif; ?>
-      <label class="af-check"><input type="checkbox" name="c_living" value="1"> Living family member (hidden from public visitors)</label>
       <button class="btn gold" type="submit" style="margin-top:10px">Add child</button>
     </form>
 
     <form method="post" class="addfam-form">
       <?= csrf_field() ?><input type="hidden" name="action" value="add_spouse">
       <h3>&#128141; Add a spouse</h3>
-      <div class="af-grid">
-        <div><label>First name</label><input type="text" name="c_given" placeholder="e.g. Mary"></div>
-        <div><label>Last name</label><input type="text" name="c_surname" placeholder="maiden or married name"></div>
-        <div><label>Sex</label><select name="c_sex"><option value="">—</option><option value="M">Male</option><option value="F">Female</option></select></div>
-        <div><label>Birth year / date</label><input type="text" name="c_birth" placeholder="e.g. 1955"></div>
-        <div><label>Birthplace (optional)</label><input type="text" name="c_birthplace"></div>
-        <div><label>Died (optional)</label><input type="text" name="c_death" placeholder="year / date, if applicable"></div>
-      </div>
-      <label class="af-check"><input type="checkbox" name="c_living" value="1"> Living family member (hidden from public visitors)</label>
+      <?php render_vitals(); ?>
       <button class="btn gold" type="submit" style="margin-top:10px">Add spouse</button>
     </form>
   </div>
