@@ -26,7 +26,7 @@ page_head('Family Login');
   <p class="muted" style="text-align:center;margin-top:16px">
     <a href="forgot.php">Forgotten your password?</a><br>
     Have an invitation link? Open it to set up your account.<br>
-    No account yet? Ask a family admin to invite you.
+    Family, but no account yet? <a href="request.php">Ask to join</a>.
   </p>
 </form>
 <?php page_foot();

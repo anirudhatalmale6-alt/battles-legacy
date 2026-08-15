@@ -2,6 +2,7 @@
 require __DIR__ . '/../src/bootstrap.php';
 require_once __DIR__ . '/../src/install.php';
 require_once __DIR__ . '/../src/pwreset.php';
+require_once __DIR__ . '/../src/access_data.php';
 require_role('admin');
 $me = current_user();
 
@@ -45,6 +46,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $uid = (int)($_POST['uid'] ?? 0);
         if ($uid) { try { q("UPDATE password_resets SET used_at=CURRENT_TIMESTAMP WHERE user_id=? AND used_at IS NULL", [$uid]); } catch (\Throwable $e) {} }
         flash('Those reset links have been cancelled.');
+    } elseif ($act === 'ar_approve') {
+        $url = ar_approve((int)($_POST['rid'] ?? 0), $_POST['role'] ?? 'member', $me['id']);
+        flash($url ? 'Approved — their invitation link is in the list below. Send it to them.' : 'That request has already been dealt with.');
+    } elseif ($act === 'ar_decline') {
+        ar_decline((int)($_POST['rid'] ?? 0), $me['id']);
+        flash('Request declined. They are not told, and nothing is sent.');
+    } elseif ($act === 'ar_delete') {
+        ar_delete((int)($_POST['rid'] ?? 0));
+        flash('Request removed from the list.');
     } elseif ($act === 'importphotos') {
         $dir = trim($_POST['photo_dir'] ?? '');
         $r = install_photos($dir);
@@ -63,6 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $users = all("SELECT * FROM users ORDER BY role='admin' DESC, role='moderator' DESC, name");
+$reqNew  = ar_list('new');
+$reqDone = array_slice(array_filter(ar_list('all'), function ($r) { return $r['status'] !== 'new'; }), 0, 12);
 $resets = pwreset_open();
 $invites = all("SELECT i.*, u.name AS by_name FROM invites i LEFT JOIN users u ON u.id=i.invited_by WHERE i.used_at IS NULL ORDER BY i.id DESC");
 
@@ -70,6 +82,70 @@ page_head('Members');
 ?>
 <h1>Family members</h1>
 <p class="lede">Invite family, and set who is an Admin, Moderator or Member. Invitation links are private — send them directly to the person.</p>
+
+<?php if ($reqNew): ?>
+<div class="panel arq" style="margin-top:20px;border-left:3px solid var(--gold)">
+  <h2>People asking to join (<?= count($reqNew) ?>)</h2>
+  <p class="muted">Somebody in the family has shared the site with them. Nobody gets in until you say so &mdash;
+    approving makes them an invitation link for you to send, and they choose their own password from it.</p>
+  <?php foreach ($reqNew as $r): $hits = ar_tree_matches($r['name']); ?>
+    <div class="arq-card">
+      <div class="arq-who">
+        <b><?= e($r['name']) ?></b>
+        <span><?= e($r['email']) ?><?= $r['phone'] ? ' &middot; ' . e($r['phone']) : '' ?></span>
+        <i><?= e(date('j M Y', strtotime($r['created_at']))) ?></i>
+      </div>
+      <div class="arq-body">
+        <p><b>Related to:</b> <?= e($r['relation']) ?></p>
+        <?php if (trim($r['referred_by']) !== ''): ?><p><b>Heard about it from:</b> <?= e($r['referred_by']) ?></p><?php endif; ?>
+        <?php if (trim($r['note']) !== ''): ?><p class="arq-note"><?= nl2br(e($r['note'])) ?></p><?php endif; ?>
+        <?php if ($hits): ?>
+          <p class="arq-hits"><b>In the family tree:</b>
+            <?php foreach ($hits as $h): ?>
+              <a href="person.php?pid=<?= e(urlencode($h['pid'])) ?>" target="_blank" rel="noopener"><?= e($h['name']) ?><?= yr($h['birth_date']) ? ' (' . e(yr($h['birth_date'])) . ')' : '' ?></a>
+            <?php endforeach; ?>
+          </p>
+        <?php else: ?>
+          <p class="arq-hits none">No one of that name is in the tree — worth a phone call before you approve.</p>
+        <?php endif; ?>
+      </div>
+      <div class="arq-act">
+        <form method="post">
+          <?= csrf_field() ?><input type="hidden" name="action" value="ar_approve"><input type="hidden" name="rid" value="<?= (int)$r['id'] ?>">
+          <select name="role"><option value="member">as a Member</option><option value="moderator">as a Moderator</option><option value="admin">as an Admin</option></select>
+          <button class="btn gold" style="margin:0">Approve</button>
+        </form>
+        <form method="post" onsubmit="return confirm('Decline <?= e(addslashes($r['name'])) ?>? They are not told either way.')">
+          <?= csrf_field() ?><input type="hidden" name="action" value="ar_decline"><input type="hidden" name="rid" value="<?= (int)$r['id'] ?>">
+          <button class="arq-no" type="submit">Decline</button>
+        </form>
+      </div>
+    </div>
+  <?php endforeach; ?>
+</div>
+<?php endif; ?>
+
+<?php if ($reqDone): ?>
+<div class="panel" style="margin-top:18px">
+  <h2>Requests you&rsquo;ve already dealt with</h2>
+  <table class="list">
+    <tr><th>Name</th><th>Email</th><th>Outcome</th><th></th></tr>
+    <?php foreach ($reqDone as $r): ?>
+      <tr>
+        <td><?= e($r['name']) ?></td>
+        <td class="muted"><?= e($r['email']) ?></td>
+        <td><span class="pill <?= $r['status'] === 'approved' ? 'approved' : 'pending' ?>"><?= e(ucfirst($r['status'])) ?></span></td>
+        <td>
+          <form method="post" style="margin:0">
+            <?= csrf_field() ?><input type="hidden" name="action" value="ar_delete"><input type="hidden" name="rid" value="<?= (int)$r['id'] ?>">
+            <button class="btn" style="margin:0;padding:5px 10px;font-size:14px">Remove</button>
+          </form>
+        </td>
+      </tr>
+    <?php endforeach; ?>
+  </table>
+</div>
+<?php endif; ?>
 
 <div class="panel" style="margin-top:20px">
   <h2>Invite a family member</h2>
