@@ -2155,3 +2155,26 @@ body.cal .foot{display:none;}
 /* the memorial band is quieter than the home page one — this is a page people
    arrive at to remember someone, not a fanfare */
 .mus-mem{background:linear-gradient(180deg,#2a1418,#1a0c0f);border-top:1px solid rgba(201,162,75,.30);}
+
+/* ---- the share video page ---- */
+body.fvid{background:radial-gradient(130% 100% at 50% 0%, #f1e3c4, #e6d2ac 72%, #dcc59a);color:#4a3620;}
+body.fvid .wrap{max-width:none;padding:0;}
+body.fvid .wrap.fvid-wrap{max-width:860px;margin:0 auto;padding:26px 22px 56px;}
+body.fvid .foot{display:none;}
+/* no 100vw trick here: body.fvid already makes .wrap full width, and forcing
+   100vw inside it widened the wrap, which then threw the shared footer's own
+   calc(-50vw + 50%) off by 80px on a phone */
+.fvid-hero{width:100%;background:linear-gradient(135deg,#4a141a,#360d11 60%,#2a0b0e);
+  border-bottom:3px solid var(--gold);padding:38px clamp(16px,5vw,70px);text-align:center;}
+.fvid-hero h1{font-family:'Cormorant Garamond',serif;color:var(--gold2);font-size:clamp(26px,3.8vw,40px);margin:0;}
+.fvid-hero p{color:#e9d9bb;font-size:15.5px;margin:8px 0 0;}
+.fvid-player{background:#1a120c;border:1px solid #d9c39a;border-radius:14px;overflow:hidden;line-height:0;
+  box-shadow:0 6px 24px rgba(60,40,20,.22);}
+.fvid-player video{width:100%;height:auto;display:block;background:#1a120c;}
+.fvid-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center;margin:18px 0 6px;}
+.fvid-size{color:#7a5a34;font-size:13.5px;}
+.fvid-how{margin-top:20px;background:#fffdf8;border:1px solid #e6d8bd;border-radius:14px;padding:20px 22px 22px;}
+.fvid-how h2{font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:23px;margin:0 0 12px;}
+.fvid-how ol{margin:0 0 14px;padding-left:22px;}
+.fvid-how li{color:#4a3620;font-size:15.5px;line-height:1.6;margin-bottom:9px;}
+.fvid-how b{color:#5c1a1f;}
