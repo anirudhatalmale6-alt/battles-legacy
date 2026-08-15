@@ -106,6 +106,19 @@ page_head('Faith', ['body_class' => 'home faith']);
   </div>
 <?php endif; ?>
 
+<!-- HERO — one photograph across the page with the words over it. It used to be
+     a text panel bolted to the side of the picture, which read as two boxes. -->
+<section class="faith-hero">
+  <div class="fh-text">
+    <h1>Our Family&rsquo;s <span class="script">Legacy of Faith</span></h1>
+    <div class="fh-orn"><span></span><i></i><span></span></div>
+    <p class="fh-sub">Honoring all who have dedicated their lives to ministry &mdash; past and present.</p>
+    <blockquote class="fh-quote">&ldquo;As for me and my house, we will serve the Lord.&rdquo;<cite>&mdash; Joshua 24:15</cite></blockquote>
+    <a class="fh-watch" href="#videos"><span class="fh-play"><?= faith_icon('play') ?></span> Watch Featured Message</a>
+    <p class="fh-note">A message of faith, service, and dedication.</p>
+  </div>
+</section>
+
 <div class="faith-grid">
 
   <!-- LEFT: Prayer of Salvation -->
@@ -174,19 +187,6 @@ page_head('Faith', ['body_class' => 'home faith']);
 
   <!-- RIGHT: main faith content -->
   <div class="faith-body">
-
-    <!-- HERO -->
-    <section class="faith-hero">
-      <div class="fh-text">
-        <h1>Our Family&rsquo;s <span class="script">Legacy of Faith</span></h1>
-        <div class="fh-orn">&#10086; &nbsp;&bull;&nbsp; &#10086;</div>
-        <p class="fh-sub">Honoring all who have dedicated their lives to ministry &mdash; past and present.</p>
-        <blockquote class="fh-quote">&ldquo;As for me and my house, we will serve the Lord.&rdquo;<cite>&mdash; Joshua 24:15</cite></blockquote>
-        <a class="fh-watch" href="#featured"><span class="fh-play"><?= faith_icon('play') ?></span> Watch Featured Message</a>
-        <p class="fh-note">A message of faith, service, and dedication.</p>
-      </div>
-      <img class="fh-img" src="assets/faith/hero.jpg" alt="A cross draped in cloth beside an open Bible">
-    </section>
 
     <!-- HONORING OUR MINISTRY FAMILY + PRAYER REQUESTS -->
     <div class="faith-two">
