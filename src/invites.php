@@ -101,6 +101,7 @@ function invite_mail($inv, $host = null) {
     if ($to === '') return false;
     $m  = invite_message($inv, invite_url($inv['token']), $host);
     $ok = mailer_send($to, $m['subject'], $m['body'], [
+        'to_name'    => $inv['name'] ?? '',
         'reply_to'   => $host['email'] ?? '',
         'reply_name' => $host['name'] ?? '',
     ]);

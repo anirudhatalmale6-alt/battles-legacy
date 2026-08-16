@@ -97,6 +97,7 @@ function pwreset_mail($user, $url) {
           . "— The Battles Legacy\n";
 
     return mailer_send($user['email'] ?? '', $subject, $body, [
+        'to_name'    => $user['name'] ?? '',
         'reply_to'   => $admin['email'] ?? '',
         'reply_name' => $admin['name'] ?? '',
     ]);

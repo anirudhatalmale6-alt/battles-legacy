@@ -42,11 +42,20 @@ function mailer_valid($addr) {
  *
  *  $opts['reply_to']  — usually William, so a reply reaches a person
  *  $opts['reply_name']
+ *  $opts['to_name']   — the recipient's own name, see below
  */
 function mailer_send($to, $subject, $body, $opts = []) {
     if (!function_exists('mail')) return false;
     $to = mailer_valid($to);
     if ($to === '') return false;
+
+    /* A To: header carrying a bare address and no name is a small mark against
+       the message — the host's own scanner flagged exactly that (TO_DN_NONE)
+       on the first invitation. We always know who we are writing to, because
+       William typed her name in beside the address, so there is no reason to
+       throw it away. */
+    $toName = trim(str_replace(['"', "\r", "\n"], '', (string)($opts['to_name'] ?? '')));
+    $toHdr  = $toName !== '' ? mailer_phrase($toName) . ' <' . $to . '>' : $to;
 
     $from = mailer_from();
     $site = (string)config('site_name') ?: 'The Battles Legacy';
@@ -68,7 +77,13 @@ function mailer_send($to, $subject, $body, $opts = []) {
          : 'Reply-To: ' . mailer_phrase($site) . ' <' . $from . '>';
     $h[] = 'MIME-Version: 1.0';
     $h[] = 'Content-Type: text/plain; charset=UTF-8';
-    $h[] = 'Content-Transfer-Encoding: 8bit';
+    /* The messages contain em-dashes and curly apostrophes. Declaring UTF-8 and
+       shipping the raw bytes as 8bit works right up until one hop in the chain
+       is old enough not to announce 8BITMIME, and then the eighth bit is
+       stripped and an aunt on an ancient mailbox reads "history online â€"
+       the tree". Quoted-printable is plain ASCII on the wire, so there is no
+       eighth bit left to lose. */
+    $h[] = 'Content-Transfer-Encoding: quoted-printable';
     /* There was an `Auto-Submitted: auto-generated` here with a comment saying
        it marked the message as human-triggered. It does the opposite: RFC 3834
        uses it to label machine-generated mail so that other machines don't
@@ -87,8 +102,9 @@ function mailer_send($to, $subject, $body, $opts = []) {
 
     $body = str_replace(["\r\n", "\r"], "\n", (string)$body);
     $body = str_replace("\n", "\r\n", $body);
+    $body = quoted_printable_encode($body);
 
-    try { return @mail($to, $subjHdr, $body, implode("\r\n", $h), '-f' . $from) ? true : false; }
+    try { return @mail($toHdr, $subjHdr, $body, implode("\r\n", $h), '-f' . $from) ? true : false; }
     catch (\Throwable $e) { return false; }
 }
 
