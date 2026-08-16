@@ -24,9 +24,19 @@ $people = all("SELECT p.pid,p.name,p.given,p.surname,p.birth_date,p.death_date,p
                WHERE p.living=0 AND COALESCE(m.hidden,0)=" . ($showHidden ? 1 : 0) . "
                ORDER BY p.surname, p.given, p.name");
 
-/* main approved photo per person (respects the chosen 'main' photo), no N+1 */
+/* main approved photo per person (respects the chosen 'main' photo, and counts
+   group photographs they appear in), no N+1 */
+require_once __DIR__ . '/../src/photo_people.php';
 $phmap = [];
-foreach (all("SELECT pid, path FROM photos WHERE status='approved' ORDER BY is_primary DESC, id") as $ph) {
+$phrows = [];
+if (pp_migrate()) {
+    try {
+        $phrows = all("SELECT t.pid, ph.path FROM photo_people t JOIN photos ph ON ph.id=t.photo_id
+                       WHERE ph.status='approved' ORDER BY t.is_primary DESC, ph.id");
+    } catch (\Throwable $e) { $phrows = []; }
+}
+if (!$phrows) $phrows = all("SELECT pid, path FROM photos WHERE status='approved' ORDER BY is_primary DESC, id");
+foreach ($phrows as $ph) {
     if (!isset($phmap[$ph['pid']])) $phmap[$ph['pid']] = $ph['path'];
 }
 $count = count($people);

@@ -32,6 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (move_uploaded_file($tmp, $absDir . '/' . $fname)) {
                 q("INSERT INTO photos (pid,filename,path,caption,status,source,uploaded_by) VALUES (?,?,?,?, 'pending','upload',?)",
                   [$pid, $orig, $relDir . '/' . $fname, $caption, current_user()['id']]);
+                /* The person it was uploaded for is the first face in it. A
+                   moderator can add the rest from the profile once it's approved. */
+                require_once __DIR__ . '/../src/photo_people.php';
+                pp_tag((int)insert_id(), $pid);
                 $ok = true; $sel = $pid;
             } else {
                 $err = 'Sorry — the upload couldn\'t be saved. Please try again.';

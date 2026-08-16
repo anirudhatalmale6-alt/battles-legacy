@@ -4,7 +4,9 @@
  *   2. the ones that came across small, so William knows which originals to resend */
 require __DIR__ . '/../src/bootstrap.php';
 require_once __DIR__ . '/../src/install.php';
+require_once __DIR__ . '/../src/photo_people.php';
 require_role('admin');
+pp_migrate();
 
 $SRC = rtrim(config('photo_src_dir') ?: (dirname(dirname(__DIR__)) . '/photos'), '/');
 if (!is_dir($SRC)) {
@@ -17,7 +19,7 @@ $EXT = ['jpg','jpeg','png','gif','webp'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
     if (($_POST['action'] ?? '') === 'assign') {
-        $done = 0; $bad = 0;
+        $done = 0; $bad = 0; $extraTags = 0;
         foreach (($_POST['pid'] ?? []) as $file => $pid) {
             $pid = trim($pid);
             if ($pid === '') continue;
@@ -34,10 +36,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $cap = trim($_POST['cap'][$file] ?? '') ?: _clean_filename(pathinfo($file, PATHINFO_FILENAME));
             q("INSERT INTO photos (pid,filename,path,caption,status,source) VALUES (?,?,?,?, 'approved','import')",
               [$pid, $file, $rel, mb_substr($cap, 0, 500)]);
+            $newId = (int)insert_id();
+            pp_tag($newId, $pid);
+            /* Everyone else named in the same card. One file on disk, a row each
+               — the group photograph lands on all of their pages. */
+            foreach ((array)($_POST['extra'][$file] ?? []) as $ex) {
+                $ex = trim($ex);
+                if ($ex === '' || $ex === $pid) continue;
+                if (!one("SELECT pid FROM persons WHERE pid=?", [$ex])) continue;
+                if (pp_tag($newId, $ex)) { pp_reseat_primary($ex); $extraTags++; }
+            }
             $done++;
         }
-        flash($done ? "$done photograph" . ($done === 1 ? '' : 's') . ' placed.' . ($bad ? " $bad could not be." : '')
-                    : 'Nothing was selected.');
+        $msg = $done ? "$done photograph" . ($done === 1 ? '' : 's') . ' placed.' . ($bad ? " $bad could not be." : '')
+                     : 'Nothing was selected.';
+        if ($extraTags) $msg .= " $extraTags extra " . ($extraTags === 1 ? 'person was' : 'people were')
+                              . ' named in group pictures — those now show on their pages too.';
+        flash($msg);
         header('Location: photos_manage.php'); exit;
     }
 }
@@ -82,7 +97,20 @@ foreach (all("SELECT p.pid, p.path, p.caption, x.name FROM photos p LEFT JOIN pe
     if (max($sz[0], $sz[1]) < 600) $small[] = $r + ['w' => $sz[0], 'h' => $sz[1]];
 }
 
-$people = all("SELECT pid,name,birth_date FROM persons WHERE name<>'' ORDER BY name");
+$people = all("SELECT pid,name,given,surname,sex,birth_date FROM persons WHERE name<>'' ORDER BY name");
+$byPid = []; foreach ($people as $pp) $byPid[$pp['pid']] = $pp;
+/* Read the file name for anything that looks like a family name and put those
+   people at the top of the list. The importer already tried an exact match on
+   all of these and failed, which is why they are still here — but "Holmes
+   boys.jpg" still knows something, and scrolling two hundred names on a phone
+   to find the four Holmeses is the actual work being done on this page. */
+$suggest = [];
+foreach ($unplaced as $f) $suggest[$f] = pp_suggest(_clean_filename(pathinfo($f, PATHINFO_FILENAME)), $people);
+$peopleJson = [];
+foreach ($people as $pp) {
+    $y = yr($pp['birth_date']);
+    $peopleJson[] = ['pid' => $pp['pid'], 'label' => $pp['name'] . ($y ? " ($y)" : '')];
+}
 page_head('Photographs');
 ?>
 <h1>Photographs</h1>
@@ -98,25 +126,66 @@ page_head('Photographs');
     <p class="muted">These came out of TribalPages with a number instead of a name, or with a name I couldn&rsquo;t
       match to anyone in the tree. Pick the person and press Save &mdash; the picture goes onto their page.
       Leave any you don&rsquo;t recognise; they&rsquo;ll still be here next time.</p>
+    <p class="muted">Where the file name gave me something to go on, the likely people are listed first under
+      <b>Best guesses</b> &mdash; check the face before you trust it. If more than one person is in the picture,
+      press <b>+ someone else in this picture</b> and add them: the photograph is stored once and appears on
+      every one of their pages.</p>
     <form method="post">
       <?= csrf_field() ?><input type="hidden" name="action" value="assign">
       <div class="pm-grid">
-        <?php foreach ($unplaced as $f): $u = 'photo_raw.php?f=' . urlencode($f); ?>
+        <?php foreach ($unplaced as $f): $u = 'photo_raw.php?f=' . urlencode($f); $sg = $suggest[$f]; ?>
           <figure class="pm-card">
             <a href="<?= e($u) ?>" target="_blank" rel="noopener"><img src="<?= e($u) ?>" alt="<?= e($f) ?>" loading="lazy"></a>
             <figcaption><?= e($f) ?></figcaption>
             <select name="pid[<?= e($f) ?>]">
               <option value="">— who is this? —</option>
+              <?php if ($sg): ?>
+                <optgroup label="Best guesses from the file name">
+                  <?php foreach ($sg as $sp): if (!isset($byPid[$sp])) continue; $p = $byPid[$sp]; ?>
+                    <option value="<?= e($p['pid']) ?>"><?= e($p['name']) ?><?= yr($p['birth_date']) ? ' (' . e(yr($p['birth_date'])) . ')' : '' ?></option>
+                  <?php endforeach; ?>
+                </optgroup>
+                <optgroup label="Everyone in the tree">
+              <?php endif; ?>
               <?php foreach ($people as $p): ?>
                 <option value="<?= e($p['pid']) ?>"><?= e($p['name']) ?><?= yr($p['birth_date']) ? ' (' . e(yr($p['birth_date'])) . ')' : '' ?></option>
               <?php endforeach; ?>
+              <?php if ($sg): ?></optgroup><?php endif; ?>
             </select>
+            <div class="pm-extra"></div>
+            <button type="button" class="pm-more" data-file="<?= e($f) ?>">+ someone else in this picture</button>
             <input type="text" name="cap[<?= e($f) ?>]" placeholder="Caption (optional)" maxlength="200">
           </figure>
         <?php endforeach; ?>
       </div>
       <button class="btn gold" type="submit" style="margin-top:16px">Save the ones I&rsquo;ve named</button>
     </form>
+    <script>
+    /* One copy of the name list for the whole page, rather than another two
+       hundred <option> tags every time a group photograph is named. */
+    (function(){
+      var PEOPLE = <?= json_encode($peopleJson, JSON_UNESCAPED_UNICODE) ?>;
+      document.addEventListener('click', function(ev){
+        var b = ev.target;
+        if (!b || !b.classList || !b.classList.contains('pm-more')) return;
+        ev.preventDefault();
+        var box = b.parentNode.querySelector('.pm-extra');
+        if (!box) return;
+        var s = document.createElement('select');
+        s.name = 'extra[' + b.getAttribute('data-file') + '][]';
+        var first = document.createElement('option');
+        first.value = ''; first.textContent = '— and who else? —';
+        s.appendChild(first);
+        for (var i = 0; i < PEOPLE.length; i++) {
+          var o = document.createElement('option');
+          o.value = PEOPLE[i].pid; o.textContent = PEOPLE[i].label;
+          s.appendChild(o);
+        }
+        box.appendChild(s);
+        s.focus();
+      });
+    })();
+    </script>
   <?php endif; ?>
 </div>
 

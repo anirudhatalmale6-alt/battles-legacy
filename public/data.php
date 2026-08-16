@@ -50,12 +50,24 @@ foreach (all("SELECT * FROM families") as $f) {
 }
 
 // Photo maps — one representative photo per person the viewer is allowed to see.
+// A group photograph counts: somebody who only ever appears in the picture of
+// all four brothers still gets a face in the tree.
 $photos = [];
-// the chosen main photo wins; fall back gracefully if the is_primary column is absent
-try {
-    $rows = all("SELECT pid, path FROM photos WHERE status='approved' ORDER BY is_primary DESC, id");
-} catch (\Throwable $e) {
-    $rows = all("SELECT pid, path FROM photos WHERE status='approved' ORDER BY id");
+require_once __DIR__ . '/../src/photo_people.php';
+$rows = null;
+if (pp_migrate()) {
+    try {
+        $rows = all("SELECT t.pid, ph.path FROM photo_people t JOIN photos ph ON ph.id=t.photo_id
+                     WHERE ph.status='approved' ORDER BY t.is_primary DESC, ph.id");
+    } catch (\Throwable $e) { $rows = null; }
+}
+if ($rows === null) {
+    // the chosen main photo wins; fall back gracefully if the is_primary column is absent
+    try {
+        $rows = all("SELECT pid, path FROM photos WHERE status='approved' ORDER BY is_primary DESC, id");
+    } catch (\Throwable $e) {
+        $rows = all("SELECT pid, path FROM photos WHERE status='approved' ORDER BY id");
+    }
 }
 foreach ($rows as $r) {
     if (isset($photos[$r['pid']])) continue;  // the chosen main photo (is_primary, else first) wins

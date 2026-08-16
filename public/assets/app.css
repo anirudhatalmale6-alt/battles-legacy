@@ -2243,3 +2243,55 @@ body.fvid .foot{display:none;}
   table.list td,table.list th{white-space:nowrap;}
   table.list td .rename-form input{min-width:150px;}
 }
+
+/* --- Who is in a photograph -------------------------------------------------
+   A group picture is stored once and shown on the page of everybody in it, so
+   each photo in the gallery carries the list of faces and, for a moderator, the
+   controls to correct it.
+
+   No colour is set on the input and the select on purpose. They sit inside a
+   .panel, which is dark, and the base field rule is already cream ink on a dark
+   box. Setting the dark ink the cream-background forms use — as .pm-card does —
+   would type invisible text in here. */
+/* Pinned to the top of the card, over the picture — NOT the bottom. The card is
+   taller than the photograph now that "Who's in it?" sits underneath it, and a
+   badge at the bottom lands on top of that summary and swallows the click that
+   opens it. pointer-events:none makes that impossible to reintroduce. */
+.ggroup{position:absolute;right:7px;top:7px;pointer-events:none;background:rgba(28,6,8,.88);color:var(--gold2);
+  border:1px solid rgba(201,162,75,.55);font-size:10.5px;letter-spacing:.3px;padding:2px 7px;border-radius:9px;}
+.gphoto:hover .ggroup{opacity:0;}          /* out of the way of the delete button */
+/* `.gallery a` is the square photo tile itself — display:block, aspect-ratio:1,
+   a border and overflow:hidden. Every name link in here is also a `.gallery a`,
+   so without this each one renders as an empty square box with the name jammed
+   in the top corner. It has to opt out by hand. */
+.inpic a{display:inline;aspect-ratio:auto;border:0;border-radius:0;overflow:visible;background:none;}
+.inpic{margin-top:7px;font-size:12.5px;}
+.inpic>summary{cursor:pointer;color:var(--gold-soft);letter-spacing:.3px;list-style:none;}
+.inpic>summary::-webkit-details-marker{display:none;}
+.inpic>summary:before{content:'\25B8';display:inline-block;margin-right:5px;transition:transform .15s;}
+.inpic[open]>summary:before{transform:rotate(90deg);}
+.inpic>summary:hover{color:var(--gold2);}
+.inpic-body{padding:8px 0 2px;}
+.inpic-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.inpic-chip{display:inline-flex;align-items:center;gap:4px;background:rgba(201,162,75,.12);
+  border:1px solid rgba(201,162,75,.4);border-radius:11px;padding:2px 4px 2px 9px;}
+.inpic-chip a{color:var(--gold2);text-decoration:none;font-size:12px;}
+.inpic-chip a:hover{text-decoration:underline;}
+.inpic-chip form{display:inline;}
+.inpic-chip button{width:17px;height:17px;line-height:1;border-radius:50%;border:0;cursor:pointer;
+  background:transparent;color:#c98d7a;font-size:14px;padding:0;}
+.inpic-chip button:hover{background:#a5451f;color:#fff;}
+.inpic-add{display:flex;flex-direction:column;gap:6px;}
+.inpic-add input[type=text],.inpic-add select{padding:7px 9px;font-size:14px;}
+/* .btn2 is dark red on transparent — made for the cream panels. In here that is
+   near enough invisible, so this one keeps the shape and takes the gold. */
+.inpic-add .btn2{margin-top:0;align-self:flex-start;color:var(--gold2);border-color:rgba(201,162,75,.55);
+  background:transparent;font-size:13px;padding:5px 14px;}
+.inpic-add .btn2:hover{background:var(--gold);color:var(--maroon);border-color:var(--gold);}
+
+/* the extra "and who else?" boxes on the unplaced-photo cards (cream panel, so
+   these DO take the dark ink — .pm-card select already sets it) */
+.pm-extra select{margin-top:6px;}
+.pm-more{display:block;width:100%;margin-top:6px;background:transparent;border:1px dashed #cbbb9a;
+  border-radius:7px;color:#8a7350;font-family:'EB Garamond',serif;font-size:13px;padding:6px 8px;cursor:pointer;}
+.pm-more:hover{border-color:#8a7350;color:#5c4a2c;background:#fbf6ea;}

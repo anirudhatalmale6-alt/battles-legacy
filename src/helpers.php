@@ -23,11 +23,19 @@ function person_display_name($p) {
     return $p['name'];
 }
 
-/** Approved photos for a person the current viewer is allowed to see. */
+/** Approved photos for a person the current viewer is allowed to see.
+ *
+ *  This means every picture they are IN, not only the ones filed under them —
+ *  a group photograph appears on all of their pages off the one stored file.
+ *  If the tagging table cannot be reached for any reason we fall back to the
+ *  old one-owner query, so a page still shows photographs rather than none. */
 function person_photos($pid) {
     // Living relatives' photos are only shown to logged-in members.
     $p = one("SELECT living FROM persons WHERE pid=?", [$pid]);
     if ($p && $p['living'] && !logged_in()) return [];
+    require_once __DIR__ . '/photo_people.php';
+    $rows = pp_photos($pid);
+    if ($rows !== null) return $rows;
     return all("SELECT * FROM photos WHERE pid=? AND status='approved' ORDER BY is_primary DESC, id", [$pid]);
 }
 

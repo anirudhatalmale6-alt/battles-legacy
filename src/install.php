@@ -266,7 +266,15 @@ function install_photos($srcDir, $dry = false, $opts = []) {
         $safe=preg_replace('/[^A-Za-z0-9._-]+/','_',$f);
         $relDir=config('photos_dir').'/'.trim($pid,'@'); $rel=$relDir.'/'.$safe;
         $exists->execute([$pid,$f]); if ($exists->fetch()) { $stats['skipped']++; $havePhoto[$pid]=true; $seen[$key]=true; continue; }
-        if (!$dry) { @mkdir($publicDir.$relDir,0775,true); if (@copy($src,$publicDir.$rel)) $stats['copied']++; $insert->execute([$pid,$f,$rel,$cleanName]); }
+        if (!$dry) {
+            @mkdir($publicDir.$relDir,0775,true); if (@copy($src,$publicDir.$rel)) $stats['copied']++;
+            $insert->execute([$pid,$f,$rel,$cleanName]);
+            /* Also record who is in it. On a first-ever import the tagging table
+               doesn't exist yet and is backfilled when it is created, so this is
+               only load-bearing for a re-import onto a site already running. */
+            require_once __DIR__ . '/photo_people.php';
+            pp_tag((int)insert_id(), $pid);
+        }
         $havePhoto[$pid]=true; $seen[$key]=true;
     }
     return ['ok' => true, 'stats' => $stats, 'unmatched' => $unmatched,

@@ -367,11 +367,27 @@ function te_delete_person($pid) {
             else q("UPDATE families SET chil=? WHERE fid=?", [json_encode($chil), $f['fid']]);
         }
     }
-    // photos (files + rows)
+    /* Photos. A picture filed under this person may have other people in it —
+       a group photograph is stored once and shown on each of their pages. So
+       the file is only destroyed when nobody is left in it; otherwise it is
+       handed to somebody who is, and stays where it is on disk. */
+    require_once __DIR__ . '/photo_people.php';
+    pp_migrate();
     foreach (all("SELECT * FROM photos WHERE pid=?", [$pid]) as $ph) {
+        pp_untag($ph['id'], $pid);
+        $heir = one("SELECT pid FROM photo_people WHERE photo_id=? ORDER BY pid LIMIT 1", [$ph['id']]);
+        if ($heir) {
+            q("UPDATE photos SET pid=? WHERE id=?", [$heir['pid'], $ph['id']]);
+            pp_reseat_primary($heir['pid']);
+            continue;
+        }
         if (!empty($ph['path'])) { $abs = dirname(__DIR__) . '/public/' . $ph['path']; if (is_file($abs)) @unlink($abs); }
+        pp_clear($ph['id']);
+        q("DELETE FROM photos WHERE id=?", [$ph['id']]);
     }
-    q("DELETE FROM photos WHERE pid=?", [$pid]);
+    /* Anything they were only tagged in (owned by someone else) simply loses
+       the tag — the picture belongs to the other people in it. */
+    q("DELETE FROM photo_people WHERE pid=?", [$pid]);
     q("DELETE FROM persons WHERE pid=?", [$pid]);
     return [true, ($p['name'] ?: 'That person') . ' has been removed from the tree.'];
 }

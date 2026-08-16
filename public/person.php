@@ -1,7 +1,9 @@
 <?php
 require __DIR__ . '/../src/bootstrap.php';
 require_once __DIR__ . '/../src/tree_edit.php';
+require_once __DIR__ . '/../src/photo_people.php';
 te_migrate();
+pp_migrate();
 
 $pid = $_GET['pid'] ?? '';
 $p = one("SELECT * FROM persons WHERE pid=?", [$pid]);
@@ -18,10 +20,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && role_at_least('moderator')) {
     csrf_check();
     if (($_POST['action'] ?? '') === 'set_primary') {
         $phid = (int)($_POST['photo_id'] ?? 0);
-        if (one("SELECT id FROM photos WHERE id=? AND pid=? AND status='approved'", [$phid, $pid])) {
-            q("UPDATE photos SET is_primary=0 WHERE pid=?", [$pid]);
-            q("UPDATE photos SET is_primary=1 WHERE id=?", [$phid]);
-            flash('Main photo updated — it now shows in the tree and here.');
+        /* Per person, not per photograph. The same group picture can be this
+           brother's main photo without becoming everyone else's. */
+        if (pp_set_primary($pid, $phid)) flash('Main photo updated — it now shows in the tree and here.');
+    } elseif (($_POST['action'] ?? '') === 'tag_person') {
+        $phid  = (int)($_POST['photo_id'] ?? 0);
+        $other = trim($_POST['other_pid'] ?? '');
+        $ph    = one("SELECT id FROM photos WHERE id=?", [$phid]);
+        $op    = $other !== '' ? one("SELECT pid,name FROM persons WHERE pid=?", [$other]) : null;
+        if (!$ph || !$op) {
+            flash('Please choose who else is in the photograph.');
+        } elseif (!one("SELECT pid FROM photo_people WHERE photo_id=? AND pid=?", [$phid, $pid])) {
+            flash('That photograph isn\'t on this page.');   // don't let one page edit another's
+        } elseif (pp_tag($phid, $op['pid'])) {
+            pp_reseat_primary($op['pid']);                   // give them a face in the tree if they had none
+            flash(($op['name'] ?: 'They') . ' is now in this photograph — it shows on their page too.');
+        } else {
+            flash(($op['name'] ?: 'They') . ' was already in this photograph.');
+        }
+    } elseif (($_POST['action'] ?? '') === 'untag_person') {
+        $phid  = (int)($_POST['photo_id'] ?? 0);
+        $other = trim($_POST['other_pid'] ?? '') ?: $pid;
+        /* Never leave a picture belonging to nobody — it would vanish from the
+           whole site with the file still on disk. */
+        if (pp_count($phid) <= 1) {
+            flash('That is the only person in this photograph. Delete the photograph instead if it isn\'t wanted.');
+        } elseif (pp_untag($phid, $other)) {
+            pp_reseat_primary($other);
+            $op = one("SELECT name FROM persons WHERE pid=?", [$other]);
+            flash(($op && $op['name'] ? $op['name'] : 'They') . ' removed from this photograph. The picture itself is untouched.');
         }
     } elseif (($_POST['action'] ?? '') === 'edit_person') {
         /* Correcting someone already in the tree. This is the one thing the
@@ -78,17 +105,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && role_at_least('moderator')) {
         header('Location: ' . ($ok ? 'tree.php' : 'person.php?pid=' . urlencode($pid))); exit;
     } elseif (($_POST['action'] ?? '') === 'delete_photo') {
         $phid = (int)($_POST['photo_id'] ?? 0);
-        $ph = one("SELECT * FROM photos WHERE id=? AND pid=?", [$phid, $pid]);
-        if ($ph) {
-            $abs = __DIR__ . '/' . $ph['path'];
-            if (is_file($abs)) @unlink($abs);
-            q("DELETE FROM photos WHERE id=?", [$phid]);
-            // if we removed the main photo, promote the next one so the tree still has a face
-            if (!empty($ph['is_primary'])) {
-                $next = one("SELECT id FROM photos WHERE pid=? AND status='approved' ORDER BY id LIMIT 1", [$pid]);
-                if ($next) q("UPDATE photos SET is_primary=1 WHERE id=?", [$next['id']]);
+        $ph = one("SELECT * FROM photos WHERE id=?", [$phid]);
+        /* Deleting is now only allowed from a page the picture is actually on,
+           and only when this is the last person in it. Otherwise the button
+           would destroy a group photograph out from under three other people
+           who are still in it — so there it removes them from it instead. */
+        $inIt = $ph && one("SELECT pid FROM photo_people WHERE photo_id=? AND pid=?", [$phid, $pid]);
+        if ($ph && $inIt) {
+            $others = pp_count($phid) - 1;
+            if ($others > 0) {
+                pp_untag($phid, $pid);
+                pp_reseat_primary($pid);
+                flash('Removed from this page. ' . $others . ' other ' . ($others === 1 ? 'person is' : 'people are')
+                    . ' still in this photograph, so the picture itself has been kept.');
+            } else {
+                $abs = __DIR__ . '/' . $ph['path'];
+                if (is_file($abs)) @unlink($abs);
+                pp_clear($phid);
+                q("DELETE FROM photos WHERE id=?", [$phid]);
+                flash('Photo deleted.');
             }
-            flash('Photo deleted.');
         }
     }
     header('Location: person.php?pid=' . urlencode($pid)); exit;
@@ -320,7 +356,7 @@ page_head($name);
 
 <div class="panel" style="margin-top:20px;border-left:3px solid #7a2e1f">
   <h2 style="font-size:20px;margin-top:0">Remove this person</h2>
-  <p class="muted" style="margin:0 0 12px">If <b><?= e($name) ?></b> was added by mistake or is a duplicate, you can remove them from the tree. Their connections and photos are removed too. This can&rsquo;t be undone.</p>
+  <p class="muted" style="margin:0 0 12px">If <b><?= e($name) ?></b> was added by mistake or is a duplicate, you can remove them from the tree. Their connections go too, and any photograph that is only of them. Group pictures with other family in them are kept. This can&rsquo;t be undone.</p>
   <form method="post" onsubmit="return confirm('Remove <?= e(addslashes($name)) ?> from the tree permanently? This cannot be undone.')">
     <?= csrf_field() ?><input type="hidden" name="action" value="delete_person">
     <button class="btn danger" type="submit">Remove <?= e(explode(' ', $name)[0]) ?> from the tree</button>
@@ -377,17 +413,50 @@ page_head($name);
 <div class="panel" style="margin-top:20px">
   <h2>Photographs<?= $photos ? ' (' . count($photos) . ')' : '' ?></h2>
   <?php if ($photos): ?>
-    <?php if (role_at_least('moderator')): ?><p class="muted" style="margin-bottom:8px">The photo marked <b style="color:var(--gold2)">&#9733; Main</b> is what shows in the family tree. Hover a photo to <b>Set as main</b>, or click <b>&times;</b> to delete a duplicate.</p><?php endif; ?>
+    <?php if (role_at_least('moderator')): ?><p class="muted" style="margin-bottom:8px">The photo marked <b style="color:var(--gold2)">&#9733; Main</b> is what shows in the family tree. Hover a photo to <b>Set as main</b>, or click <b>&times;</b> to remove it.
+      If more than one person is in a picture, open <b>Who&rsquo;s in it?</b> and add them &mdash; the same photograph then appears on each of their pages.</p><?php endif; ?>
     <div class="gallery">
-      <?php foreach ($photos as $i => $ph): $isMain = ($i === 0); ?>
+      <?php foreach ($photos as $i => $ph): $isMain = ($i === 0);
+            $inIt = logged_in() ? pp_people($ph['id']) : [];
+            $others = []; foreach ($inIt as $t) if ($t['pid'] !== $pid) $others[] = $t; ?>
         <div class="gphoto<?= $isMain ? ' is-main' : '' ?>">
           <a href="#" onclick="lb('<?= e($ph['path']) ?>');return false"><img src="<?= e($ph['path']) ?>" alt="<?= e($ph['caption']) ?>"></a>
           <?php if ($isMain && count($photos) > 1): ?><span class="gmain">&#9733; Main</span><?php endif; ?>
+          <?php if (count($inIt) > 1): ?><span class="ggroup" title="<?= (int)count($inIt) ?> people are in this photograph"><?= (int)count($inIt) ?> people</span><?php endif; ?>
           <?php if (role_at_least('moderator')): ?>
-            <form method="post" class="gdel" onsubmit="return confirm('Delete this photo permanently?')"><?= csrf_field() ?><input type="hidden" name="action" value="delete_photo"><input type="hidden" name="photo_id" value="<?= (int)$ph['id'] ?>"><button type="submit" title="Delete photo">&times;</button></form>
+            <form method="post" class="gdel" onsubmit="return confirm(<?= count($inIt) > 1 ? "'Take this person out of the photograph? The picture stays for everyone else in it.'" : "'Delete this photo permanently?'" ?>)"><?= csrf_field() ?><input type="hidden" name="action" value="delete_photo"><input type="hidden" name="photo_id" value="<?= (int)$ph['id'] ?>"><button type="submit" title="<?= count($inIt) > 1 ? 'Take them out of this photograph' : 'Delete photo' ?>">&times;</button></form>
             <?php if (!$isMain): ?>
               <form method="post" class="gsetmain"><?= csrf_field() ?><input type="hidden" name="action" value="set_primary"><input type="hidden" name="photo_id" value="<?= (int)$ph['id'] ?>"><button type="submit">Set as main</button></form>
             <?php endif; ?>
+          <?php endif; ?>
+          <?php if (logged_in() && ($others || role_at_least('moderator'))): ?>
+            <details class="inpic">
+              <summary>Who&rsquo;s in it?<?= $others ? ' (' . (count($others) + 1) . ')' : '' ?></summary>
+              <div class="inpic-body">
+                <?php if ($others): ?>
+                  <div class="inpic-chips">
+                    <?php foreach ($others as $t): ?>
+                      <span class="inpic-chip">
+                        <a href="person.php?pid=<?= e(urlencode($t['pid'])) ?>"><?= e($t['name'] ?: $t['pid']) ?></a>
+                        <?php if (role_at_least('moderator')): ?>
+                          <form method="post" onsubmit="return confirm('Take <?= e(addslashes($t['name'] ?: 'this person')) ?> out of this photograph?')"><?= csrf_field() ?><input type="hidden" name="action" value="untag_person"><input type="hidden" name="photo_id" value="<?= (int)$ph['id'] ?>"><input type="hidden" name="other_pid" value="<?= e($t['pid']) ?>"><button type="submit" title="Not in this photograph">&times;</button></form>
+                        <?php endif; ?>
+                      </span>
+                    <?php endforeach; ?>
+                  </div>
+                <?php else: ?>
+                  <p class="muted" style="margin:0 0 8px">Only <?= e(explode(' ', $name)[0]) ?> so far.</p>
+                <?php endif; ?>
+                <?php if (role_at_least('moderator')): ?>
+                  <form method="post" class="inpic-add">
+                    <?= csrf_field() ?><input type="hidden" name="action" value="tag_person"><input type="hidden" name="photo_id" value="<?= (int)$ph['id'] ?>">
+                    <input type="text" class="inpic-f" placeholder="Type a name&hellip;" autocomplete="off">
+                    <select name="other_pid" class="inpic-s" required><option value="">&mdash; add someone else in this picture &mdash;</option></select>
+                    <button class="btn2" type="submit">Add</button>
+                  </form>
+                <?php endif; ?>
+              </div>
+            </details>
           <?php endif; ?>
         </div>
       <?php endforeach; ?>
@@ -403,4 +472,53 @@ function lb(src){document.getElementById('lightbox-img').src=src;document.getEle
 function closeLb(){document.getElementById('lightbox').classList.remove('show');document.getElementById('lightbox-img').src='';}
 window.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();});
 </script>
+<?php if ($photos && role_at_least('moderator')): ?>
+<script>
+/* The list of names is written once and shared by every photograph. Putting a
+   two-hundred-name <select> inside each picture would be the same list over and
+   over, and on a phone that is most of the weight of the page. So the boxes
+   start empty and are filled the first time one is opened. */
+(function(){
+  var PEOPLE = <?= json_encode(te_people_options($pid), JSON_UNESCAPED_UNICODE) ?>;
+  function fill(sel, q){
+    var keep = sel.value;
+    sel.innerHTML = '';
+    var first = document.createElement('option');
+    first.value = ''; first.textContent = '— add someone else in this picture —';
+    sel.appendChild(first);
+    q = (q || '').toLowerCase().trim();
+    for (var i = 0; i < PEOPLE.length; i++) {
+      if (q && PEOPLE[i].label.toLowerCase().indexOf(q) === -1) continue;
+      var o = document.createElement('option');
+      o.value = PEOPLE[i].pid; o.textContent = PEOPLE[i].label;
+      sel.appendChild(o);
+    }
+    if (keep) sel.value = keep;
+  }
+  document.addEventListener('toggle', function(ev){
+    var d = ev.target;
+    if (!d || d.tagName !== 'DETAILS' || !d.open || !d.classList.contains('inpic')) return;
+    var s = d.querySelector('.inpic-s');
+    if (s && s.options.length <= 1) fill(s, '');
+  }, true);
+  /* Belt and braces: `toggle` is the right event, but if an older phone browser
+     doesn't fire it the box would open empty, which looks broken. Clicking the
+     summary is the only way to open one, so filling on that click covers it. */
+  document.addEventListener('click', function(ev){
+    var t = ev.target;
+    if (!t || typeof t.closest !== 'function') return;
+    var d = t.closest('details.inpic');
+    if (!d) return;
+    var s = d.querySelector('.inpic-s');
+    if (s && s.options.length <= 1) fill(s, '');
+  });
+  document.addEventListener('input', function(ev){
+    var f = ev.target;
+    if (!f || !f.classList || !f.classList.contains('inpic-f')) return;
+    var s = f.parentNode.querySelector('.inpic-s');
+    if (s) fill(s, f.value);
+  });
+})();
+</script>
+<?php endif; ?>
 <?php page_foot();
