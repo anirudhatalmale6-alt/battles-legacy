@@ -27,5 +27,7 @@ return [
     'twilio_sid'  => '',
     'twilio_token'=> '',
     'twilio_from' => '',
-    'mail_from'   => 'noreply@thebattlesfamily.com',
+    /* Not noreply@ — see the note in src/mailer.php. Only used from the command
+       line, where there is no request host to read the domain from. */
+    'mail_from'   => 'family@thebattlesfamily.com',
 ];

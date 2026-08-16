@@ -13,15 +13,21 @@
 require_once __DIR__ . '/helpers.php';
 
 /** The address mail leaves from. It has to be at the site's own domain or the
- *  DKIM signature won't match it and delivery gets worse, not better. */
+ *  DKIM signature won't match it and delivery gets worse, not better.
+ *
+ *  Deliberately NOT no-reply@. That prefix is one of the oldest bulk-mail
+ *  markers there is, and it also tells the reader not to answer — which costs
+ *  us the one signal that actually teaches Gmail this sender is wanted, since
+ *  a reply is the strongest "not spam" vote a person can cast. Replies go to
+ *  William anyway via Reply-To, so nothing lands in an unread mailbox. */
 function mailer_from() {
     $host = preg_replace('/^www\./i', '', $_SERVER['HTTP_HOST'] ?? '');
     $host = preg_replace('/:\d+$/', '', $host);
     if ($host === '' || strpos($host, '.') === false) {
         $cfg = (string)config('mail_from');
-        return $cfg !== '' ? $cfg : 'no-reply@thebattlesfamily.com';
+        return $cfg !== '' ? $cfg : 'family@thebattlesfamily.com';
     }
-    return 'no-reply@' . $host;
+    return 'family@' . $host;
 }
 
 function mailer_valid($addr) {
@@ -63,16 +69,35 @@ function mailer_send($to, $subject, $body, $opts = []) {
     $h[] = 'MIME-Version: 1.0';
     $h[] = 'Content-Type: text/plain; charset=UTF-8';
     $h[] = 'Content-Transfer-Encoding: 8bit';
-    /* Tells Gmail and the rest this is a one-off triggered by a person, not a
-       mailing list — it is one of the few things that helps without DNS. */
-    $h[] = 'Auto-Submitted: auto-generated';
-    $h[] = 'X-Mailer: The Battles Legacy';
+    /* There was an `Auto-Submitted: auto-generated` here with a comment saying
+       it marked the message as human-triggered. It does the opposite: RFC 3834
+       uses it to label machine-generated mail so that other machines don't
+       auto-reply to it, and filters read it as one more bulk marker. This mail
+       IS triggered by a person pressing a button, so the honest thing is to
+       claim nothing at all. Same reasoning for the home-made X-Mailer that sat
+       below it — a mailer name no filter has ever seen before is a small cost
+       and buys nothing.
+
+       A Message-ID at the sending domain, on the other hand, is worth setting.
+       Left alone, exim stamps one at the physical server (michigan.shnw.net),
+       which does not match the From domain — a mismatch there is a documented
+       spam signal, and it is free to get right. */
+    $fromHost = substr($from, strpos($from, '@') + 1);
+    $h[] = 'Message-ID: <' . mailer_msgid_token() . '@' . $fromHost . '>';
 
     $body = str_replace(["\r\n", "\r"], "\n", (string)$body);
     $body = str_replace("\n", "\r\n", $body);
 
     try { return @mail($to, $subjHdr, $body, implode("\r\n", $h), '-f' . $from) ? true : false; }
     catch (\Throwable $e) { return false; }
+}
+
+/** The unique half of a Message-ID. Only has to be unlikely to repeat. */
+function mailer_msgid_token() {
+    if (function_exists('random_bytes')) {
+        try { return bin2hex(random_bytes(12)); } catch (\Throwable $e) { /* fall through */ }
+    }
+    return bin2hex(pack('N', time())) . uniqid('', true);
 }
 
 /** Quote a display name for a header if it needs it. */
