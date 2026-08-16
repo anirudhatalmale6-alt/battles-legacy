@@ -79,25 +79,25 @@ function pwreset_throttled($user_id) {
 /** Best-effort email. Returns true only when the mail server accepted it —
  *  which is not the same as it arriving, so nothing user-facing promises that. */
 function pwreset_mail($user, $url) {
-    if (!function_exists('mail')) return false;
-    $to   = trim((string)$user['email']);
-    if ($to === '' || !filter_var($to, FILTER_VALIDATE_EMAIL)) return false;
-    $host = preg_replace('/^www\./i', '', $_SERVER['HTTP_HOST'] ?? 'thebattlesfamily.com');
-    $host = preg_replace('/:\d+$/', '', $host);
-    $from = 'no-reply@' . $host;
+    require_once __DIR__ . '/mailer.php';
     $name = trim((string)$user['name']) !== '' ? explode(' ', trim($user['name']))[0] : 'there';
 
+    /* Replies go to William rather than into a no-reply void — an aunt who
+       can't get in will answer the email rather than find the site again. */
+    $admin = null;
+    try { $admin = one("SELECT name,email FROM users WHERE role='admin' AND status='active' ORDER BY id LIMIT 1"); }
+    catch (\Throwable $e) {}
+
     $subject = 'Reset your password — The Battles Legacy';
-    $body = "Hello $name,\r\n\r\n"
-          . "Someone asked to reset the password for your account on The Battles Legacy family website.\r\n\r\n"
-          . "Open this link to choose a new password:\r\n$url\r\n\r\n"
-          . "The link works once and expires in " . PWRESET_HOURS . " hours.\r\n\r\n"
-          . "If you didn't ask for this, you can ignore this message — your password has not changed.\r\n\r\n"
-          . "— The Battles Legacy\r\n";
-    $headers = "From: The Battles Legacy <$from>\r\n"
-             . "Reply-To: $from\r\n"
-             . "Content-Type: text/plain; charset=UTF-8\r\n"
-             . "X-Mailer: PHP/" . phpversion();
-    try { return @mail($to, $subject, $body, $headers, '-f' . $from) ? true : false; }
-    catch (\Throwable $e) { return false; }
+    $body = "Hello $name,\n\n"
+          . "Someone asked to reset the password for your account on The Battles Legacy family website.\n\n"
+          . "Open this link to choose a new password:\n$url\n\n"
+          . "The link works once and expires in " . PWRESET_HOURS . " hours.\n\n"
+          . "If you didn't ask for this, you can ignore this message — your password has not changed.\n\n"
+          . "— The Battles Legacy\n";
+
+    return mailer_send($user['email'] ?? '', $subject, $body, [
+        'reply_to'   => $admin['email'] ?? '',
+        'reply_name' => $admin['name'] ?? '',
+    ]);
 }

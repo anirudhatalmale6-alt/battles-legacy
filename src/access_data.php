@@ -65,17 +65,30 @@ function ar_already($email) {
     return '';
 }
 
-/** Approve: make an invitation for them and remember which one it was. */
+/** Approve: make an invitation for them and remember which one it was.
+ *
+ *  The invitation is made by invite_create() rather than a second INSERT of its
+ *  own, so an invitation born here is identical to one typed on the Members
+ *  page — same columns, same expiry, and it shows the same send buttons.
+ *
+ *  Returns ['url','token','emailed'] — emailed is whether the mail server took
+ *  it, which is not a promise it arrived, so the caller says so carefully. */
 function ar_approve($id, $role, $adminId) {
+    require_once __DIR__ . '/invites.php';
     $r = ar_get($id);
     if (!$r || $r['status'] !== 'new') return null;
-    $role  = in_array($role, ['member','moderator','admin'], true) ? $role : 'member';
-    $token = bin2hex(random_bytes(20));
-    q("INSERT INTO invites (token,name,email,role,invited_by,expires_at) VALUES (?,?,?,?,?,?)",
-      [$token, $r['name'], $r['email'], $role, $adminId, date('Y-m-d H:i:s', time() + 30 * 86400)]);
+    list($token, $url) = invite_create($r['name'], $r['email'], $role, $adminId);
     q("UPDATE access_requests SET status='approved', invite_token=?, decided_by=?, decided_at=? WHERE id=?",
       [$token, $adminId, date('Y-m-d H:i:s'), (int)$id]);
-    return base_url() . '/register.php?token=' . $token;
+
+    /* They asked to join minutes ago and are waiting on an answer, so try the
+       email straight away — but the link is on the page regardless. */
+    $emailed = false;
+    if ($inv = one("SELECT * FROM invites WHERE token=?", [$token])) {
+        $host = function_exists('current_user') ? current_user() : null;
+        $emailed = invite_mail($inv, $host);
+    }
+    return ['url' => $url, 'token' => $token, 'emailed' => $emailed];
 }
 
 function ar_decline($id, $adminId) {

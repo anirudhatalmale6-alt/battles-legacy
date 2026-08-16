@@ -3,6 +3,7 @@ require __DIR__ . '/../src/bootstrap.php';
 require_once __DIR__ . '/../src/install.php';
 require_once __DIR__ . '/../src/pwreset.php';
 require_once __DIR__ . '/../src/access_data.php';
+require_once __DIR__ . '/../src/invites.php';
 require_role('admin');
 $me = current_user();
 
@@ -10,13 +11,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
     $act = $_POST['action'] ?? '';
     if ($act === 'invite') {
-        $name = trim($_POST['name'] ?? '');
+        $name  = trim($_POST['name'] ?? '');
         $email = strtolower(trim($_POST['email'] ?? ''));
-        $role = in_array($_POST['role'] ?? '', ['member','moderator','admin'], true) ? $_POST['role'] : 'member';
-        $token = bin2hex(random_bytes(20));
-        q("INSERT INTO invites (token,name,email,role,invited_by,expires_at) VALUES (?,?,?,?,?, ?)",
-          [$token, $name, $email, $role, $me['id'], date('Y-m-d H:i:s', time() + 30*86400)]);
-        flash('Invitation created — copy the link below and send it to ' . ($name ?: $email) . '.');
+        $role  = $_POST['role'] ?? 'member';
+        if ($name === '' && $email === '') {
+            flash('Put in a name, an email address, or both.');
+        } elseif ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            flash('That doesn\'t look like an email address: ' . $email);
+        } elseif ($was = invite_existing($email)) {
+            flash($email . ' is already ' . ($was === 'member' ? 'a member.' : 'holding an invitation — it\'s in the list below.'));
+        } else {
+            list($token, $url) = invite_create($name, $email, $role, $me['id']);
+            $who = $name ?: $email;
+            if ($email === '') {
+                flash('Invitation ready for ' . $who . '. There\'s no email address for them, so use one of the send buttons below.');
+            } else {
+                $inv = one("SELECT * FROM invites WHERE token=?", [$token]);
+                flash(invite_mail($inv, $me)
+                    ? 'Invitation for ' . $who . ' handed to the mail server. If it hasn\'t arrived in ten minutes, check their spam folder — or use "Send it myself" below, which always gets through.'
+                    : 'Invitation ready for ' . $who . ', but the mail server wouldn\'t take it. Use "Send it myself" below.');
+            }
+        }
+    } elseif ($act === 'invite_bulk') {
+        /* A pasted list — one person per line, in whatever shape it came out of
+           his address book or the Facebook group. */
+        $lines = preg_split('/\r\n|\r|\n/', (string)($_POST['bulk'] ?? ''));
+        $role  = $_POST['role'] ?? 'member';
+        $send  = !empty($_POST['bulk_send']);
+        $made = 0; $mailed = 0; $skipped = []; $bad = [];
+        foreach ($lines as $line) {
+            $p = invite_parse_line($line);
+            if (!$p) continue;
+            if ($p['email'] !== '' && !filter_var($p['email'], FILTER_VALIDATE_EMAIL)) { $bad[] = trim($line); continue; }
+            if ($p['email'] !== '' && ($was = invite_existing($p['email']))) { $skipped[] = ($p['name'] ?: $p['email']) . ' (already ' . $was . ')'; continue; }
+            list($token, $url) = invite_create($p['name'], $p['email'], $role, $me['id']);
+            $made++;
+            if ($send && $p['email'] !== '') {
+                $inv = one("SELECT * FROM invites WHERE token=?", [$token]);
+                if ($inv && invite_mail($inv, $me)) $mailed++;
+            }
+        }
+        if (!$made && !$skipped && !$bad) flash('Nothing to read in that box.');
+        else {
+            $msg = $made . ' invitation' . ($made === 1 ? '' : 's') . ' made';
+            if ($send) $msg .= ', ' . $mailed . ' handed to the mail server';
+            $msg .= '. They are all listed below with a send button each.';
+            flash($msg);
+            if ($skipped) flash('Left alone: ' . implode('; ', array_slice($skipped, 0, 12)) . (count($skipped) > 12 ? ' …and ' . (count($skipped) - 12) . ' more' : ''));
+            if ($bad) flash('Couldn\'t read: ' . implode('; ', array_slice($bad, 0, 8)));
+        }
+    } elseif ($act === 'invite_send') {
+        $inv = invite_by_id($_POST['iid'] ?? 0);
+        if (!$inv) flash('That invitation is no longer waiting.');
+        elseif (trim((string)$inv['email']) === '') flash('There\'s no email address on that invitation — use "Send it myself".');
+        else flash(invite_mail($inv, $me)
+            ? 'Sent again to ' . $inv['email'] . '. If it still doesn\'t arrive, use "Send it myself".'
+            : 'The mail server wouldn\'t take it. Use "Send it myself".');
+    } elseif ($act === 'invite_delete') {
+        invite_delete($_POST['iid'] ?? 0);
+        flash('Invitation cancelled — that link no longer works.');
     } elseif ($act === 'rename') {
         $uid = (int)($_POST['uid'] ?? 0);
         $newname = trim($_POST['newname'] ?? '');
@@ -47,8 +100,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($uid) { try { q("UPDATE password_resets SET used_at=CURRENT_TIMESTAMP WHERE user_id=? AND used_at IS NULL", [$uid]); } catch (\Throwable $e) {} }
         flash('Those reset links have been cancelled.');
     } elseif ($act === 'ar_approve') {
-        $url = ar_approve((int)($_POST['rid'] ?? 0), $_POST['role'] ?? 'member', $me['id']);
-        flash($url ? 'Approved — their invitation link is in the list below. Send it to them.' : 'That request has already been dealt with.');
+        $res = ar_approve((int)($_POST['rid'] ?? 0), $_POST['role'] ?? 'member', $me['id']);
+        if (!$res) flash('That request has already been dealt with.');
+        else flash($res['emailed']
+            ? 'Approved, and their invitation was handed to the mail server. It is also in the list below in case it doesn\'t arrive.'
+            : 'Approved — their invitation link is in the list below. Use one of the send buttons to get it to them.');
     } elseif ($act === 'ar_decline') {
         ar_decline((int)($_POST['rid'] ?? 0), $me['id']);
         flash('Request declined. They are not told, and nothing is sent.');
@@ -76,7 +132,7 @@ $users = all("SELECT * FROM users ORDER BY role='admin' DESC, role='moderator' D
 $reqNew  = ar_list('new');
 $reqDone = array_slice(array_filter(ar_list('all'), function ($r) { return $r['status'] !== 'new'; }), 0, 12);
 $resets = pwreset_open();
-$invites = all("SELECT i.*, u.name AS by_name FROM invites i LEFT JOIN users u ON u.id=i.invited_by WHERE i.used_at IS NULL ORDER BY i.id DESC");
+$invites = invite_open();
 
 page_head('Members');
 ?>
@@ -149,14 +205,36 @@ page_head('Members');
 
 <div class="panel" style="margin-top:20px">
   <h2>Invite a family member</h2>
-  <form method="post" style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:12px;align-items:end">
+  <p class="muted">Put in an email address and the website will email the invitation. Whether it does or
+    doesn&rsquo;t get through, the link also appears below with a <b>Send it myself</b> button that opens your own
+    email &mdash; that one always arrives, because it comes from you rather than from a website.</p>
+  <form method="post" class="inv-form">
     <?= csrf_field() ?>
     <input type="hidden" name="action" value="invite">
     <div><label>Name</label><input type="text" name="name" placeholder="e.g. Dianne Battles"></div>
-    <div><label>Email (optional)</label><input type="email" name="email"></div>
+    <div><label>Email</label><input type="email" name="email" placeholder="dianne@example.com"></div>
     <div><label>Role</label><select name="role"><option value="member">Member</option><option value="moderator">Moderator</option><option value="admin">Admin</option></select></div>
-    <button class="btn gold" style="margin:0">Create invite</button>
+    <button class="btn gold" style="margin:0">Invite</button>
   </form>
+
+  <details class="inv-bulk">
+    <summary>Invite a lot of people at once</summary>
+    <form method="post" style="margin-top:12px">
+      <?= csrf_field() ?><input type="hidden" name="action" value="invite_bulk">
+      <label>One person per line</label>
+      <textarea name="bulk" rows="7" placeholder="Dianne Battles, dianne@example.com&#10;Sam Battles &lt;sam@example.com&gt;&#10;cousin.ray@example.com&#10;Anthony Battles"></textarea>
+      <p class="muted" style="margin:6px 0 10px">Name and address in any order, separated by a comma, a space or
+        angle brackets &mdash; whatever your address book pastes in. A line with only a name still gets a link;
+        a line with only an address is fine too. Anyone already a member is skipped.</p>
+      <div class="inv-bulkrow">
+        <label style="margin:0">Role
+          <select name="role"><option value="member">Member</option><option value="moderator">Moderator</option><option value="admin">Admin</option></select>
+        </label>
+        <label class="inv-check"><input type="checkbox" name="bulk_send" value="1" checked> Try to email them as well</label>
+        <button class="btn gold" style="margin:0">Make the invitations</button>
+      </div>
+    </form>
+  </details>
 </div>
 
 <div class="panel" style="margin-top:18px">
@@ -183,17 +261,59 @@ page_head('Members');
 
 <?php if ($invites): ?>
 <div class="panel" style="margin-top:18px">
-  <h2>Pending invitations</h2>
-  <table class="list">
-    <tr><th>Name</th><th>Role</th><th>Invitation link (copy &amp; send)</th></tr>
-    <?php foreach ($invites as $inv): $url = base_url() . '/register.php?token=' . $inv['token']; ?>
-      <tr>
-        <td><?= e($inv['name'] ?: $inv['email'] ?: '—') ?></td>
-        <td><span class="pill admin"><?= e(ucfirst($inv['role'])) ?></span></td>
-        <td><input type="text" readonly value="<?= e($url) ?>" onclick="this.select()" style="font-size:13px"></td>
-      </tr>
+  <h2>Invitations waiting (<?= count($invites) ?>)</h2>
+  <p class="muted">These people have a link but haven&rsquo;t signed up yet. <b>Send it myself</b> opens your own
+    email with the whole message already written &mdash; you just press send. Links last
+    <?= INVITE_DAYS ?> days.</p>
+  <div class="inv-list">
+    <?php foreach ($invites as $inv):
+      $url  = invite_url($inv['token']);
+      $m    = invite_message($inv, $url, $me);
+      $mail = trim((string)$inv['email']);
+      $exp  = $inv['expires_at'] ? strtotime($inv['expires_at']) : 0;
+      $days = $exp ? (int)ceil(($exp - time()) / 86400) : null;
+    ?>
+      <div class="inv-row">
+        <div class="inv-who">
+          <b><?= e($inv['name'] ?: $mail ?: '—') ?></b>
+          <span class="pill admin"><?= e(ucfirst($inv['role'])) ?></span>
+          <?php if ($mail): ?><span class="inv-mail"><?= e($mail) ?></span><?php endif; ?>
+        </div>
+        <div class="inv-state">
+          <?php if (!$mail): ?>
+            <span class="inv-dot none"></span>No email address on file
+          <?php elseif (empty($inv['emailed_at'])): ?>
+            <span class="inv-dot none"></span>Not emailed yet
+          <?php elseif (!empty($inv['email_ok'])): ?>
+            <span class="inv-dot ok"></span>Handed to the mail server <?= e(date('j M, g:ia', strtotime($inv['emailed_at']))) ?><?php
+              if ((int)$inv['sent_count'] > 1) echo ' &middot; ' . (int)$inv['sent_count'] . ' times'; ?>
+          <?php else: ?>
+            <span class="inv-dot bad"></span>The mail server refused it
+          <?php endif; ?>
+          <?php if ($days !== null): ?><span class="inv-exp"><?= $days > 0 ? 'expires in ' . $days . ' day' . ($days === 1 ? '' : 's') : 'expired' ?></span><?php endif; ?>
+        </div>
+        <div class="inv-link">
+          <input type="text" readonly value="<?= e($url) ?>" onclick="this.select()" id="inv<?= (int)$inv['id'] ?>">
+          <button type="button" class="btn2" data-copy="inv<?= (int)$inv['id'] ?>">Copy link</button>
+        </div>
+        <div class="inv-acts">
+          <?php if ($mail): ?>
+            <a class="btn gold" href="<?= e(mailto_link($mail, $m['subject'], $m['body'])) ?>">&#9993; Send it myself</a>
+            <form method="post" style="margin:0;display:inline">
+              <?= csrf_field() ?><input type="hidden" name="action" value="invite_send"><input type="hidden" name="iid" value="<?= (int)$inv['id'] ?>">
+              <button class="btn2" type="submit"><?= empty($inv['emailed_at']) ? 'Let the website email it' : 'Email it again' ?></button>
+            </form>
+          <?php else: ?>
+            <span class="muted" style="font-size:13px">Copy the link and send it however you like.</span>
+          <?php endif; ?>
+          <form method="post" style="margin:0;display:inline" onsubmit="return confirm('Cancel this invitation? The link will stop working.')">
+            <?= csrf_field() ?><input type="hidden" name="action" value="invite_delete"><input type="hidden" name="iid" value="<?= (int)$inv['id'] ?>">
+            <button class="inv-x" type="submit">Cancel</button>
+          </form>
+        </div>
+      </div>
     <?php endforeach; ?>
-  </table>
+  </div>
 </div>
 <?php endif; ?>
 
@@ -202,24 +322,46 @@ page_head('Members');
   <h2>Password reset links</h2>
   <p class="muted">A link works once and expires 24 hours after it was made. Send it to the person privately.
     &ldquo;Asked for it&rdquo; means they used the Forgotten password form themselves.</p>
-  <table class="list">
-    <tr><th>Name</th><th>Where from</th><th>Link (click to select, then copy)</th><th></th></tr>
-    <?php foreach ($resets as $r): $url = base_url() . '/reset.php?token=' . $r['token']; ?>
-      <tr>
-        <td><?= e($r['name'] ?: $r['email']) ?></td>
-        <td class="muted"><?= $r['source'] === 'self'
-              ? 'Asked for it' . ($r['emailed'] ? ' · emailed' : ' · email not sent')
-              : 'You made it' ?></td>
-        <td><input type="text" readonly value="<?= e($url) ?>" onclick="this.select()" style="font-size:13px"></td>
-        <td>
-          <form method="post" style="margin:0">
+  <div class="inv-list">
+    <?php foreach ($resets as $r):
+      $url = base_url() . '/reset.php?token=' . $r['token'];
+      $first = trim((string)$r['name']) !== '' ? explode(' ', trim($r['name']))[0] : 'there';
+      $rsub = 'Your password for The Battles Legacy';
+      $rbod = "Hello $first,\n\n"
+            . "Here is a link to set a new password for the family website:\n\n"
+            . $url . "\n\n"
+            . "It works once and stops working " . PWRESET_HOURS . " hours after it was made.\n\n"
+            . (trim((string)$me['name']) ?: 'William') . "\n";
+    ?>
+      <div class="inv-row">
+        <div class="inv-who">
+          <b><?= e($r['name'] ?: $r['email']) ?></b>
+          <?php if ($r['email']): ?><span class="inv-mail"><?= e($r['email']) ?></span><?php endif; ?>
+        </div>
+        <div class="inv-state">
+          <?php if ($r['source'] === 'self'): ?>
+            <span class="inv-dot <?= $r['emailed'] ? 'ok' : 'bad' ?>"></span>They asked for it
+            &middot; <?= $r['emailed'] ? 'handed to the mail server' : 'the email didn\'t go' ?>
+          <?php else: ?>
+            <span class="inv-dot none"></span>You made this one
+          <?php endif; ?>
+        </div>
+        <div class="inv-link">
+          <input type="text" readonly value="<?= e($url) ?>" onclick="this.select()" id="pwr<?= (int)$r['id'] ?>">
+          <button type="button" class="btn2" data-copy="pwr<?= (int)$r['id'] ?>">Copy link</button>
+        </div>
+        <div class="inv-acts">
+          <?php if (trim((string)$r['email']) !== ''): ?>
+            <a class="btn gold" href="<?= e(mailto_link($r['email'], $rsub, $rbod)) ?>">&#9993; Send it myself</a>
+          <?php endif; ?>
+          <form method="post" style="margin:0;display:inline">
             <?= csrf_field() ?><input type="hidden" name="action" value="pwcancel"><input type="hidden" name="uid" value="<?= (int)$r['user_id'] ?>">
-            <button class="btn" style="margin:0;padding:5px 10px;font-size:14px">Cancel</button>
+            <button class="inv-x" type="submit">Cancel</button>
           </form>
-        </td>
-      </tr>
+        </div>
+      </div>
     <?php endforeach; ?>
-  </table>
+  </div>
 </div>
 <?php endif; ?>
 
@@ -270,4 +412,30 @@ page_head('Members');
     <?php endforeach; ?>
   </table>
 </div>
+
+<script>
+/* Copy a link to the clipboard. The modern call needs a secure context and
+   permission, so when it isn't there we fall back to selecting the field and
+   using the old execCommand, which works everywhere this site is opened. */
+document.addEventListener('click', function (ev) {
+  var t = ev.target;
+  if (!t || typeof t.closest !== 'function') return;
+  var b = t.closest('[data-copy]');
+  if (!b) return;
+  var f = document.getElementById(b.getAttribute('data-copy'));
+  if (!f) return;
+  var done = function () {
+    var was = b.textContent;
+    b.textContent = 'Copied';
+    b.classList.add('is-copied');
+    setTimeout(function () { b.textContent = was; b.classList.remove('is-copied'); }, 1600);
+  };
+  f.focus(); f.select(); f.setSelectionRange(0, 99999);
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(f.value).then(done, function () { try { document.execCommand('copy'); done(); } catch (e) {} });
+  } else {
+    try { document.execCommand('copy'); done(); } catch (e) {}
+  }
+});
+</script>
 <?php page_foot();
