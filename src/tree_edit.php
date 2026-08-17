@@ -74,7 +74,11 @@ function te_create_person($f) {
     $given   = trim($f['given'] ?? '');
     $surname = trim($f['surname'] ?? '');
     $name    = te_full_name($f);
-    if (trim($f['death_date'] ?? '') !== '') $f['living'] = 0;
+    /* An unticked "Living family member" box used to mean deceased, so adding a
+       relative and not thinking about the box put them on the public Memorial
+       page. Nobody is published as having passed without a date saying so. */
+    $f['living'] = person_living_flag($f['death_date'] ?? '', '', $f['birth_date'] ?? '',
+                                      isset($f['living']) ? (int)$f['living'] : null);
     q("INSERT INTO persons (pid,name,given,surname,sex,birth_date,birth_place,death_date,death_place,buri_date,buri_place,living,famc,fams,occupation,education,notes)
        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [$pid, $name, $given, $surname, ($f['sex'] ?? ''),
@@ -237,8 +241,9 @@ function te_update_person($pid, $f) {
     /* A death date and "still living" cannot both be true. Trusting the date
        means a passing recorded here also takes the person out of the private
        living set and off the birthday list, which is what anyone would expect. */
-    $living = (int)($f['living'] ?? 0);
-    if (trim($f['death_date'] ?? '') !== '') $living = 0;
+    $cur    = one("SELECT buri_date FROM persons WHERE pid=?", [$pid]);
+    $living = person_living_flag($f['death_date'] ?? '', $cur['buri_date'] ?? '', $f['birth_date'] ?? '',
+                                 isset($f['living']) ? (int)$f['living'] : null);
     q("UPDATE persons SET name=?,given=?,surname=?,sex=?,birth_date=?,birth_place=?,death_date=?,death_place=?,living=? WHERE pid=?",
       [$name,$given,$surname,($f['sex']??''),($f['birth_date']??''),($f['birth_place']??''),
        ($f['death_date']??''),($f['death_place']??''),$living,$pid]);

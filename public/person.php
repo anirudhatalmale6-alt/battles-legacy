@@ -63,6 +63,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && role_at_least('moderator')) {
             $msg = 'Saved — ' . te_full_name($nf) . '\'s details are updated everywhere on the site.';
             if ($wasLiving && trim($nf['death_date']) !== '')
                 $msg .= ' A date of death was entered, so they are no longer marked as living.';
+            /* Never silently override the box: if they unticked "living" for
+               somebody with no date of death, say why it stayed on. */
+            elseif ((int)$nf['living'] === 0 && trim($nf['death_date']) === ''
+                    && !person_deceased_for_public('', $p['buri_date'] ?? '', $nf['birth_date']))
+                $msg .= ' They are still marked as living, because there is no date of death recorded —'
+                      . ' add one under "Died" and they will move to the Memorial page.';
             flash($msg);
         }
         header('Location: person.php?pid=' . urlencode($pid)); exit;
@@ -228,7 +234,13 @@ function render_vitals($src = []) {
     $sex = strtoupper($src['sex'] ?? '');
     $bd = e($src['birth_date'] ?? ''); $bp = e($src['birth_place'] ?? '');
     $dd = e($src['death_date'] ?? ''); $dp = e($src['death_place'] ?? '');
-    $liv = !empty($src['living']) ? ' checked' : '';
+    /* Adding somebody new starts ticked. The people being added to a family tree
+       are overwhelmingly living relatives, and an unticked box used to mean "put
+       them on the public Memorial page", which is not a thing anyone should get
+       by not noticing a checkbox. Editing an existing person still shows their
+       own setting. */
+    $isNew = !array_key_exists('living', $src);
+    $liv = ($isNew || !empty($src['living'])) ? ' checked' : '';
     ?>
     <div class="af-grid">
       <div><label>First name</label><input type="text" name="c_given" value="<?= $g ?>"></div>
@@ -243,6 +255,8 @@ function render_vitals($src = []) {
     <p class="muted af-datehint">Dates read best as <b>Jun 17 1922</b>. A year on its own (<b>1922</b>) or a month and
       year (<b>Jun 1922</b>) are fine too &mdash; but only a full date can appear on the family calendar.</p>
     <label class="af-check"><input type="checkbox" name="c_living" value="1"<?= $liv ?>> Living family member (hidden from public visitors)</label>
+    <p class="muted af-datehint">Leave this ticked unless the person has passed. To show someone on the
+      Memorial page, fill in <b>Died</b> &mdash; without a date they stay private, so nobody appears there by accident.</p>
     <?php
 }
 

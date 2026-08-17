@@ -89,3 +89,37 @@ function base_url() {
     $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
     return $scheme . '://' . $host;
 }
+
+/* ---- who may be shown to the public as deceased ------------------------
+ *
+ * William's mother is alive and the site had her marked as having passed. So
+ * did a nineteen-month-old baby and a thirty-four-year-old woman, both of whom
+ * were listed on the public Memorial page with a tribute page of their own.
+ *
+ * None of it came from a death record. It came from defaults: the GEDCOM
+ * importer treated "born before 1935 and no death date" as deceased, and the
+ * add-a-relative form used an unticked checkbox to mean the same thing.
+ *
+ * Only two things can justify publishing somebody as deceased: a recorded death
+ * or burial, or a birth long enough ago that nobody could still be alive.
+ * Everything else - no dates at all, a birth in living memory, a box nobody
+ * ticked - means we do not know, and not knowing has to mean private. */
+define('PRIVACY_MAX_AGE', 110);
+
+function person_deceased_for_public($death_date, $buri_date, $birth_date) {
+    if (trim((string)$death_date) !== '' || trim((string)$buri_date) !== '') return true;
+    if (preg_match('/\d{4}/', (string)$birth_date, $m)) {
+        return ((int)date('Y') - (int)$m[0]) > PRIVACY_MAX_AGE;
+    }
+    return false;   // nothing to go on: private
+}
+
+/** The living flag to store, given what is known and what the form asked for.
+ *  An explicit "this person has passed" is honoured only where it is possible;
+ *  otherwise the record stays private and the caller is told why. */
+function person_living_flag($death_date, $buri_date, $birth_date, $asked_living = null) {
+    $canBeDead = person_deceased_for_public($death_date, $buri_date, $birth_date);
+    if (!$canBeDead) return 1;                    // could still be alive -> private
+    if ($asked_living === null) return 0;
+    return ((int)$asked_living === 1) ? 1 : 0;    // they may still say "living"
+}

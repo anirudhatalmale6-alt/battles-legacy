@@ -132,8 +132,11 @@ function install_gedcom($path) {
     $living = 0;
     $ins = db()->prepare("INSERT INTO persons (pid,name,given,surname,sex,birth_date,birth_place,death_date,death_place,buri_date,buri_place,living,famc,fams,occupation,education,notes) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
     foreach ($indi as $pid=>$r) {
-        $deceased = trim($r['death'][0]) !== ''; $yy = $by($r['birth'][0]);
-        $isLiving = (!$deceased) && ($yy === null || $yy > 1935); if ($isLiving) $living++;
+        /* Was: born on or before 1935 with no death date = deceased. That is a
+           fixed year in code, so it ages: by 2026 it was publishing 92-year-olds
+           as having passed, William's mother among them. */
+        $isLiving = person_living_flag($r['death'][0], $r['buri'][0], $r['birth'][0]) === 1;
+        if ($isLiving) $living++;
         $ins->execute([$pid,$r['name'],$r['given'],$r['surname'],$r['sex'],$r['birth'][0],$r['birth'][1],$r['death'][0],$r['death'][1],$r['buri'][0],$r['buri'][1],
             $isLiving?1:0, json_encode($r['famc']),json_encode($r['fams']),json_encode($r['occupation']),json_encode($r['education']),json_encode($r['notes'])]);
     }
