@@ -164,13 +164,38 @@ function pp_key($name) {
  *
  *  Only ever returns a match when exactly one person answers to it. Two
  *  William Battles and this returns nothing, which is the honest answer —
- *  guessing at that would quietly attach an invitation to the wrong cousin. */
+ *  guessing at that would quietly attach an invitation to the wrong cousin.
+ *
+ *  Nobody writes out a middle name on an invitation. Of the thirty-eight
+ *  invitations already waiting when this was built, thirteen looked like
+ *  strangers to an exact comparison and twelve of them were simply the tree's
+ *  full name minus its middle: Rodney Battles is Rodney Augustus Battles, and
+ *  Sherry Howard is Sherry Kay Howard. So a name that is a subset of exactly
+ *  one person's names counts as that person — "exactly one" doing the same
+ *  work as before, since Keith Battles could be any of three and therefore
+ *  still matches nobody. */
 function pp_match($name) {
     $k = pp_key($name);
     if ($k === '') return null;
+
+    $people = pp_people();
     $hits = [];
-    foreach (pp_people() as $row) if (pp_key($row['n']) === $k) $hits[] = $row;
-    return count($hits) === 1 ? $hits[0] : null;
+    foreach ($people as $row) if (pp_key($row['n']) === $k) $hits[] = $row;
+    if (count($hits) === 1) return $hits[0];
+    if ($hits) return null;                         // more than one exact — refuse
+
+    $want = explode(' ', $k);
+    if (count($want) < 2) return null;              // a surname on its own means nothing
+    $sur  = $want[count($want) - 1];
+    $near = [];
+    foreach ($people as $row) {
+        $have = explode(' ', pp_key($row['n']));
+        /* the surname has to be one of their names, or this is a different
+           family altogether and the rest is coincidence */
+        if (!in_array($sur, $have, true)) continue;
+        if (!array_diff($want, $have)) $near[] = $row;
+    }
+    return count($near) === 1 ? $near[0] : null;
 }
 
 /** Is this a real pid in the tree? Returns the row, or null. */

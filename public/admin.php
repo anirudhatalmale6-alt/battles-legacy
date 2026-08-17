@@ -361,16 +361,48 @@ page_head('Members');
        person who was picked, the link to that person is dropped. A picked id
        that outlives the text that earned it is how an invitation ends up
        quietly attached to the wrong cousin. */
+    /* Nobody writes a middle name on an invitation, so a name that fits inside
+       exactly one person's full name counts as that person — the same rule the
+       server applies when the form is submitted, and it has to be the same or
+       this line would tell him the tree doesn't know a name it is about to
+       match. Three Keith Battles and it stays silent, as it should. */
+    function subset(k){
+      var want = k.split(' ').filter(Boolean);
+      if (want.length < 2) return [];
+      var sur = want[want.length - 1], out = [];
+      for (var i=0;i<PEOPLE.length;i++){
+        var have = PEOPLE[i]._w;
+        if (have.indexOf(sur) < 0) continue;
+        var all = true;
+        for (var j=0;j<want.length;j++) if (have.indexOf(want[j]) < 0) { all = false; break; }
+        if (all) out.push(PEOPLE[i]);
+      }
+      return out;
+    }
+
+    function found(p, alsoKnownAs){
+      pid.value = p.p;
+      var meta = [p.y, p.r].filter(Boolean).join(' · ');
+      note.className = 'pp-note ok';
+      note.innerHTML = '&#10003; In the family tree'
+        + (alsoKnownAs ? ' as <b>' + esc(p.n) + '</b>' : '')
+        + (meta ? ' — ' + esc(meta) : '')
+        + (p.s ? ' <b>(already ' + p.s + ')</b>' : '');
+    }
+
     function reflect(){
       var v = box.value.trim(), k = key(v);
       var exact = byKey[k];
+      var near  = exact ? null : subset(k);
       if (exact && exact.length === 1) {
-        var p = exact[0];
-        pid.value = p.p;
-        var meta = [p.y, p.r].filter(Boolean).join(' · ');
-        note.className = 'pp-note ok';
-        note.innerHTML = '&#10003; In the family tree' + (meta ? ' — ' + esc(meta) : '')
-          + (p.s ? ' <b>(already ' + p.s + ')</b>' : '');
+        found(exact[0], false);
+      } else if (near && near.length === 1) {
+        found(near[0], true);
+      } else if (near && near.length > 1) {
+        pid.value = '';
+        note.className = 'pp-note warn';
+        note.textContent = near.length + ' people in the tree could be ' + v
+          + ' — pick the right one from the list so the invitation knows which.';
       } else if (exact && exact.length > 1) {
         pid.value = '';
         note.className = 'pp-note warn';
