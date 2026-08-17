@@ -1147,7 +1147,23 @@ body.sec{background:#ece0c6;color:#3a2c18;}
 /* ===================== Family News page ===================== */
 body.fnews{background:#efe3c9;color:#3a2c18;}
 .fn-hero,.fn-strip,.fn-verse{width:100vw;margin-left:calc(-50vw + 50%);}
-.fn-hero img{display:block;width:100%;height:auto;border-bottom:2px solid var(--gold);}
+/* addressed by its class, not as ".fn-hero img" — a descendant selector outranks
+   the plain class that hides it further down, so the swap would never fire */
+.fn-hero-img{display:block;width:100%;height:auto;border-bottom:2px solid var(--gold);}
+/* live-text version of the banner, for the widths where the picture's own
+   lettering is too small to read — see the swap at the foot of this section */
+.fn-hero{background:
+   radial-gradient(120% 130% at 50% -12%, rgba(255,247,224,.92), rgba(255,247,224,0) 58%),
+   linear-gradient(180deg,#f3e7cd,#e9d8b4 62%,#dfcaa1);
+  border-bottom:2px solid var(--gold);text-align:center;}
+.fn-hero-inner{display:none;max-width:760px;margin:0 auto;padding:38px 22px 34px;}
+.fn-h1{font-family:'Cormorant Garamond',serif;font-weight:600;color:#3a0d12;
+  font-size:clamp(30px,8vw,42px);line-height:1.04;letter-spacing:.4px;margin:0;text-transform:uppercase;}
+.fn-script{display:block;font-family:'Dancing Script',cursive;color:#b0873a;
+  font-size:clamp(30px,8.4vw,44px);line-height:1.08;margin:6px 0 0;font-weight:600;text-transform:none;}
+.fn-orn{color:#b89246;font-size:14px;margin:14px 0 12px;letter-spacing:8px;}
+.fn-intro{color:#5a3418;font-size:16px;line-height:1.6;max-width:44ch;margin:0 auto;
+  font-family:'EB Garamond',serif;}
 
 /* category strip */
 .fn-strip{background:linear-gradient(180deg,#241a10,#1a130a);display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:18px clamp(14px,4vw,54px);}
@@ -1237,6 +1253,11 @@ body.fnews{background:#efe3c9;color:#3a2c18;}
   .fn-three{grid-template-columns:1fr;}
 }
 @media(max-width:560px){ .fn-strip{grid-template-columns:1fr 1fr;} }
+/* on narrow screens the baked-text hero banner gets too small — swap to live text */
+@media(max-width:760px){
+  .fn-hero-img{display:none;}
+  .fn-hero-inner{display:block;}
+}
 
 /* ---- Family News: populated columns + recent updates ---- */
 .fn-list{list-style:none;margin:6px 0 14px;padding:0;}
@@ -1297,7 +1318,19 @@ a.fn-like{text-decoration:none;}
 /* ===================== Health page ===================== */
 body.hlth{background:#f2ece1;color:#2e2740;}
 .h-hero,.h-pillars,.h-closing{width:100vw;margin-left:calc(-50vw + 50%);}
-.h-hero img{display:block;width:100%;height:auto;}
+.h-hero-img{display:block;width:100%;height:auto;}   /* by class — see the note on .fn-hero-img */
+/* live-text version of the banner — the picture's own lettering is unreadable
+   below about 760px. Dark, because this page's banner is a dark photograph and
+   the strip of pillars directly beneath it is dark too. */
+.h-hero{background:linear-gradient(180deg,#241c46,#1b1436);text-align:center;}
+.h-hero-inner{display:none;max-width:760px;margin:0 auto;padding:36px 22px 30px;}
+.h-h1{font-family:'Cormorant Garamond',serif;font-weight:600;color:var(--cream);
+  font-size:clamp(30px,8vw,42px);line-height:1.04;margin:0;letter-spacing:.4px;}
+.h-script{display:block;font-family:'Dancing Script',cursive;color:var(--gold2);
+  font-size:clamp(30px,8.4vw,44px);line-height:1.08;margin:4px 0 0;font-weight:600;}
+.h-orn{color:var(--gold);font-size:18px;margin:12px 0 10px;}
+.h-intro{color:#ded6f2;font-size:16px;line-height:1.6;max-width:44ch;margin:0 auto;
+  font-family:'EB Garamond',serif;}
 .h-pillars{display:none;grid-template-columns:repeat(4,1fr);gap:8px;background:linear-gradient(180deg,#241c46,#191233);padding:16px clamp(14px,4vw,54px);border-bottom:2px solid var(--gold);}
 .h-pill{display:flex;gap:10px;align-items:center;justify-content:center;}
 .h-pic{width:40px;height:40px;flex:none;border-radius:50%;background:rgba(201,162,75,.14);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;}
@@ -1394,6 +1427,11 @@ body.hlth{background:#f2ece1;color:#2e2740;}
   .h-navitem{border-bottom:1px solid #efe8da;}
   .h-two,.h-three{grid-template-columns:1fr;}
   .h-pillars{display:grid;grid-template-columns:1fr 1fr;gap:14px 8px;}
+}
+/* on narrow screens the baked-text hero banner gets too small — swap to live text */
+@media(max-width:760px){
+  .h-hero-img{display:none;}
+  .h-hero-inner{display:block;}
 }
 @media(max-width:640px){
   .h-nav{grid-template-columns:repeat(2,1fr);}

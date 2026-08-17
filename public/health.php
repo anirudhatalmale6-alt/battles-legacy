@@ -79,7 +79,17 @@ page_head('Health', ['body_class' => 'home hlth']);
 
 <!-- HERO -->
 <section class="h-hero">
-  <img src="assets/health/hero.jpg" alt="Healthy Today, Stronger Tomorrow — better choices, stronger bodies, peace of mind.">
+  <img class="h-hero-img" src="assets/health/hero.jpg" alt="Healthy Today, Stronger Tomorrow — better choices, stronger bodies, peace of mind.">
+  <!-- Same as the Family News banner: the words are part of the picture, and
+       the picture is an inch and a half tall on a phone. The four pillars are
+       already repeated underneath in .h-pillars, so this only has to carry the
+       headline and the sentence under it. -->
+  <div class="h-hero-inner">
+    <h1 class="h-h1">Healthy Today,<span class="h-script">Stronger Tomorrow</span></h1>
+    <div class="h-orn">&#10084;</div>
+    <p class="h-intro">Better choices. Stronger bodies. Peace of mind. Small steps today lead to a
+       healthier tomorrow for you and generations to come.</p>
+  </div>
 </section>
 
 <!-- PILLARS (under hero, mobile-friendly repeat of the hero's four) -->

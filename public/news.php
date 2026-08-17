@@ -41,7 +41,17 @@ page_head('Family News', ['body_class' => 'home fnews']);
 
 <!-- HERO -->
 <section class="fn-hero">
-  <img src="assets/news/hero.jpg" alt="Family News — Stay Connected. Stay Informed. Keep up with what's happening in our family.">
+  <img class="fn-hero-img" src="assets/news/hero.jpg" alt="Family News — Stay Connected. Stay Informed. Keep up with what's happening in our family.">
+  <!-- The banner's words are painted into the photograph, so on a phone it
+       shrinks to a strip an inch and a half tall and none of it can be read.
+       Below 760px the picture steps aside and the same words are set as text,
+       the way the Enterprise and Memorial banners already do it. -->
+  <div class="fn-hero-inner">
+    <h1 class="fn-h1">Stay Connected.<span class="fn-script">Stay Informed.</span></h1>
+    <div class="fn-orn">&#10086; &nbsp; &bull; &nbsp; &#10086;</div>
+    <p class="fn-intro">Keep up with what&rsquo;s happening in our family and celebrate life
+       together &mdash; every step of the way.</p>
+  </div>
 </section>
 
 <!-- CATEGORY STRIP -->
