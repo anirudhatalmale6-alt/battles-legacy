@@ -483,9 +483,24 @@ page_head('Members');
 <?php if ($invites): ?>
 <div class="panel" style="margin-top:18px">
   <h2>Invitations waiting (<?= count($invites) ?>)</h2>
+  <?php
+    /* "Emailed" was the only thing this page could report, and it says nothing
+       about whether a human being ever saw it. Opened does. */
+    $prog = invite_progress();
+  ?>
   <p class="muted">These people have a link but haven&rsquo;t signed up yet. <b>Send it myself</b> opens your own
     email with the whole message already written &mdash; you just press send. Links last
     <?= INVITE_DAYS ?> days.</p>
+  <?php if ($prog['total']): ?>
+  <p class="inv-sum"><b><?= (int)$prog['total'] ?></b> invitations sent &middot;
+    <b><?= (int)$prog['joined'] ?></b> turned into an account &middot;
+    <b><?= (int)$prog['opened'] ?></b> had the link opened &middot;
+    <b><?= (int)$prog['unopened'] ?></b> still never opened.
+    <?php if ($prog['unopened'] > $prog['opened']): ?>
+      <span class="inv-sum-note">When most are &ldquo;never opened&rdquo;, the message is not being
+      read &mdash; not the sign-up form. Worth sending those yourself from your own email.</span>
+    <?php endif; ?></p>
+  <?php endif; ?>
   <div class="inv-list">
     <?php foreach ($invites as $inv):
       $url  = invite_url($inv['token']);
@@ -521,6 +536,12 @@ page_head('Members');
               if ((int)$inv['sent_count'] > 1) echo ' &middot; ' . (int)$inv['sent_count'] . ' times'; ?>
           <?php else: ?>
             <span class="inv-dot bad"></span>The mail server refused it
+          <?php endif; ?>
+          <?php if (!empty($inv['opened_at'])): ?>
+            <span class="inv-open">&#128065; opened <?= e(date('j M, g:ia', strtotime($inv['opened_at']))) ?>
+              &mdash; but stopped before finishing</span>
+          <?php elseif (!empty($inv['emailed_at'])): ?>
+            <span class="inv-open off">link never opened</span>
           <?php endif; ?>
           <?php if ($days !== null): ?><span class="inv-exp"><?= $days > 0 ? 'expires in ' . $days . ' day' . ($days === 1 ? '' : 's') : 'expired' ?></span><?php endif; ?>
         </div>

@@ -62,6 +62,41 @@ textarea{min-height:90px;resize:vertical}
 .btn.gold{background:linear-gradient(180deg,#d8b662,#c9a24b);color:var(--maroon);font-weight:600}
 .muted{color:var(--gold-soft);font-size:14px}
 .err{background:rgba(150,30,30,.25);border:1px solid #b45;color:#ffd9d9;padding:10px 14px;border-radius:8px;margin-bottom:12px}
+/* the good-news twin of .err — "your link is on its way" is not a failure */
+.note-ok{background:rgba(200,162,75,.16);border:1px solid var(--gold);color:#f6e6c0;
+  padding:11px 15px;border-radius:8px;margin-bottom:12px;line-height:1.5;font-size:15px}
+
+/* "First time here?" — its own card under the sign-in box, because the people who
+   need it are the ones who could not get past the box above */
+/* The sign-in box is pulled up from the usual 40px so that "First time here?"
+   below it is on screen without scrolling — the people who need that box are by
+   definition the ones the box above just turned away. */
+form.card.signin{margin-top:22px}
+.first-time{max-width:420px;margin:16px auto 40px;text-align:left;
+  border-left:3px solid var(--gold)}
+.first-time h2{font-size:22px;margin:0 0 8px;color:var(--gold2)}
+.first-time label{margin-top:10px}
+
+/* the public-preview bar — a visitor who is not signed in is seeing about a
+   quarter of the site, and nothing used to tell them so */
+.pvbar{background:linear-gradient(180deg,#3c1218,#2a0a0d);border-bottom:1px solid var(--gold);}
+/* the home hero is pulled up 28px to tuck under the nav; with the bar in between
+   that pull lands on the bar instead and cuts its second line off */
+body.haspv .hero{margin-top:0;}
+.pvbar-in{max-width:1180px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;gap:16px;}
+.pvbar-key{font-size:20px;line-height:1;flex:0 0 auto;}
+.pvbar-in p{flex:1 1 auto;margin:0;color:var(--cream);font-size:15px;line-height:1.45;}
+.pvbar-in p b{color:var(--gold2);font-weight:600;}
+.pvbar-acts{flex:0 0 auto;display:flex;align-items:center;gap:14px;}
+.pvbar-acts .btn{padding:8px 18px;font-size:15px;white-space:nowrap;}
+.pvbar-alt{color:var(--gold-soft);font-size:13px;text-decoration:underline;white-space:nowrap;}
+.pvbar-alt:hover{color:var(--gold2);}
+@media(max-width:820px){
+  .pvbar-in{flex-wrap:wrap;padding:12px 16px;gap:10px;}
+  .pvbar-key{display:none;}
+  .pvbar-in p{flex:1 1 100%;font-size:14px;}
+  .pvbar-acts{flex:1 1 100%;justify-content:space-between;}
+}
 
 /* person profile */
 .profile-head{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
@@ -2318,6 +2353,13 @@ body.fvid .foot{display:none;}
 .inv-dot.bad{background:#e08a7a;}
 .inv-dot.none{background:#8a7a5e;}
 .inv-exp{margin-left:auto;opacity:.75;font-style:italic;}
+/* "emailed" and "opened" answer different questions — keep them visually apart */
+.inv-open{color:#e2c98f;}
+.inv-open.off{color:#a8906c;font-style:italic;}
+.inv-sum{font-size:14px;color:#d8c39a;background:rgba(201,162,75,.09);
+  border:1px solid rgba(201,162,75,.28);border-radius:8px;padding:10px 14px;margin:12px 0 4px;line-height:1.6;}
+.inv-sum b{color:var(--gold2);}
+.inv-sum-note{display:block;margin-top:5px;color:#c9b28c;font-style:italic;}
 .inv-link{display:flex;gap:8px;align-items:center;}
 .inv-link input{flex:1;min-width:0;font-size:13px;margin:0;}
 .inv-acts{display:flex;gap:9px;align-items:center;flex-wrap:wrap;}

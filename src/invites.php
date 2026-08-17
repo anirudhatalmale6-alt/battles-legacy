@@ -30,6 +30,12 @@ function invite_migrate() {
     db_add_column('invites', 'emailed_at', 'DATETIME NULL');
     db_add_column('invites', 'email_ok', 'INT NOT NULL DEFAULT 0');
     db_add_column('invites', 'sent_count', 'INT NOT NULL DEFAULT 0');
+    /* When the link was first opened. "Emailed" and "opened" answer different
+       questions: the first says the mail server took it, the second says a
+       human being actually got as far as the sign-up form. Sixty invitations
+       had gone out with only four accounts back, and nothing on the site could
+       tell which half of that journey was failing. */
+    db_add_column('invites', 'opened_at', 'DATETIME NULL');
     pp_migrate();                       // invites.pid — which person in the tree this is
     pp_backfill();                      // and join up the ones made before it existed
 }
@@ -77,6 +83,104 @@ function invite_delete($id) {
     try { q("DELETE FROM invites WHERE id=? AND used_at IS NULL", [(int)$id]); } catch (\Throwable $e) {}
 }
 
+/** Somebody reached the sign-up form with a working link.
+ *
+ *  Written with date(), not CURRENT_TIMESTAMP: the app runs on America/Chicago
+ *  and the database clock is UTC, and this lands on the Members page directly
+ *  beside emailed_at, which uses date(). Mixing them would read as "emailed
+ *  4:41pm, opened 9:41pm" for the same instant. */
+function invite_mark_opened($id) {
+    invite_migrate();
+    try { q("UPDATE invites SET opened_at=? WHERE id=? AND opened_at IS NULL",
+             [date('Y-m-d H:i:s'), (int)$id]); }
+    catch (\Throwable $e) {}
+}
+
+/** How far the invitations have actually got, for the Members page. */
+function invite_progress() {
+    invite_migrate();
+    $out = ['total' => 0, 'joined' => 0, 'opened' => 0, 'waiting' => 0, 'unopened' => 0];
+    try {
+        $r = one("SELECT COUNT(*) total,
+                         SUM(CASE WHEN used_at   IS NOT NULL THEN 1 ELSE 0 END) joined,
+                         SUM(CASE WHEN opened_at IS NOT NULL THEN 1 ELSE 0 END) opened
+                  FROM invites");
+    } catch (\Throwable $e) { return $out; }
+    if (!$r) return $out;
+    $out['total']  = (int)$r['total'];
+    $out['joined'] = (int)$r['joined'];
+    $out['opened'] = (int)$r['opened'];
+    $out['waiting']  = $out['total'] - $out['joined'];
+    /* Waiting AND never opened — the ones where the email itself is the problem,
+       not the sign-up form. */
+    try {
+        $u = one("SELECT COUNT(*) c FROM invites WHERE used_at IS NULL AND opened_at IS NULL");
+        $out['unopened'] = $u ? (int)$u['c'] : 0;
+    } catch (\Throwable $e) {}
+    return $out;
+}
+
+/** ---------------------------------------------------------------------------
+ *  The dead end at the sign-in page
+ *
+ *  Sixty invitations went out and four accounts came back. Meanwhile fourteen
+ *  people who were not signed in sat on login.php trying passwords they had
+ *  never chosen, and four of them went on to "forgotten password" — which
+ *  correctly found no account for them and therefore, correctly, sent nothing.
+ *
+ *  That is a dead end nobody can get out of by trying harder, and from the
+ *  outside it reads as the website refusing you. So both pages now recognise an
+ *  invitation that has not been taken up and post the person their own link
+ *  again. The link still only ever goes to the mailbox it was addressed to, so
+ *  none of this hands out a way in — it removes the dead end.
+ *  ------------------------------------------------------------------------ */
+
+/** The newest invitation for this address that has not been used yet, expired
+ *  or not. Expiry is not a reason to say "no invitation" — the invitation is
+ *  real, it is the 30-day window that ran out, and that we can reopen. */
+function invite_pending_for($email) {
+    invite_migrate();
+    $email = strtolower(trim((string)$email));
+    if ($email === '') return null;
+    try { $r = one("SELECT * FROM invites WHERE email=? AND used_at IS NULL ORDER BY id DESC", [$email]); }
+    catch (\Throwable $e) { return null; }
+    return $r ?: null;
+}
+
+/** Whoever the family recognises as the sender — the site's first admin. Used
+ *  when there is no logged-in host, because the person asking is locked out. */
+function invite_host() {
+    try { return one("SELECT id,name,email FROM users WHERE role='admin' AND status='active' ORDER BY id LIMIT 1"); }
+    catch (\Throwable $e) { return null; }
+}
+
+/** Post somebody their own invitation link again, on their own say-so.
+ *
+ *  Returns 'sent' when they should go and look in their inbox — including when
+ *  one went a few minutes ago and we deliberately did not send a second, since
+ *  "check your inbox" is true either way and a differing answer here would turn
+ *  the form into a way to bury someone in email. Returns 'none' when that
+ *  address has no invitation waiting, and 'joined' when they already have an
+ *  account and simply need the password page instead. */
+function invite_resend_self($email, $host = null) {
+    $email = strtolower(trim((string)$email));
+    if ($email === '') return 'none';
+    try { if (one("SELECT id FROM users WHERE email=?", [$email])) return 'joined'; }
+    catch (\Throwable $e) {}
+
+    $inv = invite_pending_for($email);
+    if (!$inv) return 'none';
+
+    if ($inv['expires_at'] && strtotime($inv['expires_at']) < time()) {
+        $fresh = date('Y-m-d H:i:s', time() + INVITE_DAYS * 86400);
+        try { q("UPDATE invites SET expires_at=? WHERE id=?", [$fresh, (int)$inv['id']]);
+              $inv['expires_at'] = $fresh; } catch (\Throwable $e) {}
+    }
+    $recent = !empty($inv['emailed_at']) && (time() - strtotime($inv['emailed_at'])) < 600;
+    if (!$recent) invite_mail($inv, $host ?: invite_host());
+    return 'sent';
+}
+
 /** The wording, in one place, so the site's email and William's own email say
  *  exactly the same thing. $host is whoever is doing the inviting. */
 function invite_message($inv, $url, $host = null) {
@@ -92,8 +196,16 @@ function invite_message($inv, $url, $host = null) {
           . "It's private, so it's invitation only. This link is yours; open it and "
           . "you can choose your own password:\n\n"
           . $url . "\n\n"
-          . "The link works once and expires in " . INVITE_DAYS . " days. If it has run out "
-          . "just tell me and I'll send another.\n\n"
+          /* Fourteen people went to the website, tried to sign in, and could not:
+             until the link above has been opened there is no password of theirs
+             to type. Saying so here is cheaper than rescuing them one at a time. */
+          . "Please use that link the first time. Until you have, there is no "
+          . "password of yours to type, so going straight to the website and "
+          . "trying to sign in won't let you in.\n\n"
+          . "The link expires in " . INVITE_DAYS . " days. If it has run out, or you "
+          . "can't find this email later, open " . base_url() . "/login.php and put "
+          . "your email address in the \"first time here\" box — a new link comes "
+          . "straight back to you.\n\n"
           . "Hope you enjoy seeing it.\n\n"
           . $who . "\n";
     return ['subject' => $subject, 'body' => $body];

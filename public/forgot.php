@@ -1,9 +1,10 @@
 <?php
 require __DIR__ . '/../src/bootstrap.php';
 require_once __DIR__ . '/../src/pwreset.php';
+require_once __DIR__ . '/../src/invites.php';
 if (logged_in()) { header('Location: index.php'); exit; }
 
-$done = false; $err = '';
+$done = false; $err = ''; $invited = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
     $email = strtolower(trim($_POST['email'] ?? ''));
@@ -18,6 +19,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ok = pwreset_mail($u, $url);
             if ($ok) { try { q("UPDATE password_resets SET emailed=1 WHERE token=?", [$tok]); } catch (\Throwable $e) {} }
         }
+        /* No account, but an invitation nobody has taken up: this is an invited
+           relative who came here after the sign-in page turned them away. A
+           reset link would be no use — there is no password to reset — so send
+           the thing that does work, and say which one they are getting. */
+        if (!$u && invite_resend_self($email) === 'sent') $invited = true;
         $done = true;
     }
 }
@@ -26,7 +32,15 @@ page_head('Forgotten password');
 ?>
 <form class="card panel" method="post">
   <h1 style="text-align:center">Forgotten your password?</h1>
-  <?php if ($done): ?>
+  <?php if ($done && $invited): ?>
+    <div class="note-ok" style="margin-top:16px">
+      That address has an invitation waiting rather than an account &mdash; so there is no password
+      to reset yet. We have sent your sign-up link instead. Open it and you can choose your own
+      password, and after that this page will work for you like it does for everybody else.</div>
+    <p class="muted" style="text-align:center;margin-top:14px">
+      Nothing after a few minutes? Look in your junk or spam folder.</p>
+    <p style="text-align:center;margin-top:18px"><a class="btn" href="login.php">Back to sign in</a></p>
+  <?php elseif ($done): ?>
     <p class="lede" style="margin-top:14px;text-align:center">
       If that address belongs to a family account, a link to choose a new password is on its way.
       It works once and expires in 24 hours.</p>

@@ -21,7 +21,7 @@ function page_head($title, $opts = []) {
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=EB+Garamond&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/app.css?v=<?= @filemtime(__DIR__ . '/../public/assets/app.css') ?: date('Ymd') ?>">
 </head>
-<body class="<?= trim(($full ? 'full ' : '') . $bodyClass) ?>">
+<body class="<?= trim(($full ? 'full ' : '') . $bodyClass . (preview_bar_on() ? ' haspv' : '')) ?>">
 <header class="nav">
   <a class="brand" href="index.php">
     <span class="brand-name"><span class="script">The Battles</span> Legacy</span>
@@ -54,7 +54,64 @@ function page_head($title, $opts = []) {
   </nav>
 </header>
 <?php foreach ((flash() ?: []) as $f): ?><div class="flash"><?= e($f) ?></div><?php endforeach; ?>
+<?php preview_bar(); ?>
 <main class="<?= $full ? 'main-full' : 'wrap' ?>">
+<?php
+}
+
+/** What a visitor who is not signed in is missing.
+ *
+ *  Living relatives are hidden from the public — that is deliberate, and it is
+ *  most of the tree: of 778 people, 581 are living, and 505 of the 754
+ *  photographs show one of them. So somebody who arrives without signing in
+ *  sees the deceased and very little else, and has no way of knowing that is a
+ *  preview rather than the whole site. William spotted that himself watching
+ *  the visitor numbers: "I don't want them to think that is all of the website."
+ *
+ *  The counts are read from the tree, not typed in here, so the sentence stays
+ *  true as the tree grows. */
+/** Whether this page gets the bar. Asked twice — once to mark the body, once to
+ *  draw it — because the home hero is pulled up by a negative margin that would
+ *  otherwise slide underneath the bar and cut it in half. */
+function preview_bar_on() {
+    if (function_exists('logged_in') && logged_in()) return false;
+    $here = basename($_SERVER['SCRIPT_NAME'] ?? '');
+    /* Not on the pages whose whole job is to get you in — there it would be
+       telling somebody reading the sign-in form to go and find the sign-in form. */
+    $skip = ['login.php', 'register.php', 'forgot.php', 'reset.php', 'request.php', 'setup.php'];
+    return !in_array($here, $skip, true);
+}
+
+function preview_bar() {
+    if (!preview_bar_on()) return;
+
+    $living = $photos = 0;
+    try {
+        $r = one("SELECT COUNT(*) c FROM persons WHERE living=1");  $living = $r ? (int)$r['c'] : 0;
+        $p = one("SELECT COUNT(DISTINCT ph.id) c FROM photos ph
+                  JOIN photo_people t ON t.photo_id = ph.id
+                  JOIN persons p ON p.pid = t.pid
+                  WHERE ph.status='approved' AND p.living=1");
+        $photos = $p ? (int)$p['c'] : 0;
+    } catch (\Throwable $e) { /* the bar still makes sense without the numbers */ }
+
+    $bits = [];
+    if ($living) $bits[] = number_format($living) . ' living relatives';
+    if ($photos) $bits[] = number_format($photos) . ' more photographs';
+    $missing = $bits ? implode(' and ', $bits) : 'the living side of the family';
+    ?>
+  <div class="pvbar">
+    <div class="pvbar-in">
+      <span class="pvbar-key">&#128274;</span>
+      <p><b>You&rsquo;re seeing the public part of the site.</b>
+        <?= e($missing) ?> &mdash; plus family news, the calendar and everyone&rsquo;s own page
+        &mdash; are kept for family only. Sign in and they all appear.</p>
+      <span class="pvbar-acts">
+        <a class="btn gold" href="login.php">Sign in</a>
+        <a class="pvbar-alt" href="login.php">Invited but never signed in?</a>
+      </span>
+    </div>
+  </div>
 <?php
 }
 
