@@ -147,6 +147,15 @@ function news_count($cat = '') {
     return (int)($r['c'] ?? 0);
 }
 function news_post($id) { return one("SELECT * FROM news_posts WHERE id=?", [(int)$id]); }
+
+/** Published announcements that are actually about this family — samples don't
+ *  count. A page padded out with examples is still a page waiting for real news,
+ *  so the "have some family news?" invitation has to measure the real ones. */
+function news_real_count() {
+    try { $r = one("SELECT COUNT(*) c FROM news_posts WHERE status='published' AND sample=0"); }
+    catch (\Throwable $e) { return 0; }
+    return (int)($r['c'] ?? 0);
+}
 /** Events for the public "Upcoming Events" panel.
  *
  *  Upcoming means upcoming. The old list was month-and-day only, with no year

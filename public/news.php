@@ -96,7 +96,7 @@ page_head('Family News', ['body_class' => 'home fnews']);
         <p class="fn-empty"><?= $isAdmin ? 'No news yet — add your first announcement from Manage Family News.' : 'Family news will be shared here soon.' ?></p>
       <?php endif; ?>
 
-      <?php if ($TOTAL < 4): ?>
+      <?php if (news_real_count() < 4): ?>
       <!-- A family news page with three announcements on it is not a design
            problem, it is a page waiting for the family. The way to fill it is to
            ask them, in the space where the news will go, rather than to leave a
