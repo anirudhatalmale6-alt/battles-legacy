@@ -61,12 +61,33 @@ page_head('Home', ['body_class' => 'home']);
     <img class="hero-img" src="assets/hero-scene.jpg"
          alt="The Battles Legacy — One Family. Many Stories. One Legacy.">
     <!-- four ancestor portraits that fade fully out to the tree, then the next fades in — never two faces at once -->
-    <a class="rslot" style="left:2.5%;top:17%;width:15%;height:72%"  href="tree.php" title="Open the family tree"><img class="rot" alt=""><span class="rcap"><b class="rc-name"></b><span class="rc-yr"></span></span></a>
-    <a class="rslot" style="left:18%;top:17%;width:15%;height:72%"  href="tree.php" title="Open the family tree"><img class="rot" alt=""><span class="rcap"><b class="rc-name"></b><span class="rc-yr"></span></span></a>
-    <a class="rslot" style="left:63%;top:17%;width:15%;height:72%"  href="tree.php" title="Open the family tree"><img class="rot" alt=""><span class="rcap"><b class="rc-name"></b><span class="rc-yr"></span></span></a>
-    <a class="rslot" style="left:78%;top:17%;width:15.5%;height:72%" href="tree.php" title="Open the family tree"><img class="rot" alt=""><span class="rcap"><b class="rc-name"></b><span class="rc-yr"></span></span></a>
+    <a class="rslot" data-set="0" style="left:2.5%;top:17%;width:15%;height:72%"  href="tree.php" title="Open the family tree"><img class="rot" alt=""><span class="rcap"><b class="rc-name"></b><span class="rc-yr"></span></span></a>
+    <a class="rslot" data-set="1" style="left:18%;top:17%;width:15%;height:72%"  href="tree.php" title="Open the family tree"><img class="rot" alt=""><span class="rcap"><b class="rc-name"></b><span class="rc-yr"></span></span></a>
+    <a class="rslot" data-set="2" style="left:63%;top:17%;width:15%;height:72%"  href="tree.php" title="Open the family tree"><img class="rot" alt=""><span class="rcap"><b class="rc-name"></b><span class="rc-yr"></span></span></a>
+    <a class="rslot" data-set="3" style="left:78%;top:17%;width:15.5%;height:72%" href="tree.php" title="Open the family tree"><img class="rot" alt=""><span class="rcap"><b class="rc-name"></b><span class="rc-yr"></span></span></a>
     <!-- clickable Explore Our Family Tree button (baked into the scene) -->
     <a class="hot" style="left:39.5%;top:78%;width:20.5%;height:13%" href="tree.php" title="Explore the family tree"></a>
+
+    <!-- The banner above has its words painted into the picture, which is right
+         on a desktop and hopeless on a phone: the whole scene shrinks to a strip
+         about an inch tall and the welcome becomes unreadable, with the four
+         names running into each other. So below 900px the picture steps aside
+         and the same words are set as real text over the same tree background,
+         with the portraits underneath at a size you can actually see. It is the
+         treatment the Enterprise and Memorial banners already use. -->
+    <div class="hero-m">
+      <h1 class="hero-m-title">One Family.<br>Many Stories.<br><span class="script">One Legacy.</span></h1>
+      <p class="hero-m-lede">Welcome to our family&rsquo;s digital home &mdash; a place where generations come
+        together to preserve our history, celebrate our faith, honor our ancestors, and build a stronger
+        future for those who follow us.</p>
+      <div class="hero-m-faces">
+        <a class="mslot" data-set="0" href="tree.php"><span class="mfr"><img class="rot" alt=""></span><span class="rcap"><b class="rc-name"></b><span class="rc-yr"></span></span></a>
+        <a class="mslot" data-set="1" href="tree.php"><span class="mfr"><img class="rot" alt=""></span><span class="rcap"><b class="rc-name"></b><span class="rc-yr"></span></span></a>
+        <a class="mslot" data-set="2" href="tree.php"><span class="mfr"><img class="rot" alt=""></span><span class="rcap"><b class="rc-name"></b><span class="rc-yr"></span></span></a>
+        <a class="mslot" data-set="3" href="tree.php"><span class="mfr"><img class="rot" alt=""></span><span class="rcap"><b class="rc-name"></b><span class="rc-yr"></span></span></a>
+      </div>
+      <a class="btn gold hero-m-cta" href="tree.php">Explore Our Family Tree</a>
+    </div>
   </section>
   <!-- The family anthem. It sits under the scene rather than on it, because
        every part of that picture is already a link. -->
@@ -88,17 +109,21 @@ page_head('Home', ['body_class' => 'home']);
     };
     // each slot cycles its own group, so no face is ever shown twice at once
     var SETS=[[0,1,2],[3,4,5,12],[6,7,8],[9,10,11]];
-    var slots=[].slice.call(document.querySelectorAll('.hero .rslot'));
+    /* Two sets of slots — the ones sitting on the painted banner, and the ones
+       in the phone version underneath. Only one set is ever on screen, so which
+       group a slot cycles is read from data-set rather than from its position in
+       the document; otherwise the fifth slot onwards would fall off the end. */
+    var slots=[].slice.call(document.querySelectorAll('.hero .rslot, .hero .mslot'));
     function paint(s,id){
       s._img.src='assets/hero-rot/'+id+'.jpg';
       s._nm.textContent=META[id][0]; s._yr.textContent=META[id][1];
       s.setAttribute('href','person.php?pid='+encodeURIComponent(META[id][2]));
       s.setAttribute('title','Read about '+META[id][0]);
     }
-    slots.forEach(function(s,i){
+    slots.forEach(function(s){
       s._img=s.querySelector('.rot'); s._cap=s.querySelector('.rcap');
       s._nm=s.querySelector('.rc-name'); s._yr=s.querySelector('.rc-yr');
-      s._set=SETS[i]; s._k=0; paint(s,IDS[s._set[0]]);
+      s._set=SETS[+(s.getAttribute('data-set')||0)]||SETS[0]; s._k=0; paint(s,IDS[s._set[0]]);
       requestAnimationFrame(function(){ s._img.classList.add('on'); s._cap.classList.add('on'); });
     });
     function cycle(i){
@@ -109,7 +134,13 @@ page_head('Home', ['body_class' => 'home']);
         s._img.classList.add('on'); s._cap.classList.add('on');
       }, 1300);
     }
-    slots.forEach(function(s,i){ setTimeout(function(){ setInterval(function(){cycle(i);}, 5200); }, 1600 + i*950); });
+    /* Stagger by which group the slot cycles, not by its place in the document,
+       so the phone row starts turning over on the same rhythm as the banner
+       instead of waiting for four slots that aren't on screen. */
+    slots.forEach(function(s,i){
+      var d=+(s.getAttribute('data-set')||0);
+      setTimeout(function(){ setInterval(function(){cycle(i);}, 5200); }, 1600 + d*950);
+    });
   })();
   </script>
 

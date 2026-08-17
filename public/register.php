@@ -17,8 +17,13 @@ if ($inv && $_SERVER['REQUEST_METHOD'] === 'POST') {
     elseif (strlen($pass) < 8)          $err = 'Password must be at least 8 characters.';
     elseif (one("SELECT id FROM users WHERE email=?", [$email])) $err = 'An account with that email already exists — try logging in.';
     else {
-        q("INSERT INTO users (name,email,phone,pass_hash,role,status) VALUES (?,?,?,?,?, 'active')",
-          [$name, $email, $phone, password_hash($pass, PASSWORD_DEFAULT), $inv['role']]);
+        /* If the invitation knew which person in the tree this is, the account
+           inherits it. That is what lets the site later say "this is your own
+           page" rather than making somebody search for themselves. */
+        require_once __DIR__ . '/../src/people_pick.php';
+        pp_migrate();
+        q("INSERT INTO users (name,email,phone,pass_hash,role,status,pid) VALUES (?,?,?,?,?, 'active',?)",
+          [$name, $email, $phone, password_hash($pass, PASSWORD_DEFAULT), $inv['role'], (string)($inv['pid'] ?? '')]);
         $uid = insert_id();
         q("UPDATE invites SET used_at=CURRENT_TIMESTAMP WHERE id=?", [$inv['id']]);
         $_SESSION['uid'] = $uid;

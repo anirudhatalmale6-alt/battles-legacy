@@ -18,6 +18,7 @@
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/helpers.php';
 require_once __DIR__ . '/mailer.php';
+require_once __DIR__ . '/people_pick.php';
 
 define('INVITE_DAYS', 30);
 
@@ -29,16 +30,28 @@ function invite_migrate() {
     db_add_column('invites', 'emailed_at', 'DATETIME NULL');
     db_add_column('invites', 'email_ok', 'INT NOT NULL DEFAULT 0');
     db_add_column('invites', 'sent_count', 'INT NOT NULL DEFAULT 0');
+    pp_migrate();                       // invites.pid — which person in the tree this is
+    pp_backfill();                      // and join up the ones made before it existed
 }
 
-/** A fresh invitation. Returns [token, url]. */
-function invite_create($name, $email, $role, $by) {
+/** A fresh invitation. Returns [token, url].
+ *
+ *  $pid ties the invitation to a person already in the tree, so the spelling on
+ *  the invitation is the spelling on their page and the account they end up
+ *  with knows whose it is. Blank is fine — somebody who married in, or a name
+ *  the tree hasn't caught up with yet, still gets invited. */
+function invite_create($name, $email, $role, $by, $pid = '') {
     invite_migrate();
     $role  = in_array($role, ['member', 'moderator', 'admin'], true) ? $role : 'member';
     $token = bin2hex(random_bytes(20));
-    q("INSERT INTO invites (token,name,email,role,invited_by,expires_at) VALUES (?,?,?,?,?,?)",
+    $pid   = pp_person($pid) ? trim((string)$pid) : '';
+    q("INSERT INTO invites (token,name,email,role,invited_by,pid,expires_at) VALUES (?,?,?,?,?,?,?)",
       [$token, mb_substr(trim((string)$name), 0, 120), mb_substr(strtolower(trim((string)$email)), 0, 190),
-       $role, (int)$by ?: null, date('Y-m-d H:i:s', time() + INVITE_DAYS * 86400)]);
+       $role, (int)$by ?: null, $pid, date('Y-m-d H:i:s', time() + INVITE_DAYS * 86400)]);
+    /* The suggestion list carries an "already invited" mark against each name.
+       It was read before this insert, so rebuild it or the page that renders in
+       a moment will still offer this person as though nobody had asked them. */
+    pp_people(true);
     return [$token, invite_url($token)];
 }
 

@@ -4,6 +4,7 @@ require_once __DIR__ . '/../src/install.php';
 require_once __DIR__ . '/../src/pwreset.php';
 require_once __DIR__ . '/../src/access_data.php';
 require_once __DIR__ . '/../src/invites.php';
+require_once __DIR__ . '/../src/people_pick.php';
 require_role('admin');
 $me = current_user();
 
@@ -14,15 +15,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $name  = trim($_POST['name'] ?? '');
         $email = strtolower(trim($_POST['email'] ?? ''));
         $role  = $_POST['role'] ?? 'member';
+        /* Which person in the tree this is. The name box fills it in when he
+           picks a suggestion; if he typed the name out in full instead, the
+           name itself is enough — but only when it can mean one person, which
+           pp_match() is careful about. */
+        $pid = trim($_POST['pid'] ?? '');
+        $per = pp_person($pid);
+        if (!$per && $name !== '') { $per = pp_match($name); $pid = $per ? $per['p'] : ''; }
+        if (!$per) $pid = '';
+        if ($per) $name = $per['n'];               // the tree's spelling, not the typing
         if ($name === '' && $email === '') {
             flash('Put in a name, an email address, or both.');
         } elseif ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             flash('That doesn\'t look like an email address: ' . $email);
         } elseif ($was = invite_existing($email)) {
             flash($email . ' is already ' . ($was === 'member' ? 'a member.' : 'holding an invitation — it\'s in the list below.'));
+        } elseif ($per && $per['s'] !== '') {
+            flash($per['n'] . ' is already ' . ($per['s'] === 'member' ? 'a member.' : 'holding an invitation — it\'s in the list below.'));
         } else {
-            list($token, $url) = invite_create($name, $email, $role, $me['id']);
+            list($token, $url) = invite_create($name, $email, $role, $me['id'], $pid);
             $who = $name ?: $email;
+            if ($per) {
+                $bits = array_filter([$per['y'], $per['r']], 'strlen');
+                flash($per['n'] . ' matched to the family tree'
+                      . ($bits ? ' — ' . implode(', ', $bits) : '') . '.');
+            }
             if ($email === '') {
                 flash('Invitation ready for ' . $who . '. There\'s no email address for them, so use one of the send buttons below.');
             } else {
@@ -38,13 +55,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $lines = preg_split('/\r\n|\r|\n/', (string)($_POST['bulk'] ?? ''));
         $role  = $_POST['role'] ?? 'member';
         $send  = !empty($_POST['bulk_send']);
-        $made = 0; $mailed = 0; $skipped = []; $bad = [];
+        $made = 0; $mailed = 0; $skipped = []; $bad = []; $matched = 0; $unknown = [];
         foreach ($lines as $line) {
             $p = invite_parse_line($line);
             if (!$p) continue;
             if ($p['email'] !== '' && !filter_var($p['email'], FILTER_VALIDATE_EMAIL)) { $bad[] = trim($line); continue; }
             if ($p['email'] !== '' && ($was = invite_existing($p['email']))) { $skipped[] = ($p['name'] ?: $p['email']) . ' (already ' . $was . ')'; continue; }
-            list($token, $url) = invite_create($p['name'], $p['email'], $role, $me['id']);
+            /* Same tree lookup as the single form, applied line by line — a
+               pasted list is exactly where a misspelling slips through, and
+               it is worth saying which names the tree doesn't recognise. */
+            $per = $p['name'] !== '' ? pp_match($p['name']) : null;
+            if ($per) { $p['name'] = $per['n']; $matched++; }
+            elseif ($p['name'] !== '') $unknown[] = $p['name'];
+            list($token, $url) = invite_create($p['name'], $p['email'], $role, $me['id'], $per ? $per['p'] : '');
             $made++;
             if ($send && $p['email'] !== '') {
                 $inv = one("SELECT * FROM invites WHERE token=?", [$token]);
@@ -57,6 +80,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($send) $msg .= ', ' . $mailed . ' handed to the mail server';
             $msg .= '. They are all listed below with a send button each.';
             flash($msg);
+            if ($matched) flash($matched . ' of them matched a name in the family tree, spelling and all.');
+            if ($unknown) flash('Not in the tree — worth checking the spelling: '
+                . implode('; ', array_slice($unknown, 0, 12))
+                . (count($unknown) > 12 ? ' …and ' . (count($unknown) - 12) . ' more' : '')
+                . '. The invitations were still made.');
             if ($skipped) flash('Left alone: ' . implode('; ', array_slice($skipped, 0, 12)) . (count($skipped) > 12 ? ' …and ' . (count($skipped) - 12) . ' more' : ''));
             if ($bad) flash('Couldn\'t read: ' . implode('; ', array_slice($bad, 0, 8)));
         }
@@ -205,16 +233,29 @@ page_head('Members');
 
 <div class="panel" style="margin-top:20px">
   <h2>Invite a family member</h2>
+  <p class="muted">Start typing a name and the tree suggests who you mean, with their years and their parents
+    underneath so two cousins of the same name don&rsquo;t get mixed up. Pick one and the spelling comes
+    straight off their page. A name the tree doesn&rsquo;t know still gets invited &mdash; it just says so, in
+    case it&rsquo;s a typo.</p>
   <p class="muted">Put in an email address and the website will email the invitation. Whether it does or
     doesn&rsquo;t get through, the link also appears below with a <b>Send it myself</b> button that opens your own
     email &mdash; that one always arrives, because it comes from you rather than from a website.</p>
   <form method="post" class="inv-form">
     <?= csrf_field() ?>
     <input type="hidden" name="action" value="invite">
-    <div><label>Name</label><input type="text" name="name" placeholder="e.g. Dianne Battles"></div>
+    <div class="pp-wrap">
+      <label>Name</label>
+      <input type="text" name="name" id="inv-name" placeholder="Start typing a name — e.g. Annie"
+             autocomplete="off" spellcheck="false">
+      <input type="hidden" name="pid" id="inv-pid" value="">
+      <div class="pp-list" id="inv-list" role="listbox" hidden></div>
+    </div>
     <div><label>Email</label><input type="email" name="email" placeholder="dianne@example.com"></div>
     <div><label>Role</label><select name="role"><option value="member">Member</option><option value="moderator">Moderator</option><option value="admin">Admin</option></select></div>
     <button class="btn gold" style="margin:0">Invite</button>
+    <!-- full width under the row, so it can grow to two lines without shoving
+         the Email box out of line with everything else -->
+    <div class="pp-note" id="inv-note"></div>
   </form>
 
   <details class="inv-bulk">
@@ -235,6 +276,154 @@ page_head('Members');
       </div>
     </form>
   </details>
+
+  <script>
+  /* Name suggestions on the invitation form.
+     The whole tree is written into this page rather than fetched, because this
+     page is admins only and living relatives' real names have no business on a
+     public endpoint. It is about 60KB and it means the box answers instantly.
+
+     The field itself is an ordinary text input and stays one. Whatever is typed
+     is what gets submitted, suggestions or no suggestions — if this script never
+     runs, the form behaves exactly as it did before. */
+  (function(){
+    var PEOPLE = <?= json_encode(pp_people(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+    var box  = document.getElementById('inv-name');
+    var pid  = document.getElementById('inv-pid');
+    var list = document.getElementById('inv-list');
+    var note = document.getElementById('inv-note');
+    if (!box || !PEOPLE || !PEOPLE.length) return;
+
+    /* Same flattening the server does, so "D`Vonte" and "D'Vonte" agree. */
+    function key(s){
+      s = (s||'').toLowerCase();
+      try { s = s.normalize('NFD').replace(/[\u0300-\u036f]/g,''); } catch(e){}
+      return s.replace(/[^a-z0-9 ]+/g,'').replace(/\s+/g,' ').trim();
+    }
+    PEOPLE.forEach(function(p){ p._k = key(p.n); p._w = p._k.split(' '); });
+
+    var byKey = {};
+    PEOPLE.forEach(function(p){ (byKey[p._k] = byKey[p._k] || []).push(p); });
+
+    function search(qs){
+      var words = key(qs).split(' ').filter(Boolean);
+      if (!words.length) return [];
+      var hits = [];
+      for (var i=0;i<PEOPLE.length && hits.length<400;i++){
+        var p = PEOPLE[i], ok = true;
+        for (var w=0; w<words.length; w++){
+          var found = false;
+          for (var j=0;j<p._w.length;j++) if (p._w[j].indexOf(words[w]) === 0) { found = true; break; }
+          if (!found) { ok = false; break; }
+        }
+        if (ok) hits.push(p);
+      }
+      /* a name that starts with what was typed beats one that merely contains
+         it, and somebody still with us beats somebody who isn't */
+      var q0 = words.join(' ');
+      hits.sort(function(a,b){
+        var as = a._k.indexOf(q0) === 0 ? 0 : 1, bs = b._k.indexOf(q0) === 0 ? 0 : 1;
+        if (as !== bs) return as - bs;
+        if (a.l !== b.l) return b.l - a.l;
+        return a.n.localeCompare(b.n);
+      });
+      return hits.slice(0, 8);
+    }
+
+    var open = [], cur = -1;
+
+    function esc(s){ return String(s).replace(/[&<>"]/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+    function draw(hits){
+      open = hits; cur = -1;
+      if (!hits.length) { list.hidden = true; list.innerHTML = ''; return; }
+      list.innerHTML = hits.map(function(p,i){
+        var tag = p.s === 'member'  ? '<span class="pp-tag">already a member</span>'
+                : p.s === 'invited' ? '<span class="pp-tag">already invited</span>' : '';
+        var gone = p.l ? '' : '<span class="pp-tag gone">no longer with us</span>';
+        var meta = [p.y, p.r].filter(Boolean).join(' · ');
+        return '<div class="pp-opt" role="option" data-i="'+i+'">'
+             + '<b>'+esc(p.n)+'</b>'+tag+gone
+             + (meta ? '<span class="pp-meta">'+esc(meta)+'</span>' : '')
+             + '</div>';
+      }).join('');
+      list.hidden = false;
+    }
+
+    function highlight(){
+      var opts = list.querySelectorAll('.pp-opt');
+      for (var i=0;i<opts.length;i++) opts[i].classList.toggle('on', i === cur);
+    }
+
+    /* Says what the site currently believes about the name in the box. It is
+       recomputed on every keystroke — the moment the text stops matching the
+       person who was picked, the link to that person is dropped. A picked id
+       that outlives the text that earned it is how an invitation ends up
+       quietly attached to the wrong cousin. */
+    function reflect(){
+      var v = box.value.trim(), k = key(v);
+      var exact = byKey[k];
+      if (exact && exact.length === 1) {
+        var p = exact[0];
+        pid.value = p.p;
+        var meta = [p.y, p.r].filter(Boolean).join(' · ');
+        note.className = 'pp-note ok';
+        note.innerHTML = '&#10003; In the family tree' + (meta ? ' — ' + esc(meta) : '')
+          + (p.s ? ' <b>(already ' + p.s + ')</b>' : '');
+      } else if (exact && exact.length > 1) {
+        pid.value = '';
+        note.className = 'pp-note warn';
+        note.textContent = 'There are ' + exact.length + ' people called ' + v
+          + ' in the tree — pick the right one from the list so the invitation knows which.';
+      } else if (open.length) {
+        /* Still mid-word with names on offer. Warning him the tree doesn't know
+           "And" while it is busy suggesting four Battles girls whose names all
+           start that way would be nonsense. */
+        pid.value = '';
+        note.className = 'pp-note';
+        note.textContent = 'Pick one from the list to take the spelling straight off their page.';
+      } else if (k.length >= 3) {
+        pid.value = '';
+        note.className = 'pp-note warn';
+        note.textContent = 'No one of that name in the tree. Fine if they married in — otherwise check the spelling.';
+      } else {
+        pid.value = '';
+        note.className = 'pp-note';
+        note.textContent = '';
+      }
+    }
+
+    function choose(i){
+      var p = open[i];
+      if (!p) return;
+      box.value = p.n;                 // the tree's spelling wins
+      list.hidden = true; open = []; cur = -1;
+      reflect();
+      box.focus();
+    }
+
+    box.addEventListener('input', function(){ draw(search(box.value)); reflect(); });
+    box.addEventListener('focus', function(){ if (box.value.trim()) draw(search(box.value)); });
+    /* Once he has moved on, "pick one from the list" is no longer useful advice
+       — there is no list any more — so the note falls back to saying plainly
+       whether the name he settled on is one the tree knows. */
+    box.addEventListener('blur', function(){
+      setTimeout(function(){ list.hidden = true; open = []; cur = -1; reflect(); }, 180);
+    });
+    box.addEventListener('keydown', function(e){
+      if (list.hidden || !open.length) return;
+      if (e.key === 'ArrowDown') { cur = Math.min(cur + 1, open.length - 1); highlight(); e.preventDefault(); }
+      else if (e.key === 'ArrowUp') { cur = Math.max(cur - 1, 0); highlight(); e.preventDefault(); }
+      else if (e.key === 'Enter' && cur >= 0) { choose(cur); e.preventDefault(); }
+      else if (e.key === 'Escape') { list.hidden = true; }
+    });
+    list.addEventListener('mousedown', function(e){
+      var opt = e.target.closest ? e.target.closest('.pp-opt') : null;
+      if (opt) { e.preventDefault(); choose(+opt.getAttribute('data-i')); }
+    });
+  })();
+  </script>
 </div>
 
 <div class="panel" style="margin-top:18px">
@@ -277,6 +466,17 @@ page_head('Members');
         <div class="inv-who">
           <b><?= e($inv['name'] ?: $mail ?: '—') ?></b>
           <span class="pill admin"><?= e(ucfirst($inv['role'])) ?></span>
+          <?php
+            /* Which person in the tree this invitation is for. Worth showing:
+               an invitation with no match is either somebody who married in or
+               a name that was mistyped, and only he can tell which. */
+            $tp = pp_person($inv['pid'] ?? '');
+            if ($tp):
+              $tm = array_filter([$tp['y'], $tp['r']], 'strlen'); ?>
+            <span class="inv-tree" title="<?= e($tm ? implode(' · ', $tm) : '') ?>">&#127795; in the family tree</span>
+          <?php elseif (trim((string)$inv['name']) !== ''): ?>
+            <span class="inv-tree off">not matched to the tree</span>
+          <?php endif; ?>
           <?php if ($mail): ?><span class="inv-mail"><?= e($mail) ?></span><?php endif; ?>
         </div>
         <div class="inv-state">

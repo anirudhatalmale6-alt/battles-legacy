@@ -104,12 +104,12 @@ table.list th{color:var(--gold);font-size:12px;letter-spacing:1px;text-transform
 .hot:hover{background:rgba(255,221,150,.10);box-shadow:inset 0 0 0 1px rgba(224,192,116,.45);}
 /* rotating ancestor portraits that fade in/out over the tree scene */
 .rslot{position:absolute;display:block;cursor:pointer;}
-.rslot .rot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;
+.rslot .rot,.mslot .rot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;
   opacity:0;transition:opacity 1.1s ease;pointer-events:none;
   filter:sepia(.55) saturate(.82) contrast(1.03) brightness(1.06);
   -webkit-mask-image:radial-gradient(ellipse 66% 80% at 50% 40%,#000 54%,transparent 84%);
           mask-image:radial-gradient(ellipse 66% 80% at 50% 40%,#000 54%,transparent 84%);}
-.rslot .rot.on{opacity:1;}
+.rslot .rot.on,.mslot .rot.on{opacity:1;}
 .rslot:hover .rot.on{filter:sepia(.4) contrast(1.05) brightness(1.15);}
 .rslot .rcap{position:absolute;left:-20%;right:-20%;bottom:1%;text-align:center;
   opacity:0;transition:opacity 1.1s ease;pointer-events:none;
@@ -118,6 +118,46 @@ table.list th{color:var(--gold);font-size:12px;letter-spacing:1px;text-transform
 .rslot .rcap.on{opacity:1;}
 .rc-name{display:block;font-size:15.5px;font-weight:600;letter-spacing:.3px;}
 .rc-yr{display:block;font-size:12.5px;color:var(--gold-soft);letter-spacing:1.2px;margin-top:1px;}
+
+/* ---- the same hero, rebuilt for a phone -------------------------------
+   The banner's words are painted into the photograph. On a wide screen that
+   is the whole point of it; on a phone the picture scales down to a strip
+   about an inch tall, the welcome becomes too small to read, and the four
+   names — which are live text at a fixed size — collide with each other.
+   So below 900px the photograph steps aside and the same words are set as
+   real text over the same tree background, with the portraits underneath at
+   a size worth looking at. Enterprise and Memorial already do this. */
+.hero-m{display:none;}
+@media(max-width:900px){
+  .hero{margin-top:0;line-height:normal;}
+  .hero>.hero-img,.hero>.rslot,.hero>.hot{display:none;}
+  .hero-m{display:block;text-align:center;padding:30px 18px 34px;
+    background:
+      radial-gradient(70% 70% at 50% 38%, rgba(28,7,9,.42), rgba(28,7,9,.78) 100%),
+      url('hero-bg.jpg') center / cover no-repeat;}
+  .hero-m-title{font-family:'Cormorant Garamond',serif;font-weight:600;color:var(--cream);
+    font-size:clamp(30px,8.4vw,44px);line-height:1.1;letter-spacing:.5px;margin:0;
+    text-shadow:0 2px 14px rgba(0,0,0,.65);}
+  .hero-m-title .script{display:inline-block;margin-top:4px;font-size:1.28em;}
+  .hero-m-lede{color:#f2e6cb;font-size:15.5px;line-height:1.55;max-width:46ch;
+    margin:14px auto 0;text-shadow:0 1px 8px rgba(0,0,0,.6);}
+  .hero-m-faces{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 12px;margin:20px auto 22px;
+    max-width:420px;}
+  /* two across on a phone, four across once there is room for readable names */
+  .mslot{flex:0 0 calc(50% - 6px);max-width:160px;display:block;text-decoration:none;}
+  .mfr{position:relative;display:block;width:100%;padding-top:128%;}
+  .mslot .rcap{position:static;display:block;margin-top:7px;opacity:0;
+    transition:opacity 1.1s ease;font-family:'Cormorant Garamond',serif;color:var(--gold2);
+    line-height:1.15;text-shadow:0 1px 6px rgba(0,0,0,.9);}
+  .mslot .rcap.on{opacity:1;}
+  .mslot .rc-name{font-size:14.5px;}
+  .mslot .rc-yr{font-size:12px;}
+  .hero-m-cta{font-size:16px;padding:12px 24px;}
+}
+@media(min-width:561px) and (max-width:900px){
+  .hero-m-faces{max-width:600px;}
+  .mslot{flex:0 0 calc(25% - 9px);max-width:130px;}
+}
 .hero-bg{position:absolute;inset:0;pointer-events:none;
   background:
     radial-gradient(56% 62% at 50% 44%, rgba(28,7,9,.55), transparent 72%),
@@ -2200,6 +2240,33 @@ body.fvid .foot{display:none;}
 .inv-bulkrow select{width:auto;}
 .inv-check{display:flex;align-items:center;gap:7px;margin:0;white-space:nowrap;}
 .inv-check input{width:auto;margin:0;}
+
+/* ---- name suggestions on the invitation form ----
+   The list is positioned over whatever follows it rather than pushing the form
+   about, and .pp-wrap keeps a stacking context so it sits above the Email box
+   next to it. The note is a full-width row of the form grid and always holds
+   its line, because it changes on every keystroke and a line that appears and
+   disappears is how a form ends up jumping while somebody is typing into it. */
+.pp-wrap{position:relative;z-index:5;}
+.pp-list{position:absolute;left:0;right:0;top:100%;margin-top:4px;z-index:40;
+  max-height:330px;overflow-y:auto;background:#24080b;
+  border:1px solid rgba(201,162,75,.5);border-radius:8px;
+  box-shadow:0 14px 34px rgba(0,0,0,.55);}
+.pp-opt{padding:8px 11px;cursor:pointer;border-bottom:1px solid rgba(201,162,75,.14);}
+.pp-opt:last-child{border-bottom:0;}
+.pp-opt:hover,.pp-opt.on{background:rgba(201,162,75,.16);}
+.pp-opt b{color:var(--gold2);font-weight:600;font-size:15.5px;}
+.pp-meta{display:block;color:var(--gold-soft);opacity:.85;font-size:13px;margin-top:2px;line-height:1.35;}
+.pp-tag{display:inline-block;margin-left:8px;padding:1px 7px;border-radius:8px;font-size:11.5px;
+  letter-spacing:.3px;background:var(--gold);color:var(--maroon);vertical-align:2px;}
+.pp-tag.gone{background:transparent;color:var(--gold-soft);border:1px solid rgba(201,162,75,.45);}
+.pp-note{grid-column:1/-1;min-height:18px;margin-top:-2px;font-size:13px;line-height:1.35;color:var(--gold-soft);}
+.pp-note.ok{color:#9fd39f;}
+.pp-note.warn{color:#e8b98a;}
+@media(max-width:760px){ .pp-list{max-height:260px;} }
+.inv-tree{font-size:12.5px;color:var(--gold-soft);border:1px solid rgba(201,162,75,.4);
+  border-radius:8px;padding:1px 8px;white-space:nowrap;}
+.inv-tree.off{color:#c9a98a;border-color:rgba(201,162,75,.2);opacity:.8;}
 
 .inv-list{display:flex;flex-direction:column;gap:12px;margin-top:14px;}
 .inv-row{background:rgba(0,0,0,.24);border:1px solid rgba(201,162,75,.22);border-radius:10px;
