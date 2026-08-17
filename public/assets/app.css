@@ -1281,6 +1281,13 @@ body.fnews{background:#efe3c9;color:#3a2c18;}
 .fn-soon{display:none;margin-top:8px;font-size:13px;color:#9a6a1f;font-style:italic;}
 .fn-soon.show{display:block;}
 .fn-empty{color:#8a6a3a;font-style:italic;font-family:'EB Garamond',serif;}
+/* the calendar stand-in shown when no event has been booked yet */
+.fn-soonnote{font-family:'EB Garamond',serif;font-size:13.5px;line-height:1.5;color:#8a6a3a;
+  font-style:italic;margin:2px 0 6px;}
+.fn-soonnote a{color:#9a3b3b;font-style:normal;}
+a.fn-calev{text-decoration:none;color:inherit;}
+a.fn-calev:hover .fn-edet h4{color:#9a3b3b;}
+a.fn-calev:hover .fn-when{background:#efdcb4;}
 
 @media(max-width:900px){
   .fn-main-grid{grid-template-columns:1fr;}
@@ -1821,6 +1828,11 @@ a.ft:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(120,80,20,.22);
 .nv-more .fn-cards{grid-template-columns:repeat(3,1fr);}
 @media(max-width:760px){ .nv-more .fn-cards{grid-template-columns:1fr;} .nv-head h1{font-size:29px;} }
 .nm-hint{font-family:'EB Garamond',serif;font-size:13.5px;color:#7a6a4a;line-height:1.5;margin:8px 0 0;display:block;}
+/* a warning William must not skim past: made-up filler, or an event with no date */
+.nm-warn{font-family:'EB Garamond',serif;font-size:14px;line-height:1.55;color:#7a2230;
+  background:#fdf3ef;border-left:3px solid #a8324a;border-radius:0 6px 6px 0;
+  padding:9px 13px;margin:10px 0 2px;}
+p.lede.nm-warn{max-width:none;}
 .nm-count-note{font-size:12.5px;color:#8a7355;margin-top:5px;font-style:italic;}
 .nm-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
 

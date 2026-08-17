@@ -2,6 +2,7 @@
 require __DIR__ . '/../src/bootstrap.php';
 require_once __DIR__ . '/../src/news_data.php';
 require_once __DIR__ . '/../src/community_data.php';
+require_once __DIR__ . '/../src/calendar_data.php';
 $TOTAL = 0;
 try {
     news_migrate(); community_migrate();
@@ -25,6 +26,11 @@ $STRIP = [
   ['dove','Deaths','Remembering lives, honoring legacies','memory'],
   ['hands','Prayers','Lift up one another in faith','prayer'],
 ];
+
+/* Only needed when nothing is booked, and it is privacy-aware in its own right:
+   a signed-out visitor gets the deceased's dates, never a living relative's. */
+$CALNEXT = [];
+if (!$EVENTS) { try { $CALNEXT = cal_upcoming(4); } catch (\Throwable $ex) { $CALNEXT = []; } }
 
 $logged = logged_in();
 $subUrl = function ($kind) use ($logged) { return $logged ? "community_submit.php?kind=$kind" : 'login.php'; };
@@ -105,6 +111,23 @@ page_head('Family News', ['body_class' => 'home fnews']);
             </div>
           </div>
         <?php endforeach; ?>
+        <a class="btn2 solid fn-allbtn" href="calendar.php">Open the family calendar</a>
+      <?php elseif ($CALNEXT): ?>
+        <!-- Nothing is booked, but the calendar always has something real coming:
+             birthdays and the days we remember people. Better than an empty box
+             for a relative who has just opened their invitation. -->
+        <p class="fn-soonnote">Nothing is booked in just yet &mdash; here is what the family calendar has next.<?php
+          if ($isAdmin) echo ' <a href="news_manage.php?tab=events">Add an event &rsaquo;</a>'; ?></p>
+        <?php foreach ($CALNEXT as $o): ?>
+          <a class="fn-event fn-calev" href="<?= e($o['href']) ?>">
+            <div class="fn-when"><span class="fn-mon"><?= e(strtoupper(date('M', mktime(0,0,0,(int)$o['m'],(int)$o['d'],2000)))) ?></span><span class="fn-day"><?= (int)$o['d'] ?></span></div>
+            <div class="fn-edet">
+              <h4><?= e($o['title']) ?></h4>
+              <?php if (!empty($o['sub'])): ?><div class="fn-time"><?= e($o['sub']) ?></div><?php endif; ?>
+            </div>
+          </a>
+        <?php endforeach; ?>
+        <?php if (!$logged): ?><p class="fn-soonnote">Sign in to see family birthdays and anniversaries too.</p><?php endif; ?>
         <a class="btn2 solid fn-allbtn" href="calendar.php">Open the family calendar</a>
       <?php else: ?>
         <p class="fn-empty"><?= $isAdmin ? 'No events yet — add one from Manage Family News.' : 'Upcoming family events will appear here.' ?></p>

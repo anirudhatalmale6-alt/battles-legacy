@@ -6,8 +6,6 @@ require_role('admin');
 news_migrate();
 community_migrate();
 
-function nm_next_sort($table) { $r = one("SELECT MAX(sort) m FROM $table"); return ($r && $r['m'] !== null) ? ((int)$r['m'] + 1) : 0; }
-
 $tab = 'news';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
@@ -32,15 +30,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($autofit && ($_POST['photo_fit'] ?? '') === ($_POST['photo_fit_prev'] ?? '')) $fit = $autofit;
                 $cat    = news_cat_ok($_POST['category'] ?? '');
                 $status = ($_POST['status'] ?? 'published') === 'hidden' ? 'hidden' : 'published';
-                $f = [$cat, trim($_POST['date_label']??''), $title, trim($_POST['body']??''), $photo, $fit,
+                $lbl = trim($_POST['date_label'] ?? '');
+                /* The label is his to word however he likes; on_date is the machine
+                   copy the ordering runs on. Unreadable label, or none, falls back
+                   to today so a new post still lands at the top rather than last. */
+                $on  = news_date_from_label($lbl);
+                if (!$on) $on = $id ? null : date('Y-m-d');
+                $f = [$cat, $lbl, $title, trim($_POST['body']??''), $photo, $fit,
                       (int)($_POST['likes']??0), (int)($_POST['comments']??0), (int)($_POST['sort']??0), $status];
                 if ($id) {
-                    q("UPDATE news_posts SET category=?,date_label=?,title=?,body=?,photo=?,photo_fit=?,likes=?,comments=?,sort=?,status=?,sample=0 WHERE id=?", array_merge($f, [$id]));
+                    if ($on === null) { $r = one("SELECT on_date FROM news_posts WHERE id=?", [$id]); $on = $r ? $r['on_date'] : null; }
+                    $f[] = $on;
+                    q("UPDATE news_posts SET category=?,date_label=?,title=?,body=?,photo=?,photo_fit=?,likes=?,comments=?,sort=?,status=?,on_date=?,sample=0 WHERE id=?", array_merge($f, [$id]));
                     flash('Announcement updated.');
                 } else {
                     // new announcements sort to the top on their own — no renumbering needed
-                    q("INSERT INTO news_posts (category,date_label,title,body,photo,photo_fit,likes,comments,sort,status,sample) VALUES (?,?,?,?,?,?,?,?,?,?,0)",
-                      [$cat, trim($_POST['date_label']??''), $title, trim($_POST['body']??''), $photo, $fit, (int)($_POST['likes']??0), (int)($_POST['comments']??0), 0, $status]);
+                    q("INSERT INTO news_posts (category,date_label,title,body,photo,photo_fit,likes,comments,sort,status,on_date,sample) VALUES (?,?,?,?,?,?,?,?,?,?,?,0)",
+                      [$cat, $lbl, $title, trim($_POST['body']??''), $photo, $fit, (int)($_POST['likes']??0), (int)($_POST['comments']??0), 0, $status, $on]);
                     flash('Announcement added — open the Family News page to see it.');
                 }
             }
@@ -53,13 +59,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($title === '') { flash('An event needs a title.'); }
             else {
                 $status = ($_POST['status'] ?? 'published') === 'hidden' ? 'hidden' : 'published';
-                $f = [strtoupper(trim($_POST['mon']??'')), trim($_POST['day']??''), $title, trim($_POST['place']??''), trim($_POST['time_label']??''), (int)($_POST['sort']??0), $status];
+                /* One date field now, year and all, and the big MON/DAY on the card
+                   is drawn from it. Typing the month and day separately is what left
+                   the events with no year to expire on. */
+                $on = trim($_POST['on_date'] ?? '');
+                $ts = $on ? strtotime($on) : false;
+                $on = $ts ? date('Y-m-d', $ts) : null;
+                $mon = $ts ? strtoupper(date('M', $ts)) : strtoupper(trim($_POST['mon'] ?? ''));
+                $day = $ts ? date('j', $ts) : trim($_POST['day'] ?? '');
+                if (!$on) flash('That event has no date, so it will not appear under Upcoming Events until you give it one.');
+                $f = [$mon, $day, $on, $title, trim($_POST['place']??''), trim($_POST['time_label']??''), (int)($_POST['sort']??0), $status];
                 if ($id) {
-                    q("UPDATE news_events SET mon=?,day=?,title=?,place=?,time_label=?,sort=?,status=?,sample=0 WHERE id=?", array_merge($f, [$id]));
+                    q("UPDATE news_events SET mon=?,day=?,on_date=?,title=?,place=?,time_label=?,sort=?,status=?,sample=0 WHERE id=?", array_merge($f, [$id]));
                     flash('Event updated.');
                 } else {
-                    q("INSERT INTO news_events (mon,day,title,place,time_label,sort,status,sample) VALUES (?,?,?,?,?,?,?,0)",
-                      [strtoupper(trim($_POST['mon']??'')), trim($_POST['day']??''), $title, trim($_POST['place']??''), trim($_POST['time_label']??''), nm_next_sort('news_events'), $status]);
+                    q("INSERT INTO news_events (mon,day,on_date,title,place,time_label,sort,status,sample) VALUES (?,?,?,?,?,?,?,?,0)",
+                      [$mon, $day, $on, $title, trim($_POST['place']??''), trim($_POST['time_label']??''), 0, $status]);
                     flash('Event added.');
                 }
             }
@@ -94,7 +109,11 @@ function nm_status_opts($sel){ $o=''; foreach (['published'=>'Visible on the pag
 page_head('Manage Family News', ['body_class' => 'em']);
 ?>
 <h1>Manage Family News</h1>
-<p class="lede">Add, edit, or remove the news announcements and upcoming events shown on the Family News page. Entries marked &ldquo;Example&rdquo; are samples &mdash; edit one (or add your own) and the tag goes away.</p>
+<p class="lede">Add, edit, or remove the news announcements and upcoming events shown on the Family News page.
+  Announcements run newest first by their date. Events drop off on their own once the day has passed.</p>
+<p class="lede nm-warn">Anything marked &ldquo;Example&rdquo; is made-up filler that came with the site &mdash; invented
+  names, invented dates. Editing one only removes the little tag; the words stay. Set it to
+  <b>Hidden</b>, or delete it, rather than leaving it up for the family to read.</p>
 <p style="margin:10px 0 4px"><a class="btn gold" href="news.php" target="_blank" rel="noopener">View the Family News page &#8599;</a></p>
 
 <div class="em-tabs">
@@ -145,7 +164,7 @@ page_head('Manage Family News', ['body_class' => 'em']);
           <div><label>Title *</label><input type="text" name="title" required value="<?= e($p['title']) ?>"></div>
           <div><label>Category</label><select name="category"><?= nm_cat_opts($p['category']) ?></select></div>
           <div><label>Date (as shown)</label><input type="text" name="date_label" value="<?= e($p['date_label']) ?>"></div>
-          <div><label>Order (0 = newest first)</label><input type="number" name="sort" value="<?= (int)$p['sort'] ?>"></div>
+          <div><label>Pin to top (0 = off)</label><input type="number" name="sort" min="0" value="<?= (int)$p['sort'] ?>"></div>
           <div><label>Likes</label><input type="number" name="likes" value="<?= (int)$p['likes'] ?>"></div>
           <div><label>Comments</label><input type="number" name="comments" value="<?= (int)$p['comments'] ?>"></div>
           <div><label>Visibility</label><select name="status"><?= nm_status_opts($p['status']) ?></select></div>
@@ -166,12 +185,13 @@ page_head('Manage Family News', ['body_class' => 'em']);
     <form method="post" class="em-form">
       <?= csrf_field() ?><input type="hidden" name="id" value="0">
       <div class="em-grid">
-        <div><label>Title *</label><input type="text" name="title" required placeholder="e.g. Family Reunion 2024"></div>
+        <div><label>Title *</label><input type="text" name="title" required placeholder="e.g. Family Reunion <?= date('Y') ?>"></div>
         <div><label>Place</label><input type="text" name="place" placeholder="e.g. Tyler Rose Garden Center, Tyler, TX"></div>
-        <div><label>Month (short)</label><input type="text" name="mon" maxlength="4" placeholder="e.g. JUN"></div>
-        <div><label>Day</label><input type="text" name="day" maxlength="4" placeholder="e.g. 21"></div>
+        <div><label>Date *</label><input type="date" name="on_date" required></div>
         <div><label>Time</label><input type="text" name="time_label" placeholder="e.g. 10:00 AM – 4:00 PM"></div>
       </div>
+      <p class="nm-hint">The date needs the year. Once the day has passed the event
+        comes off the Family News page on its own &mdash; nothing for you to tidy up.</p>
       <button class="btn gold" name="action" value="event_save" style="margin-top:12px">Add event</button>
     </form>
   </div>
@@ -179,17 +199,26 @@ page_head('Manage Family News', ['body_class' => 'em']);
     <div class="panel em-row">
       <form method="post" class="em-form">
         <?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$ev['id'] ?>">
+        <?php
+          $evOn   = !empty($ev['on_date']) ? $ev['on_date'] : '';
+          $evPast = $evOn && $evOn < date('Y-m-d');
+        ?>
         <div class="em-rowhead">
           <h3><?= e($ev['mon']) ?> <?= e($ev['day']) ?> &middot; <?= e($ev['title']) ?><?= $ev['sample']?' <span class="em-tag">Example</span>':'' ?><?= $ev['status']==='hidden'?' <span class="em-tag hid">Hidden</span>':'' ?></h3>
           <button class="btn danger" name="action" value="event_delete" onclick="return confirm('Remove this event?')">Delete</button>
         </div>
+        <?php if (!$evOn): ?>
+          <p class="nm-warn">This event has no date, so it is not showing under Upcoming Events.
+            Give it a date (with the year) and it will appear.</p>
+        <?php elseif ($evPast): ?>
+          <p class="nm-warn">This one has been and gone (<?= e(date('j F Y', strtotime($evOn))) ?>), so it has
+            come off the Family News page. Change the date to run it again, or delete it.</p>
+        <?php endif; ?>
         <div class="em-grid">
           <div><label>Title *</label><input type="text" name="title" required value="<?= e($ev['title']) ?>"></div>
           <div><label>Place</label><input type="text" name="place" value="<?= e($ev['place']) ?>"></div>
-          <div><label>Month (short)</label><input type="text" name="mon" maxlength="4" value="<?= e($ev['mon']) ?>"></div>
-          <div><label>Day</label><input type="text" name="day" maxlength="4" value="<?= e($ev['day']) ?>"></div>
+          <div><label>Date *</label><input type="date" name="on_date" value="<?= e($evOn) ?>"></div>
           <div><label>Time</label><input type="text" name="time_label" value="<?= e($ev['time_label']) ?>"></div>
-          <div><label>Order</label><input type="number" name="sort" value="<?= (int)$ev['sort'] ?>"></div>
           <div><label>Visibility</label><select name="status"><?= nm_status_opts($ev['status']) ?></select></div>
         </div>
         <button class="btn gold" name="action" value="event_save" style="margin-top:12px">Save changes</button>

@@ -14,8 +14,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['act'] ?? '') === 'homeedit
                   'home_faith_verse','home_faith_ref','home_band_verse','home_band_ref'] as $k) sm_clear($k);
         flash('The home page is back to its original wording.');
     } else {
-        sm_set('home_news_title', mb_substr(trim($_POST['news_title'] ?? ''), 0, 120));
-        sm_set('home_news_date',  mb_substr(trim($_POST['news_date']  ?? ''), 0, 60));
+        /* Blank means "follow the newest announcement", so it has to clear the
+           row rather than store an empty one — an empty stored value counts as
+           set, and would pin the card to nothing at all. */
+        foreach ([['news_title','home_news_title',120], ['news_date','home_news_date',60]] as $b) {
+            $val = mb_substr(trim($_POST[$b[0]] ?? ''), 0, $b[2]);
+            if ($val === '') sm_clear($b[1]); else sm_set($b[1], $val);
+        }
         sm_set('home_mem_pid',    trim($_POST['mem_pid'] ?? ''));
         sm_set('home_faith_verse', mb_substr(trim($_POST['faith_verse'] ?? ''), 0, 600));
         sm_set('home_faith_ref',   mb_substr(trim($_POST['faith_ref']   ?? ''), 0, 120));
@@ -37,9 +42,30 @@ $np = one("SELECT COUNT(*) c FROM persons")['c'] ?? 0;
 $nph = one("SELECT COUNT(*) c FROM photos WHERE status='approved'")['c'] ?? 0;
 
 /* ---- what the five cards show ----------------------------------------- */
-$NEWS_TITLE = sm('home_news_title', 'Battles Family Reunion');
-$NEWS_DATE  = sm('home_news_date',  'June 21, 2025');
-$NEWS_PHOTO = sm('home_news_photo', 'assets/home-news.jpg');
+/* The Family News card follows the Family News page.
+ *
+ *  It used to be three lines of typed-in text with the mockup's wording as the
+ *  default, and nobody ever changed them — so in August 2026 the front of the
+ *  site was still advertising a reunion from June 2025 while the real newest
+ *  announcement, a death in the family, sat unmentioned. The headline William
+ *  types still wins; when he has not typed one, the card shows the latest
+ *  announcement and keeps itself right from then on. */
+try { $LATEST = news_latest(); } catch (\Throwable $ex) { $LATEST = null; }
+/* Headline, date and picture are one card, so they follow or hold together.
+   Taking them field by field is how you end up with a memorial photograph
+   captioned "Battles Family Reunion". */
+$NEWS_FOLLOW = ($LATEST && sm('home_news_title', '') === '');
+if ($NEWS_FOLLOW) {
+    $NEWS_TITLE = $LATEST['title'];
+    $NEWS_DATE  = $LATEST['date_label'];
+    $NEWS_PHOTO = $LATEST['photo'] ? $LATEST['photo'] : 'assets/home-news.jpg';
+    $NEWS_HREF  = 'news_view.php?id=' . (int)$LATEST['id'];
+} else {
+    $NEWS_TITLE = sm('home_news_title', 'Battles Family Reunion');
+    $NEWS_DATE  = sm('home_news_date',  '');
+    $NEWS_PHOTO = sm('home_news_photo', 'assets/home-news.jpg');
+    $NEWS_HREF  = 'news.php';
+}
 
 $MEM_PID   = sm('home_mem_pid', '@I29@');            // Horatio Battles
 $MEM_PHOTO = sm('home_mem_photo', 'assets/home-memorial-horatio.jpg');
@@ -190,10 +216,10 @@ page_head('Home', ['body_class' => 'home']);
     <div class="hc-inner">
       <article class="hc">
         <h3>Family News</h3>
-        <div class="hc-media"><a href="news.php"><img src="<?= e($NEWS_PHOTO) ?>" alt="<?= e($NEWS_TITLE) ?>"></a></div>
+        <div class="hc-media"><a href="<?= e($NEWS_HREF) ?>"><img src="<?= e($NEWS_PHOTO) ?>" alt="<?= e($NEWS_TITLE) ?>"></a></div>
         <h5><?= e($NEWS_TITLE) ?></h5>
         <?php if ($NEWS_DATE !== ''): ?><p class="hc-sub"><?= e($NEWS_DATE) ?></p><?php endif; ?>
-        <a class="btn2" href="news.php">Read More</a>
+        <a class="btn2" href="<?= e($NEWS_HREF) ?>">Read More</a>
       </article>
 
       <article class="hc">
@@ -251,8 +277,14 @@ page_head('Home', ['body_class' => 'home']);
         <div class="ha-grid">
           <fieldset>
             <legend>Family News card</legend>
-            <label>Headline<input type="text" name="news_title" maxlength="120" value="<?= e($NEWS_TITLE) ?>"></label>
-            <label>Date underneath<input type="text" name="news_date" maxlength="60" value="<?= e($NEWS_DATE) ?>" placeholder="June 21, 2025"></label>
+            <!-- These two boxes show what is *stored*, not what the card is
+                 currently displaying. Filling them with the followed headline
+                 would freeze it the first time William saved anything else. -->
+            <p class="ha-note">Leave these empty and the card shows the newest announcement
+              on the Family News page, keeping itself up to date<?= $LATEST ? ' (right now: &ldquo;' . e($LATEST['title']) . '&rdquo;)' : '' ?>.
+              Type a headline only if you want it to stay put.</p>
+            <label>Headline<input type="text" name="news_title" maxlength="120" value="<?= e(sm('home_news_title', '')) ?>" placeholder="follows the newest announcement"></label>
+            <label>Date underneath<input type="text" name="news_date" maxlength="60" value="<?= e(sm('home_news_date', '')) ?>" placeholder="follows the newest announcement"></label>
             <label>Change the picture<input type="file" name="news_photo" accept="image/*"></label>
           </fieldset>
 

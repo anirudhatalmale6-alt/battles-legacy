@@ -3,6 +3,7 @@
  *  Idempotent migration; seeds a few sample entries once so the page looks
  *  complete, which William then edits from the manage screen. */
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/site_meta.php';   // the "already seeded" flag lives here
 
 function news_migrate() {
     $driver = db_driver();
@@ -24,10 +25,62 @@ function news_migrate() {
     // 'cover' crops the photo to fill the card; 'whole' shows all of it (portrait
     // posters and memorial cards would otherwise be cropped to an unreadable band)
     if (db_add_column('news_posts', 'photo_fit', "VARCHAR(10) DEFAULT 'cover'")) news_autofit_all();
+
+    /* The real date behind the date the card shows.
+     *
+     *  "Date (as shown)" is free text, so nothing could order announcements by
+     *  when they happened, and nothing could tell that an event was over. That
+     *  is how "Upcoming Events" came to be advertising a reunion in 2024 to
+     *  people arriving in 2026. The label stays exactly as William types it;
+     *  this column is only what the site sorts and expires on. */
+    if (db_add_column('news_posts', 'on_date', 'DATE NULL')) { news_backfill_dates(); news_clear_stale_order(); }
+    db_add_column('news_events', 'on_date', 'DATE NULL');
+
     news_seed();
 }
 
+/** Read a real date out of whatever William typed in "Date (as shown)".
+ *  "May 15, 2024" and "2024-05-15" both work; "Summer 2026" does not, and the
+ *  answer then is null rather than a guess. */
+function news_date_from_label($label) {
+    $label = trim((string)$label);
+    if ($label === '') return null;
+    $t = strtotime($label);
+    return $t ? date('Y-m-d', $t) : null;
+}
+
+/** One-off: give the announcements already written a date to sort on. */
+function news_backfill_dates() {
+    try { $rows = all("SELECT id,date_label,created_at FROM news_posts"); }
+    catch (\Throwable $e) { return; }
+    foreach ($rows as $r) {
+        $d = news_date_from_label($r['date_label']);
+        /* No usable label — fall back to when it was written, so the post still
+           has a place in the order instead of dropping to the bottom. */
+        if (!$d && !empty($r['created_at'])) { $t = strtotime($r['created_at']); if ($t) $d = date('Y-m-d', $t); }
+        if ($d) { try { q("UPDATE news_posts SET on_date=? WHERE id=?", [$d, (int)$r['id']]); } catch (\Throwable $e) {} }
+    }
+}
+
+/** One-off, run with the backfill: put every announcement back on "0 = by date".
+ *
+ *  Nobody ever chose these numbers. The samples were seeded 0,1,2,3 and saving a
+ *  new announcement used to hand it MAX(sort)+1, so the column filled up with an
+ *  accidental sequence. Under the new ordering a number above 0 means "pin to
+ *  the top", and inheriting that sequence would pin exactly the wrong four. */
+function news_clear_stale_order() {
+    try { q("UPDATE news_posts SET sort=0 WHERE sort<>0"); } catch (\Throwable $e) {}
+}
+
 function news_seed() {
+    /* Seed once, on a brand-new site, and never again. These are invented
+       families; the moment there is any real content on the site, an empty
+       Family News page is the honest thing to show, not four strangers. */
+    if (sm('news_seeded') === '1') return;
+    if (one("SELECT id FROM news_posts LIMIT 1") || one("SELECT id FROM news_events LIMIT 1")) {
+        sm_set('news_seeded', '1');
+        return;
+    }
     if (!one("SELECT id FROM news_posts LIMIT 1")) {
         $posts = [
           ['graduation','May 15, 2024','Congratulations to Sydney Battles!','Sydney graduated Summa Cum Laude from Howard University with a degree in Psychology.','',32,8],
@@ -36,8 +89,8 @@ function news_seed() {
           ['memory','April 20, 2024','Remembering Evelyn Mosley','A beautiful soul who touched so many lives. Forever in our hearts.','',68,21],
         ];
         $i = 0; foreach ($posts as $p) {
-            q("INSERT INTO news_posts (category,date_label,title,body,photo,likes,comments,sample,sort) VALUES (?,?,?,?,?,?,?,1,?)",
-              [$p[0],$p[1],$p[2],$p[3],$p[4],$p[5],$p[6],$i++]);
+            q("INSERT INTO news_posts (category,date_label,title,body,photo,likes,comments,sample,sort,on_date) VALUES (?,?,?,?,?,?,?,1,?,?)",
+              [$p[0],$p[1],$p[2],$p[3],$p[4],$p[5],$p[6],$i++,news_date_from_label($p[1])]);
         }
     }
     if (!one("SELECT id FROM news_events LIMIT 1")) {
@@ -51,19 +104,41 @@ function news_seed() {
               [$e[0],$e[1],$e[2],$e[3],$e[4],$i++]);
         }
     }
+    sm_set('news_seeded', '1');
 }
 
 /* ---- read helpers (published unless $all) ----
- * Newest first within the same "Order" number, so a new announcement lands at
- * the top on its own — William never has to renumber anything. */
+ *
+ * Newest announcement first, by the date it happened.
+ *
+ * This used to be "ORDER BY sort" with new posts given MAX(sort)+1 on save —
+ * which meant every announcement William wrote went to the *bottom*, under the
+ * samples that shipped with the site. A death in the family in June 2026 was
+ * sitting on page two behind two invented weddings from 2024.
+ *
+ * "Order" now means: 0 = leave it to the date, anything above 0 pins it to the
+ * top. Nobody has to renumber anything for the normal case. */
+function news_order_sql() {
+    // (sort = 0) is 1 for the unpinned ones, so ASC puts the pinned few first
+    return " ORDER BY (sort = 0), sort, on_date DESC, id DESC";
+}
+
 function news_posts($all = false, $cat = '', $limit = 0) {
     $w = [];
     $args = [];
     if (!$all) $w[] = "status='published'";
     if ($cat !== '') { $w[] = "category=?"; $args[] = $cat; }
-    $sql = "SELECT * FROM news_posts" . ($w ? " WHERE " . implode(' AND ', $w) : '') . " ORDER BY sort, id DESC";
+    $sql = "SELECT * FROM news_posts" . ($w ? " WHERE " . implode(' AND ', $w) : '') . news_order_sql();
     if ($limit > 0) $sql .= " LIMIT " . (int)$limit;
     return all($sql, $args);
+}
+
+/** The newest published announcement — what the home page card should be
+ *  showing. Samples are skipped: the card is the family's shop window. */
+function news_latest() {
+    try { $r = one("SELECT * FROM news_posts WHERE status='published' AND sample=0" . news_order_sql() . " LIMIT 1"); }
+    catch (\Throwable $e) { return null; }
+    return $r ?: null;
 }
 function news_count($cat = '') {
     $r = $cat === ''
@@ -72,9 +147,20 @@ function news_count($cat = '') {
     return (int)($r['c'] ?? 0);
 }
 function news_post($id) { return one("SELECT * FROM news_posts WHERE id=?", [(int)$id]); }
+/** Events for the public "Upcoming Events" panel.
+ *
+ *  Upcoming means upcoming. The old list was month-and-day only, with no year
+ *  anywhere in the table, so nothing could ever fall off it — which is why a
+ *  reunion held in 2024 was still being announced as forthcoming two years
+ *  later. An event with no date at all cannot be placed in time, so it is not
+ *  shown here; the manage screen says so plainly rather than swallowing it.
+ *
+ *  $all is the manage screen: it wants everything, past and undated included. */
 function news_events($all = false) {
-    $w = $all ? '' : "WHERE status='published'";
-    return all("SELECT * FROM news_events $w ORDER BY sort, id");
+    if ($all) return all("SELECT * FROM news_events ORDER BY on_date IS NULL, on_date, sort, id");
+    return all("SELECT * FROM news_events
+                WHERE status='published' AND on_date IS NOT NULL AND on_date >= ?
+                ORDER BY on_date, sort, id", [date('Y-m-d')]);
 }
 
 /** category key => [label, icon, css-class] */
