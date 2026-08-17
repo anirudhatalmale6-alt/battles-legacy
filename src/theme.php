@@ -108,7 +108,9 @@ function preview_bar() {
         &mdash; are kept for family only. Sign in and they all appear.</p>
       <span class="pvbar-acts">
         <a class="btn gold" href="login.php">Sign in</a>
-        <a class="pvbar-alt" href="login.php">Invited but never signed in?</a>
+        <!-- straight to the box, not just the page: somebody who has never signed
+             in should not have to spot it for themselves a second time -->
+        <a class="pvbar-alt" href="login.php#first-time">Invited but never signed in?</a>
       </span>
     </div>
   </div>
