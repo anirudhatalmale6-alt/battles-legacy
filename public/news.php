@@ -95,6 +95,29 @@ page_head('Family News', ['body_class' => 'home fnews']);
       <?php else: ?>
         <p class="fn-empty"><?= $isAdmin ? 'No news yet — add your first announcement from Manage Family News.' : 'Family news will be shared here soon.' ?></p>
       <?php endif; ?>
+
+      <?php if ($TOTAL < 4): ?>
+      <!-- A family news page with three announcements on it is not a design
+           problem, it is a page waiting for the family. The way to fill it is to
+           ask them, in the space where the news will go, rather than to leave a
+           gap they read as "nothing happens here". -->
+      <div class="fn-ask">
+        <span class="fn-askic"><?= news_icon('plus') ?></span>
+        <div>
+          <h3>Have some family news?</h3>
+          <p>A graduation, a new baby, a wedding, an anniversary, someone we should remember
+             &mdash; whatever it is, send it in and it goes up on this page.
+             <?= $isAdmin ? '' : 'William sees it first, then it is shared with everyone.' ?></p>
+        </div>
+        <?php if ($isAdmin): ?>
+          <a class="btn gold" href="news_manage.php">Add an announcement</a>
+        <?php elseif ($logged): ?>
+          <a class="btn gold" href="community_submit.php?kind=update">Share your news</a>
+        <?php else: ?>
+          <a class="btn gold" href="login.php">Sign in to share your news</a>
+        <?php endif; ?>
+      </div>
+      <?php endif; ?>
     </section>
 
     <!-- UPCOMING EVENTS -->

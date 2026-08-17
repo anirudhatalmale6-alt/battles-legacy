@@ -1281,6 +1281,21 @@ body.fnews{background:#efe3c9;color:#3a2c18;}
 .fn-soon{display:none;margin-top:8px;font-size:13px;color:#9a6a1f;font-style:italic;}
 .fn-soon.show{display:block;}
 .fn-empty{color:#8a6a3a;font-style:italic;font-family:'EB Garamond',serif;}
+/* the invitation that stands where the news will go while there is little of it */
+.fn-ask{display:flex;align-items:center;gap:16px;margin-top:18px;padding:18px 20px;
+  background:#fffdf8;border:1px solid #e6d8bd;border-left:4px solid #c9a227;border-radius:12px;
+  box-shadow:0 3px 12px rgba(120,80,20,.08);}
+.fn-ask>div{flex:1 1 auto;min-width:0;}
+.fn-ask h3{font-family:'Cormorant Garamond',serif;color:#5c1a1f;font-size:21px;margin:0 0 4px;}
+.fn-ask p{font-family:'EB Garamond',serif;color:#6b5a3a;font-size:15px;line-height:1.55;margin:0;}
+.fn-askic{flex:none;width:42px;height:42px;border-radius:50%;background:#f3e7c9;border:1px solid #e0cba0;
+  display:flex;align-items:center;justify-content:center;}
+.fn-askic svg{width:22px;height:22px;stroke:#9a6a1f;fill:none;stroke-width:1.6;}
+.fn-ask .btn{flex:none;white-space:nowrap;}
+@media(max-width:760px){
+  .fn-ask{flex-direction:column;align-items:flex-start;gap:12px;}
+  .fn-ask .btn{width:100%;text-align:center;}
+}
 /* the calendar stand-in shown when no event has been booked yet */
 .fn-soonnote{font-family:'EB Garamond',serif;font-size:13.5px;line-height:1.5;color:#8a6a3a;
   font-style:italic;margin:2px 0 6px;}
