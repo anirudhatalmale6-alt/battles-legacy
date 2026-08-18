@@ -117,11 +117,43 @@ function preview_bar() {
 <?php
 }
 
+/* ---- the family's Facebook group ---------------------------------------
+ *  William asked for the group link in the footer. The group is private and
+ *  the invitations have not all landed yet, so the quiet default is that only
+ *  family who are signed in ever see it — a visitor who is not signed in gets
+ *  nothing at all, not even a dead link to a group they cannot open.
+ *
+ *  To show it to EVERYONE, signed in or not, change the second constant below
+ *  to false. That is the whole change; nothing else needs touching. */
+define('FB_GROUP_URL',          'https://www.facebook.com/groups/1826925157675237');
+define('FB_GROUP_MEMBERS_ONLY', true);
+
+/** Renders the group link at most once per page. Most pages draw the rich
+ *  footer AND the plain one-line footer under it, and the plain line is hidden
+ *  by CSS on the home page — so whichever footer runs first takes it, and the
+ *  other quietly skips. */
+function fb_group_link($style = 'plain') {
+    static $done = false;
+    if ($done || FB_GROUP_URL === '') return;
+    if (FB_GROUP_MEMBERS_ONLY && !(function_exists('logged_in') && logged_in())) return;
+    $done = true;
+    $svg = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12a10 10 0'
+         . ' 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.51 1.5-3.9 3.77-3.9 1.09 0 2.24.2 2.24.2v2.46'
+         . 'h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.45 2.89h-2.33v6.99A10 10 0 0 0 22 12z"/></svg>';
+    if ($style === 'rich') {
+        echo '<p class="hf-fb"><a href="' . e(FB_GROUP_URL) . '" target="_blank" rel="noopener">'
+           . $svg . '<span>Our family Facebook group</span></a></p>';
+    } else {
+        echo ' &middot; <a class="foot-fb" href="' . e(FB_GROUP_URL) . '" target="_blank"'
+           . ' rel="noopener">Our family Facebook group</a>';
+    }
+}
+
 function page_foot() {
     ?>
 </main>
 <?php feedback_tab(); ?>
-<footer class="foot">A private home for the Battles family history · Members only</footer>
+<footer class="foot">A private home for the Battles family history · Members only<?php fb_group_link(); ?></footer>
 </body>
 </html>
 <?php
@@ -154,6 +186,7 @@ function legacy_footer() {
           <button type="submit" class="btn gold">Subscribe</button>
           <span class="hf-thanks">Thank you — we'll keep you posted.</span>
         </form>
+        <?php fb_group_link('rich'); ?>
       </div>
       <div class="hf-col">
         <h4>&#128274; Private Family Website</h4>

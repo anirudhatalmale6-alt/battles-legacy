@@ -325,6 +325,16 @@ body.home .foot{display:none;}
 .hf-tree svg{width:30px;height:30px;fill:none;stroke:var(--gold2);stroke-width:1.5;
   stroke-linecap:round;stroke-linejoin:round;}
 
+/* the family Facebook group — signed-in family only, see fb_group_link() */
+.hf-fb{margin:14px 0 0;}
+.hf-fb a{display:inline-flex;align-items:center;gap:9px;text-decoration:none;
+  color:var(--gold2);font-size:14px;line-height:1.2;padding:9px 15px;border-radius:8px;
+  border:1px solid rgba(201,162,75,.45);background:rgba(201,162,75,.08);}
+.hf-fb a:hover{background:rgba(201,162,75,.18);color:#fff8ea;}
+.hf-fb svg{width:19px;height:19px;flex:none;}
+.foot .foot-fb{color:var(--gold2);text-decoration:none;}
+.foot .foot-fb:hover{text-decoration:underline;color:#fff8ea;}
+
 @media(max-width:1080px){
   .vs-inner{grid-template-columns:1fr 1fr;gap:20px;}
   .vs-verse{grid-column:1 / -1;text-align:center;}
