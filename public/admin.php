@@ -10,7 +10,11 @@ $me = current_user();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
-    $act = $_POST['action'] ?? '';
+    $act  = $_POST['action'] ?? '';
+    /* Which row to come back to. Sixty invitations is a long page on a phone,
+       and "it's in the list below" is no help if the list below is a thousand
+       pixels of scrolling. */
+    $goto = '';
     if ($act === 'invite') {
         $name  = trim($_POST['name'] ?? '');
         $email = strtolower(trim($_POST['email'] ?? ''));
@@ -29,9 +33,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             flash('That doesn\'t look like an email address: ' . $email);
         } elseif ($was = invite_existing($email)) {
-            flash($email . ' is already ' . ($was === 'member' ? 'a member.' : 'holding an invitation — it\'s in the list below.'));
+            if ($was === 'member') flash($email . ' is already a member.');
+            else {
+                $old = invite_pending_for($email);
+                flash($email . ' is already holding an invitation — it\'s in the list below, and nothing has been changed.');
+                if ($old) $goto = '#inv-' . (int)$old['id'];
+            }
         } elseif ($per && $per['s'] !== '') {
-            flash($per['n'] . ' is already ' . ($per['s'] === 'member' ? 'a member.' : 'holding an invitation — it\'s in the list below.'));
+            if ($per['s'] === 'member') flash($per['n'] . ' is already a member.');
+            else {
+                /* This is the case William hit: he retyped somebody with their
+                   address corrected, and the page said "already invited" and
+                   threw the correction away without ever showing him what the
+                   old address was. Say it, and point at the box that fixes it. */
+                $old = invite_pending_for_pid($pid ?: ($per['p'] ?? ''));
+                $addr = $old ? trim((string)$old['email']) : '';
+                if ($addr !== '' && $email !== '' && $email !== strtolower($addr)) {
+                    flash($per['n'] . ' already has an invitation, and it is addressed to ' . $addr . '.');
+                    flash('Nothing has been changed. If ' . $addr . ' is the wrong address, open "Change the address"'
+                        . ' on their row below and put ' . $email . ' in — it keeps the same invitation.');
+                } else {
+                    flash($per['n'] . ' is already holding an invitation'
+                        . ($addr !== '' ? ', addressed to ' . $addr : '') . ' — it\'s in the list below.');
+                }
+                if ($old) $goto = '#inv-' . (int)$old['id'];
+            }
         } else {
             list($token, $url) = invite_create($name, $email, $role, $me['id'], $pid);
             $who = $name ?: $email;
@@ -95,6 +121,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         else flash(invite_mail($inv, $me)
             ? 'Sent again to ' . $inv['email'] . '. If it still doesn\'t arrive, use "Send it myself".'
             : 'The mail server wouldn\'t take it. Use "Send it myself".');
+    } elseif ($act === 'invite_edit') {
+        /* Correcting a mistyped address. Same invitation, same person — only
+           where it gets posted changes. */
+        $iid = (int)($_POST['iid'] ?? 0);
+        $r   = invite_update($iid, $_POST['email'] ?? '');
+        if (!$r['ok']) { flash($r['msg']); $goto = '#inv-' . $iid; }
+        elseif (!$r['changed']) { flash('That is already the address on this invitation.'); $goto = '#inv-' . $iid; }
+        else {
+            $inv = $r['inv'];
+            $who = trim((string)$inv['name']) ?: $r['email'];
+            flash('Address changed for ' . $who . ' — ' . $r['old'] . ' is now ' . $r['email'] . '.');
+            if ($r['reissued'])
+                flash('The old link has been replaced, because it had already been emailed to ' . $r['old']
+                    . ' and whoever owns that address could have used it. Only the new link works now.');
+            if (!empty($_POST['and_send']))
+                flash(invite_mail($inv, $me)
+                    ? 'Handed to the mail server for ' . $r['email'] . '. If nothing arrives in ten minutes, check their spam folder — or use "Send it myself".'
+                    : 'The mail server wouldn\'t take it. Use "Send it myself".');
+            else
+                flash('Nothing has been sent to the new address yet — use one of the send buttons on their row.');
+            $goto = '#inv-' . $iid;
+        }
     } elseif ($act === 'invite_delete') {
         invite_delete($_POST['iid'] ?? 0);
         flash('Invitation cancelled — that link no longer works.');
@@ -153,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $r = install_gedcom($path);
         flash($r['ok'] ? "Tree refreshed — {$r['individuals']} people, {$r['families']} families ({$r['living']} living kept private)." : ('Tree: ' . $r['error']));
     }
-    header('Location: admin.php'); exit;
+    header('Location: admin.php' . $goto); exit;
 }
 
 $users = all("SELECT * FROM users ORDER BY role='admin' DESC, role='moderator' DESC, name");
@@ -487,6 +535,18 @@ page_head('Members');
     /* "Emailed" was the only thing this page could report, and it says nothing
        about whether a human being ever saw it. Opened does. */
     $prog = invite_progress();
+    /* A wrong address is the one failure that leaves no trace on this page:
+       the mail server takes it, we report "handed to the mail server", and it
+       bounces somewhere William never sees. So say up front how many look
+       worth a second look. */
+    $flagBad = 0; $flagWatch = 0;
+    foreach ($invites as $iv) {
+        $ad = trim((string)$iv['email']);
+        if ($ad === '') continue;
+        $c = invite_address_check($ad);
+        if ($c['level'] === 'bad') $flagBad++;
+        elseif ($c['level'] === 'watch') $flagWatch++;
+    }
   ?>
   <p class="muted">These people have a link but haven&rsquo;t signed up yet. <b>Send it myself</b> opens your own
     email with the whole message already written &mdash; you just press send. Links last
@@ -501,6 +561,15 @@ page_head('Members');
       read &mdash; not the sign-up form. Worth sending those yourself from your own email.</span>
     <?php endif; ?></p>
   <?php endif; ?>
+  <?php if ($flagBad || $flagWatch): ?>
+  <p class="inv-audit">&#128269; <b><?= (int)($flagBad + $flagWatch) ?></b>
+    <?= ($flagBad + $flagWatch) === 1 ? 'address is' : 'addresses are' ?> worth checking
+    <?php if ($flagBad): ?>&mdash; <b><?= (int)$flagBad ?></b>
+      <?= $flagBad === 1 ? 'has' : 'have' ?> no mail server at all, so nothing sent there can arrive<?php endif; ?><?php
+      if ($flagWatch): ?><?= $flagBad ? ', and' : ' &mdash;' ?> <b><?= (int)$flagWatch ?></b>
+      <?= $flagWatch === 1 ? 'is' : 'are' ?> a letter away from a commoner address<?php endif; ?>.
+    They are marked below, with the box to correct them already open.</p>
+  <?php endif; ?>
   <div class="inv-list">
     <?php foreach ($invites as $inv):
       $url  = invite_url($inv['token']);
@@ -508,8 +577,9 @@ page_head('Members');
       $mail = trim((string)$inv['email']);
       $exp  = $inv['expires_at'] ? strtotime($inv['expires_at']) : 0;
       $days = $exp ? (int)ceil(($exp - time()) / 86400) : null;
+      $chk  = $mail !== '' ? invite_address_check($mail) : ['level' => 'ok', 'note' => ''];
     ?>
-      <div class="inv-row">
+      <div class="inv-row<?= $chk['level'] !== 'ok' ? ' inv-flag' : '' ?>" id="inv-<?= (int)$inv['id'] ?>">
         <div class="inv-who">
           <b><?= e($inv['name'] ?: $mail ?: '—') ?></b>
           <span class="pill admin"><?= e(ucfirst($inv['role'])) ?></span>
@@ -524,8 +594,13 @@ page_head('Members');
           <?php elseif (trim((string)$inv['name']) !== ''): ?>
             <span class="inv-tree off">not matched to the tree</span>
           <?php endif; ?>
-          <?php if ($mail): ?><span class="inv-mail"><?= e($mail) ?></span><?php endif; ?>
+          <?php if ($mail): ?><span class="inv-mail<?= $chk['level'] !== 'ok' ? ' bad' : '' ?>"><?= e($mail) ?></span><?php endif; ?>
         </div>
+        <?php if ($chk['note'] !== ''): ?>
+          <div class="inv-warn<?= $chk['level'] === 'bad' ? ' hard' : '' ?>">
+            <?= $chk['level'] === 'bad' ? '&#9888;' : '&#128269;' ?> <?= e($chk['note']) ?>
+          </div>
+        <?php endif; ?>
         <div class="inv-state">
           <?php if (!$mail): ?>
             <span class="inv-dot none"></span>No email address on file
@@ -564,6 +639,24 @@ page_head('Members');
             <button class="inv-x" type="submit">Cancel</button>
           </form>
         </div>
+        <?php /* Typing somebody in again with the address corrected used to be
+                 refused as a duplicate, so the only way to fix a typo was to
+                 cancel and start over. This changes it in place. */ ?>
+        <details class="inv-fix"<?= $chk['level'] !== 'ok' ? ' open' : '' ?>>
+          <summary><?= $mail === '' ? 'Add an email address' : 'Change the address' ?></summary>
+          <form method="post" class="inv-fix-form">
+            <?= csrf_field() ?>
+            <input type="hidden" name="action" value="invite_edit">
+            <input type="hidden" name="iid" value="<?= (int)$inv['id'] ?>">
+            <input type="email" name="email" value="<?= e($mail) ?>" placeholder="their email address"
+                   autocapitalize="off" autocorrect="off" spellcheck="false" required>
+            <button class="btn2" type="submit" name="save" value="1">Save</button>
+            <button class="btn gold" type="submit" name="and_send" value="1">Save and email it</button>
+          </form>
+          <p class="muted inv-fix-note">Same invitation, same person &mdash; only the address changes.
+            <?php if (!empty($inv['emailed_at'])): ?>Because this one has already been emailed, changing the
+            address also replaces the link, so the copy that went to the wrong mailbox stops working.<?php endif; ?></p>
+        </details>
       </div>
     <?php endforeach; ?>
   </div>

@@ -83,6 +83,172 @@ function invite_delete($id) {
     try { q("DELETE FROM invites WHERE id=? AND used_at IS NULL", [(int)$id]); } catch (\Throwable $e) {}
 }
 
+/** Correct the address on an invitation that is still waiting.
+ *
+ *  Two addresses in the first sixty were mistyped — "hatmail" for hotmail, and
+ *  a ymail where a gmail was meant. Until now the only way to put that right
+ *  was to cancel the invitation and make a new one, and the page never said so;
+ *  typing the corrected address into the invite form just answered "they are
+ *  already holding an invitation" and left the wrong one sitting in the list.
+ *
+ *  ISSUING A NEW LINK. If the wrong address had already been emailed, the
+ *  invitation link — which is a key to a private site full of living
+ *  relatives' details — is now sitting in a stranger's mailbox. ymail.com is a
+ *  real Yahoo domain; somebody owns that address, and it is not family. So when
+ *  the address changes after it has been sent, the token is replaced: the old
+ *  link stops working and the new one goes to the right person. Correcting a
+ *  typo before anything was sent leaves the link alone, since nobody ever had
+ *  it.
+ *
+ *  Returns ['ok'=>bool, 'msg'=>string] plus, on success, what happened. */
+function invite_update($id, $email, $name = null) {
+    invite_migrate();
+    $id  = (int)$id;
+    $inv = one("SELECT * FROM invites WHERE id=?", [$id]);
+    if (!$inv)                   return ['ok' => false, 'msg' => 'That invitation is no longer there.'];
+    if (!empty($inv['used_at'])) return ['ok' => false, 'msg' => 'That person has already signed up, so this is their account now, not an invitation.'];
+
+    $email = strtolower(trim((string)$email));
+    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL))
+        return ['ok' => false, 'msg' => 'That doesn\'t look like an email address: ' . $email];
+
+    $old     = strtolower(trim((string)$inv['email']));
+    $changed = ($email !== $old);
+
+    if ($changed) {
+        try {
+            if (one("SELECT id FROM users WHERE LOWER(email)=?", [$email]))
+                return ['ok' => false, 'msg' => $email . ' already belongs to somebody with an account.'];
+            if (one("SELECT id FROM invites WHERE LOWER(email)=? AND used_at IS NULL AND id<>?", [$email, $id]))
+                return ['ok' => false, 'msg' => $email . ' is already on another invitation in the list below.'];
+        } catch (\Throwable $e) {}
+    }
+
+    $sets = ['email=?'];
+    $args = [mb_substr($email, 0, 190)];
+    if ($name !== null && trim((string)$name) !== '') {
+        $sets[] = 'name=?';
+        $args[] = mb_substr(trim((string)$name), 0, 120);
+    }
+
+    $reissued = false;
+    if ($changed) {
+        if (!empty($inv['emailed_at'])) {
+            $sets[] = 'token=?';
+            $args[] = bin2hex(random_bytes(20));
+            $reissued = true;
+        }
+        /* Emailed / opened were true of the old address, not this one. Leaving
+           them would have the page report "handed to the mail server" about a
+           mailbox nothing has ever been written to. */
+        $sets[] = 'emailed_at=NULL';
+        $sets[] = 'email_ok=0';
+        $sets[] = 'sent_count=0';
+        $sets[] = 'opened_at=NULL';
+        /* A fresh 30 days: the clock should run from the invitation they can
+           actually receive. */
+        $sets[] = 'expires_at=?';
+        $args[] = date('Y-m-d H:i:s', time() + INVITE_DAYS * 86400);
+    }
+    $args[] = $id;
+    try { q("UPDATE invites SET " . implode(',', $sets) . " WHERE id=?", $args); }
+    catch (\Throwable $e) { return ['ok' => false, 'msg' => 'Could not save that — please try again.']; }
+
+    return ['ok'       => true,
+            'changed'  => $changed,
+            'reissued' => $reissued,
+            'old'      => $old,
+            'email'    => $email,
+            'inv'      => one("SELECT * FROM invites WHERE id=?", [$id])];
+}
+
+/** -------------------------------------------------------------------------
+ *  Does this address look like it will reach anybody?
+ *
+ *  Sixty invitations went out and five accounts came back, and the reason is
+ *  not one thing. Some of it is spam folders. But some of it is simply that
+ *  the address is wrong, and a wrong address is invisible: the site says
+ *  "handed to the mail server" and is telling the truth, while the message
+ *  bounces somewhere William never sees.
+ *
+ *  Two checks, because they catch different mistakes:
+ *
+ *  1. Has the domain a mail server at all? "hatmail.com" is registered and
+ *     parked with no MX and no A record — nothing sent there can arrive.
+ *  2. Is the domain one letter away from a much commoner one? "ymail.com" is
+ *     a real Yahoo domain that delivers perfectly, and is also exactly what
+ *     you get if you meant gmail and your finger slipped. No check can know
+ *     which; it can point at it and let him say.
+ *  ---------------------------------------------------------------------- */
+
+/** Domains a family address is realistically at. Order matters only in that
+ *  the first few are the ones a typo is usually aiming for. */
+function invite_big_domains() {
+    return ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'icloud.com'];
+}
+
+function invite_known_domains() {
+    return array_merge(invite_big_domains(), [
+        'live.com', 'msn.com', 'me.com', 'mac.com', 'ymail.com', 'rocketmail.com',
+        'comcast.net', 'att.net', 'sbcglobal.net', 'verizon.net', 'bellsouth.net',
+        'charter.net', 'cox.net', 'earthlink.net', 'juno.com', 'netzero.com',
+        'suddenlink.net', 'protonmail.com', 'proton.me', 'mail.com', 'gmx.com',
+    ]);
+}
+
+/** Cached, because the Members page asks about sixty addresses across about
+ *  fifteen distinct domains and a DNS lookup each time would be visible. */
+function invite_domain_has_mail($domain) {
+    static $seen = [];
+    $domain = strtolower(trim((string)$domain));
+    if ($domain === '') return false;
+    if (array_key_exists($domain, $seen)) return $seen[$domain];
+    $ok = true;                       // if we cannot look it up, say nothing
+    try {
+        if (function_exists('checkdnsrr')) {
+            /* A domain with no MX still takes mail at its A record — that is
+               the implicit-MX rule, and a stale work address usually looks
+               like this. Only "neither" is a certain failure. */
+            $ok = checkdnsrr($domain, 'MX') || checkdnsrr($domain, 'A');
+        }
+    } catch (\Throwable $e) { $ok = true; }
+    $seen[$domain] = $ok;
+    return $ok;
+}
+
+/** ['level' => 'ok'|'watch'|'bad', 'note' => plain English] */
+function invite_address_check($email) {
+    $email = strtolower(trim((string)$email));
+    if ($email === '') return ['level' => 'ok', 'note' => ''];
+    $at = strrpos($email, '@');
+    if ($at === false) return ['level' => 'bad', 'note' => 'That is not an email address.'];
+    $domain = substr($email, $at + 1);
+
+    if (!invite_domain_has_mail($domain))
+        return ['level' => 'bad',
+                'note'  => 'There is no mail server at ' . $domain . ' — nothing sent to this address can arrive.'];
+
+    $known = invite_known_domains();
+    $big   = invite_big_domains();
+    $isKnown = in_array($domain, $known, true);
+
+    /* A known domain is only worth questioning against a commoner one, and
+       only at a single letter's distance — otherwise every legitimate Yahoo
+       address in the list grows a warning. */
+    $against = $isKnown ? $big : $known;
+    $limit   = $isKnown ? 1 : 2;
+    foreach ($against as $r) {
+        if ($r === $domain) continue;
+        if (levenshtein($domain, $r) <= $limit) {
+            return ['level' => 'watch',
+                    'note'  => $isKnown
+                        ? $domain . ' is a real address, but it is one letter from ' . $r . ' — worth checking which was meant.'
+                        : $domain . ' looks like it might be ' . $r . '.'];
+        }
+    }
+    return ['level' => 'ok', 'note' => ''];
+}
+
 /** Somebody reached the sign-up form with a working link.
  *
  *  Written with date(), not CURRENT_TIMESTAMP: the app runs on America/Chicago
@@ -143,6 +309,20 @@ function invite_pending_for($email) {
     $email = strtolower(trim((string)$email));
     if ($email === '') return null;
     try { $r = one("SELECT * FROM invites WHERE email=? AND used_at IS NULL ORDER BY id DESC", [$email]); }
+    catch (\Throwable $e) { return null; }
+    return $r ?: null;
+}
+
+/** The waiting invitation held by a person in the tree, if there is one.
+ *
+ *  Wanted so that "they already have an invitation" can say which address it
+ *  is addressed to. That is the whole question when the address is the thing
+ *  that is wrong. */
+function invite_pending_for_pid($pid) {
+    invite_migrate();
+    $pid = trim((string)$pid);
+    if ($pid === '') return null;
+    try { $r = one("SELECT * FROM invites WHERE pid=? AND used_at IS NULL ORDER BY id DESC", [$pid]); }
     catch (\Throwable $e) { return null; }
     return $r ?: null;
 }
