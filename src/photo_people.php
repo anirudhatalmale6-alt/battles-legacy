@@ -109,6 +109,52 @@ function pp_reseat_primary($pid) {
     if ($next) q("UPDATE photo_people SET is_primary=1 WHERE pid=? AND photo_id=?", [(string)$pid, (int)$next['photo_id']]);
 }
 
+/** Hand photographs from one person to another.
+ *
+ *  The case this exists for: a father and a son with the same name. The
+ *  importer reads "Lafane Battles.jpg" and files it under whichever Lafane it
+ *  matched, and half of them are the other one. Putting that right one picture
+ *  at a time meant adding the son on one page, then finding the same picture
+ *  again and taking the father off it — two steps in two places, and the
+ *  control for the second step is an "x" that reads like "delete".
+ *
+ *  $keep leaves the original person in the picture as well, which is the right
+ *  answer for a group photograph: both of them really are in it.
+ *
+ *  WHAT DELIBERATELY DOES NOT MOVE is photos.pid. That column is not "whose
+ *  page this shows on" — photo_people answers that. It is where the file sits
+ *  on disk and, just as importantly, the identity the photo importer dedupes
+ *  on: it skips a file when it already has that person's copy of that content.
+ *  Repoint it at the son and the next "Import photos" run finds no father's
+ *  copy on record, imports the file again, and puts it straight back on the
+ *  father's page — the move would quietly undo itself. So ownership stays put
+ *  and only who is in the picture changes. te_delete_person() hands ownership
+ *  on to a remaining tagged person if the owner is ever removed, so nothing is
+ *  left stranded.
+ *
+ *  Returns ['moved'=>int,'already'=>int,'skipped'=>int]. */
+function pp_move($photoIds, $from, $to, $keep = false) {
+    $out = ['moved' => 0, 'already' => 0, 'skipped' => 0];
+    $from = trim((string)$from); $to = trim((string)$to);
+    if (!pp_migrate() || $from === '' || $to === '' || $from === $to) return $out;
+    if (!one("SELECT pid FROM persons WHERE pid=?", [$to])) return $out;
+
+    foreach ((array)$photoIds as $id) {
+        $id = (int)$id;
+        if (!$id) continue;
+        /* Only pictures this person is actually in. Without this the form could
+           be pointed at any photo id on the site. */
+        if (!one("SELECT pid FROM photo_people WHERE photo_id=? AND pid=?", [$id, $from])) { $out['skipped']++; continue; }
+        $added = pp_tag($id, $to);
+        if (!$keep) pp_untag($id, $from);
+        /* Nothing changed only when they were already in it AND the original
+           person is staying — anything else is a real move. */
+        if ($added || !$keep) $out['moved']++; else $out['already']++;
+    }
+    if ($out['moved']) { pp_reseat_primary($from); pp_reseat_primary($to); }
+    return $out;
+}
+
 /** Drop every tag for a photograph (it is being deleted outright). */
 function pp_clear($photoId) {
     if (!pp_migrate()) return;

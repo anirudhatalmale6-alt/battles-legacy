@@ -132,6 +132,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && role_at_least('moderator')) {
                 flash('Photo deleted.');
             }
         }
+    } elseif (($_POST['action'] ?? '') === 'move_photos') {
+        /* A father and a son with the same name end up sharing each other's
+           pictures, and sorting that out one photograph at a time took two
+           steps on two different pages. */
+        $to  = trim($_POST['to_pid'] ?? '');
+        $ids = array_map('intval', (array)($_POST['ph'] ?? []));
+        $keep = !empty($_POST['keep']);
+        $dest = $to !== '' ? one("SELECT pid,name FROM persons WHERE pid=?", [$to]) : null;
+        if (!$ids)          flash('No photographs were ticked, so nothing was moved.');
+        elseif ($to === $pid) flash('That is the same person — pick somebody else to move them to.');
+        elseif (!$dest)     flash('Please choose who the photographs belong to.');
+        else {
+            $r    = pp_move($ids, $pid, $to, $keep);
+            $them = $dest['name'] ?: 'them';
+            if ($r['moved']) {
+                $n = $r['moved'] . ' photograph' . ($r['moved'] === 1 ? '' : 's');
+                flash($keep
+                    ? $n . ' now on ' . $them . '\'s page as well as this one.'
+                    : $n . ' moved to ' . $them . '. ' . ($r['moved'] === 1 ? 'It is' : 'They are') . ' no longer on this page.');
+            }
+            if ($r['already']) flash($r['already'] . ' of them ' . ($r['already'] === 1 ? 'was' : 'were') . ' already on ' . $them . '\'s page.');
+            if ($r['skipped']) flash($r['skipped'] . ' could not be moved.');
+            if (!$r['moved'] && !$r['already'] && !$r['skipped']) flash('Nothing was moved.');
+        }
     }
     header('Location: person.php?pid=' . urlencode($pid)); exit;
 }
@@ -480,6 +504,45 @@ page_head($name);
   <?php endif; ?>
 </div>
 
+<?php if ($photos && role_at_least('moderator')): ?>
+<div class="panel" style="margin-top:20px">
+  <h2>Move photographs to someone else</h2>
+  <p class="muted" style="margin:0 0 14px">When a father and a son share a name, the pictures get filed under
+    whichever one the import matched first. Tick the ones that aren&rsquo;t <b><?= e($name) ?></b>, choose who they
+    really are, and they move across &mdash; caption, main-photo mark and all. Nothing is deleted and the picture
+    itself doesn&rsquo;t move on disk.</p>
+  <form method="post" class="mvform">
+    <?= csrf_field() ?><input type="hidden" name="action" value="move_photos">
+    <div class="mvgrid">
+      <?php foreach ($photos as $ph): ?>
+        <label class="mvpick">
+          <input type="checkbox" name="ph[]" value="<?= (int)$ph['id'] ?>">
+          <img src="<?= e($ph['path']) ?>" alt="<?= e($ph['caption']) ?>">
+          <span><?= e($ph['caption'] ?: 'no caption') ?></span>
+        </label>
+      <?php endforeach; ?>
+    </div>
+    <p class="mvall"><button type="button" class="btn2" id="mv-all">Tick all <?= count($photos) ?></button>
+      <button type="button" class="btn2" id="mv-none">Untick all</button></p>
+    <div class="mvto">
+      <label>Who are they really?
+        <input type="text" id="mv-filter" placeholder="Type a name to narrow the list&hellip;" autocomplete="off">
+        <select name="to_pid" id="mv-to" required>
+          <option value="">&mdash; choose a person &mdash;</option>
+          <?php foreach (te_people_options($pid) as $o): ?>
+            <option value="<?= e($o['pid']) ?>"><?= e($o['label']) ?></option>
+          <?php endforeach; ?>
+        </select>
+      </label>
+      <label class="mvkeep"><input type="checkbox" name="keep" value="1">
+        Keep them on <?= e(explode(' ', $name)[0]) ?>&rsquo;s page too &mdash; tick this for a group
+        photograph they are both in</label>
+      <button class="btn gold" type="submit">Move the ticked photographs</button>
+    </div>
+  </form>
+</div>
+<?php endif; ?>
+
 <div id="lightbox" onclick="closeLb()"><span class="x">×</span><img id="lightbox-img" onclick="event.stopPropagation()" src="" alt=""></div>
 <script>
 function lb(src){document.getElementById('lightbox-img').src=src;document.getElementById('lightbox').classList.add('show');}
@@ -532,6 +595,35 @@ window.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();});
     var s = f.parentNode.querySelector('.inpic-s');
     if (s) fill(s, f.value);
   });
+
+  /* The "move photographs" box. Its <select> is rendered by the server, so the
+     form works with no JavaScript at all — this only narrows a long list and
+     ticks the boxes, and everything here is safe to be missing. */
+  var mvTo = document.getElementById('mv-to');
+  var mvF  = document.getElementById('mv-filter');
+  if (mvTo && mvF) {
+    mvF.addEventListener('input', function(){
+      var keep = mvTo.value, q = mvF.value.toLowerCase().trim();
+      mvTo.innerHTML = '';
+      var first = document.createElement('option');
+      first.value = ''; first.textContent = '— choose a person —';
+      mvTo.appendChild(first);
+      for (var i = 0; i < PEOPLE.length; i++) {
+        if (q && PEOPLE[i].label.toLowerCase().indexOf(q) === -1) continue;
+        var o = document.createElement('option');
+        o.value = PEOPLE[i].pid; o.textContent = PEOPLE[i].label;
+        mvTo.appendChild(o);
+      }
+      if (keep) mvTo.value = keep;
+    });
+  }
+  function mvTick(on){
+    var b = document.querySelectorAll('.mvgrid input[type=checkbox]');
+    for (var i = 0; i < b.length; i++) b[i].checked = on;
+  }
+  var mvAll = document.getElementById('mv-all'), mvNone = document.getElementById('mv-none');
+  if (mvAll)  mvAll.addEventListener('click',  function(){ mvTick(true); });
+  if (mvNone) mvNone.addEventListener('click', function(){ mvTick(false); });
 })();
 </script>
 <?php endif; ?>
