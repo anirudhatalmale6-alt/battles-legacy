@@ -78,7 +78,11 @@ $FAITH_REF   = sm('home_faith_ref',   '— Joshua 1:9');
 $BAND_VERSE  = sm('home_band_verse',  '"One generation shall praise thy works to another, and shall declare thy mighty acts."');
 $BAND_REF    = sm('home_band_ref',    '— Psalm 145:4');
 
-try { $UPNEXT = cal_upcoming(4); } catch (\Throwable $ex) { $UPNEXT = []; }
+/* The card shows the family's own dates when there are any — the reunion, the
+   scholarship deadline — and falls back to the birthdays and remembrance days
+   from the calendar when there are none, so it is never an empty box. */
+try { $FAMEV = array_slice(news_events(), 0, 4); } catch (\Throwable $ex) { $FAMEV = []; }
+try { $UPNEXT = $FAMEV ? [] : cal_upcoming(4); } catch (\Throwable $ex) { $UPNEXT = []; }
 $isAdmin = role_at_least('admin');
 
 page_head('Home', ['body_class' => 'home']);
@@ -215,7 +219,7 @@ page_head('Home', ['body_class' => 'home']);
   <section class="homecards">
     <div class="hc-inner">
       <article class="hc">
-        <h3>Family News</h3>
+        <h3><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="M7 9h7M7 12h10M7 15h6"/></svg><span>Family News</span></h3>
         <div class="hc-media"><a href="<?= e($NEWS_HREF) ?>"><img src="<?= e($NEWS_PHOTO) ?>" alt="<?= e($NEWS_TITLE) ?>"></a></div>
         <h5><?= e($NEWS_TITLE) ?></h5>
         <?php if ($NEWS_DATE !== ''): ?><p class="hc-sub"><?= e($NEWS_DATE) ?></p><?php endif; ?>
@@ -223,8 +227,15 @@ page_head('Home', ['body_class' => 'home']);
       </article>
 
       <article class="hc">
-        <h3>Upcoming Events</h3>
-        <?php if ($UPNEXT): ?>
+        <h3><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg><span>Upcoming Events</span></h3>
+        <?php if ($FAMEV): ?>
+          <ul class="hc-events">
+            <?php foreach ($FAMEV as $ev): $d = strtotime($ev['next_date']); ?>
+              <li><span class="ev-d"><?= e(news_month_label($d)) ?> <?= (int)date('j', $d) ?></span>
+                <?= e($ev['title']) ?></li>
+            <?php endforeach; ?>
+          </ul>
+        <?php elseif ($UPNEXT): ?>
           <ul class="hc-events">
             <?php foreach ($UPNEXT as $o): ?>
               <li><span class="ev-d"><?= e(cal_daylabel((int)$o['m'], (int)$o['d'])) ?></span>
@@ -235,12 +246,12 @@ page_head('Home', ['body_class' => 'home']);
         <?php else: ?>
           <ul class="hc-events"><li>Nothing on the calendar just yet.</li></ul>
         <?php endif; ?>
-        <?php if (!$u): ?><p class="hc-priv">Sign in to see family birthdays and anniversaries.</p><?php endif; ?>
+        <?php if (!$u && !$FAMEV): ?><p class="hc-priv">Sign in to see family birthdays and anniversaries.</p><?php endif; ?>
         <a class="btn2" href="calendar.php">View Calendar</a>
       </article>
 
       <article class="hc">
-        <h3>Featured Memorial</h3>
+        <h3><svg viewBox="0 0 24 24"><path d="M8 21h8V10a4 4 0 0 0-8 0z"/><path d="M6 21h12M12 6V3M10.5 4.5h3"/></svg><span>Featured Memorial</span></h3>
         <div class="hc-media tall"><a href="<?= $mp ? 'tribute.php?pid=' . e(urlencode($MEM_PID)) : 'memorial.php' ?>"><img src="<?= e($MEM_PHOTO) ?>" alt="<?= e($MEM_NAME) ?>"></a></div>
         <h5><?= e($MEM_NAME) ?></h5>
         <?php if ($MEM_DATES !== ''): ?><p class="hc-sub"><?= e($MEM_DATES) ?></p><?php endif; ?>
@@ -248,18 +259,18 @@ page_head('Home', ['body_class' => 'home']);
       </article>
 
       <article class="hc">
-        <h3>Family Tree</h3>
+        <h3><svg viewBox="0 0 24 24"><path d="M12 3a5 5 0 0 0-4 8 4 4 0 0 0 1 7h6a4 4 0 0 0 1-7 5 5 0 0 0-4-8z"/><path d="M12 13v9"/></svg><span>Family Tree</span></h3>
         <div class="hc-media"><a href="tree.php"><img src="assets/home-tree.jpg" alt="The Battles family tree"></a></div>
         <p class="hc-text">Explore our family tree and discover your roots.</p>
         <a class="btn2" href="tree.php">Explore Tree</a>
       </article>
 
       <article class="hc">
-        <h3>Faith Corner</h3>
+        <h3><svg viewBox="0 0 24 24"><path d="M12 7.5S10 5.5 6.5 5.5 2.5 7 2.5 7v11s1.5-1.5 4-1.5 5.5 2 5.5 2 3-2 5.5-2 4 1.5 4 1.5V7s-.5-1.5-4-1.5S12 7.5 12 7.5z"/><path d="M12 7.5V19"/></svg><span>Faith Corner</span></h3>
         <div class="hc-media"><a href="faith.php"><img src="assets/home-faith.jpg" alt="Open Bible by candlelight"></a></div>
         <p class="hc-text"><?= e($FAITH_VERSE) ?></p>
         <?php if ($FAITH_REF !== ''): ?><p class="hc-sub"><?= e($FAITH_REF) ?></p><?php endif; ?>
-        <a class="btn2" href="faith.php">Faith &amp; Family</a>
+        <a class="btn2" href="faith.php">Read More</a>
       </article>
     </div>
   </section>

@@ -68,13 +68,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mon = $ts ? strtoupper(date('M', $ts)) : strtoupper(trim($_POST['mon'] ?? ''));
                 $day = $ts ? date('j', $ts) : trim($_POST['day'] ?? '');
                 if (!$on) flash('That event has no date, so it will not appear under Upcoming Events until you give it one.');
-                $f = [$mon, $day, $on, $title, trim($_POST['place']??''), trim($_POST['time_label']??''), (int)($_POST['sort']??0), $status];
+                $annual = !empty($_POST['annual']) ? 1 : 0;
+                $f = [$mon, $day, $on, $annual, $title, trim($_POST['place']??''), trim($_POST['time_label']??''), (int)($_POST['sort']??0), $status];
                 if ($id) {
-                    q("UPDATE news_events SET mon=?,day=?,on_date=?,title=?,place=?,time_label=?,sort=?,status=?,sample=0 WHERE id=?", array_merge($f, [$id]));
+                    q("UPDATE news_events SET mon=?,day=?,on_date=?,annual=?,title=?,place=?,time_label=?,sort=?,status=?,sample=0 WHERE id=?", array_merge($f, [$id]));
                     flash('Event updated.');
                 } else {
-                    q("INSERT INTO news_events (mon,day,on_date,title,place,time_label,sort,status,sample) VALUES (?,?,?,?,?,?,?,?,0)",
-                      [$mon, $day, $on, $title, trim($_POST['place']??''), trim($_POST['time_label']??''), 0, $status]);
+                    q("INSERT INTO news_events (mon,day,on_date,annual,title,place,time_label,sort,status,sample) VALUES (?,?,?,?,?,?,?,?,?,0)",
+                      [$mon, $day, $on, $annual, $title, trim($_POST['place']??''), trim($_POST['time_label']??''), 0, $status]);
                     flash('Event added.');
                 }
             }
@@ -190,8 +191,10 @@ page_head('Manage Family News', ['body_class' => 'em']);
         <div><label>Date *</label><input type="date" name="on_date" required></div>
         <div><label>Time</label><input type="text" name="time_label" placeholder="e.g. 10:00 AM – 4:00 PM"></div>
       </div>
+      <label class="em-check"><input type="checkbox" name="annual" value="1"> Happens every year (the reunion, a holiday, a yearly deadline)</label>
       <p class="nm-hint">The date needs the year. Once the day has passed the event
-        comes off the Family News page on its own &mdash; nothing for you to tidy up.</p>
+        comes off the Family News page on its own &mdash; nothing for you to tidy up.
+        Tick &ldquo;every year&rdquo; and instead of disappearing it rolls forward to next year by itself.</p>
       <button class="btn gold" name="action" value="event_save" style="margin-top:12px">Add event</button>
     </form>
   </div>
@@ -201,7 +204,9 @@ page_head('Manage Family News', ['body_class' => 'em']);
         <?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$ev['id'] ?>">
         <?php
           $evOn   = !empty($ev['on_date']) ? $ev['on_date'] : '';
-          $evPast = $evOn && $evOn < date('Y-m-d');
+          // an annual date in the past is not stale — it has rolled to next year
+          $evPast = $evOn && $evOn < date('Y-m-d') && empty($ev['annual']);
+          $evNext = !empty($ev['annual']) ? news_event_next($ev) : null;
         ?>
         <div class="em-rowhead">
           <h3><?= e($ev['mon']) ?> <?= e($ev['day']) ?> &middot; <?= e($ev['title']) ?><?= $ev['sample']?' <span class="em-tag">Example</span>':'' ?><?= $ev['status']==='hidden'?' <span class="em-tag hid">Hidden</span>':'' ?></h3>
@@ -210,6 +215,9 @@ page_head('Manage Family News', ['body_class' => 'em']);
         <?php if (!$evOn): ?>
           <p class="nm-warn">This event has no date, so it is not showing under Upcoming Events.
             Give it a date (with the year) and it will appear.</p>
+        <?php elseif ($evNext): ?>
+          <p class="nm-hint">Happens every year &mdash; next on
+            <b><?= e(date('j F Y', strtotime($evNext))) ?></b>.</p>
         <?php elseif ($evPast): ?>
           <p class="nm-warn">This one has been and gone (<?= e(date('j F Y', strtotime($evOn))) ?>), so it has
             come off the Family News page. Change the date to run it again, or delete it.</p>
@@ -221,6 +229,7 @@ page_head('Manage Family News', ['body_class' => 'em']);
           <div><label>Time</label><input type="text" name="time_label" value="<?= e($ev['time_label']) ?>"></div>
           <div><label>Visibility</label><select name="status"><?= nm_status_opts($ev['status']) ?></select></div>
         </div>
+        <label class="em-check"><input type="checkbox" name="annual" value="1"<?= !empty($ev['annual']) ? ' checked' : '' ?>> Happens every year</label>
         <button class="btn gold" name="action" value="event_save" style="margin-top:12px">Save changes</button>
       </form>
     </div>

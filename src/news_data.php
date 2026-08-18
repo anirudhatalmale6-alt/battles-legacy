@@ -35,6 +35,11 @@ function news_migrate() {
      *  this column is only what the site sorts and expires on. */
     if (db_add_column('news_posts', 'on_date', 'DATE NULL')) { news_backfill_dates(); news_clear_stale_order(); }
     db_add_column('news_events', 'on_date', 'DATE NULL');
+    /* Some family dates come round every year — the reunion, Memorial Day, the
+       scholarship deadline. Storing them as a one-off date is what left "Family
+       Reunion 2024" on the page in 2026; storing them as annual means they roll
+       forward on their own the day after they happen. */
+    db_add_column('news_events', 'annual', 'TINYINT NOT NULL DEFAULT 0');
 
     news_seed();
 }
@@ -167,9 +172,41 @@ function news_real_count() {
  *  $all is the manage screen: it wants everything, past and undated included. */
 function news_events($all = false) {
     if ($all) return all("SELECT * FROM news_events ORDER BY on_date IS NULL, on_date, sort, id");
-    return all("SELECT * FROM news_events
-                WHERE status='published' AND on_date IS NOT NULL AND on_date >= ?
-                ORDER BY on_date, sort, id", [date('Y-m-d')]);
+    $rows = all("SELECT * FROM news_events WHERE status='published' AND on_date IS NOT NULL");
+    $out = [];
+    foreach ($rows as $r) {
+        $next = news_event_next($r);
+        if ($next === null) continue;                 // a one-off that has been and gone
+        $r['next_date'] = $next;
+        $out[] = $r;
+    }
+    usort($out, function ($a, $b) {
+        if ($a['next_date'] === $b['next_date']) return (int)$a['sort'] - (int)$b['sort'];
+        return strcmp($a['next_date'], $b['next_date']);
+    });
+    return $out;
+}
+
+/** "MAY 25", "JUNE 21", "JULY 4", "AUG 15" — the short months are written out
+ *  and the long ones abbreviated, which is how the design has them and how a
+ *  newspaper would set it. */
+function news_month_label($ts) {
+    $full = ['March','April','May','June','July'];
+    $m = date('F', $ts);
+    return strtoupper(in_array($m, $full, true) ? $m : date('M', $ts));
+}
+
+/** When this event next falls, or null if it is a one-off already past.
+ *  An annual date that has gone by this year rolls to next year by itself. */
+function news_event_next($ev) {
+    $d = (string)($ev['on_date'] ?? '');
+    if ($d === '') return null;
+    $today = date('Y-m-d');
+    if (empty($ev['annual'])) return ($d >= $today) ? $d : null;
+    $md = substr($d, 5);                              // MM-DD
+    $this_year = date('Y') . '-' . $md;
+    if ($this_year >= $today) return $this_year;
+    return ((int)date('Y') + 1) . '-' . $md;
 }
 
 /** category key => [label, icon, css-class] */
