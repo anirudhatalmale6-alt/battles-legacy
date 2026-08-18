@@ -227,7 +227,10 @@ function invite_mail($inv, $host = null) {
     $m  = invite_message($inv, invite_url($inv['token']), $host);
     $ok = mailer_send($to, $m['subject'], $m['body'], [
         'to_name'    => $inv['name'] ?? '',
-        'reply_to'   => $host['email'] ?? '',
+        /* Replies go to the family mailbox on the domain, not to a Gmail
+           address, so the From and the Reply-To agree. It forwards to
+           William either way. */
+        'reply_to'   => mailer_address(),
         'reply_name' => $host['name'] ?? '',
     ]);
     try {

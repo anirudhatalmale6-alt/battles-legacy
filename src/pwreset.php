@@ -98,7 +98,10 @@ function pwreset_mail($user, $url) {
 
     return mailer_send($user['email'] ?? '', $subject, $body, [
         'to_name'    => $user['name'] ?? '',
-        'reply_to'   => $admin['email'] ?? '',
+        /* Replies go to the family mailbox on the domain, not to a Gmail
+           address, so the From and the Reply-To agree. It forwards to
+           William either way. */
+        'reply_to'   => mailer_address(),
         'reply_name' => $admin['name'] ?? '',
     ]);
 }

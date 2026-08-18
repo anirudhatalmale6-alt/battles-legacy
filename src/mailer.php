@@ -11,6 +11,7 @@
  *  pass on himself — so no one is ever stuck waiting on a message that never
  *  came. */
 require_once __DIR__ . '/helpers.php';
+require_once __DIR__ . '/site_meta.php';   // lets William change the address himself
 
 /** The address mail leaves from. It has to be at the site's own domain or the
  *  DKIM signature won't match it and delivery gets worse, not better.
@@ -20,15 +21,30 @@ require_once __DIR__ . '/helpers.php';
  *  us the one signal that actually teaches Gmail this sender is wanted, since
  *  a reply is the strongest "not spam" vote a person can cast. Replies go to
  *  William anyway via Reply-To, so nothing lands in an unread mailbox. */
-function mailer_from() {
+/** The mailbox the family's mail comes from and goes back to.
+ *
+ *  It used to be family@ — an address that has never existed on this domain.
+ *  Mail from a mailbox that cannot receive is a poor signal to Gmail, and a
+ *  bounce or a reply that misses Reply-To disappears. info@thebattlesfamily.com
+ *  is a real mailbox and William has confirmed it reaches him, so From and
+ *  Reply-To now both point at somewhere a person actually reads.
+ *
+ *  Stored in site_meta so he can change it himself later without me. */
+function mailer_address() {
+    if (function_exists('sm')) {
+        $set = mailer_valid(sm('mail_reply_to', ''));
+        if ($set !== '') return $set;
+    }
     $host = preg_replace('/^www\./i', '', $_SERVER['HTTP_HOST'] ?? '');
     $host = preg_replace('/:\d+$/', '', $host);
-    if ($host === '' || strpos($host, '.') === false) {
-        $cfg = (string)config('mail_from');
-        return $cfg !== '' ? $cfg : 'family@thebattlesfamily.com';
-    }
-    return 'family@' . $host;
+    if ($host !== '' && strpos($host, '.') !== false) return 'info@' . $host;
+    /* No web host to read (a cron or the command line): config is the last
+       resort, and only if it names a real address. */
+    $cfg = mailer_valid((string)config('mail_from'));
+    return $cfg !== '' ? $cfg : 'info@thebattlesfamily.com';
 }
+
+function mailer_from() { return mailer_address(); }
 
 function mailer_valid($addr) {
     $addr = trim((string)$addr);
