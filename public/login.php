@@ -87,7 +87,13 @@ page_head('Family Login');
            value="<?= e($_POST['email2'] ?? '') ?>">
     <button class="btn2 solid" style="width:100%;margin-top:12px">Send me my sign-up link</button>
   </form>
-  <p class="muted" style="margin-top:14px">Family, but nobody has invited you yet?
-    <a href="request.php">Ask to join</a> &mdash; William will see it on his Members page.</p>
+  <?php /* Was "Family, but nobody has invited you yet?" — which reads as being only
+           for people who were never asked. A good number of the first sixty invitations
+           went to addresses the family had years ago and no longer opens, and those
+           people cannot use the box above either: it can only write to the dead address
+           the invitation was sent to. They need this link, and nothing here told them so. */ ?>
+  <p class="muted" style="margin-top:14px">Never had an invitation &mdash; or did it go to an old email
+    address you don&rsquo;t use any more? <a href="request.php">Ask to join</a> using the address you
+    use now, and William will see it on his Members page.</p>
 </div>
 <?php page_foot();
