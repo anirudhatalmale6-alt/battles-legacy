@@ -25,14 +25,40 @@ function ar_migrate() {
         )$ENG");
         db()->exec("CREATE INDEX idx_ar_status ON access_requests(status)");
     } catch (\Throwable $e) { /* the index exists on every run after the first */ }
+
+    /* Added later, so CREATE TABLE IF NOT EXISTS above will not put them on a
+       table that already exists. Two names now arrive by two different roads
+       and William judges them differently: a stranger who found the site and
+       asked, or a signed-in relative putting a name forward. */
+    db_add_column('access_requests', 'source',       "VARCHAR(20) NOT NULL DEFAULT 'self'");
+    db_add_column('access_requests', 'referred_uid', "INT NULL");
 }
 
 function ar_add($f) {
     ar_migrate();
-    q("INSERT INTO access_requests (name,email,phone,relation,note,referred_by) VALUES (?,?,?,?,?,?)",
-      [mb_substr(trim($f['name'] ?? ''), 0, 160), mb_substr(strtolower(trim($f['email'] ?? '')), 0, 190),
-       mb_substr(trim($f['phone'] ?? ''), 0, 40), mb_substr(trim($f['relation'] ?? ''), 0, 300),
-       mb_substr(trim($f['note'] ?? ''), 0, 1000), mb_substr(trim($f['referred_by'] ?? ''), 0, 160)]);
+    /* The two columns above may be missing if the ALTER could not run (a locked
+       table, a host that forbids it). Naming them in a fixed INSERT would then
+       turn a working "ask to join" form into a fatal error, so the column list
+       is built from what the table actually has. */
+    $cols = ['name'  => mb_substr(trim($f['name'] ?? ''), 0, 160),
+             'email' => mb_substr(strtolower(trim($f['email'] ?? '')), 0, 190),
+             'phone' => mb_substr(trim($f['phone'] ?? ''), 0, 40),
+             'relation' => mb_substr(trim($f['relation'] ?? ''), 0, 300),
+             'note'     => mb_substr(trim($f['note'] ?? ''), 0, 1000),
+             'referred_by' => mb_substr(trim($f['referred_by'] ?? ''), 0, 160)];
+    if (db_has_column('access_requests', 'source'))
+        $cols['source'] = ($f['source'] ?? 'self') === 'member' ? 'member' : 'self';
+    if (db_has_column('access_requests', 'referred_uid'))
+        $cols['referred_uid'] = !empty($f['referred_uid']) ? (int)$f['referred_uid'] : null;
+    $names = array_keys($cols);
+    q("INSERT INTO access_requests (" . implode(',', $names) . ") VALUES ("
+      . implode(',', array_fill(0, count($names), '?')) . ")", array_values($cols));
+}
+
+/** Did a signed-in relative put this name forward, rather than the person
+ *  asking for themselves? Reads a column that may not exist yet. */
+function ar_from_member($r) {
+    return isset($r['source']) && $r['source'] === 'member';
 }
 
 function ar_list($status = 'new') {

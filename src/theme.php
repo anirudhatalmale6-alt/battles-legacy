@@ -41,6 +41,10 @@ function page_head($title, $opts = []) {
     <a href="feedback.php">Your Thoughts</a>
     <?php if ($u): ?>
       <a href="upload.php">Add a Photo</a>
+      <!-- a member asked "how do we invite others?" and there was nowhere on the
+           site to look; it sits beside Add a Photo because both are "I have
+           something to bring to this" -->
+      <a href="invite_family.php">Invite Family</a>
       <?php if (role_at_least('moderator')): ?>
         <a href="moderate.php">Review Queue<?php $c = one("SELECT COUNT(*) c FROM photos WHERE status='pending'"); if ($c && $c['c']) echo ' <b class="badge">' . (int)$c['c'] . '</b>'; ?></a>
         <a href="tree_review.php">Tree Edits<?php try { $tc = one("SELECT COUNT(*) c FROM tree_suggestions WHERE status='pending'"); if ($tc && (int)$tc['c']) echo ' <b class="badge">' . (int)$tc['c'] . '</b>'; } catch (Exception $e) {} ?></a>

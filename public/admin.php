@@ -217,10 +217,11 @@ page_head('Members');
 
 <?php if ($reqNew): ?>
 <div class="panel arq" style="margin-top:20px;border-left:3px solid var(--gold)">
-  <h2>People asking to join (<?= count($reqNew) ?>)</h2>
-  <p class="muted">Somebody in the family has shared the site with them. Nobody gets in until you say so &mdash;
-    approving makes them an invitation link for you to send, and they choose their own password from it.</p>
-  <?php foreach ($reqNew as $r): $hits = ar_tree_matches($r['name']); ?>
+  <h2>People waiting to be let in (<?= count($reqNew) ?>)</h2>
+  <p class="muted">Two roads lead here: somebody found the site and asked, or a signed-in relative put
+    their name forward. Nobody gets in until you say so &mdash; approving makes them an invitation link
+    for you to send, and they choose their own password from it.</p>
+  <?php foreach ($reqNew as $r): $hits = ar_tree_matches($r['name']); $byMember = ar_from_member($r); ?>
     <div class="arq-card">
       <div class="arq-who">
         <b><?= e($r['name']) ?></b>
@@ -228,8 +229,16 @@ page_head('Members');
         <i><?= e(date('j M Y', strtotime($r['created_at']))) ?></i>
       </div>
       <div class="arq-body">
+        <?php /* Who vouched matters more than anything else on this card: a name
+                 put forward by a relative who is signed in already has one family
+                 member standing behind it, which a stranger's request does not. */ ?>
+        <?php if ($byMember): ?>
+          <p class="arq-src"><b>Put forward by <?= e($r['referred_by']) ?></b>, signed in as a family member.</p>
+        <?php else: ?>
+          <p class="arq-src arq-src-self">Asked to join through the public form &mdash; nobody here has vouched for them.</p>
+        <?php endif; ?>
         <p><b>Related to:</b> <?= e($r['relation']) ?></p>
-        <?php if (trim($r['referred_by']) !== ''): ?><p><b>Heard about it from:</b> <?= e($r['referred_by']) ?></p><?php endif; ?>
+        <?php if (!$byMember && trim($r['referred_by']) !== ''): ?><p><b>Heard about it from:</b> <?= e($r['referred_by']) ?></p><?php endif; ?>
         <?php if (trim($r['note']) !== ''): ?><p class="arq-note"><?= nl2br(e($r['note'])) ?></p><?php endif; ?>
         <?php if ($hits): ?>
           <p class="arq-hits"><b>In the family tree:</b>

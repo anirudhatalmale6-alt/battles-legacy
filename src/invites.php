@@ -327,6 +327,28 @@ function invite_pending_for_pid($pid) {
     return $r ?: null;
 }
 
+/** An unused invitation addressed to this person under a DIFFERENT email.
+ *
+ *  The point of matching on name rather than address: a relative putting a
+ *  cousin forward types the address that cousin actually uses today. If an
+ *  invitation is already sitting unopened at the address the family had years
+ *  ago, matching by email would find nothing and William would end up with two
+ *  invitations for one person and no idea they were the same. Matched on the
+ *  whole name, exactly, so "Battles" alone can never collide two people.
+ *
+ *  $notEmail is excluded because an invitation to the SAME address is a
+ *  different situation with a different answer. */
+function invite_pending_by_name($name, $notEmail = '') {
+    invite_migrate();
+    $name = trim((string)$name);
+    if ($name === '') return null;
+    try {
+        $r = one("SELECT * FROM invites WHERE used_at IS NULL AND LOWER(name)=? AND email<>?
+                  ORDER BY id DESC", [mb_strtolower($name), strtolower(trim((string)$notEmail))]);
+    } catch (\Throwable $e) { return null; }
+    return $r ?: null;
+}
+
 /** Whoever the family recognises as the sender — the site's first admin. Used
  *  when there is no logged-in host, because the person asking is locked out. */
 function invite_host() {

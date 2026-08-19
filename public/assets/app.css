@@ -2329,6 +2329,10 @@ body.cal .foot{display:none;}
 .arq-body p{margin:0 0 6px;font-size:14.5px;color:#4a3620;line-height:1.5;}
 .arq-body b{color:#5c1a1f;}
 .arq-note{background:#f7efdd;border-left:3px solid #dcc79a;padding:7px 10px;border-radius:0 6px 6px 0;}
+/* which road the name came down — a relative vouching, or a stranger asking */
+.arq-src{background:#eef5e8;border-left:3px solid #7a9a5c;padding:7px 10px;border-radius:0 6px 6px 0;}
+.arq-src b{color:#3f5c28;}
+.arq-src-self{background:#f7efdd;border-left-color:#dcc79a;color:#7a5a34;font-style:italic;}
 .arq-hits a{display:inline-block;background:#f1e6cd;border:1px solid #dcc79a;border-radius:20px;
   padding:2px 10px;margin:2px 4px 2px 0;color:#5c1a1f;text-decoration:none;font-size:13px;}
 .arq-hits a:hover{background:#5c1a1f;color:var(--gold2);border-color:#5c1a1f;}
