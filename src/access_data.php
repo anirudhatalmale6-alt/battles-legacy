@@ -34,7 +34,11 @@ function ar_migrate() {
     db_add_column('access_requests', 'referred_uid', "INT NULL");
 }
 
-function ar_add($f) {
+/** $notify is on by default and both callers leave it alone. Telling the admins
+ *  lives in here rather than in the two forms so that a third way in — added
+ *  next year by someone who has never read this file — cannot quietly go back
+ *  to landing in silence. Returns the new row's id. */
+function ar_add($f, $notify = true) {
     ar_migrate();
     /* The two columns above may be missing if the ALTER could not run (a locked
        table, a host that forbids it). Naming them in a fixed INSERT would then
@@ -53,12 +57,82 @@ function ar_add($f) {
     $names = array_keys($cols);
     q("INSERT INTO access_requests (" . implode(',', $names) . ") VALUES ("
       . implode(',', array_fill(0, count($names), '?')) . ")", array_values($cols));
+    $id = (int)insert_id();
+    /* After the INSERT, always. The row is saved and the badge is counting
+       before anything is allowed to reach the mail server, so a mail failure
+       can never cost us the request itself. */
+    if ($notify) { try { ar_notify_admins(ar_get($id) ?: $cols); } catch (\Throwable $e) {} }
+    return $id;
 }
 
 /** Did a signed-in relative put this name forward, rather than the person
  *  asking for themselves? Reads a column that may not exist yet. */
 function ar_from_member($r) {
     return isset($r['source']) && $r['source'] === 'member';
+}
+
+/** Tell the admins a name is waiting.
+ *
+ *  Until now a request landed here in total silence. There is a number badge
+ *  beside Members in the menu, but that only helps somebody already on the
+ *  site — so a cousin could put a name forward on Tuesday and nobody would
+ *  know until William happened to sign in. The whole promise of the Invite
+ *  Family form is "it comes to you", and it did not.
+ *
+ *  Deliberately never blocks the form. Whatever happens in here, the request
+ *  is already saved and the badge is already counting; the email is a
+ *  convenience on top, so every failure is swallowed and the person who filled
+ *  the form in still gets their thank-you page.
+ *
+ *  Returns how many admins were written to, for the diagnostics only. */
+function ar_notify_admins($r) {
+    if (!is_array($r) || trim((string)($r['name'] ?? '')) === '') return 0;
+    $sent = 0;
+    try {
+        require_once __DIR__ . '/mailer.php';
+        if (!function_exists('mailer_send')) return 0;
+
+        /* A public form plus an email trigger is how an inbox gets buried. If
+           names are arriving faster than any real family ever would, the rows
+           are still recorded and the badge still counts them — we just stop
+           putting each one in his pocket. Five in an hour is far above the
+           real rate and far below a nuisance. */
+        $burst = one("SELECT COUNT(*) c FROM access_requests
+                      WHERE created_at >= ?", [date('Y-m-d H:i:s', time() - 3600)]);
+        if ($burst && (int)$burst['c'] > 5) return 0;
+
+        $admins = all("SELECT name,email FROM users
+                       WHERE role='admin' AND status='active' AND email<>''");
+        if (!$admins) return 0;
+
+        $who  = ar_from_member($r)
+            ? trim((string)$r['referred_by']) . ' put this name forward, signed in as a family member.'
+            : 'They found the site and asked to join through the public form. Nobody has vouched for them.';
+        $site = (string)config('site_name') ?: 'The Battles Legacy';
+        $url  = function_exists('base_url') ? rtrim(base_url(), '/') . '/admin.php' : 'admin.php';
+
+        $lines = [
+            'Somebody is waiting to be let in to ' . $site . '.',
+            '',
+            'Name:        ' . $r['name'],
+            'Email:       ' . $r['email'],
+        ];
+        if (trim((string)($r['phone'] ?? '')) !== '')    $lines[] = 'Mobile:      ' . $r['phone'];
+        if (trim((string)($r['relation'] ?? '')) !== '') $lines[] = 'Related to:  ' . $r['relation'];
+        $lines[] = '';
+        $lines[] = $who;
+        if (trim((string)($r['note'] ?? '')) !== '') { $lines[] = ''; $lines[] = 'Note: ' . $r['note']; }
+        $lines[] = '';
+        $lines[] = 'Nothing has been sent to them. Nobody gets in until you approve it here:';
+        $lines[] = $url;
+        $body = implode("\n", $lines);
+
+        foreach ($admins as $a) {
+            if (mailer_send($a['email'], 'Someone is waiting to join ' . $site . ': ' . $r['name'],
+                            $body, ['to_name' => $a['name']])) $sent++;
+        }
+    } catch (\Throwable $e) { return $sent; }
+    return $sent;
 }
 
 function ar_list($status = 'new') {
