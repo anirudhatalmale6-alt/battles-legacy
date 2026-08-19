@@ -184,8 +184,16 @@ page_head('Home', ['body_class' => 'home']);
         <a href="tree.php">Family Tree</a>
         <a href="calendar.php">Family Calendar</a>
         <a href="upload.php">Add a Photo</a>
+        <?php /* This bar already had an admin-only "Invite Family" that went to the
+                 Members page. Putting a second link of the same name in the top menu,
+                 going somewhere else, made the new one invisible: William looked for
+                 "Invite Family", found the one he already knew, and reasonably
+                 concluded nothing had changed. So the shortcut everyone gets keeps
+                 the name, and his own link is renamed to match what the menu calls
+                 that page. Two links, two names, two destinations. */ ?>
+        <a href="invite_family.php" class="mb-new">Invite Family</a>
         <?php if (role_at_least('moderator')): ?><a href="moderate.php">Review Queue</a><?php endif; ?>
-        <?php if (role_at_least('admin')): ?><a href="admin.php">Invite Family</a><?php endif; ?>
+        <?php if (role_at_least('admin')): ?><a href="admin.php">Members</a><?php endif; ?>
       </nav>
     </div>
   </section>

@@ -215,6 +215,13 @@ page_head('Members');
 <h1>Family members</h1>
 <p class="lede">Invite family, and set who is an Admin, Moderator or Member. Invitation links are private — send them directly to the person.</p>
 
+<?php /* The queue panel below only appears when somebody is waiting in it, so on a
+         quiet day there was nothing on this page to say the family can now put
+         names forward at all. This line is always here. */ ?>
+<p class="muted" style="margin-top:-6px">Family can now put names forward themselves &mdash; there is an
+  <a href="invite_family.php">Invite Family</a> link in the menu for everyone who is signed in. Nothing
+  they send goes out on its own; every name arrives on this page for you to approve first.</p>
+
 <?php if ($reqNew): ?>
 <div class="panel arq" style="margin-top:20px;border-left:3px solid var(--gold)">
   <h2>People waiting to be let in (<?= count($reqNew) ?>)</h2>

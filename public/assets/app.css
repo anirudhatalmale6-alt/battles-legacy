@@ -1580,6 +1580,11 @@ body.hlth{background:#f2ece1;color:#2e2740;}
 .mb-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;}
 .mb-links a{color:var(--gold2);text-decoration:none;border:1px solid rgba(201,162,75,.5);border-radius:6px;padding:6px 14px;font-family:'Cormorant Garamond',serif;font-size:15px;}
 .mb-links a:hover{background:var(--gold);color:var(--maroon);}
+/* the one shortcut in this bar that nobody is looking for yet — it is filled in
+   so it reads as the action, not as one more of five identical outlines */
+.mb-links a.mb-new{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#3a0d12;
+  border-color:var(--gold);font-weight:600;}
+.mb-links a.mb-new:hover{background:#fff2cf;color:#3a0d12;}
 @media(max-width:640px){ .mb-links{margin-left:0;} }
 
 /* ===================== African American History ===================== */
