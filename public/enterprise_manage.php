@@ -230,6 +230,17 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
   <a href="?tab=videos" class="<?= $tab==='videos'?'on':'' ?>">Videos (<?= count($VIDS) ?>)</a>
   <a href="?tab=sayings" class="<?= $tab==='sayings'?'on':'' ?>">Sayings (<?= count($SAYS) ?>)</a>
   <a href="?tab=financial" class="<?= $tab==='financial'?'on':'' ?>">Financial Guidance (<?= count($FINC) ?>)</a>
+  <?php /* The four cards at the foot of the Enterprise page were dead buttons
+           until William asked for them switched on. Two of them now collect
+           messages, so there has to be somewhere to read them — and this tab
+           strip is where somebody editing that page will look, rather than a
+           twenty-second entry in the top menu. */
+        $MMN = 0;
+        if (is_file(__DIR__ . '/../src/mentor_data.php')) {
+            require_once __DIR__ . '/../src/mentor_data.php';
+            try { $MMN = ask_count('new') + ment_pending_count(); } catch (\Throwable $e) { $MMN = 0; }
+        } ?>
+  <a href="mentors_manage.php" class="<?= $MMN ? 'has-pend' : '' ?>">Mentors &amp; Resources<?= $MMN ? ' <span class="em-penddot">'.(int)$MMN.'</span>' : '' ?></a>
 </div>
 
 <?php if ($tab === 'pending'): ?>
