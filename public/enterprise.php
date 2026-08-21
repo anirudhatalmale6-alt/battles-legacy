@@ -26,18 +26,16 @@ $PILLARS = [
 
 /* The four cards at the foot of the page. Every one of them used to be a
    <button> with nothing behind it — they looked live and did nothing at all.
-   Each now names where it goes, and the page below renders a real link.
+   Each now goes somewhere real.
 
-   Mentor Connect is the one William asked for, and it is the only one of the
-   four kept behind sign-in: it lists living relatives by name, and everywhere
-   else on this site living relatives are hidden from the public. A visitor who
-   is not signed in is sent to the sign-in page rather than to a locked door. */
-$ACTIONS = [
-  ['icon'=>'search', 'title'=>'Hire Family First',   'text'=>'Need a service or professional? Search our family business directory and support one another.', 'cta'=>'Search Directory', 'href'=>'businesses.php'],
-  ['icon'=>'doc',    'title'=>'Business Resources',  'text'=>'Guides, funding, filings and the free help most people never hear about.',                      'cta'=>'Browse Resources', 'href'=>'resources.php'],
-  ['icon'=>'mentor', 'title'=>'Mentor Connect',      'text'=>'Learn from those who have walked the path. Find a mentor or become one.',                       'cta'=>'Find a Mentor',    'href'=>'mentors.php', 'members'=>true],
-  ['icon'=>'heart',  'title'=>'Support &amp; Fund',  'text'=>'Help family businesses thrive through support, partnerships, and investments.',                 'cta'=>'Get Involved',     'href'=>'get_involved.php'],
-];
+   Their words used to be typed into this file, which meant William could not
+   rename a card or change a line without me. They are rows now, edited from
+   the "The four cards" tab of the Enterprise editor.
+
+   Mentor Connect is the only one kept behind sign-in: it lists living
+   relatives by name, and everywhere else on this site living relatives are
+   hidden from the public. That is the "members only" tick on the card. */
+$ACTIONS = ent_actions();
 
 page_head('Enterprise', ['body_class' => 'home ent']);
 ?>
@@ -214,14 +212,23 @@ page_head('Enterprise', ['body_class' => 'home ent']);
          the sign-in page and say so on the button, rather than letting them
          click through to a redirect that looks like the link is broken. */
       $locked = !empty($a['members']) && !logged_in();
-      $href   = $locked ? 'login.php' : $a['href'];
-      $label  = $locked ? 'Sign in to find a mentor' : $a['cta'];
+      $label  = trim((string)$a['cta']);
+      if ($label === '') $label = 'Open';
+      /* Built from whatever he typed on the button, so renaming "Find a Mentor"
+         renames the signed-out version with it and the two can never disagree. */
+      if ($locked) $label = 'Sign in to ' . mb_strtolower($label);
+      $href = $locked ? 'login.php' : trim((string)$a['href']);
+      /* A card whose link William has emptied is not turned into a dead button
+         again — it simply stops offering one. That is the whole bug this page
+         was carrying, and it is not being reintroduced through the editor. */
     ?>
       <div class="ent2-act">
         <div class="ent2-aic"><?= ent_icon($a['icon']) ?></div>
-        <h3><?= $a['title'] /* authored */ ?></h3>
-        <p><?= e($a['text']) ?></p>
-        <a class="ent2-actlink" href="<?= e($href) ?>"><?= $label /* authored */ ?> &rarr;</a>
+        <h3><?= e($a['title']) ?></h3>
+        <?php if (trim((string)$a['blurb']) !== ''): ?><p><?= e($a['blurb']) ?></p><?php endif; ?>
+        <?php if ($href !== ''): ?>
+          <a class="ent2-actlink" href="<?= e($href) ?>"><?= e($label) ?> &rarr;</a>
+        <?php endif; ?>
       </div>
     <?php endforeach; ?>
     <div class="ent2-submit">

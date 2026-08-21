@@ -5,6 +5,7 @@
  *  then edits/replaces them from the manage screen. */
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/helpers.php';
+require_once __DIR__ . '/site_meta.php';
 
 function ent_migrate() {
     $driver = db_driver();
@@ -32,6 +33,15 @@ function ent_migrate() {
   id $AI, icon VARCHAR(30) NOT NULL DEFAULT 'seed', title VARCHAR(160) NOT NULL, tips TEXT, link VARCHAR(255) DEFAULT '',
   sample INT NOT NULL DEFAULT 0, sort INT NOT NULL DEFAULT 0, status VARCHAR(20) NOT NULL DEFAULT 'published',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)$ENG",
+/* The four cards at the foot of the page. Their words used to be typed into
+   enterprise.php, so "Support & Fund" could only be renamed by me. William
+   asked whether the editor could put information into them; now it can. */
+"enterprise_actions" => "CREATE TABLE IF NOT EXISTS enterprise_actions (
+  id $AI, icon VARCHAR(30) NOT NULL DEFAULT 'star', title VARCHAR(120) NOT NULL,
+  blurb VARCHAR(600) DEFAULT '', cta VARCHAR(80) DEFAULT '', href VARCHAR(255) DEFAULT '',
+  members INT NOT NULL DEFAULT 0, sort INT NOT NULL DEFAULT 0,
+  status VARCHAR(20) NOT NULL DEFAULT 'published', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )$ENG",
     ];
     foreach ($tables as $sql) db()->exec($sql);
@@ -101,6 +111,48 @@ function ent_store_photo($field = 'photo') {
     return [$rel . '/' . $fname, ''];
 }
 
+/** Where an action card can point. The four built-in destinations are offered
+ *  by name so nobody has to know a filename; anything else is typed in. */
+function ent_action_targets() {
+    return [
+      'businesses.php'       => 'The family business directory',
+      'resources.php'        => 'Business Resources',
+      'mentors.php'          => 'Mentor Connect',
+      'get_involved.php'     => 'Support & Fund form',
+      'enterprise_submit.php'=> 'Submit your business',
+      'faith.php'            => 'Faith',
+      'health.php'           => 'Health',
+      'news.php'             => 'Family News',
+      ''                     => 'Somewhere else — type the link below',
+    ];
+}
+
+/** Icons an action card may use.
+ *
+ *  NOT ent_fin_icons(). That list was written for the financial guidance cards
+ *  and has no magnifying glass, document, mentor, globe, phone or envelope in
+ *  it — which are four of the icons the action cards already use. Validating a
+ *  card against it meant the dropdown showed the wrong icon and, worse, saving
+ *  the card silently replaced its icon with the fallback. Every icon ent_icon()
+ *  can draw is listed here. */
+function ent_action_icons() {
+    return ent_fin_icons() + [
+      'search' => 'Magnifying glass', 'doc'   => 'Document',   'mentor' => 'Mentor / two people',
+      'film'   => 'Film',             'globe' => 'Globe',      'phone'  => 'Telephone',
+      'mail'   => 'Envelope',
+    ];
+}
+
+function ent_actions($all = false) {
+    $w = $all ? '' : "WHERE status='published'";
+    try { return all("SELECT * FROM enterprise_actions $w ORDER BY sort, id"); }
+    catch (\Throwable $e) { return []; }
+}
+function ent_action_get($id) {
+    try { return one("SELECT * FROM enterprise_actions WHERE id=?", [(int)$id]); }
+    catch (\Throwable $e) { return null; }
+}
+
 /** Seed the sample content once (only when a table is empty). */
 function ent_seed() {
     if (!one("SELECT id FROM enterprise_businesses LIMIT 1")) {
@@ -134,6 +186,26 @@ function ent_seed() {
         $i = 0;
         foreach ($says as $s) {
             q("INSERT INTO enterprise_sayings (quote,author,sample,sort) VALUES (?,?,1,?)", [$s[0],$s[1],$i++]);
+        }
+    }
+    /* Seeded once and remembered, NOT "whenever the table is empty" — the
+       sample videos taught this page that the second kind comes back from the
+       dead every time William deletes it. If he removes all four cards, they
+       stay removed. */
+    if (sm('ent_seeded_actions', '') === '') {
+        sm_set('ent_seeded_actions', date('Y-m-d H:i:s'));
+        $acts = [
+          ['search', 'Hire Family First', 'Need a service or professional? Search our family business directory and support one another.', 'Search Directory', 'businesses.php', 0],
+          ['doc',    'Business Resources', 'Guides, funding, filings and the free help most people never hear about.', 'Browse Resources', 'resources.php', 0],
+          ['mentor', 'Mentor Connect', 'Learn from those who have walked the path. Find a mentor or become one.', 'Find a Mentor', 'mentors.php', 1],
+          ['heart',  'Support & Fund', 'Help family businesses thrive through support, partnerships, and investments.', 'Get Involved', 'get_involved.php', 0],
+        ];
+        $i = 0;
+        foreach ($acts as $a) {
+            try {
+                q("INSERT INTO enterprise_actions (icon,title,blurb,cta,href,members,sort,status)
+                   VALUES (?,?,?,?,?,?,?,'published')", [$a[0], $a[1], $a[2], $a[3], $a[4], $a[5], $i++]);
+            } catch (\Throwable $e) {}
         }
     }
     if (!one("SELECT id FROM enterprise_finance LIMIT 1")) {

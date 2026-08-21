@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (strpos($act, 'vid') === 0) $tab = 'videos';
     elseif (strpos($act, 'say') === 0) $tab = 'sayings';
     elseif (strpos($act, 'fin') === 0) $tab = 'financial';
+    elseif (strpos($act, 'act') === 0) $tab = 'cards';
     else $tab = 'businesses';
     $id = (int)($_POST['id'] ?? 0);
 
@@ -153,6 +154,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($act === 'fin_delete' && $id) {
         q("DELETE FROM enterprise_finance WHERE id=?", [$id]); flash('Guidance card removed.');
 
+    /* ---------- THE FOUR CARDS AT THE FOOT OF THE PAGE ---------- */
+    } elseif ($act === 'act_save') {
+        $title = trim($_POST['title'] ?? '');
+        if ($title === '') { flash('A card needs a heading.'); }
+        else {
+            $icon   = array_key_exists($_POST['icon'] ?? '', ent_action_icons()) ? $_POST['icon'] : 'star';
+            $status = ($_POST['status'] ?? 'published') === 'hidden' ? 'hidden' : 'published';
+            /* The dropdown covers the pages on this site; "Somewhere else" is
+               the empty option and then the typed box wins. Anything without a
+               scheme that is not one of our own .php files is treated as an
+               outside address, so typing "score.org" still works. */
+            $target = (string)($_POST['target'] ?? '');
+            $href   = array_key_exists($target, ent_action_targets()) && $target !== '' ? $target : trim($_POST['href'] ?? '');
+            if ($href !== '' && substr($href, -4) !== '.php' && !preg_match('~^(https?://|/|#|mailto:|tel:)~i', $href)) {
+                $href = 'https://' . $href;
+            }
+            $f = [$icon, $title, trim($_POST['blurb'] ?? ''), trim($_POST['cta'] ?? ''),
+                  $href, !empty($_POST['members']) ? 1 : 0, (int)($_POST['sort'] ?? 0), $status];
+            if ($id) {
+                q("UPDATE enterprise_actions SET icon=?,title=?,blurb=?,cta=?,href=?,members=?,sort=?,status=? WHERE id=?",
+                  array_merge($f, [$id]));
+                flash('Card updated — open the Enterprise page to see it.');
+            } else {
+                q("INSERT INTO enterprise_actions (icon,title,blurb,cta,href,members,sort,status) VALUES (?,?,?,?,?,?,?,?)",
+                  [$icon, $title, trim($_POST['blurb'] ?? ''), trim($_POST['cta'] ?? ''), $href,
+                   !empty($_POST['members']) ? 1 : 0, ent_next_sort('enterprise_actions'), $status]);
+                flash('Card added.');
+            }
+        }
+    } elseif ($act === 'act_delete' && $id) {
+        q("DELETE FROM enterprise_actions WHERE id=?", [$id]); flash('Card removed.');
+
     /* ---------- PENDING SUBMISSIONS (family-submitted, awaiting review) ---------- */
     } elseif ($act === 'pend_approve') {
         $tab = 'pending';
@@ -181,7 +214,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: enterprise_manage.php?tab=' . $tab); exit;
 }
 
-$tab = in_array($_GET['tab'] ?? '', ['businesses','videos','sayings','financial','pending'], true) ? $_GET['tab'] : 'businesses';
+$tab = in_array($_GET['tab'] ?? '', ['businesses','videos','sayings','financial','pending','cards'], true) ? $_GET['tab'] : 'businesses';
+$ACTS = ent_actions(true);
 $BIZ = ent_businesses(true);
 $VIDS = ent_videos(true);
 $SAYS = ent_sayings(true);
@@ -210,6 +244,32 @@ function em_icon_opts($sel) {
     foreach (ent_fin_icons() as $k => $lbl) $o .= '<option value="'.e($k).'"'.($sel===$k?' selected':'').'>'.e($lbl).'</option>';
     return $o;
 }
+/** The icon dropdown for an action card. Kept separate from em_icon_opts(),
+ *  which is scoped to the financial cards' shorter list — feeding an action
+ *  card through that one showed the wrong icon as selected and then saved it. */
+function em_act_icon_opts($sel) {
+    $o = '';
+    foreach (ent_action_icons() as $k => $lbl) $o .= '<option value="'.e($k).'"'.($sel===$k?' selected':'').'>'.e($lbl).'</option>';
+    return $o;
+}
+
+/** Is this destination one of the named ones in the dropdown? Decides whether
+ *  the free-text link box is shown filled in or left empty. */
+function em_target_known($href) {
+    $href = trim((string)$href);
+    return $href !== '' && array_key_exists($href, ent_action_targets());
+}
+function em_target_opts($sel) {
+    $sel = trim((string)$sel);
+    $known = em_target_known($sel);
+    $o = '';
+    foreach (ent_action_targets() as $v => $lbl) {
+        // an address he typed himself, or none at all, lands on "Somewhere else"
+        $on = $v === '' ? !$known : ($known && $sel === $v);
+        $o .= '<option value="' . e($v) . '"' . ($on ? ' selected' : '') . '>' . e($lbl) . '</option>';
+    }
+    return $o;
+}
 function em_status_opts($sel) {
     $o = '';
     foreach (['published'=>'Visible on the page','hidden'=>'Hidden'] as $v=>$lbl) $o .= '<option value="'.$v.'"'.($sel===$v?' selected':'').'>'.$lbl.'</option>';
@@ -219,8 +279,9 @@ function em_status_opts($sel) {
 page_head('Manage Enterprise', ['body_class' => 'em']);
 ?>
 <h1>Manage the Enterprise page</h1>
-<p class="lede">Add, edit, or remove the Family Businesses, Videos and Sayings here. Fill in the form, then click the
-   button at the bottom of it (the <b>Name</b> field is required). Entries marked as samples show an "Example" tag until you edit them.</p>
+<p class="lede">Everything on the Enterprise page is edited from the tabs below &mdash; the businesses, the videos,
+   the sayings, the guidance cards, and the four cards at the foot of the page. Fill in a form and click the button at the
+   bottom of it (the <b>Name</b> field is required). Entries marked as samples show an "Example" tag until you edit them.</p>
 <p style="margin:10px 0 4px"><a class="btn gold" href="enterprise.php" target="_blank" rel="noopener">View the Enterprise page &#8599;</a>
    <span class="muted" style="margin-left:10px">Opens in a new tab. If a change doesn't show, refresh that tab.</span></p>
 
@@ -230,17 +291,21 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
   <a href="?tab=videos" class="<?= $tab==='videos'?'on':'' ?>">Videos (<?= count($VIDS) ?>)</a>
   <a href="?tab=sayings" class="<?= $tab==='sayings'?'on':'' ?>">Sayings (<?= count($SAYS) ?>)</a>
   <a href="?tab=financial" class="<?= $tab==='financial'?'on':'' ?>">Financial Guidance (<?= count($FINC) ?>)</a>
-  <?php /* The four cards at the foot of the Enterprise page were dead buttons
-           until William asked for them switched on. Two of them now collect
-           messages, so there has to be somewhere to read them — and this tab
-           strip is where somebody editing that page will look, rather than a
-           twenty-second entry in the top menu. */
-        $MMN = 0;
+  <a href="?tab=cards" class="<?= $tab==='cards'?'on':'' ?>">The four cards (<?= count($ACTS) ?>)</a>
+  <?php /* William asked whether this editor could put information into the four
+           cards at the foot of the Enterprise page. It could not, and one link
+           labelled "Mentors & Resources" did not make it obvious that the two
+           of them that hold content are edited elsewhere. Each destination is
+           now named after the card it belongs to, on this strip, because this
+           is where somebody editing that page looks. */
+        $ASKN = $MENN = 0;
         if (is_file(__DIR__ . '/../src/mentor_data.php')) {
             require_once __DIR__ . '/../src/mentor_data.php';
-            try { $MMN = ask_count('new') + ment_pending_count(); } catch (\Throwable $e) { $MMN = 0; }
+            try { $ASKN = ask_count('new'); $MENN = ment_pending_count(); } catch (\Throwable $e) {}
         } ?>
-  <a href="mentors_manage.php" class="<?= $MMN ? 'has-pend' : '' ?>">Mentors &amp; Resources<?= $MMN ? ' <span class="em-penddot">'.(int)$MMN.'</span>' : '' ?></a>
+  <a href="mentors_manage.php?tab=mentors" class="<?= $MENN ? 'has-pend' : '' ?>">Mentor Connect<?= $MENN ? ' <span class="em-penddot">'.(int)$MENN.'</span>' : '' ?></a>
+  <a href="mentors_manage.php?tab=resources">Business Resources</a>
+  <a href="mentors_manage.php?tab=inbox" class="<?= $ASKN ? 'has-pend' : '' ?>">Messages<?= $ASKN ? ' <span class="em-penddot">'.(int)$ASKN.'</span>' : ' (0)' ?></a>
 </div>
 
 <?php if ($tab === 'pending'): ?>
@@ -423,6 +488,68 @@ page_head('Manage Enterprise', ['body_class' => 'em']);
       </form>
     </div>
   <?php endforeach; ?>
+
+<?php elseif ($tab === 'cards'): ?>
+  <div class="panel em-add">
+    <h2>The four cards at the foot of the Enterprise page</h2>
+    <p class="lede" style="margin:0 0 6px">These are the ones that say <b>Hire Family First</b>,
+       <b>Business Resources</b>, <b>Mentor Connect</b> and <b>Support &amp; Fund</b>. You can change
+       the heading, the wording, the button and where it goes &mdash; and add a fifth if you want one.</p>
+    <p class="muted" style="margin:0">What sits <em>behind</em> two of them is edited on its own tab:
+       <a href="mentors_manage.php?tab=mentors">Mentor Connect</a> for who is offering to mentor, and
+       <a href="mentors_manage.php?tab=resources">Business Resources</a> for the links. The businesses
+       behind <b>Hire Family First</b> are on the Businesses tab above.</p>
+  </div>
+
+  <?php foreach ($ACTS as $a): ?>
+    <div class="panel em-row">
+      <form method="post" class="em-form">
+        <?= csrf_field() ?><input type="hidden" name="id" value="<?= (int)$a['id'] ?>">
+        <div class="em-rowhead">
+          <h3><?= e($a['title']) ?><?= $a['status']==='hidden'?' <span class="em-tag hid">Hidden</span>':'' ?></h3>
+          <button class="btn danger" name="action" value="act_delete"
+                  onclick="return confirm('Remove the &quot;<?= e($a['title']) ?>&quot; card from the Enterprise page?')">Delete</button>
+        </div>
+        <div class="em-grid">
+          <div><label>Heading *</label><input type="text" name="title" required value="<?= e($a['title']) ?>"></div>
+          <div><label>Icon</label><select name="icon"><?= em_act_icon_opts($a['icon']) ?></select></div>
+        </div>
+        <label>The wording underneath</label>
+        <textarea name="blurb"><?= e($a['blurb']) ?></textarea>
+        <div class="em-grid">
+          <div><label>Button text</label><input type="text" name="cta" value="<?= e($a['cta']) ?>" placeholder="e.g. Find a Mentor"></div>
+          <div><label>Where it goes</label><select name="target"><?= em_target_opts($a['href']) ?></select></div>
+          <div><label>Order</label><input type="number" name="sort" value="<?= (int)$a['sort'] ?>"></div>
+          <div><label>Visibility</label><select name="status"><?= em_status_opts($a['status']) ?></select></div>
+        </div>
+        <label>Only if you chose &ldquo;Somewhere else&rdquo; &mdash; the link<span class="lbl-hint"> (leaving this empty just removes the button)</span></label>
+        <input type="text" name="href" value="<?= em_target_known($a['href']) ? '' : e($a['href']) ?>" placeholder="https://...">
+        <label class="em-check"><input type="checkbox" name="members" value="1" <?= (int)$a['members']?'checked':'' ?>>
+          Family only &mdash; a visitor who is not signed in sees &ldquo;Sign in to&hellip;&rdquo; and is sent to the sign-in page</label>
+        <button class="btn gold" name="action" value="act_save" style="margin-top:12px">Save changes</button>
+      </form>
+    </div>
+  <?php endforeach; ?>
+
+  <div class="panel em-add">
+    <h2>Add another card</h2>
+    <form method="post" class="em-form">
+      <?= csrf_field() ?><input type="hidden" name="id" value="0">
+      <div class="em-grid">
+        <div><label>Heading *</label><input type="text" name="title" required placeholder="e.g. Family Job Board"></div>
+        <div><label>Icon</label><select name="icon"><?= em_act_icon_opts('star') ?></select></div>
+      </div>
+      <label>The wording underneath</label><textarea name="blurb"></textarea>
+      <div class="em-grid">
+        <div><label>Button text</label><input type="text" name="cta" placeholder="e.g. Take a Look"></div>
+        <div><label>Where it goes</label><select name="target"><?= em_target_opts('') ?></select></div>
+      </div>
+      <label>Only if you chose &ldquo;Somewhere else&rdquo; &mdash; the link</label>
+      <input type="text" name="href" placeholder="https://...">
+      <label class="em-check"><input type="checkbox" name="members" value="1"> Family only</label>
+      <button class="btn gold" name="action" value="act_save" style="margin-top:12px">Add card</button>
+    </form>
+  </div>
 
 <?php elseif ($tab === 'sayings'): ?>
   <div class="panel em-add">
