@@ -142,8 +142,54 @@ function install_gedcom($path) {
     }
     $insf = db()->prepare("INSERT INTO families (fid,husb,wife,marr_date,marr_place,chil) VALUES (?,?,?,?,?,?)");
     foreach ($fam as $fid=>$r) $insf->execute([$fid,$r['husb'],$r['wife'],$r['marr'][0],$r['marr'][1],json_encode($r['chil'])]);
+    $fixed = ged_reconcile_links();
     db()->commit();
-    return ['ok' => true, 'individuals' => count($indi), 'families' => count($fam), 'living' => $living];
+    return ['ok' => true, 'individuals' => count($indi), 'families' => count($fam), 'living' => $living,
+            'relinked' => $fixed['fams'] + $fixed['famc']];
+}
+
+/**
+ * A FAM record names its husband, wife and children. Each INDI record is meant to
+ * point back at those families (FAMS for a marriage, FAMC for the family it was born
+ * into). The export we were given omits a lot of those back-pointers - 70 of them -
+ * and person.php builds the "children" list from the back-pointer, so those children
+ * simply were not drawn. The family record is the one with the full picture, so this
+ * copies what it says onto the people it names. Only ever adds; never removes a link.
+ */
+function ged_reconcile_links($dry = false) {
+    $fams = []; $famc = [];
+    foreach (all("SELECT fid,husb,wife,chil FROM families") as $f) {
+        foreach (['husb','wife'] as $role) {
+            if ($f[$role] !== '' && $f[$role] !== null) $fams[$f[$role]][] = $f['fid'];
+        }
+        $chil = json_decode($f['chil'] ?: '[]', true);
+        if (is_array($chil)) { foreach ($chil as $ch) { if ($ch) $famc[$ch][] = $f['fid']; } }
+    }
+    $out = ['fams' => 0, 'famc' => 0, 'people' => [], 'missing' => []];
+    $upd = db()->prepare("UPDATE persons SET fams=?, famc=? WHERE pid=?");
+    foreach (all("SELECT pid,name,fams,famc FROM persons") as $p) {
+        $have = ['fams' => json_decode($p['fams'] ?: '[]', true), 'famc' => json_decode($p['famc'] ?: '[]', true)];
+        $add  = ['fams' => 0, 'famc' => 0];
+        foreach (['fams' => $fams, 'famc' => $famc] as $col => $src) {
+            if (!is_array($have[$col])) $have[$col] = [];
+            foreach (isset($src[$p['pid']]) ? $src[$p['pid']] : [] as $fid) {
+                if (!in_array($fid, $have[$col], true)) { $have[$col][] = $fid; $add[$col]++; }
+            }
+        }
+        if ($add['fams'] || $add['famc']) {
+            $out['fams'] += $add['fams']; $out['famc'] += $add['famc'];
+            $out['people'][] = $p['name'] . ' (' . $p['pid'] . ') +' . $add['fams'] . ' spouse/+' . $add['famc'] . ' parent';
+            if (!$dry) $upd->execute([json_encode($have['fams']), json_encode($have['famc']), $p['pid']]);
+        }
+    }
+    /* a family naming somebody who has no person record at all - report, never invent */
+    $known = [];
+    foreach (all("SELECT pid FROM persons") as $p) $known[$p['pid']] = 1;
+    foreach (array_merge(array_keys($fams), array_keys($famc)) as $pid) {
+        if (!isset($known[$pid])) $out['missing'][$pid] = 1;
+    }
+    $out['missing'] = array_keys($out['missing']);
+    return $out;
 }
 
 // ---------- Photos ----------
