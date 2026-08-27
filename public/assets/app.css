@@ -77,6 +77,16 @@ form.card.signin{margin-top:22px}
 .first-time h2{font-size:22px;margin:0 0 8px;color:var(--gold2)}
 .first-time label{margin-top:10px}
 
+/* A visitor who arrives from the Facebook post has neither a password nor an
+   invitation, so both forms on this page are shut to them. This is their door. */
+.signin .askjoin{margin-top:18px;padding-top:16px;text-align:center;
+  border-top:1px solid rgba(201,162,75,.3)}
+.signin .askjoin span{display:block;font-size:14.5px;color:var(--cream);opacity:.8;margin-bottom:10px}
+.btn-askjoin{display:block;width:100%;padding:12px 14px;border-radius:10px;
+  border:1px solid var(--gold);color:var(--gold2);background:transparent;
+  font-weight:600;letter-spacing:.3px;transition:background .15s,color .15s}
+.btn-askjoin:hover{background:var(--gold);color:var(--maroon)}
+
 /* the public-preview bar — a visitor who is not signed in is seeing about a
    quarter of the site, and nothing used to tell them so */
 .pvbar{background:linear-gradient(180deg,#3c1218,#2a0a0d);border-bottom:1px solid var(--gold);}

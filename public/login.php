@@ -66,6 +66,15 @@ page_head('Family Login');
   <label>Password</label>
   <input type="password" name="password" required>
   <button class="btn gold" style="width:100%">Sign in</button>
+  <?php /* Somebody arriving from William's Facebook post has no invitation, no password
+           and nothing to type into either box on this page. The only route open to them
+           was a line of grey text below a second form, off the bottom of a phone screen.
+           It sits directly under Sign in now - measured on a 390x780 phone, the whole
+           button is above the fold, which it was not when it followed the small print. */ ?>
+  <div class="askjoin">
+    <span>Family, but you have no account at all?</span>
+    <a class="btn-askjoin" href="request.php">Ask William to let you in</a>
+  </div>
   <p class="muted" style="text-align:center;margin-top:16px">
     <a href="forgot.php">Forgotten your password?</a><br>
     <!-- on a phone the card below sits just off the bottom of the screen, so the
