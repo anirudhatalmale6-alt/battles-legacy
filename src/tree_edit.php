@@ -283,6 +283,13 @@ function te_apply_suggestion($id) {
     elseif  ($s['kind'] === 'add_child')  { $ok = (bool) te_add_child($s['target_pid'], $f); }
     elseif  ($s['kind'] === 'add_spouse') { $ok = (bool) te_add_spouse($s['target_pid'], $f); }
     elseif  ($s['kind'] === 'add_sibling'){ $ok = (bool) te_add_sibling($s['target_pid'], $f); }
+    elseif  ($s['kind'] === 'story') {
+        /* Appended, never overwritten - two cousins remember different halves
+           of the same life, and the second one to write should not erase the
+           first. Signed with the name of whoever sent it. */
+        require_once __DIR__ . '/stories.php';
+        $ok = (bool) st_append($s['target_pid'], (string)($f['story'] ?? ''), (string)$s['submitter']);
+    }
     else    { $ok = false; }
     if ($ok) q("UPDATE tree_suggestions SET status='applied' WHERE id=?", [(int)$id]);
     return $ok;

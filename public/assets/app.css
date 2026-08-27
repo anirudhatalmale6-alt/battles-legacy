@@ -77,6 +77,20 @@ form.card.signin{margin-top:22px}
 .first-time h2{font-size:22px;margin:0 0 8px;color:var(--gold2)}
 .first-time label{margin-top:10px}
 
+/* The life story on a person's page. The dates say when somebody was here;
+   this is the only part of the page that says who they were.
+   NOT .story - that name was already taken further down this file by the cream
+   history-article card, which is defined later and would win: the result was
+   cream text on a cream panel. */
+.lifestory{margin-top:22px;padding-top:18px;border-top:1px solid rgba(201,162,75,.28)}
+.lifestory h2{font-size:21px;color:var(--gold2);margin:0 0 10px}
+.lifestory-body{font-size:17px;line-height:1.65;white-space:pre-line;max-width:68ch;color:var(--cream)}
+.lifestory-by{margin-top:12px;font-size:13.5px;color:var(--gold2);opacity:.75;font-style:italic}
+.lifestory-edit{width:100%;min-height:150px;padding:12px 14px;border-radius:10px;
+  border:1px solid rgba(201,162,75,.45);background:rgba(0,0,0,.22);color:var(--cream);
+  font-family:inherit;font-size:16px;line-height:1.6;resize:vertical}
+.lifestory-edit:focus{outline:none;border-color:var(--gold)}
+
 /* A visitor who arrives from the Facebook post has neither a password nor an
    invitation, so both forms on this page are shut to them. This is their door. */
 .signin .askjoin{margin-top:18px;padding-top:16px;text-align:center;

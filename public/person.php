@@ -2,8 +2,10 @@
 require __DIR__ . '/../src/bootstrap.php';
 require_once __DIR__ . '/../src/tree_edit.php';
 require_once __DIR__ . '/../src/photo_people.php';
+require_once __DIR__ . '/../src/stories.php';
 te_migrate();
 pp_migrate();
+st_migrate();
 
 $pid = $_GET['pid'] ?? '';
 $p = one("SELECT * FROM persons WHERE pid=?", [$pid]);
@@ -50,6 +52,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && role_at_least('moderator')) {
             $op = one("SELECT name FROM persons WHERE pid=?", [$other]);
             flash(($op && $op['name'] ? $op['name'] : 'They') . ' removed from this photograph. The picture itself is untouched.');
         }
+    } elseif (($_POST['action'] ?? '') === 'edit_story') {
+        $txt = (string)($_POST['story'] ?? '');
+        if (mb_strlen($txt) > 20000) $txt = mb_substr($txt, 0, 20000);
+        $had = st_text($pid) !== '';
+        st_set($pid, $txt, current_user());
+        flash(trim($txt) === ''
+            ? ($had ? 'Their story has been removed.' : 'Nothing was written, so nothing was saved.')
+            : 'Saved — their story is on this page now.');
+        header('Location: person.php?pid=' . urlencode($pid)); exit;
     } elseif (($_POST['action'] ?? '') === 'edit_person') {
         /* Correcting someone already in the tree. This is the one thing the
            profile could not do — you could add a person with dates, but never
@@ -173,6 +184,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && logged_in() && !role_at_least('mode
     } elseif ($act === 'suggest_edit') {
         if (te_can_edit($me, $pid)) { te_add_suggestion('edit', $pid, te_clean_fields($_POST), $u); flash('Thank you — your suggested correction has been sent to William for approval.'); }
         else { flash('You can only suggest changes for your close relatives.'); }
+    } elseif ($act === 'suggest_story') {
+        /* A memory of anyone, not just a close relative: the people most worth
+           writing about are the ones furthest back, and nobody alive is their
+           close relative. It still waits for William before it appears. */
+        $txt = trim((string)($_POST['story'] ?? ''));
+        if ($txt === '') flash('Please write something first.');
+        else {
+            te_add_suggestion('story', $pid, ['story' => mb_substr($txt, 0, 20000)], $u);
+            flash('Thank you — your memory has been sent to William. Once he approves it, it will appear on this page.');
+        }
     } elseif (in_array($act, ['suggest_child','suggest_spouse','suggest_sibling'], true)) {
         // these act on the member's own family, so only from their own profile
         if ($me !== '' && $me === $pid) {
@@ -187,6 +208,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && logged_in() && !role_at_least('mode
 
 $name = person_display_name($p);
 $photos = person_photos($pid);
+$storyRow = st_get($pid);
+$story    = $storyRow ? trim((string)$storyRow['story']) : '';
 $occ = json_decode($p['occupation'] ?: '[]', true);
 $edu = json_decode($p['education'] ?: '[]', true);
 $notes = json_decode($p['notes'] ?: '[]', true);
@@ -307,6 +330,18 @@ page_head($name);
     <?php foreach ($notes as $n): ?><div class="fact" style="border-left-color:var(--gold)"><div class="k">From the family records</div><div class="v" style="font-size:15px;white-space:pre-line">“<?= e($n) ?>”</div></div><?php endforeach; ?>
   </div>
 
+  <?php /* The dates say when somebody was here. This is the only part of the page
+           that says who they were, so it sits directly under them. */
+        if ($story !== ''): ?>
+    <div class="lifestory">
+      <h2>Their story</h2>
+      <div class="lifestory-body"><?= e($story) ?></div>
+      <?php if ($storyRow && $storyRow['updated_by_name']): ?>
+        <p class="lifestory-by">Last added to by <?= e($storyRow['updated_by_name']) ?><?= $storyRow['updated_at'] ? ' · ' . e(date('M j, Y', strtotime($storyRow['updated_at']))) : '' ?></p>
+      <?php endif; ?>
+    </div>
+  <?php endif; ?>
+
   <?php if ($parents || $spouses || $children): ?>
     <?php if ($parents): ?><h2 style="font-size:20px;margin-top:20px">Parents</h2><?php foreach ($parents as $rp) echo rel_chip($rp, 'parent'); endif; ?>
     <?php
@@ -318,6 +353,37 @@ page_head($name);
     <?php if ($children): ?><h2 style="font-size:20px;margin-top:16px">Children (<?= count($children) ?>)</h2><?php foreach ($children as $rp) echo rel_chip($rp, 'child'); endif; ?>
   <?php endif; ?>
 </div>
+
+<?php if (role_at_least('moderator')): ?>
+<div class="panel addfam af-edit" style="margin-top:20px">
+  <h2>&#9998; <?= $story === '' ? 'Write' : 'Edit' ?> <?= e($name) ?>&rsquo;s story</h2>
+  <p class="muted" style="margin:0 0 12px">Who they were, not just when they were here &mdash; where they lived and worked,
+    what they were like, the things the family still tells. Write it however it comes out; blank lines start a new paragraph.
+    <?php if ($story !== ''): ?>Clearing the box removes the story.<?php endif; ?></p>
+  <form method="post" class="addfam-form">
+    <?= csrf_field() ?><input type="hidden" name="action" value="edit_story">
+    <textarea name="story" class="lifestory-edit" rows="10" maxlength="20000" placeholder="<?= e($name) ?> was born in ..."><?= e($story) ?></textarea>
+    <button class="btn gold" type="submit" style="margin-top:10px">Save their story</button>
+  </form>
+</div>
+<?php endif; ?>
+
+<?php /* Anybody signed in can send a memory of anybody. The people most worth
+         writing about are the furthest back, and no living member is a close
+         relative of theirs - so this is deliberately not gated the way the
+         tree corrections are. It still waits for William. */ ?>
+<?php if (logged_in() && !role_at_least('moderator')): ?>
+<div class="panel addfam" style="margin-top:20px">
+  <h2>Share a memory of <?= e(explode(' ', $name)[0]) ?></h2>
+  <p class="muted" style="margin:0 0 12px">Anything you remember, or anything you were told &mdash; a story, a habit, a place,
+    what they cooked, what they said. It goes to William first, and appears on this page once he approves it.</p>
+  <form method="post" class="addfam-form">
+    <?= csrf_field() ?><input type="hidden" name="action" value="suggest_story">
+    <textarea name="story" class="lifestory-edit" rows="6" maxlength="20000" placeholder="What I remember about <?= e(explode(' ', $name)[0]) ?> is ..."></textarea>
+    <button class="btn gold" type="submit" style="margin-top:10px">Send it to William</button>
+  </form>
+</div>
+<?php endif; ?>
 
 <?php if (role_at_least('moderator')): $pfams = te_parent_families($pid); ?>
 <div class="panel addfam af-edit" style="margin-top:20px">

@@ -8,7 +8,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
     $id  = (int)($_POST['id'] ?? 0);
     $act = $_POST['action'] ?? '';
-    if ($id && $act === 'approve') { flash(te_apply_suggestion($id) ? 'Approved — the tree has been updated.' : 'Sorry — that could not be applied (the person may have changed).'); }
+    if ($id && $act === 'approve') {
+        $s0 = te_suggestion($id);                       // read the kind BEFORE it is marked applied
+        $isStory = $s0 && $s0['kind'] === 'story';
+        flash(te_apply_suggestion($id)
+            ? ($isStory ? 'Approved — it has been added to their story.' : 'Approved — the tree has been updated.')
+            : 'Sorry — that could not be applied (the person may have changed).');
+    }
     elseif ($id && $act === 'decline') { te_decline_suggestion($id); flash('Suggestion declined.'); }
     header('Location: tree_review.php' . (($_POST['view'] ?? '') === 'handled' ? '?view=handled' : '')); exit;
 }
@@ -19,7 +25,7 @@ $rows = $view === 'handled'
       : te_suggestions('pending');
 $pendN = te_suggestion_count();
 
-$KIND = ['edit'=>'Correction','add_child'=>'New child','add_spouse'=>'New spouse','add_sibling'=>'New brother/sister'];
+$KIND = ['edit'=>'Correction','add_child'=>'New child','add_spouse'=>'New spouse','add_sibling'=>'New brother/sister','story'=>'A memory'];
 $FIELDS = ['given'=>'First name','surname'=>'Last name','sex'=>'Sex','birth_date'=>'Born','birth_place'=>'Birthplace','death_date'=>'Died','death_place'=>'Death place','living'=>'Living'];
 
 function tr_ago($ts) {
@@ -59,6 +65,7 @@ page_head('Tree Suggestions', ['body_class' => 'em']);
     <div class="em-rowhead">
       <h3><span class="em-tag feat"><?= e($KIND[$r['kind']] ?? $r['kind']) ?></span>
         <?php if ($r['kind'] === 'edit'): ?>to <?= e($tname) ?>
+        <?php elseif ($r['kind'] === 'story'): ?>of <?= e($tname) ?>
         <?php elseif ($r['kind'] === 'add_sibling'): ?>for <?= e($tname) ?>&rsquo;s family
         <?php else: ?>for <?= e($tname) ?><?php endif; ?>
         <?php if ($r['status']==='applied'): ?><span class="em-tag">Approved</span><?php elseif ($r['status']==='declined'): ?><span class="em-tag hid">Declined</span><?php endif; ?>
@@ -66,6 +73,12 @@ page_head('Tree Suggestions', ['body_class' => 'em']);
       <span class="em-by">From <?= e($r['submitter']) ?> &middot; <?= e(tr_ago($r['created_at'] ?? '')) ?></span>
     </div>
 
+    <?php if ($r['kind'] === 'story'): ?>
+      <div class="fact" style="border-left-color:var(--gold);margin-bottom:10px">
+        <div class="v" style="font-size:15px;white-space:pre-line"><?= e((string)($f['story'] ?? '')) ?></div>
+      </div>
+      <p class="muted" style="margin:0 0 8px">Approving adds this to the foot of <?= e($tname) ?>&rsquo;s story, signed with <?= e($r['submitter']) ?>&rsquo;s name. It does not replace anything already there.</p>
+    <?php else: ?>
     <table class="tr-tbl">
       <?php if ($r['kind'] === 'edit' && $target): ?>
         <tr><th></th><th>Now</th><th>Suggested</th></tr>
@@ -81,6 +94,7 @@ page_head('Tree Suggestions', ['body_class' => 'em']);
         <?php endforeach; ?>
       <?php endif; ?>
     </table>
+    <?php endif; ?>
     <?php if ($r['kind'] === 'edit' && $target):
         $anyChange = false;
         foreach ($FIELDS as $k=>$lbl) { if (tr_val($k,$target[$k]??'') !== tr_val($k,$f[$k]??'')) { $anyChange = true; break; } }
