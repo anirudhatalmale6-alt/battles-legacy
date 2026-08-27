@@ -7,6 +7,9 @@ require_once __DIR__ . '/../src/invites.php';
 require_once __DIR__ . '/../src/people_pick.php';
 require_role('admin');
 $me = current_user();
+/* Keeps the queue moving without a cron job. Sends at most one, and only when
+   both the gap and the daily cap allow it; otherwise it costs a COUNT and a MAX. */
+invite_drip_tick();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
@@ -97,13 +100,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $made++;
             if ($send && $p['email'] !== '') {
                 $inv = one("SELECT * FROM invites WHERE token=?", [$token]);
-                if ($inv && invite_mail($inv, $me)) $mailed++;
+                /* Queued, not sent from inside this loop. Sending here is
+                   literally what put 49 messages on the wire in 47 seconds. */
+                if ($inv) { invite_queue_add([$inv['id']]); $mailed++; }
             }
         }
         if (!$made && !$skipped && !$bad) flash('Nothing to read in that box.');
         else {
             $msg = $made . ' invitation' . ($made === 1 ? '' : 's') . ' made';
-            if ($send) $msg .= ', ' . $mailed . ' handed to the mail server';
+            if ($send) $msg .= ', ' . $mailed . ' put in the queue to go out a few a day';
             $msg .= '. They are all listed below with a send button each.';
             flash($msg);
             if ($matched) flash($matched . ' of them matched a name in the family tree, spelling and all.');
@@ -114,6 +119,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($skipped) flash('Left alone: ' . implode('; ', array_slice($skipped, 0, 12)) . (count($skipped) > 12 ? ' …and ' . (count($skipped) - 12) . ' more' : ''));
             if ($bad) flash('Couldn\'t read: ' . implode('; ', array_slice($bad, 0, 8)));
         }
+    } elseif ($act === 'queue_unopened') {
+        $n = invite_queue_add(null);
+        flash($n ? $n . ' invitation' . ($n === 1 ? '' : 's') . ' put in the queue. They will go out a few a day, '
+                 . 'minutes apart, on their own — you do not have to keep this page open.'
+                 : 'There was nothing to add: every unopened invitation is already in the queue.');
+        $goto = '#drip';
+    } elseif ($act === 'queue_send_next') {
+        list($sent, $why) = invite_drip_release($me);
+        flash($why);
+        $goto = '#drip';
+    } elseif ($act === 'queue_clear') {
+        invite_queue_clear();
+        flash('The queue is empty. Nothing further will go out on its own.');
+        $goto = '#drip';
     } elseif ($act === 'invite_send') {
         $inv = invite_by_id($_POST['iid'] ?? 0);
         if (!$inv) flash('That invitation is no longer waiting.');
@@ -335,11 +354,62 @@ page_head('Members');
         <label style="margin:0">Role
           <select name="role"><option value="member">Member</option><option value="moderator">Moderator</option><option value="admin">Admin</option></select>
         </label>
-        <label class="inv-check"><input type="checkbox" name="bulk_send" value="1" checked> Try to email them as well</label>
+        <label class="inv-check"><input type="checkbox" name="bulk_send" value="1" checked> Put them in the sending queue</label>
         <button class="btn gold" style="margin:0">Make the invitations</button>
       </div>
+      <p class="muted" style="margin:10px 0 0">They go into the queue below rather than all leaving at once.
+        The last time a list this size went out in one go, nearly all of it was filed as spam.</p>
     </form>
   </details>
+
+  <?php
+    /* The drip queue. */
+    $qRows  = invite_queued();
+    $qCount = count($qRows);
+    list($dOk, $dWhy, $dWait) = drip_ready();
+    $sentDay = drip_sent_last_day();
+  ?>
+  <div class="panel" id="drip" style="margin-top:18px">
+    <h2 style="margin:0 0 6px">The sending queue</h2>
+    <p class="muted" style="margin:0 0 12px">
+      Invitations in here go out on their own, <b>at most <?= (int)drip_per_day() ?> a day</b> and never closer together
+      than <b><?= (int)drip_gap_minutes() ?> minutes</b>. That is the whole fix: 49 invitations left this site in 47 seconds
+      on 17 August and 2 were ever opened, while the 10 you sent one at a time got 6 people signed up. Same words,
+      same addresses &mdash; only the speed was different.</p>
+
+    <p style="margin:0 0 10px">
+      <b><?= $qCount ?></b> waiting &middot; <b><?= $sentDay ?></b> of <?= (int)drip_per_day() ?> sent in the last 24 hours
+      <?php if ($qCount && !$dOk): ?>
+        &middot; <span class="muted"><?= $dWait > 0 ? 'next one in about ' . max(1, (int)ceil($dWait / 60)) . ' min' : e($dWhy) ?></span>
+      <?php elseif ($qCount && $dOk): ?>
+        &middot; <span class="muted">the next one can go now</span>
+      <?php endif; ?>
+    </p>
+
+    <?php if ($qRows): ?>
+      <p class="muted" style="margin:0 0 10px">Next up:
+        <?= e(implode(', ', array_map(function ($r) { return trim((string)$r['name']) ?: $r['email']; }, array_slice($qRows, 0, 5)))) ?><?= $qCount > 5 ? ', and ' . ($qCount - 5) . ' more' : '' ?>.</p>
+    <?php endif; ?>
+
+    <div class="inv-bulkrow" style="gap:10px">
+      <form method="post" style="margin:0"><?= csrf_field() ?>
+        <input type="hidden" name="action" value="queue_unopened">
+        <button class="btn gold" style="margin:0">Queue everyone who never opened theirs</button>
+      </form>
+      <?php if ($qCount): ?>
+        <form method="post" style="margin:0"><?= csrf_field() ?>
+          <input type="hidden" name="action" value="queue_send_next">
+          <button class="btn" style="margin:0"<?= $dOk ? '' : ' disabled title="' . e($dWait > 0 ? 'Too soon after the last one' : $dWhy) . '"' ?>>Send the next one now</button>
+        </form>
+        <form method="post" style="margin:0" onsubmit="return confirm('Empty the queue? Nothing more will go out on its own. No invitation is deleted.')"><?= csrf_field() ?>
+          <input type="hidden" name="action" value="queue_clear">
+          <button class="btn danger" style="margin:0">Empty the queue</button>
+        </form>
+      <?php endif; ?>
+    </div>
+    <p class="muted" style="margin:10px 0 0">Nothing is deleted by any of these buttons &mdash; emptying the queue
+      only stops them being sent automatically. Every invitation keeps its own send buttons in the list below.</p>
+  </div>
 
   <script>
   /* Name suggestions on the invitation form.

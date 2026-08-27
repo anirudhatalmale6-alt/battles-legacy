@@ -36,6 +36,11 @@ function invite_migrate() {
        had gone out with only four accounts back, and nothing on the site could
        tell which half of that journey was failing. */
     db_add_column('invites', 'opened_at', 'DATETIME NULL');
+    /* Waiting in the drip queue. Forty-nine invitations left in forty-seven
+       seconds and two were ever opened; the ten sent one at a time got six
+       accounts back. Nothing about the wording changed between those two - only
+       the rate. A queued invitation goes out on a clock instead of in a burst. */
+    db_add_column('invites', 'queued_at', 'DATETIME NULL');
     pp_migrate();                       // invites.pid — which person in the tree this is
     pp_backfill();                      // and join up the ones made before it existed
 }
@@ -484,4 +489,125 @@ function invite_existing($email) {
         if (one("SELECT id FROM invites WHERE LOWER(email)=? AND used_at IS NULL", [strtolower($email)])) return 'invited';
     } catch (\Throwable $e) {}
     return null;
+}
+
+/* ------------------------------------------------------------------ *
+ *  The drip queue
+ *
+ *  49 invitations left this domain in 47 seconds on 17 August. Two were
+ *  ever opened. The other ten, sent one and two at a time on separate
+ *  days, produced six accounts. Same words, same sending domain, same
+ *  family, and most of them behind one mailbox provider - so one
+ *  reputation decision covered nearly the whole list at once.
+ *
+ *  Nothing here rewrites the invitation. It only changes the rate.
+ * ------------------------------------------------------------------ */
+
+/** at most this many go out in any rolling 24 hours */
+function drip_per_day() { return 6; }
+/** and never two closer together than this many minutes */
+function drip_gap_minutes() { return 9; }
+
+/** invitations sitting in the queue, oldest first */
+function invite_queued($limit = 0) {
+    invite_migrate();
+    $sql = "SELECT * FROM invites WHERE queued_at IS NOT NULL AND used_at IS NULL
+            AND email <> '' ORDER BY queued_at, id";
+    if ($limit > 0) $sql .= ' LIMIT ' . (int)$limit;
+    try { return all($sql); } catch (\Throwable $e) { return []; }
+}
+
+function invite_queued_count() { return count(invite_queued()); }
+
+/** put invitations into the queue. $ids empty = every unopened one that has an address. */
+function invite_queue_add($ids = null) {
+    invite_migrate();
+    $now = date('Y-m-d H:i:s');
+    $n = 0;
+    if (is_array($ids) && $ids) {
+        foreach ($ids as $id) {
+            q("UPDATE invites SET queued_at=? WHERE id=? AND queued_at IS NULL AND used_at IS NULL AND email <> ''",
+              [$now, (int)$id]);
+            $n++;
+        }
+        return $n;
+    }
+    /* everyone who has never opened theirs - the 47 */
+    $rows = all("SELECT id FROM invites WHERE used_at IS NULL AND opened_at IS NULL
+                 AND email <> '' AND queued_at IS NULL");
+    foreach ($rows as $r) { q("UPDATE invites SET queued_at=? WHERE id=?", [$now, (int)$r['id']]); $n++; }
+    return $n;
+}
+
+function invite_queue_clear() {
+    invite_migrate();
+    try { q("UPDATE invites SET queued_at=NULL WHERE queued_at IS NOT NULL AND used_at IS NULL"); } catch (\Throwable $e) {}
+}
+
+/** how many have actually gone out in the last 24 hours, by any route */
+function drip_sent_last_day() {
+    invite_migrate();
+    try {
+        $r = one("SELECT COUNT(*) c FROM invites WHERE emailed_at IS NOT NULL AND emailed_at >= ?",
+                 [date('Y-m-d H:i:s', time() - 86400)]);
+        return $r ? (int)$r['c'] : 0;
+    } catch (\Throwable $e) { return 0; }
+}
+
+/** the most recent send of any kind, as a unix time, or 0 */
+function drip_last_send_ts() {
+    invite_migrate();
+    try {
+        $r = one("SELECT MAX(emailed_at) m FROM invites WHERE emailed_at IS NOT NULL");
+        return ($r && $r['m']) ? (int)strtotime($r['m']) : 0;
+    } catch (\Throwable $e) { return 0; }
+}
+
+/**
+ * May one go out right now? Returns [bool ok, string why-not, int seconds-to-wait].
+ * Deliberately counts EVERY send, not just dripped ones: a manual "send again"
+ * click still spends the domain's goodwill, so it still resets the clock.
+ */
+function drip_ready() {
+    if (!invite_queued(1)) return [false, 'The queue is empty.', 0];
+    $today = drip_sent_last_day();
+    if ($today >= drip_per_day())
+        return [false, $today . ' have already gone out in the last 24 hours, which is the daily limit.', 0];
+    $gap  = drip_gap_minutes() * 60;
+    $last = drip_last_send_ts();
+    $wait = $last ? ($last + $gap) - time() : 0;
+    if ($wait > 0) return [false, 'Too soon after the last one.', $wait];
+    return [true, '', 0];
+}
+
+/**
+ * Send at most ONE queued invitation. Returns [sent(bool), message].
+ * One per call on purpose - a loop here would be the burst all over again.
+ */
+function invite_drip_release($host = null) {
+    list($ok, $why, $wait) = drip_ready();
+    if (!$ok) return [false, $why];
+    $rows = invite_queued(1);
+    if (!$rows) return [false, 'The queue is empty.'];
+    $inv = $rows[0];
+    $sent = invite_mail($inv, $host ?: invite_host());
+    /* Out of the queue either way. A refused address will not start working on
+       the next pass, and leaving it in would block everybody behind it. */
+    try { q("UPDATE invites SET queued_at=NULL WHERE id=?", [(int)$inv['id']]); } catch (\Throwable $e) {}
+    $who = trim((string)$inv['name']) ?: $inv['email'];
+    return [$sent, $sent ? 'Sent to ' . $who . '.' : 'The mail server would not take the one for ' . $who . '.'];
+}
+
+/**
+ * Called on ordinary page loads so the queue keeps moving without a cron job.
+ * Does nothing at all unless the gap and the daily cap both allow it, and
+ * never sends more than one. Cheap: one COUNT and one MAX before it gives up.
+ */
+function invite_drip_tick() {
+    static $ran = false;
+    if ($ran) return; $ran = true;
+    try {
+        list($ok,,) = drip_ready();
+        if ($ok) invite_drip_release(invite_host());
+    } catch (\Throwable $e) { /* never break a page over this */ }
 }
