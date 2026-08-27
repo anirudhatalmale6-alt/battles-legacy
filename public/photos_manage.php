@@ -19,28 +19,37 @@ $EXT = ['jpg','jpeg','png','gif','webp'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
     if (($_POST['action'] ?? '') === 'assign') {
-        $done = 0; $bad = 0; $extraTags = 0;
-        foreach (($_POST['pid'] ?? []) as $file => $pid) {
+        $done = 0; $bad = 0; $already = 0; $extraTags = 0; $missing = [];
+        /* The cards are keyed by their position on the page, NOT by file name.
+           They used to be keyed by file name, and 36 of the 37 photographs still
+           waiting are called battlesfamily_6157998[1].jpg — a square bracket inside
+           a form field name ends the key early, so PHP received
+           "battlesfamily_6157998[1" and the file could never be found. Every one of
+           those was unsaveable from the day the page was written. The real name now
+           travels in its own hidden field, where no character can break it. */
+        foreach (($_POST['pid'] ?? []) as $i => $pid) {
             $pid = trim($pid);
             if ($pid === '') continue;
-            $file = basename($file);                                  // never leave the folder
+            $file = basename(trim($_POST['file'][$i] ?? ''));          // never leave the folder
+            if ($file === '') { $bad++; continue; }
             $abs  = $SRC . '/' . $file;
-            if (!is_file($abs) || !in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $EXT, true)) { $bad++; continue; }
+            if (!is_file($abs) || !in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $EXT, true)) { $bad++; $missing[] = $file; continue; }
             if (!one("SELECT pid FROM persons WHERE pid=?", [$pid])) { $bad++; continue; }
             $safe   = preg_replace('/[^A-Za-z0-9._-]+/', '_', $file);
             $relDir = config('photos_dir') . '/' . trim($pid, '@');
             $rel    = $relDir . '/' . $safe;
-            if (one("SELECT id FROM photos WHERE pid=? AND filename=?", [$pid, $file])) continue;
+            /* already on that person - not a failure, but it was silent before */
+            if (one("SELECT id FROM photos WHERE pid=? AND filename=?", [$pid, $file])) { $already++; continue; }
             @mkdir(__DIR__ . '/' . $relDir, 0775, true);
-            if (!@copy($abs, __DIR__ . '/' . $rel)) { $bad++; continue; }
-            $cap = trim($_POST['cap'][$file] ?? '') ?: _clean_filename(pathinfo($file, PATHINFO_FILENAME));
+            if (!@copy($abs, __DIR__ . '/' . $rel)) { $bad++; $missing[] = $file; continue; }
+            $cap = trim($_POST['cap'][$i] ?? '') ?: _clean_filename(pathinfo($file, PATHINFO_FILENAME));
             q("INSERT INTO photos (pid,filename,path,caption,status,source) VALUES (?,?,?,?, 'approved','import')",
               [$pid, $file, $rel, mb_substr($cap, 0, 500)]);
             $newId = (int)insert_id();
             pp_tag($newId, $pid);
             /* Everyone else named in the same card. One file on disk, a row each
                — the group photograph lands on all of their pages. */
-            foreach ((array)($_POST['extra'][$file] ?? []) as $ex) {
+            foreach ((array)($_POST['extra'][$i] ?? []) as $ex) {
                 $ex = trim($ex);
                 if ($ex === '' || $ex === $pid) continue;
                 if (!one("SELECT pid FROM persons WHERE pid=?", [$ex])) continue;
@@ -48,8 +57,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $done++;
         }
-        $msg = $done ? "$done photograph" . ($done === 1 ? '' : 's') . ' placed.' . ($bad ? " $bad could not be." : '')
-                     : 'Nothing was selected.';
+        /* Was: when nothing succeeded the message read "Nothing was selected." and
+           threw the failure count away, so 36 photographs failing looked identical
+           to him not having picked anybody. Never report a failure as an absence. */
+        $bits = [];
+        if ($done)    $bits[] = "$done photograph" . ($done === 1 ? '' : 's') . ' placed.';
+        if ($already) $bits[] = "$already " . ($already === 1 ? 'was' : 'were') . ' already on that person, so nothing changed for ' . ($already === 1 ? 'it' : 'those') . '.';
+        /* no e() here - theme.php escapes the flash on the way out, and escaping
+           twice turns an ampersand in a file name into &amp; on screen */
+        if ($bad)     $bits[] = "$bad could not be saved" . ($missing ? ' (' . implode(', ', array_slice($missing, 0, 3)) . (count($missing) > 3 ? ', and ' . (count($missing) - 3) . ' more' : '') . ')' : '') . '.';
+        if (!$bits)   $bits[] = 'Nothing was selected — pick a name under a photograph first.';
+        $msg = implode(' ', $bits);
         if ($extraTags) $msg .= " $extraTags extra " . ($extraTags === 1 ? 'person was' : 'people were')
                               . ' named in group pictures — those now show on their pages too.';
         flash($msg);
@@ -133,11 +151,12 @@ page_head('Photographs');
     <form method="post">
       <?= csrf_field() ?><input type="hidden" name="action" value="assign">
       <div class="pm-grid">
-        <?php foreach ($unplaced as $f): $u = 'photo_raw.php?f=' . urlencode($f); $sg = $suggest[$f]; ?>
+        <?php foreach ($unplaced as $i => $f): $u = 'photo_raw.php?f=' . urlencode($f); $sg = $suggest[$f]; ?>
           <figure class="pm-card">
             <a href="<?= e($u) ?>" target="_blank" rel="noopener"><img src="<?= e($u) ?>" alt="<?= e($f) ?>" loading="lazy"></a>
             <figcaption><?= e($f) ?></figcaption>
-            <select name="pid[<?= e($f) ?>]">
+            <input type="hidden" name="file[<?= $i ?>]" value="<?= e($f) ?>">
+            <select name="pid[<?= $i ?>]">
               <option value="">— who is this? —</option>
               <?php if ($sg): ?>
                 <optgroup label="Best guesses from the file name">
@@ -153,8 +172,8 @@ page_head('Photographs');
               <?php if ($sg): ?></optgroup><?php endif; ?>
             </select>
             <div class="pm-extra"></div>
-            <button type="button" class="pm-more" data-file="<?= e($f) ?>">+ someone else in this picture</button>
-            <input type="text" name="cap[<?= e($f) ?>]" placeholder="Caption (optional)" maxlength="200">
+            <button type="button" class="pm-more" data-file="<?= $i ?>">+ someone else in this picture</button>
+            <input type="text" name="cap[<?= $i ?>]" placeholder="Caption (optional)" maxlength="200">
           </figure>
         <?php endforeach; ?>
       </div>
