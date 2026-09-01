@@ -29,6 +29,10 @@ function page_head($title, $opts = []) {
   </a>
   <nav class="links">
     <a href="index.php">Home</a>
+    <?php /* Second, on purpose. It is the only tab whose contents change from
+             one visit to the next, and it is what gives somebody a reason to
+             open the site a second time. */ ?>
+    <a href="whatsnew.php">What&rsquo;s New</a>
     <a href="history.php">History</a>
     <a href="tree.php">Family Tree</a>
     <a href="faith.php">Faith</a>

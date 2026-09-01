@@ -2062,11 +2062,75 @@ body.fbpage{background:#efe3c9;color:#3a2c18;}
 .fbm-reply textarea{width:100%;background:#fff;border:1px solid #cbb079;border-radius:8px;padding:8px 11px;
   font-family:'EB Garamond',serif;font-size:14.5px;color:#3a2a18;}
 .fbm-reply .btn2{margin-top:7px;align-self:flex-start;padding:4px 13px;font-size:13.5px;}
+/* Save, and save-and-send, are two different acts and sit side by side. */
+.fbm-replybtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.fbm-replynote{font-size:13px;color:#6e5a3a;line-height:1.5;margin:7px 0 0;}
+.fbm-replynote b{color:#5c1a1f;}
+/* "How do I make the number go away" - so the answer is on the page. */
+.fbm-markall{background:#f9f1de;border:1px solid #d9c39a;border-radius:10px;padding:12px 18px;display:flex;
+  flex-direction:column;gap:3px;align-items:flex-start;flex:1;min-width:250px;margin:0;}
+.fbm-markall b{color:#5c1a1f;font-size:14.5px;}
+.fbm-markall span{font-size:13px;color:#6e5a3a;}
+.fbm-markall .btn2{margin-top:6px;align-self:flex-start;padding:5px 14px;font-size:13.5px;}
 .fbm-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px;border-top:1px dashed #ddcaa4;padding-top:12px;}
 .fbm-acts form{margin:0;}
 .fbm-acts .btn2{margin:0;padding:5px 14px;font-size:13.5px;}
 .fbm-del{color:#8f2b1f!important;border-color:#d8a99f!important;}
 .fbm-del:hover{background:#8f2b1f!important;color:#fff!important;}
+
+/* ---- What's New: the newest things anybody added, photographs first ----
+   Own prefix on every rule. Twice now a class borrowed from another part of
+   this site has rendered invisible on a page with a different body class. */
+.wn-hero{width:100vw;margin-left:calc(-50vw + 50%);background:linear-gradient(180deg,#3a0d12,#5c1a1f);
+  border-bottom:2px solid var(--gold);text-align:center;padding:34px clamp(16px,5vw,40px) 30px;}
+.wn-hero h1{color:var(--gold2);font-size:clamp(30px,5vw,42px);margin:0 0 8px;}
+.wn-hero p{color:#f1e4c9;max-width:62ch;margin:0 auto;font-size:16.5px;line-height:1.55;}
+.wn-count{margin-top:14px;color:var(--gold2);font-size:15px;}
+.wn-count b{font-size:19px;}
+.wn-wrap{max-width:1150px;margin:0 auto;padding:26px clamp(14px,3.5vw,40px) 44px;}
+.wn-h2{color:var(--gold2);font-size:clamp(22px,3.2vw,28px);margin:22px 0 14px;}
+.wn-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));}
+.wn-card{display:block;background:rgba(255,255,255,.05);border:1px solid rgba(201,162,75,.35);
+  border-radius:11px;overflow:hidden;text-decoration:none;}
+a.wn-card:hover{border-color:var(--gold);transform:translateY(-2px);}
+a.wn-card{transition:transform .15s ease,border-color .15s ease;}
+.wn-img{display:block;width:100%;aspect-ratio:1/1;background-size:cover;background-position:center top;
+  background-color:#2c090d;}
+.wn-cap{display:block;padding:9px 11px 11px;}
+.wn-cap b{display:block;color:var(--gold2);font-family:'Cormorant Garamond',serif;font-size:17px;line-height:1.25;}
+.wn-cap i{display:block;color:#e8d9b6;font-style:normal;font-size:13px;margin-top:2px;line-height:1.35;}
+.wn-cap em{display:block;color:#c3ab84;font-style:normal;font-size:12px;margin-top:5px;}
+.wn-more{margin:18px 0 0;display:flex;gap:10px;flex-wrap:wrap;}
+.wn-empty{background:rgba(255,255,255,.05);border:1px solid rgba(201,162,75,.35);border-radius:12px;
+  padding:26px;text-align:center;}
+.wn-empty h2{color:var(--gold2);margin:0 0 8px;}
+.wn-empty p{color:#e8d9b6;max-width:56ch;margin:0 auto 12px;}
+.wn-list{list-style:none;margin:0;padding:0;border-top:1px solid rgba(201,162,75,.25);}
+.wn-li{display:flex;gap:14px;align-items:baseline;padding:11px 4px;
+  border-bottom:1px solid rgba(201,162,75,.18);}
+.wn-when{flex:0 0 96px;color:#c3ab84;font-size:13px;}
+.wn-what{color:#f1e4c9;font-size:15.5px;line-height:1.45;}
+.wn-what a{color:var(--gold2);text-decoration:underline;text-underline-offset:3px;}
+.wn-what i{color:#c3ab84;font-style:normal;font-size:13.5px;}
+.wn-signin{margin-top:26px;background:rgba(201,162,75,.1);border:1px solid rgba(201,162,75,.4);
+  border-radius:12px;padding:20px;text-align:center;}
+.wn-signin p{color:#f1e4c9;max-width:60ch;margin:0 auto 12px;}
+@media (max-width:520px){
+  .wn-grid{grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px;}
+  .wn-li{flex-direction:column;gap:2px;}
+  .wn-when{flex:none;}
+}
+
+/* the same thing, small, on the home page */
+.wn-home{width:100vw;margin-left:calc(-50vw + 50%);background:#2c090d;
+  border-top:1px solid rgba(201,162,75,.3);border-bottom:1px solid rgba(201,162,75,.3);
+  padding:26px clamp(16px,5vw,40px);}
+.wn-home-inner{max-width:1150px;margin:0 auto;}
+.wn-home-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+.wn-home-head h3{color:var(--gold2);font-family:'Cormorant Garamond',serif;font-size:26px;margin:0;}
+.wn-home-head span{color:#d8c49b;font-size:14.5px;}
+.wn-home-head a{margin-left:auto;color:var(--gold2);font-size:14.5px;text-decoration:underline;text-underline-offset:3px;}
+.wn-home .wn-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}
 
 /* home page: the invitation to comment */
 .askband{width:100vw;margin-left:calc(-50vw + 50%);background:linear-gradient(180deg,#2c090d,#3a0d12);

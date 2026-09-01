@@ -22,6 +22,10 @@ function feedback_migrate() {
     )$ENG");
     try { db()->exec("CREATE INDEX idx_fb_status ON feedback(status)"); } catch (\Throwable $e) {}
     try { db()->exec("CREATE INDEX idx_fb_shared ON feedback(shared)"); } catch (\Throwable $e) {}
+    /* Saving a note back and actually sending it are two different things, and
+       the page used to be unable to tell him which had happened. */
+    db_add_column('feedback', 'reply_sent_at', 'DATETIME NULL');
+    db_add_column('feedback', 'reply_ok', 'TINYINT NOT NULL DEFAULT 0');
     db()->exec("CREATE TABLE IF NOT EXISTS fb_meta (
       k VARCHAR(40) PRIMARY KEY, v VARCHAR(255) DEFAULT ''
     )$ENG");
@@ -139,6 +143,80 @@ function fb_avg_rating() {
 function fb_set_status($id, $s) {
     if (!in_array($s, ['new','reading','done'], true)) return;
     q("UPDATE feedback SET status=? WHERE id=?", [$s, (int)$id]);
+}
+
+/** Clear the count beside Feedback in the menu in one go. Nothing is deleted
+ *  and nothing is answered — they move from New to Looking into it. */
+function fb_mark_all_read() {
+    feedback_migrate();
+    try {
+        $n = fb_new_count();
+        q("UPDATE feedback SET status='reading' WHERE status='new'");
+        return $n;
+    } catch (\Throwable $e) { return 0; }
+}
+
+/** An address to write back to, or ''.
+ *
+ *  Two places it can come from and they are not the same: the "best way to
+ *  reach you" box is free text and often holds a phone number, while a signed-in
+ *  member already has a real address on their account. Prefer what they typed —
+ *  somebody who wrote an address on the form is asking to be answered there. */
+function fb_reply_email($row) {
+    require_once __DIR__ . '/mailer.php';
+    $typed = mailer_valid($row['contact'] ?? '');
+    if ($typed !== '') return $typed;
+    if (!empty($row['user_id'])) {
+        try {
+            $u = one("SELECT email FROM users WHERE id=?", [(int)$row['user_id']]);
+            if ($u) return mailer_valid($u['email']);
+        } catch (\Throwable $e) {}
+    }
+    return '';
+}
+
+/** The reply as it would arrive, whether by email or pasted into a text. */
+function fb_reply_text($row, $hostName = 'William') {
+    $first = trim((string)($row['name'] ?? ''));
+    if ($first !== '') { $b = preg_split('/\s+/', $first); $first = $b[0]; }
+    $quote = trim((string)($row['body'] ?? ''));
+    if (mb_strlen($quote) > 400) $quote = mb_substr($quote, 0, 400) . '…';
+    $out  = 'Hello ' . ($first !== '' ? $first : 'there') . ",\n\n";
+    $out .= "Thank you for what you sent through the family site. You wrote:\n\n";
+    $out .= '"' . $quote . "\"\n\n";
+    $out .= trim((string)($row['reply'] ?? '')) . "\n\n";
+    $out .= $hostName . "\n";
+    return $out;
+}
+
+/** Email the saved reply to whoever sent the thought.
+ *  Returns [sent(bool), message]. Records the attempt either way, because
+ *  "did I already answer this one?" is the question this page has to answer. */
+function fb_send_reply($id, $host = null) {
+    feedback_migrate();
+    require_once __DIR__ . '/mailer.php';
+    $row = fb_one($id);
+    if (!$row) return [false, 'That thought is no longer there.'];
+    if (trim((string)$row['reply']) === '') return [false, 'Write your note back first — there is nothing to send yet.'];
+    $to = fb_reply_email($row);
+    if ($to === '') return [false, 'There is no email address for ' . ($row['name'] ?: 'this person') . ', so there is nowhere to send it.'];
+
+    $who  = ($host && trim((string)$host['name']) !== '') ? $host['name'] : 'William';
+    $site = (string)config('site_name') ?: 'The Battles Legacy';
+    $sent = mailer_send($to, 'Re: what you sent through ' . $site, fb_reply_text($row, $who), [
+        'to_name'    => (string)$row['name'],
+        'reply_to'   => $host ? (string)$host['email'] : '',
+        'reply_name' => $who,
+    ]);
+    try {
+        q("UPDATE feedback SET reply_sent_at=?, reply_ok=? WHERE id=?",
+          [date('Y-m-d H:i:s'), $sent ? 1 : 0, (int)$id]);
+    } catch (\Throwable $e) {}
+    /* "Handed to the mail server" is all we know - see the note at the top of
+       mailer.php. It is not the same as "she read it". */
+    return [$sent, $sent
+        ? 'Handed to the mail server for ' . $to . '. That is not proof it arrived — if it matters, text it as well.'
+        : 'The mail server would not take it.'];
 }
 function fb_set_shared($id, $on) { q("UPDATE feedback SET shared=? WHERE id=?", [$on ? 1 : 0, (int)$id]); }
 function fb_set_reply($id, $t)   { q("UPDATE feedback SET reply=? WHERE id=?", [mb_substr(trim($t), 0, 2000), (int)$id]); }

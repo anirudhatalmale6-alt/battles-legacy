@@ -205,6 +205,44 @@ page_head('Home', ['body_class' => 'home']);
   </section>
   <?php endif; ?>
 
+  <?php
+    /* What's new, on the home page as well as on its own page.
+       This is the only thing on the home page that is different from one visit
+       to the next, which is the whole reason it is here: people opened the site
+       once and never came back, because nothing ever told them anything had
+       changed. Signed-out visitors get the same block with the living side of
+       the family left out, exactly as family.php and person.php already do. */
+    require_once __DIR__ . '/../src/whatsnew.php';
+    $WNP = wn_photos(6, $u ? true : false);
+    $WNC = wn_photo_count(30, $u ? true : false);
+  ?>
+  <?php if ($WNP): ?>
+  <section class="wn-home">
+    <div class="wn-home-inner">
+      <div class="wn-home-head">
+        <h3>Just added</h3>
+        <?php if ($WNC): ?><span><?= (int)$WNC ?> photograph<?= $WNC === 1 ? '' : 's' ?> in the last month</span><?php endif; ?>
+        <a href="whatsnew.php">See everything new &rsaquo;</a>
+      </div>
+      <div class="wn-grid">
+        <?php foreach ($WNP as $ph):
+          list($who, $cap) = wn_caption($ph);
+          $href = trim((string)$ph['pid']) !== '' ? 'person.php?pid=' . urlencode($ph['pid']) : '';
+          $tag  = $href !== '' ? 'a' : 'span';
+        ?>
+          <<?= $tag ?> class="wn-card"<?= $href !== '' ? ' href="' . e($href) . '"' : '' ?>>
+            <span class="wn-img" style="background-image:url('<?= e($ph['path']) ?>')"></span>
+            <span class="wn-cap">
+              <?php if ($who !== ''): ?><b><?= e($who) ?></b><?php endif; ?>
+              <em><?= e(wn_ago($ph['created_at'])) ?></em>
+            </span>
+          </<?= $tag ?>>
+        <?php endforeach; ?>
+      </div>
+    </div>
+  </section>
+  <?php endif; ?>
+
   <!-- scripture value strip -->
   <section class="valuestrip">
     <div class="vs-inner">
