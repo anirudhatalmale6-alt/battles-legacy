@@ -2501,6 +2501,12 @@ body.fvid .foot{display:none;}
 .inv-audit{font-size:14px;color:#e6cf9f;background:rgba(201,162,75,.12);
   border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;margin:10px 0 0;line-height:1.55;}
 .inv-audit b{color:var(--gold2);}
+/* The colours above are for the dark admin page. On the cream pages (body.em)
+   pale gold on cream is very nearly invisible - it looked fine in the markup
+   and could only be seen by looking at the rendered page. */
+body.em .inv-audit{color:#5a4326;background:rgba(201,162,75,.18);border-left-color:#b3873a;}
+body.em .inv-audit b{color:#5c1a1f;}
+body.em .inv-audit a{color:#8f2b1f;text-decoration:underline;}
 .inv-row.inv-flag{border-color:rgba(224,178,90,.5);}
 .inv-mail.bad{color:#f0c98a;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;}
 .inv-warn{font-size:13px;color:#e8cf9d;background:rgba(201,162,75,.1);border-radius:7px;

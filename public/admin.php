@@ -5,11 +5,13 @@ require_once __DIR__ . '/../src/pwreset.php';
 require_once __DIR__ . '/../src/access_data.php';
 require_once __DIR__ . '/../src/invites.php';
 require_once __DIR__ . '/../src/people_pick.php';
+require_once __DIR__ . '/../src/notes.php';
 require_role('admin');
 $me = current_user();
 /* Keeps the queue moving without a cron job. Sends at most one, and only when
    both the gap and the daily cap allow it; otherwise it costs a COUNT and a MAX. */
 invite_drip_tick();
+note_tick();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
@@ -409,6 +411,30 @@ page_head('Members');
     </div>
     <p class="muted" style="margin:10px 0 0">Nothing is deleted by any of these buttons &mdash; emptying the queue
       only stops them being sent automatically. Every invitation keeps its own send buttons in the list below.</p>
+  </div>
+
+  <?php
+    /* Getting people in is only half of it. The other half is giving the ones
+       who are already in a reason to come back, which nothing on the site
+       currently does. */
+    $noteProg = note_progress((int)(($lastNote = note_last_sent()) ? $lastNote['id'] : 0));
+  ?>
+  <div class="panel" id="note" style="margin-top:18px">
+    <h2 style="margin:0 0 6px">The monthly note</h2>
+    <p class="muted" style="margin:0 0 12px">A short note to the people who already have accounts, telling them what
+      has appeared since the last one &mdash; whose birthday is coming up, which photographs have gone on, whose story
+      somebody has written down. It is written for you out of what has actually changed; you edit it and press send.</p>
+    <p style="margin:0 0 10px">
+      <b><?= count(note_recipients()) ?></b> would receive it
+      <?php if ($lastNote): ?>&middot; last one <?= e(date('j M Y', strtotime($lastNote['created_at']))) ?>,
+        <b><?= (int)$noteProg['sent'] ?></b> sent<?php if ($noteProg['waiting']): ?>,
+        <b><?= (int)$noteProg['waiting'] ?></b> still going out<?php endif; ?><?php
+        /* A refused copy is the one thing on this line worth him seeing, so it
+           does not get left off just because the sentence reads better. */
+        if ($noteProg['failed']): ?>, <b><?= (int)$noteProg['failed'] ?></b> the mail server refused<?php endif; ?>
+      <?php else: ?>&middot; none written yet<?php endif; ?>
+    </p>
+    <p style="margin:0"><a class="btn gold" href="family_note.php" style="margin:0">Write this month&rsquo;s note</a></p>
   </div>
 
   <script>

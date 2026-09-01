@@ -41,6 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['act'] ?? '') === 'homeedit
    most, and only when the gap and the daily cap both allow it. */
 require_once __DIR__ . '/../src/invites.php';
 invite_drip_tick();
+require_once __DIR__ . '/../src/notes.php';
+note_tick();
 $u = current_user();
 $np = one("SELECT COUNT(*) c FROM persons")['c'] ?? 0;
 $nph = one("SELECT COUNT(*) c FROM photos WHERE status='approved'")['c'] ?? 0;
