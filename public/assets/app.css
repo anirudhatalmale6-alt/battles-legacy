@@ -20,6 +20,12 @@ a{color:inherit;text-decoration:none}
 .links a{font-size:12.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--cream);transition:.2s;position:relative}
 .links a:hover{color:var(--gold2)}
 .who{font-size:13px;color:var(--gold-soft);border-left:1px solid rgba(201,162,75,.3);padding-left:16px}
+/* It became a link (to your own account). `.links a` is more specific than
+   `.who`, so without this it would turn uppercase and cream and stop looking
+   like your name — the third time a borrowed class has changed how something
+   renders on this site. */
+.links a.who{font-size:13px;text-transform:none;letter-spacing:normal;color:var(--gold-soft)}
+.links a.who:hover{color:var(--gold2);text-decoration:underline;text-underline-offset:3px}
 .badge{background:var(--gold);color:var(--maroon);border-radius:9px;font-size:11px;padding:0 6px;vertical-align:1px}
 .btn-ghost{border:1px solid var(--gold);color:var(--gold2)!important;padding:6px 14px;border-radius:6px;letter-spacing:.5px}
 .btn-ghost:hover{background:var(--gold);color:var(--maroon)!important}
@@ -754,7 +760,9 @@ a.biz-view{text-decoration:none;}
 .em-tag.feat{background:#4a141a;color:var(--gold2);border-color:var(--gold);}
 .em-form .em-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 16px;margin-bottom:6px;}
 .em-form label{display:block;margin:8px 0 3px;font-size:13px;color:#5a4326;font-weight:600;font-family:'EB Garamond',serif;}
-.em-form input[type=text],.em-form input[type=email],.em-form input[type=number],.em-form select,.em-form textarea{width:100%;}
+.em-form input[type=text],.em-form input[type=email],.em-form input[type=number],.em-form input[type=password],.em-form select,.em-form textarea{width:100%;}
+/* plain label/value rows, used on the account page */
+.list td.k{color:#6e5a3a;font-size:13px;width:130px;}
 .em-form textarea{min-height:70px;}
 .em-media{display:flex;gap:16px;align-items:flex-start;margin:8px 0 4px;flex-wrap:wrap;}
 .em-thumb{width:170px;height:104px;flex:0 0 auto;border-radius:8px;background-size:cover;background-position:center top;
@@ -773,8 +781,11 @@ body.em h2{color:#5c1a1f;}
 body.em .lede{color:#6e4a24;}
 body.em .lede a{color:#8f2b1f;text-decoration:underline;}
 body.em .panel{background:#f9f1de;border:1px solid #d9c39a;box-shadow:0 3px 14px rgba(60,30,10,.08);}
+/* input[type=password] was missing here. The dark-page styling would have
+   survived onto the cream pages - a dark box on a cream panel - which is what
+   the new account page is made of. */
 body.em input[type=text],body.em input[type=email],body.em input[type=number],
-body.em input[type=tel],body.em select,body.em textarea{background:#fff;border:1px solid #cbb079;color:#3a2a18;font-size:15px;}
+body.em input[type=tel],body.em input[type=password],body.em select,body.em textarea{background:#fff;border:1px solid #cbb079;color:#3a2a18;font-size:15px;}
 body.em .em-form label{text-transform:none;letter-spacing:normal;color:#5a4326;}
 body.em .flash{background:#e9f4e0;border:1px solid #a9c98a;color:#3d6a24;}
 body.em .err{background:#f6e0dc;border:1px solid #d8a99f;color:#7a2f1c;}

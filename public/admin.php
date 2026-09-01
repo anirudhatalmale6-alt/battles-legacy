@@ -839,7 +839,11 @@ page_head('Members');
 
 <div class="panel" style="margin-top:18px">
   <h2>Members (<?= count($users) ?>)</h2>
-  <p class="muted">Forgotten a password? Press <b>Reset link</b> beside their name and send them the link that appears above.</p>
+  <p class="muted">Forgotten a password? Press <b>Reset link</b> beside their name and send them the link that appears above.
+    <?php /* He looked for his own password on this page and it was not here.
+             It is not a Members-page job, but this is where he looked. */ ?>
+    <br>Changing <b>your own</b> password is on <a href="account.php">your account page</a> &mdash;
+    or click your name in the menu at the top.</p>
   <table class="list">
     <tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr>
     <?php foreach ($users as $u): ?>

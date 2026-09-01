@@ -54,7 +54,9 @@ function page_head($title, $opts = []) {
         <a href="tree_review.php">Tree Edits<?php try { $tc = one("SELECT COUNT(*) c FROM tree_suggestions WHERE status='pending'"); if ($tc && (int)$tc['c']) echo ' <b class="badge">' . (int)$tc['c'] . '</b>'; } catch (Exception $e) {} ?></a>
       <?php endif; ?>
       <?php if (role_at_least('admin')): ?><a href="admin.php">Members<?php if (is_file(__DIR__ . '/access_data.php')) { require_once __DIR__ . '/access_data.php'; $ac = ar_count(); if ($ac) echo ' <b class="badge">' . (int)$ac . '</b>'; } ?></a><a href="enterprise_manage.php">Edit Enterprise</a><a href="photos_manage.php">Photographs</a><a href="stats.php">Visitors</a><a href="faith_manage.php">Prayers<?php if (function_exists('faith_prayer_count')) { $fc = @faith_prayer_count(); if ($fc) echo ' <b class="badge">' . (int)$fc . '</b>'; } ?></a><a href="feedback_manage.php">Feedback<?php if (function_exists('fb_new_count')) { $nb = fb_new_count(); if ($nb) echo ' <b class="badge">' . (int)$nb . '</b>'; } ?></a><?php endif; ?>
-      <span class="who"><?= e($u['name']) ?> · <?= e(ucfirst($u['role'])) ?></span>
+      <?php /* Your own name is where everybody looks for their own settings,
+               and it was the one thing in this bar that did nothing. */ ?>
+      <a class="who" href="account.php" title="Your account and password"><?= e($u['name']) ?> · <?= e(ucfirst($u['role'])) ?></a>
       <a class="btn-ghost" href="logout.php">Sign out</a>
     <?php else: ?>
       <a class="btn-ghost" href="login.php">Login</a>
