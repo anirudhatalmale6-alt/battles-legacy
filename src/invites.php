@@ -425,6 +425,28 @@ function invite_first_name($name) {
     return $bits[0];
 }
 
+/** The same invitation cut down to something that reads as a text message.
+ *
+ *  The email wording above is right for an inbox and wrong for a phone: a text
+ *  that arrives as six paragraphs gets scrolled past. This keeps only what a
+ *  person actually needs — who it is from, what it is, the link, and the one
+ *  instruction ("open the link first") that fourteen people needed and did not
+ *  have. Kept short deliberately: a longer one splits into several messages and
+ *  some phones then deliver them out of order, which breaks the link. */
+function invite_share_text($inv, $url, $host = null) {
+    $first = invite_first_name($inv['name'] ?? '');
+    $who   = trim((string)($host['name'] ?? '')) ?: 'William';
+    $site  = (string)config('site_name') ?: 'The Battles Legacy';
+
+    return 'Hi ' . ($first !== '' ? $first : 'there') . ", it's " . $who . ". "
+         . 'I have been putting our family history online — ' . $site . '. '
+         . "The tree, old photographs, the church and business history.\n\n"
+         . "It's private, so it's invitation only. This link is yours:\n"
+         . $url . "\n\n"
+         . 'Open that link the first time and you choose your own password. '
+         . "Until you have, there is no password of yours to type.";
+}
+
 /** Ask the mail server to deliver it. True means the server accepted it —
  *  not that it arrived. Records the attempt either way. */
 function invite_mail($inv, $host = null) {

@@ -634,9 +634,10 @@ page_head('Members');
         elseif ($c['level'] === 'watch') $flagWatch++;
     }
   ?>
-  <p class="muted">These people have a link but haven&rsquo;t signed up yet. <b>Send it myself</b> opens your own
-    email with the whole message already written &mdash; you just press send. Links last
-    <?= INVITE_DAYS ?> days.</p>
+  <p class="muted">These people have a link but haven&rsquo;t signed up yet.
+    <b>Text it / Messenger</b> hands the whole message to your phone &mdash; pick the person,
+    press send, no email address needed. <b>Send it myself</b> opens your own
+    email with the same message already written. Links last <?= INVITE_DAYS ?> days.</p>
   <?php if ($prog['total']): ?>
   <p class="inv-sum"><b><?= (int)$prog['total'] ?></b> invitations sent &middot;
     <b><?= (int)$prog['joined'] ?></b> turned into an account &middot;
@@ -660,6 +661,7 @@ page_head('Members');
     <?php foreach ($invites as $inv):
       $url  = invite_url($inv['token']);
       $m    = invite_message($inv, $url, $me);
+      $shr  = invite_share_text($inv, $url, $me);
       $mail = trim((string)$inv['email']);
       $exp  = $inv['expires_at'] ? strtotime($inv['expires_at']) : 0;
       $days = $exp ? (int)ceil(($exp - time()) / 86400) : null;
@@ -711,14 +713,19 @@ page_head('Members');
           <button type="button" class="btn2" data-copy="inv<?= (int)$inv['id'] ?>">Copy link</button>
         </div>
         <div class="inv-acts">
+          <?php /* Needs no email address at all, which is the point: most of the
+                   addresses on this page are old ones. On a phone this opens the
+                   share sheet, so it is tap, pick the person, send. On a desktop
+                   browser there is no share sheet, so the same button copies the
+                   whole message instead and says so. */ ?>
+          <button type="button" class="btn gold sharebtn" data-share="<?= e($shr) ?>"
+                  data-title="<?= e($m['subject']) ?>">&#128172; Text it / Messenger</button>
           <?php if ($mail): ?>
-            <a class="btn gold" href="<?= e(mailto_link($mail, $m['subject'], $m['body'])) ?>">&#9993; Send it myself</a>
+            <a class="btn2" href="<?= e(mailto_link($mail, $m['subject'], $m['body'])) ?>">&#9993; Send it myself</a>
             <form method="post" style="margin:0;display:inline">
               <?= csrf_field() ?><input type="hidden" name="action" value="invite_send"><input type="hidden" name="iid" value="<?= (int)$inv['id'] ?>">
               <button class="btn2" type="submit"><?= empty($inv['emailed_at']) ? 'Let the website email it' : 'Email it again' ?></button>
             </form>
-          <?php else: ?>
-            <span class="muted" style="font-size:13px">Copy the link and send it however you like.</span>
           <?php endif; ?>
           <form method="post" style="margin:0;display:inline" onsubmit="return confirm('Cancel this invitation? The link will stop working.')">
             <?= csrf_field() ?><input type="hidden" name="action" value="invite_delete"><input type="hidden" name="iid" value="<?= (int)$inv['id'] ?>">
@@ -764,6 +771,10 @@ page_head('Members');
             . $url . "\n\n"
             . "It works once and stops working " . PWRESET_HOURS . " hours after it was made.\n\n"
             . (trim((string)$me['name']) ?: 'William') . "\n";
+      $rshr = 'Hi ' . $first . ", it's " . (trim((string)$me['name']) ?: 'William') . '. '
+            . "Here is your link to set a new password for the family website:\n"
+            . $url . "\n\n"
+            . 'It works once and runs out after ' . PWRESET_HOURS . ' hours.';
     ?>
       <div class="inv-row">
         <div class="inv-who">
@@ -783,8 +794,10 @@ page_head('Members');
           <button type="button" class="btn2" data-copy="pwr<?= (int)$r['id'] ?>">Copy link</button>
         </div>
         <div class="inv-acts">
+          <button type="button" class="btn gold sharebtn" data-share="<?= e($rshr) ?>"
+                  data-title="<?= e($rsub) ?>">&#128172; Text it / Messenger</button>
           <?php if (trim((string)$r['email']) !== ''): ?>
-            <a class="btn gold" href="<?= e(mailto_link($r['email'], $rsub, $rbod)) ?>">&#9993; Send it myself</a>
+            <a class="btn2" href="<?= e(mailto_link($r['email'], $rsub, $rbod)) ?>">&#9993; Send it myself</a>
           <?php endif; ?>
           <form method="post" style="margin:0;display:inline">
             <?= csrf_field() ?><input type="hidden" name="action" value="pwcancel"><input type="hidden" name="uid" value="<?= (int)$r['user_id'] ?>">
@@ -869,5 +882,75 @@ document.addEventListener('click', function (ev) {
     try { document.execCommand('copy'); done(); } catch (e) {}
   }
 });
+
+/* Send an invitation by text message or Messenger instead of email.
+ *
+ * navigator.share opens the phone's own share sheet, so it is tap, pick the
+ * person, send — and it needs no email address, which is the whole point when
+ * half the addresses on this page are ten years old.
+ *
+ * It does not exist on most desktop browsers, so there the same button copies
+ * the message instead. The button is relabelled on load rather than at the
+ * moment of pressing: a button that says "Text it" and then quietly copies is
+ * the kind of thing that gets pressed once and never trusted again.
+ *
+ * The link is inside the message text on purpose. Passing it separately as
+ * `url` makes some apps send the link and drop the words, and others send both
+ * and show the link twice. One field of plain text behaves the same everywhere.
+ */
+(function () {
+  var canShare = !!(navigator.share && window.isSecureContext);
+
+  function relabel() {
+    if (canShare) return;
+    var bs = document.querySelectorAll('.sharebtn'), i;
+    for (i = 0; i < bs.length; i++) {
+      bs[i].textContent = '📋 Copy the whole message';
+      bs[i].title = 'This browser has no share sheet. Press to copy the message, then paste it into a text or a message.';
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', relabel);
+  else relabel();
+
+  function copyText(text, ok) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(ok, function () { legacyCopy(text, ok); });
+    } else { legacyCopy(text, ok); }
+  }
+  function legacyCopy(text, ok) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed'; ta.style.top = '0'; ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select(); ta.setSelectionRange(0, 99999);
+    try { document.execCommand('copy'); ok(); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  document.addEventListener('click', function (ev) {
+    var t = ev.target;
+    if (!t || typeof t.closest !== 'function') return;
+    var b = t.closest('.sharebtn');
+    if (!b) return;
+    var text = b.getAttribute('data-share') || '';
+    if (text === '') return;
+
+    if (canShare) {
+      /* A cancelled share sheet rejects. That is the person changing their
+         mind, not a fault, so it must not put an error in front of them. */
+      try { navigator.share({ title: b.getAttribute('data-title') || '', text: text })
+              .catch(function () {}); }
+      catch (e) {}
+      return;
+    }
+    var was = b.textContent;
+    copyText(text, function () {
+      b.textContent = 'Copied — now paste it into a text';
+      b.classList.add('is-copied');
+      setTimeout(function () { b.textContent = was; b.classList.remove('is-copied'); }, 2600);
+    });
+  });
+})();
 </script>
 <?php page_foot();
