@@ -516,11 +516,18 @@ function invite_existing($email) {
 /* ------------------------------------------------------------------ *
  *  The drip queue
  *
- *  49 invitations left this domain in 47 seconds on 17 August. Two were
- *  ever opened. The other ten, sent one and two at a time on separate
- *  days, produced six accounts. Same words, same sending domain, same
- *  family, and most of them behind one mailbox provider - so one
- *  reputation decision covered nearly the whole list at once.
+ *  Measured from the invites table on 1 September, not remembered:
+ *
+ *    17 Aug  49 sent between 22:04:59 and 22:19:03  ->  2 accounts   (4%)
+ *    every other day, 1-3 at a time                 ->  7 of 9       (78%)
+ *
+ *  Same words, same sending domain, same family. And 36 of the 64
+ *  addresses are Yahoo-operated (yahoo, att, sbcglobal, aol all run on
+ *  Yahoo's mail), so ONE reputation decision covers over half the list.
+ *
+ *  Correlation, not proof - the 49 were also the least-connected part of
+ *  the list. But it is the only thing in the data that moves with the
+ *  outcome, and slowing down costs nothing to try.
  *
  *  Nothing here rewrites the invitation. It only changes the rate.
  * ------------------------------------------------------------------ */

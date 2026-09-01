@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($send && $p['email'] !== '') {
                 $inv = one("SELECT * FROM invites WHERE token=?", [$token]);
                 /* Queued, not sent from inside this loop. Sending here is
-                   literally what put 49 messages on the wire in 47 seconds. */
+                   literally what put 49 messages on the wire inside 14 minutes. */
                 if ($inv) { invite_queue_add([$inv['id']]); $mailed++; }
             }
         }
@@ -375,9 +375,10 @@ page_head('Members');
     <h2 style="margin:0 0 6px">The sending queue</h2>
     <p class="muted" style="margin:0 0 12px">
       Invitations in here go out on their own, <b>at most <?= (int)drip_per_day() ?> a day</b> and never closer together
-      than <b><?= (int)drip_gap_minutes() ?> minutes</b>. That is the whole fix: 49 invitations left this site in 47 seconds
-      on 17 August and 2 were ever opened, while the 10 you sent one at a time got 6 people signed up. Same words,
-      same addresses &mdash; only the speed was different.</p>
+      than <b><?= (int)drip_gap_minutes() ?> minutes</b>. Counted from your own invitations on 1 September:
+      the 49 that went out between 22:04 and 22:19 on 17 August produced <b>2</b> accounts &mdash; 4%. The ones sent
+      one, two or three at a time on other days produced <b>7 out of 9</b> &mdash; 78%. Same words, same family,
+      same addresses. The speed is the only thing that was different.</p>
 
     <p style="margin:0 0 10px">
       <b><?= $qCount ?></b> waiting &middot; <b><?= $sentDay ?></b> of <?= (int)drip_per_day() ?> sent in the last 24 hours
