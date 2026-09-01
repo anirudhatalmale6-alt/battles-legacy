@@ -48,14 +48,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 flash('Your note was saved. Nothing has been sent — use "Save and email it" for that, or the share button to text it.');
             }
         }
-        elseif ($act === 'delete')  { fb_delete($id); flash('Deleted.'); }
+        elseif ($act === 'delete')  {
+            fb_delete($id);
+            /* It used to say "Deleted." and mean it. One press lost a note from
+               a stranger who had gone to the trouble of writing it. */
+            flash('Moved to the Deleted tab. Nothing is lost — open that tab and press "Put it back" whenever you like.');
+        }
+        elseif ($act === 'restore') { fb_restore($id); flash('Put back. It is in "Everything" again, exactly as it was.'); }
+        elseif ($act === 'purge')   {
+            fb_purge($id);
+            flash('Removed for good. That one really is gone now.');
+            header('Location: feedback_manage.php?tab=deleted'); exit;
+        }
     }
     header('Location: feedback_manage.php?tab=' . urlencode($_POST['back'] ?? 'new')); exit;
 }
 
-$TAB   = in_array($_GET['tab'] ?? '', ['new','reading','done','all'], true) ? $_GET['tab'] : 'new';
-$ROWS  = fb_all($TAB === 'all' ? '' : $TAB);
-$COUNT = ['new'=>0,'reading'=>0,'done'=>0,'all'=>0];
+$TAB   = in_array($_GET['tab'] ?? '', ['new','reading','done','all','deleted'], true) ? $_GET['tab'] : 'new';
+$BIN   = fb_deleted();
+$ROWS  = $TAB === 'deleted' ? $BIN : fb_all($TAB === 'all' ? '' : $TAB);
+$COUNT = ['new'=>0,'reading'=>0,'done'=>0,'all'=>0,'deleted'=>count($BIN)];
 foreach (fb_all() as $r) { $COUNT['all']++; if (isset($COUNT[$r['status']])) $COUNT[$r['status']]++; }
 list($AVG, $RATED) = fb_avg_rating();
 
@@ -94,13 +106,25 @@ page_head('What people are saying', ['body_class' => 'em']);
 </div>
 
 <div class="fbm-tabs">
-  <?php foreach (['new'=>'New','reading'=>'Looking into it','done'=>'Handled','all'=>'Everything'] as $k => $label): ?>
-    <a class="fbm-tab<?= $TAB === $k ? ' on' : '' ?>" href="feedback_manage.php?tab=<?= e($k) ?>"><?= e($label) ?> <i><?= (int)$COUNT[$k] ?></i></a>
+  <?php
+    $TABS = ['new'=>'New','reading'=>'Looking into it','done'=>'Handled','all'=>'Everything'];
+    /* The bin only earns a tab once there is something in it. */
+    if ($COUNT['deleted']) $TABS['deleted'] = 'Deleted';
+    foreach ($TABS as $k => $label): ?>
+    <a class="fbm-tab<?= $TAB === $k ? ' on' : '' ?><?= $k === 'deleted' ? ' fbm-tab-bin' : '' ?>" href="feedback_manage.php?tab=<?= e($k) ?>"><?= e($label) ?> <i><?= (int)$COUNT[$k] ?></i></a>
   <?php endforeach; ?>
 </div>
 
+<?php if ($TAB === 'deleted'): ?>
+  <p class="muted" style="max-width:760px;margin:-4px 0 14px">Nothing here has been destroyed. Anything you delete waits
+    in this tab until you say otherwise, and <b>Put it back</b> returns it exactly as it was &mdash; your note back, and
+    whether it was on the Thoughts page, come with it. <b>Remove for good</b> is the only thing on this page that
+    really destroys anything, and it lives in here on purpose.</p>
+<?php endif; ?>
+
 <?php if (!$ROWS): ?>
-  <div class="panel"><p><?= $TAB === 'new' ? 'Nothing new right now. When someone sends a thought it will appear here.' : 'Nothing in this list.' ?></p></div>
+  <div class="panel"><p><?= $TAB === 'new' ? 'Nothing new right now. When someone sends a thought it will appear here.'
+       : ($TAB === 'deleted' ? 'The bin is empty.' : 'Nothing in this list.') ?></p></div>
 <?php endif; ?>
 
 <?php foreach ($ROWS as $r): $K = fb_kinds()[$r['kind']] ?? fb_kinds()['suggestion']; ?>
@@ -116,7 +140,13 @@ page_head('What people are saying', ['body_class' => 'em']);
       <?php /* It used to read "Shared with the family", which is what made him
                ask whether it had been sent to that person. It is neither sent
                nor family-only: it is on a page with no sign-in. */ ?>
-      <?php if ($r['shared']): ?><span class="fbm-badge">On the public Thoughts page<?= (int)$r['agrees'] ? ' &middot; ' . (int)$r['agrees'] . ' agree' : '' ?></span><?php endif; ?>
+      <?php /* In the bin it is NOT on that page any more, so the badge must not
+               keep saying it is — it has to describe the state, not the flag. */ ?>
+      <?php if ($r['shared']): ?>
+        <span class="fbm-badge<?= $TAB === 'deleted' ? ' off' : '' ?>"><?= $TAB === 'deleted'
+            ? 'Was on the Thoughts page &mdash; it goes back there if you put it back'
+            : 'On the public Thoughts page' . ((int)$r['agrees'] ? ' &middot; ' . (int)$r['agrees'] . ' agree' : '') ?></span>
+      <?php endif; ?>
     </div>
 
     <p class="fbm-body"><?= nl2br(e($r['body'])) ?></p>
@@ -165,6 +195,17 @@ page_head('What people are saying', ['body_class' => 'em']);
     <?php endif; ?>
 
     <div class="fbm-acts">
+      <?php if ($TAB === 'deleted'): ?>
+        <?php /* In the bin the only two things worth offering are undo and the
+                 real delete, and the real one has to be the quiet button. */ ?>
+        <form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="restore">
+          <input type="hidden" name="id" value="<?= (int)$r['id'] ?>"><input type="hidden" name="back" value="deleted">
+          <button class="btn2 solid">&#8617; Put it back</button></form>
+        <form method="post" onsubmit="return confirm('Remove this one for good? This is the one that cannot be undone.')"><?= csrf_field() ?>
+          <input type="hidden" name="action" value="purge"><input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
+          <input type="hidden" name="back" value="deleted"><button class="btn2 fbm-del">Remove for good</button></form>
+        <span class="fbm-binwhen">Deleted <?= e(fb_ago($r['deleted_at'])) ?></span>
+      <?php else: ?>
       <?php foreach (['new'=>'Mark new','reading'=>'Looking into it','done'=>'Handled'] as $s => $label): if ($s === $r['status']) continue; ?>
         <form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="status">
           <input type="hidden" name="id" value="<?= (int)$r['id'] ?>"><input type="hidden" name="status" value="<?= e($s) ?>">
@@ -175,9 +216,13 @@ page_head('What people are saying', ['body_class' => 'em']);
         <input type="hidden" name="back" value="<?= e($TAB) ?>">
         <button class="btn2<?= $r['shared'] ? '' : ' solid' ?>"
                 title="<?= $r['shared'] ? 'Take it off the public Share Your Thoughts page' : 'Puts it on the Share Your Thoughts page, which anyone can read without signing in. It sends nothing to anybody.' ?>"><?= $r['shared'] ? 'Stop sharing' : 'Put it on the Thoughts page' ?></button></form>
-      <form method="post" onsubmit="return confirm('Delete this thought for good?')"><?= csrf_field() ?>
+      <?php /* No confirm dialogue any more. It is not needed when the answer to
+               a mistake is one press of "Put it back", and a dialogue people
+               click through without reading is what lost the last one. */ ?>
+      <form method="post"><?= csrf_field() ?>
         <input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
         <input type="hidden" name="back" value="<?= e($TAB) ?>"><button class="btn2 fbm-del">Delete</button></form>
+      <?php endif; ?>
     </div>
   </div>
 <?php endforeach; ?>

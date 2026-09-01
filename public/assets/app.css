@@ -2077,6 +2077,10 @@ body.fbpage{background:#efe3c9;color:#3a2c18;}
 .fbm-acts .btn2{margin:0;padding:5px 14px;font-size:13.5px;}
 .fbm-del{color:#8f2b1f!important;border-color:#d8a99f!important;}
 .fbm-del:hover{background:#8f2b1f!important;color:#fff!important;}
+/* the bin */
+.fbm-tab-bin{border-style:dashed;}
+.fbm-binwhen{font-size:13px;color:#8a7355;align-self:center;}
+.fbm-badge.off{background:#f2ece0;border-color:#d9c39a;color:#7a6b52;}
 
 /* ---- What's New: the newest things anybody added, photographs first ----
    Own prefix on every rule. Twice now a class borrowed from another part of

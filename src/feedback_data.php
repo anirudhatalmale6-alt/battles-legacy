@@ -26,6 +26,9 @@ function feedback_migrate() {
        the page used to be unable to tell him which had happened. */
     db_add_column('feedback', 'reply_sent_at', 'DATETIME NULL');
     db_add_column('feedback', 'reply_ok', 'TINYINT NOT NULL DEFAULT 0');
+    /* Delete used to mean DELETE. A note somebody took the trouble to write is
+       not something one mis-tap should be able to destroy, and one did. */
+    db_add_column('feedback', 'deleted_at', 'DATETIME NULL');
     db()->exec("CREATE TABLE IF NOT EXISTS fb_meta (
       k VARCHAR(40) PRIMARY KEY, v VARCHAR(255) DEFAULT ''
     )$ENG");
@@ -113,28 +116,45 @@ function fb_add($f, $user) {
     return (int) insert_id();
 }
 
+/* Everything that reads feedback has to agree about what "deleted" means, so
+   the condition lives in one place. A row in the bin is out of the counts, off
+   the public page and out of the star average - it behaves exactly as it did
+   when Delete really deleted, except that it can be brought back. */
+function fb_live() { return " (deleted_at IS NULL) "; }
+
 function fb_all($status = '') {
-    if ($status !== '') return all("SELECT * FROM feedback WHERE status=? ORDER BY id DESC", [$status]);
-    return all("SELECT * FROM feedback ORDER BY id DESC");
+    feedback_migrate();
+    if ($status !== '') return all("SELECT * FROM feedback WHERE status=? AND" . fb_live() . "ORDER BY id DESC", [$status]);
+    return all("SELECT * FROM feedback WHERE" . fb_live() . "ORDER BY id DESC");
 }
+/** Deliberately finds deleted rows too — restoring one needs to read it. */
 function fb_one($id) { return one("SELECT * FROM feedback WHERE id=?", [(int)$id]); }
+
+function fb_deleted() {
+    feedback_migrate();
+    try { return all("SELECT * FROM feedback WHERE deleted_at IS NOT NULL ORDER BY deleted_at DESC, id DESC"); }
+    catch (\Throwable $e) { return []; }
+}
+function fb_deleted_count() { return count(fb_deleted()); }
+
 function fb_shared($limit = 0) {
-    $sql = "SELECT * FROM feedback WHERE shared=1 ORDER BY agrees DESC, id DESC";
+    feedback_migrate();
+    $sql = "SELECT * FROM feedback WHERE shared=1 AND" . fb_live() . "ORDER BY agrees DESC, id DESC";
     if ($limit) $sql .= " LIMIT " . (int)$limit;
-    return all($sql);
+    try { return all($sql); } catch (\Throwable $e) { return []; }
 }
 function fb_new_count() {
-    try { $r = one("SELECT COUNT(*) c FROM feedback WHERE status='new'"); return $r ? (int)$r['c'] : 0; }
+    try { $r = one("SELECT COUNT(*) c FROM feedback WHERE status='new' AND" . fb_live()); return $r ? (int)$r['c'] : 0; }
     catch (\Throwable $e) { return 0; }
 }
 function fb_total() {
-    try { $r = one("SELECT COUNT(*) c FROM feedback"); return $r ? (int)$r['c'] : 0; }
+    try { $r = one("SELECT COUNT(*) c FROM feedback WHERE" . fb_live()); return $r ? (int)$r['c'] : 0; }
     catch (\Throwable $e) { return 0; }
 }
 /** Average star rating, ignoring the notes that left it blank. */
 function fb_avg_rating() {
     try {
-        $r = one("SELECT AVG(rating) a, COUNT(*) c FROM feedback WHERE rating > 0");
+        $r = one("SELECT AVG(rating) a, COUNT(*) c FROM feedback WHERE rating > 0 AND" . fb_live());
         if (!$r || !(int)$r['c']) return [0, 0];
         return [round((float)$r['a'], 1), (int)$r['c']];
     } catch (\Throwable $e) { return [0, 0]; }
@@ -151,7 +171,7 @@ function fb_mark_all_read() {
     feedback_migrate();
     try {
         $n = fb_new_count();
-        q("UPDATE feedback SET status='reading' WHERE status='new'");
+        q("UPDATE feedback SET status='reading' WHERE status='new' AND" . fb_live());
         return $n;
     } catch (\Throwable $e) { return 0; }
 }
@@ -220,7 +240,28 @@ function fb_send_reply($id, $host = null) {
 }
 function fb_set_shared($id, $on) { q("UPDATE feedback SET shared=? WHERE id=?", [$on ? 1 : 0, (int)$id]); }
 function fb_set_reply($id, $t)   { q("UPDATE feedback SET reply=? WHERE id=?", [mb_substr(trim($t), 0, 2000), (int)$id]); }
-function fb_delete($id)          { q("DELETE FROM feedback WHERE id=?", [(int)$id]); }
+/** Into the bin, not out of the database. The row keeps everything it had —
+ *  the note back, whether it was on the Thoughts page, the lot — so putting it
+ *  back restores the whole thing and not just the words. */
+function fb_delete($id) {
+    feedback_migrate();
+    try { q("UPDATE feedback SET deleted_at=? WHERE id=? AND deleted_at IS NULL", [date('Y-m-d H:i:s'), (int)$id]); }
+    catch (\Throwable $e) { return false; }
+    return true;
+}
+function fb_restore($id) {
+    feedback_migrate();
+    try { q("UPDATE feedback SET deleted_at=NULL WHERE id=?", [(int)$id]); } catch (\Throwable $e) { return false; }
+    return true;
+}
+/** The only thing on this page that really destroys anything, and it can only
+ *  be reached from inside the bin. */
+function fb_purge($id) {
+    feedback_migrate();
+    try { q("DELETE FROM feedback WHERE id=? AND deleted_at IS NOT NULL", [(int)$id]); }
+    catch (\Throwable $e) { return false; }
+    return true;
+}
 
 /** "I agree too" — one per browser session, same as the news likes. */
 function fb_agree($id) {
