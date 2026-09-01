@@ -167,6 +167,27 @@ function page_foot() {
 </body>
 </html>
 <?php
+    /* Both mail queues move on ordinary traffic instead of a cron job.
+     *
+     * They used to be nudged from index.php and admin.php only, and I told
+     * William the queue "keeps going on its own while you get on with
+     * something else". That was not true: on a private family site nobody
+     * loads the home page for hours, so a note stopped after one message and
+     * sat there. It moves from ANY page now.
+     *
+     * And it moves here, at the very bottom, after the whole page has been
+     * written out - so the one visitor every few minutes who happens to
+     * trigger a send never waits on the mail server for it.
+     *
+     * Both are static-guarded, so the explicit calls still at the top of
+     * index.php and admin.php cost nothing. Both give up after two cheap
+     * queries when the clock says no. */
+    foreach (['invites.php' => 'invite_drip_tick', 'notes.php' => 'note_tick'] as $file => $fn) {
+        try {
+            if (!function_exists($fn) && is_file(__DIR__ . '/' . $file)) require_once __DIR__ . '/' . $file;
+            if (function_exists($fn)) $fn();
+        } catch (\Throwable $e) { /* never break a page over this */ }
+    }
 }
 
 /** A quiet tab in the corner of every page so a reviewer never has to hunt for

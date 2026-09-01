@@ -156,10 +156,15 @@ page_head('The monthly family note', ['body_class' => 'em']);
   <p class="muted" style="margin:0 0 12px">
     Copies leave <b><?= (int)note_gap_minutes() ?> minutes apart</b>, at most <b><?= (int)note_per_day() ?> a day</b>.
     Ten messages leaving this domain inside a minute is the same shape as the 49 invitations in August, and the family
-    would read this one out of a spam folder or not at all. They keep going on their own while you get on with
-    something else &mdash; you do not have to leave this page open.</p>
+    would read this one out of a spam folder or not at all.
+    <?php /* This used to claim they keep going while you get on with something
+             else. They did not: the queue only moved when somebody opened a page,
+             and on a quiet family site at night nobody does. Now any page load
+             anywhere moves it, and this page nudges it itself while it is open. */ ?>
+    <b>Leave this page open and it will finish by itself</b> &mdash; the count below updates as each one goes.
+    If you close it, the rest go the next time anybody opens the site, or you can come back and press the button.</p>
 
-  <p style="margin:0 0 10px">
+  <p style="margin:0 0 10px" id="qline">
     <b><?= count($recips) ?></b> <?= count($recips) === 1 ? 'person' : 'people' ?> on the list<?php
       if ($optOut): ?> &middot; <b><?= $optOut ?></b> asked not to be written to<?php endif; ?>
     <?php if ($prog['queued']): ?>
@@ -197,6 +202,37 @@ page_head('The monthly family note', ['body_class' => 'em']);
         <button class="btn danger" style="margin:0">Stop sending</button>
       </form>
     </div>
+    <p class="muted" id="qlive" style="margin:10px 0 0"><b><?= (int)$pending ?></b> still waiting. Checking&hellip;</p>
+    <script>
+    /* While this page is open, ask the server every half minute to move the
+       queue on. It only nudges - note_ready() still decides whether anything
+       may actually leave, so this cannot make it go faster than the gap. */
+    (function () {
+      var box = document.getElementById('qlive');
+      if (!box) return;
+      var stop = false;
+      function word(n) { return n === 1 ? '1 still waiting' : n + ' still waiting'; }
+      function tick() {
+        if (stop) return;
+        fetch('note_tick.php', { credentials: 'same-origin', cache: 'no-store' })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (d) {
+            if (!d) return;
+            if (d.pending === 0) {
+              stop = true;
+              box.innerHTML = '<b>All sent.</b> Every copy has been handed to the mail server.';
+              return;
+            }
+            var when = d.ready ? 'the next can go now'
+                              : (d.wait > 0 ? 'next in about ' + Math.max(1, Math.ceil(d.wait / 60)) + ' min' : d.why);
+            box.innerHTML = '<b>' + word(d.pending) + '.</b> ' + when + '.';
+          })
+          .catch(function () { /* a dropped request is not worth telling him about */ });
+      }
+      tick();
+      setInterval(tick, 30000);
+    })();
+    </script>
   <?php endif; ?>
 </div>
 
