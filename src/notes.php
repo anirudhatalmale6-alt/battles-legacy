@@ -251,6 +251,11 @@ function note_draft($since = null) {
     $soon = note_upcoming(31, 10);
     $feat = note_featured();
 
+    /* "since the last note" is a lie in the very first one, and the first one
+       is the one that carries 262 imported photographs and eleven people who
+       joined - the most striking note he will ever send. */
+    $ago = note_last_sent() ? 'since the last note' : 'in the last few weeks';
+
     $paras = [];
 
     if ($soon) {
@@ -269,7 +274,7 @@ function note_draft($since = null) {
 
     if ($new['photo_count'] > 0) {
         $p = $new['photo_count'] . ' new photograph' . ($new['photo_count'] === 1 ? '' : 's')
-           . ' ' . ($new['photo_count'] === 1 ? 'has' : 'have') . ' gone up since the last note';
+           . ' ' . ($new['photo_count'] === 1 ? 'has' : 'have') . ' gone up ' . $ago;
         if ($new['photos']) {
             $names = array_slice($new['photos'], 0, 6);
             $p .= ', including new ones of ' . note_join($names)
@@ -293,18 +298,30 @@ function note_draft($since = null) {
     }
 
     if ($new['posts']) {
+        /* A post can be saved with no title at all - one on the live site is -
+           and joining an empty string to an author produced a line reading
+           " - William Holmes" and nothing else. Name it by what it is instead. */
+        $KIND = ['question' => 'A question', 'recipe' => 'A recipe',
+                 'update' => 'An update', 'healthtip' => 'A health tip'];
         $t = [];
         foreach ($new['posts'] as $n) {
-            $t[] = trim((string)$n['title']) . (trim((string)$n['author']) !== '' ? ' — ' . $n['author'] : '');
+            $title = trim((string)$n['title']);
+            if ($title === '') $title = isset($KIND[$n['kind']]) ? $KIND[$n['kind']] : 'A post';
+            $who = trim((string)$n['author']);
+            /* Its own address, not the section index: community_list.php with
+               no kind quietly falls back to Updates, which is the wrong page
+               for a recipe and a dead end for the person who followed it. */
+            $t[] = $title . ($who !== '' ? ' — ' . $who : '')
+                 . "\n" . $base . '/community_view.php?id=' . (int)$n['id'];
         }
-        $paras[] = "FROM THE FAMILY\n\n" . implode("\n", $t);
+        $paras[] = "FROM THE FAMILY\n\n" . implode("\n\n", $t);
     }
 
     if ($new['members']) {
         $names = [];
         foreach ($new['members'] as $m) if (trim((string)$m['name']) !== '') $names[] = $m['name'];
         if ($names) {
-            $paras[] = "NEW ON THE SITE\n\n" . note_join($names) . ' joined us since the last note.';
+            $paras[] = "NEW ON THE SITE\n\n" . note_join($names) . ' joined us ' . $ago . '.';
         }
     }
 
