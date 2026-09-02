@@ -43,7 +43,7 @@ if ($inv && $_SERVER['REQUEST_METHOD'] === 'POST') {
            inherits it. That is what lets the site later say "this is your own
            page" rather than making somebody search for themselves. */
         require_once __DIR__ . '/../src/people_pick.php';
-        pp_migrate();
+        pk_migrate();
         q("INSERT INTO users (name,email,phone,pass_hash,role,status,pid) VALUES (?,?,?,?,?, 'active',?)",
           [$name, $email, $phone, password_hash($pass, PASSWORD_DEFAULT), $inv['role'], (string)($inv['pid'] ?? '')]);
         $uid = insert_id();
@@ -84,5 +84,6 @@ if (!$inv): ?>
     <input type="password" name="password" required>
     <button class="btn gold" style="width:100%">Create my account</button>
   </form>
-<?php endif;
-page_foot();
+<?php endif; ?>
+<script src="assets/pwshow.js?v=<?= @filemtime(__DIR__ . '/assets/pwshow.js') ?: 1 ?>"></script>
+<?php page_foot();

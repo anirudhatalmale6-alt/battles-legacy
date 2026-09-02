@@ -2868,3 +2868,17 @@ a.rs-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0
   .dir-search{flex-direction:column;}
   .dir-sfield{max-width:none;}
 }
+
+/* ---- "Show password" toggle (assets/pwshow.js) --------------------------
+   Two themes to satisfy: the sign-in and invitation pages are dark maroon,
+   Your account is cream. A single colour is invisible on one of them - which
+   is exactly how the .story and .inv-audit slips happened, so both are set
+   here from the start. Padded rather than bare text: it has to be tappable
+   with a thumb, which is the only place this button matters. */
+.pwshow{display:inline-block;margin:3px 0 0;padding:6px 2px;background:none;border:0;
+  font-family:'EB Garamond',Georgia,serif;font-size:14px;line-height:1.2;
+  color:var(--gold-soft);text-decoration:underline;cursor:pointer;
+  letter-spacing:normal;text-transform:none}
+.pwshow:hover{color:var(--gold2)}
+body.em .pwshow{color:#7a5a2a}
+body.em .pwshow:hover{color:#3a2a18}

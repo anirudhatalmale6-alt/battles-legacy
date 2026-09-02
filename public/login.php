@@ -105,4 +105,5 @@ page_head('Family Login');
     address you don&rsquo;t use any more? <a href="request.php">Ask to join</a> using the address you
     use now, and William will see it on his Members page.</p>
 </div>
+<script src="assets/pwshow.js?v=<?= @filemtime(__DIR__ . '/assets/pwshow.js') ?: 1 ?>"></script>
 <?php page_foot();

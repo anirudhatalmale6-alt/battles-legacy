@@ -48,5 +48,6 @@ if (!$row): ?>
     <button class="btn gold" style="width:100%">Save my new password</button>
     <p class="muted" style="text-align:center;margin-top:16px">This link stops working once you use it.</p>
   </form>
-<?php endif;
-page_foot();
+<?php endif; ?>
+<script src="assets/pwshow.js?v=<?= @filemtime(__DIR__ . '/assets/pwshow.js') ?: 1 ?>"></script>
+<?php page_foot();

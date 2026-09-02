@@ -106,4 +106,5 @@ page_head('Your account', ['body_class' => 'em']);
 </div>
 
 <p style="margin-top:18px"><a class="btn" href="index.php">&larr; Back to the site</a></p>
+<script src="assets/pwshow.js?v=<?= @filemtime(__DIR__ . '/assets/pwshow.js') ?: 1 ?>"></script>
 <?php page_foot();
