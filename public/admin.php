@@ -27,10 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         /* Which person in the tree this is. The name box fills it in when he
            picks a suggestion; if he typed the name out in full instead, the
            name itself is enough — but only when it can mean one person, which
-           pp_match() is careful about. */
+           pk_match() is careful about. */
         $pid = trim($_POST['pid'] ?? '');
-        $per = pp_person($pid);
-        if (!$per && $name !== '') { $per = pp_match($name); $pid = $per ? $per['p'] : ''; }
+        $per = pk_person($pid);
+        if (!$per && $name !== '') { $per = pk_match($name); $pid = $per ? $per['p'] : ''; }
         if (!$per) $pid = '';
         if ($per) $name = $per['n'];               // the tree's spelling, not the typing
         if ($name === '' && $email === '') {
@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             /* Same tree lookup as the single form, applied line by line — a
                pasted list is exactly where a misspelling slips through, and
                it is worth saying which names the tree doesn't recognise. */
-            $per = $p['name'] !== '' ? pp_match($p['name']) : null;
+            $per = $p['name'] !== '' ? pk_match($p['name']) : null;
             if ($per) { $p['name'] = $per['n']; $matched++; }
             elseif ($p['name'] !== '') $unknown[] = $p['name'];
             list($token, $url) = invite_create($p['name'], $p['email'], $role, $me['id'], $per ? $per['p'] : '');
@@ -448,7 +448,7 @@ page_head('Members');
      is what gets submitted, suggestions or no suggestions — if this script never
      runs, the form behaves exactly as it did before. */
   (function(){
-    var PEOPLE = <?= json_encode(pp_people(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+    var PEOPLE = <?= json_encode(pk_people(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
     var box  = document.getElementById('inv-name');
     var pid  = document.getElementById('inv-pid');
     var list = document.getElementById('inv-list');
@@ -702,7 +702,7 @@ page_head('Members');
             /* Which person in the tree this invitation is for. Worth showing:
                an invitation with no match is either somebody who married in or
                a name that was mistyped, and only he can tell which. */
-            $tp = pp_person($inv['pid'] ?? '');
+            $tp = pk_person($inv['pid'] ?? '');
             if ($tp):
               $tm = array_filter([$tp['y'], $tp['r']], 'strlen'); ?>
             <span class="inv-tree" title="<?= e($tm ? implode(' · ', $tm) : '') ?>">&#127795; in the family tree</span>

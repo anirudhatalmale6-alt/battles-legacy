@@ -41,8 +41,8 @@ function invite_migrate() {
        accounts back. Nothing about the wording changed between those two - only
        the rate. A queued invitation goes out on a clock instead of in a burst. */
     db_add_column('invites', 'queued_at', 'DATETIME NULL');
-    pp_migrate();                       // invites.pid — which person in the tree this is
-    pp_backfill();                      // and join up the ones made before it existed
+    pk_migrate();                       // invites.pid — which person in the tree this is
+    pk_backfill();                      // and join up the ones made before it existed
 }
 
 /** A fresh invitation. Returns [token, url].
@@ -55,14 +55,14 @@ function invite_create($name, $email, $role, $by, $pid = '') {
     invite_migrate();
     $role  = in_array($role, ['member', 'moderator', 'admin'], true) ? $role : 'member';
     $token = bin2hex(random_bytes(20));
-    $pid   = pp_person($pid) ? trim((string)$pid) : '';
+    $pid   = pk_person($pid) ? trim((string)$pid) : '';
     q("INSERT INTO invites (token,name,email,role,invited_by,pid,expires_at) VALUES (?,?,?,?,?,?,?)",
       [$token, mb_substr(trim((string)$name), 0, 120), mb_substr(strtolower(trim((string)$email)), 0, 190),
        $role, (int)$by ?: null, $pid, date('Y-m-d H:i:s', time() + INVITE_DAYS * 86400)]);
     /* The suggestion list carries an "already invited" mark against each name.
        It was read before this insert, so rebuild it or the page that renders in
        a moment will still offer this person as though nobody had asked them. */
-    pp_people(true);
+    pk_people(true);
     return [$token, invite_url($token)];
 }
 
