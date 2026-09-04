@@ -2882,3 +2882,14 @@ a.rs-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0
 .pwshow:hover{color:var(--gold2)}
 body.em .pwshow{color:#7a5a2a}
 body.em .pwshow:hover{color:#3a2a18}
+
+/* ---- the ready-made Facebook post on businessvideo.php -------------------
+   Scoped to body.fvid on purpose. That page is the cream one, and every
+   colour below is picked for cream; left unscoped, the same box would turn
+   up on a dark maroon page one day reading black-on-black. Four rounds
+   running now that a shared class has rendered invisible somewhere. */
+body.fvid .bvid-post{border:1px solid #e6d8bd;border-radius:10px;padding:12px;background:#fffaf0}
+body.fvid .bvid-post textarea{width:100%;box-sizing:border-box;resize:vertical;
+  font-family:'EB Garamond',Georgia,serif;font-size:15.5px;line-height:1.6;color:#4a3620;
+  background:#fffdf8;border:1px solid #e6d8bd;border-radius:8px;padding:11px 12px}
+body.fvid .bvid-post .btn2{margin-top:10px}
