@@ -9,6 +9,10 @@ require __DIR__ . '/../src/bootstrap.php';
 
 $VIDEO = 'assets/video/battles-legacy.mp4';
 $have  = is_file(__DIR__ . '/' . $VIDEO);
+$bytes = $have ? filesize(__DIR__ . '/' . $VIDEO) : 0;
+/* Cut to William's own song, which ends by itself at 56 seconds. One number,
+   because it is quoted on the page and must not drift from the file. */
+$SECS  = 56;
 
 page_head('Our Family Video', ['body_class' => 'fvid']);
 ?>
@@ -30,7 +34,7 @@ page_head('Our Family Video', ['body_class' => 'fvid']);
 
     <div class="fvid-actions">
       <a class="btn gold" href="<?= e($VIDEO) ?>" download="The-Battles-Legacy.mp4">&#11015; Download the video</a>
-      <span class="fvid-size">57 seconds &middot; 5 MB</span>
+      <span class="fvid-size"><?= (int)$SECS ?> seconds &middot; <?= (int)round($bytes / 1048576) ?> MB</span>
     </div>
 
     <div class="panel fvid-how">
