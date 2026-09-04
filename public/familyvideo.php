@@ -26,7 +26,7 @@ page_head('Our Family Video', ['body_class' => 'fvid']);
     <div class="panel"><p class="muted">The video isn&rsquo;t on the server yet.</p></div>
   <?php else: ?>
     <div class="fvid-player">
-      <video controls autoplay muted playsinline preload="auto" poster="<?= e('assets/video/battles-legacy.jpg') ?>">
+      <video controls muted playsinline preload="metadata" poster="<?= e('assets/video/battles-legacy.jpg') ?>">
         <source src="<?= e($VIDEO) ?>" type="video/mp4">
         Your browser can&rsquo;t play video &mdash; use the download button below.
       </video>
