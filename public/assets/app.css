@@ -2893,3 +2893,21 @@ body.fvid .bvid-post textarea{width:100%;box-sizing:border-box;resize:vertical;
   font-family:'EB Garamond',Georgia,serif;font-size:15.5px;line-height:1.6;color:#4a3620;
   background:#fffdf8;border:1px solid #e6d8bd;border-radius:8px;padding:11px 12px}
 body.fvid .bvid-post .btn2{margin-top:10px}
+
+/* ---- "Tap for sound" over an autostarted video (assets/vidsound.js) ------
+   Sits top-right, clear of the browser's own controls along the bottom, which
+   is where a thumb goes for scrub and full screen. The player box is dark
+   (#1a120c) on both video pages even though the page around it is cream, so
+   this one is styled for dark only - unlike .bvid-post below it, which is on
+   the cream. .fvid-player never had a position, and an absolutely positioned
+   child would otherwise escape to the whole page. */
+body.fvid .fvid-player{position:relative}
+.vsnd{position:absolute;top:12px;right:12px;z-index:3;
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 14px;border:1px solid rgba(214,180,110,.85);border-radius:999px;
+  background:rgba(26,12,8,.78);color:#f0dfba;cursor:pointer;
+  font-family:'EB Garamond',Georgia,serif;font-size:15px;line-height:1.1;
+  letter-spacing:normal;text-transform:none;backdrop-filter:blur(2px)}
+.vsnd:hover{background:rgba(26,12,8,.92);color:#fff}
+.vsnd-ic{font-size:15px;line-height:1}
+@media (max-width:520px){.vsnd{top:8px;right:8px;padding:8px 12px;font-size:14px}}

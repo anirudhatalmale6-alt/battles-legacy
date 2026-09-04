@@ -46,7 +46,7 @@ page_head('Our Family in Business', ['body_class' => 'fvid']);
     <div class="panel"><p class="muted">The video isn&rsquo;t on the server yet.</p></div>
   <?php else: ?>
     <div class="fvid-player">
-      <video controls playsinline preload="metadata" poster="assets/video/battles-enterprise.jpg">
+      <video controls autoplay muted playsinline preload="auto" poster="assets/video/battles-enterprise.jpg">
         <source src="<?= e($VIDEO) ?>" type="video/mp4">
         Your browser can&rsquo;t play video &mdash; use the download button below.
       </video>
@@ -116,6 +116,8 @@ page_head('Our Family in Business', ['body_class' => 'fvid']);
   });
 })();
 </script>
+
+<script src="assets/vidsound.js?v=<?= @filemtime(__DIR__ . '/assets/vidsound.js') ?: 1 ?>"></script>
 
 <?php legacy_footer();
 page_foot();
