@@ -15,6 +15,10 @@ require_once __DIR__ . '/../src/enterprise_data.php';
 $VIDEO = 'assets/video/battles-enterprise.mp4';
 $have  = is_file(__DIR__ . '/' . $VIDEO);
 $bytes = $have ? filesize(__DIR__ . '/' . $VIDEO) : 0;
+/* Cut to the length of William's own song, which ends by itself at 56 seconds.
+   Kept as one number here because it is quoted on the page and again on the
+   Enterprise page's video row, and the two must not drift apart. */
+$SECS  = 56;
 
 /* Counted, not typed in — the video says thirteen because there were thirteen
    when it was made, and if he adds a fourteenth this page should not go on
@@ -34,7 +38,7 @@ page_head('Our Family in Business', ['body_class' => 'fvid']);
 ?>
 <section class="fvid-hero">
   <h1>Building Tomorrow. Honoring Our Legacy.</h1>
-  <p><?= $NBIZ ? (int)$NBIZ . ' family businesses' : 'Our family in business' ?>, one minute. Made to share.</p>
+  <p><?= $NBIZ ? (int)$NBIZ . ' family businesses' : 'Our family in business' ?>, <?= (int)$SECS ?> seconds. Made to share.</p>
 </section>
 
 <div class="wrap fvid-wrap">
@@ -50,7 +54,7 @@ page_head('Our Family in Business', ['body_class' => 'fvid']);
 
     <div class="fvid-actions">
       <a class="btn gold" href="<?= e($VIDEO) ?>" download="Battles-Family-Enterprise.mp4">&#11015; Download the video</a>
-      <span class="fvid-size">60 seconds &middot; <?= (int)round($bytes / 1048576) ?> MB</span>
+      <span class="fvid-size"><?= (int)$SECS ?> seconds &middot; <?= (int)round($bytes / 1048576) ?> MB</span>
     </div>
 
     <div class="panel fvid-how">
