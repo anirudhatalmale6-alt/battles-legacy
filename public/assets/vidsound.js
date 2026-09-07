@@ -72,6 +72,29 @@
     if (ours) { ours = false; } else { userPaused = true; }
   });
 
+  /* A tap on the picture itself.
+     Because the video is already playing by the time anyone reaches it, the
+     native controls read that tap as play/pause and STOP it - the opposite of
+     what a person means by tapping a silent video. Facebook and Instagram both
+     read it as "let me hear it", and that is the habit people arrive with.
+
+     So while it is still silent, a tap means sound. Once it has sound, a tap is
+     an ordinary pause again and we keep out of the way.
+
+     The unmuting is deferred a moment on purpose: the browser's own play/pause
+     runs after this handler, so undoing it has to happen after that, not here.
+     `ours` covers the pause it may fire in between, or the visitor would be
+     recorded as having stopped the video they just asked to hear. */
+  v.addEventListener('click', function () {
+    if (!v.muted) return;
+    ours = true;
+    setTimeout(function () {
+      userPaused = false;
+      ours = false;
+      unmute();
+    }, 60);
+  });
+
   if (!('IntersectionObserver' in window)) { start(); return; }
 
   /* A quarter of it showing is enough to start, and it only stops once it is
