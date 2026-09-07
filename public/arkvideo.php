@@ -15,11 +15,11 @@ $have  = is_file(__DIR__ . '/' . $VIDEO);
 $bytes = $have ? filesize(__DIR__ . '/' . $VIDEO) : 0;
 $SECS  = 60;
 
-/* No music yet — William is making the instrumental in Suno. When the mp3
-   arrives this flips to false and the video tag picks up muted + vidsound.js,
-   the same press-to-play behaviour as the other two videos. Kept as one flag
-   so the page can never claim sound it hasn't got. */
-$SILENT = true;
+/* His Suno track arrived 7 Sep and is under the picture now, so the video tag
+   picks up muted + vidsound.js — the same play-when-you-scroll-to-it behaviour
+   as the other two videos. Kept as one flag because a page must never offer
+   "Tap for sound" on a file with no audio track. */
+$SILENT = false;
 
 $POST = "What did I do today?\n\n"
       . "I keep coming back to that question. Did I worship God today? Did I plant a seed "
@@ -85,9 +85,13 @@ page_head('Load The Ark', ['body_class' => 'fvid']);
         <button type="button" class="btn2" id="bvid-copy">Copy these words</button>
       </div>
 
-      <p class="muted" style="margin-top:14px">The video ends on the web address, so anyone it reaches
-        can find the family. The Enterprise page is open to everybody, signed in or not, and there&rsquo;s
-        an <i>Ask to join</i> link on the sign-in page for the rest of the site.</p>
+      <p class="muted" style="margin-top:14px">On this page it starts playing by itself, silent, when you
+        scroll down to it, and you tap it for sound &mdash; the same as the other two videos. On Facebook
+        it behaves the same way, which is why the words are on the screen and not only in the music.</p>
+
+      <p class="muted">The video ends on the web address, so anyone it reaches can find the family. The
+        Enterprise page is open to everybody, signed in or not, and there&rsquo;s an <i>Ask to join</i>
+        link on the sign-in page for the rest of the site.</p>
     </div>
   <?php endif; ?>
 </div>
