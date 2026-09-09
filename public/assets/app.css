@@ -2911,3 +2911,34 @@ body.fvid .fvid-player{position:relative}
 .vsnd:hover{background:rgba(26,12,8,.92);color:#fff}
 .vsnd-ic{font-size:15px;line-height:1}
 @media (max-width:520px){.vsnd{top:8px;right:8px;padding:8px 12px;font-size:14px}}
+
+/* ---------- Photograph captions (person page) ----------
+   The caption has existed in the database since the first import, but the only
+   place it was ever rendered on a person's page was the img alt attribute, so
+   nobody sighted has ever seen one. These three rules are the whole reason
+   William could not find "the place for captions": there wasn't one.
+
+   Scoped to the gallery, and coloured for the dark maroon page person.php
+   renders on — page_head() is called without a body_class there. */
+.gcap{margin:7px 3px 0;font-family:'EB Garamond',Georgia,serif;font-size:14px;
+  line-height:1.35;color:var(--gold-soft,#e8d5a8);opacity:.95}
+.capedit{margin:6px 3px 0}
+.capedit>summary{cursor:pointer;font-size:12.5px;color:var(--gold2);list-style:none;
+  display:inline-block;padding:2px 0}
+.capedit>summary::-webkit-details-marker{display:none}
+.capedit>summary:hover{text-decoration:underline}
+.capedit textarea{display:block;width:100%;box-sizing:border-box;margin:7px 0 8px;
+  font:inherit;font-size:13px;line-height:1.35;padding:7px 9px;border-radius:8px;resize:vertical}
+/* .btn2 is coloured #5c1a1f — dark wine on the cream pages it was written for,
+   and all but invisible here, because person.php calls page_head() with no
+   body class and so renders on the dark maroon. Re-coloured for this control
+   only: the same rule is wrong for the Tick-all buttons further down the page,
+   but that is not mine to change quietly. */
+.capedit .btn2{color:var(--gold2);border-color:var(--gold)}
+.capedit .btn2:hover{background:var(--gold);color:var(--maroon);border-color:var(--gold)}
+
+/* the caption follows the picture into the lightbox */
+#lightbox.show{flex-direction:column}
+#lightbox img{max-height:82vh}
+#lightbox-cap{display:none;max-width:92vw;max-width:min(92vw,760px);margin:14px 0 0;text-align:center;
+  font-family:'EB Garamond',Georgia,serif;font-size:17px;line-height:1.4;color:#e8d5a8}

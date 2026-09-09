@@ -3,9 +3,44 @@ require __DIR__ . '/../src/bootstrap.php';
 require_once __DIR__ . '/../src/tree_edit.php';
 require_once __DIR__ . '/../src/photo_people.php';
 require_once __DIR__ . '/../src/stories.php';
+require_once __DIR__ . '/../src/whatsnew.php';   // wn_caption(): is this caption worth showing?
 te_migrate();
 pp_migrate();
 st_migrate();
+
+/** Save a photograph's caption.
+ *
+ *  Captions could only ever be typed at the moment a picture was uploaded, and
+ *  nothing on the person's page ever displayed one — the text went straight
+ *  into an alt attribute, where only a screen reader would ever meet it. So a
+ *  caption could not be corrected once saved, and of 190 photographs the family
+ *  uploaded, six carry a caption between them. That is the answer to "I thought
+ *  there was a place for captions": there was, once, for about ten seconds.
+ *
+ *  Shared, because two different people may do this for two different reasons:
+ *  a moderator on any picture on the page, and the member who uploaded it —
+ *  which is exactly the freedom they already had when they typed it in at
+ *  upload time, so it needs no approval queue to match.
+ *
+ *  Returns the message to flash, or '' when the caller may not do this. */
+function pcap_save($phid, $pid, $raw, $ownerId = null) {
+    $ph = one("SELECT * FROM photos WHERE id=?", [(int)$phid]);
+    if (!$ph) return '';
+    /* Only from a page the picture is actually on — the same rule the delete
+       button follows, and the reason it takes both tests is that a group
+       photograph lives in photo_people rather than on photos.pid. */
+    $onPage = ((string)$ph['pid'] === (string)$pid)
+        || one("SELECT pid FROM photo_people WHERE photo_id=? AND pid=?", [(int)$phid, (string)$pid]);
+    if (!$onPage) return '';
+    /* An import has uploaded_by NULL, which casts to 0 and can never match a
+       real account — so a member is offered this only on their own pictures. */
+    if ($ownerId !== null && (int)$ph['uploaded_by'] !== (int)$ownerId) return '';
+
+    $cap = trim(preg_replace('/\s+/u', ' ', (string)$raw));
+    $cap = mb_substr($cap, 0, 500);            // the column is VARCHAR(500)
+    q("UPDATE photos SET caption=? WHERE id=?", [$cap, (int)$phid]);
+    return $cap === '' ? 'Caption removed.' : 'Caption saved.';
+}
 
 $pid = $_GET['pid'] ?? '';
 $p = one("SELECT * FROM persons WHERE pid=?", [$pid]);
@@ -120,6 +155,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && role_at_least('moderator')) {
         list($ok, $msg) = te_delete_person($pid);
         flash($msg);
         header('Location: ' . ($ok ? 'tree.php' : 'person.php?pid=' . urlencode($pid))); exit;
+    } elseif (($_POST['action'] ?? '') === 'set_caption') {
+        $msg = pcap_save($_POST['photo_id'] ?? 0, $pid, $_POST['caption'] ?? '');
+        if ($msg !== '') flash($msg);
     } elseif (($_POST['action'] ?? '') === 'delete_photo') {
         $phid = (int)($_POST['photo_id'] ?? 0);
         $ph = one("SELECT * FROM photos WHERE id=?", [$phid]);
@@ -178,7 +216,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && logged_in() && !role_at_least('mode
     $u   = current_user();
     $me  = te_user_pid($u);
     $act = $_POST['action'] ?? '';
-    if ($act === 'claim_me') {
+    if ($act === 'set_caption') {
+        /* Their own upload only, hence the fourth argument. No approval queue:
+           they typed the caption freely when they uploaded the picture, so
+           correcting it should not suddenly need William's permission. */
+        $msg = pcap_save($_POST['photo_id'] ?? 0, $pid, $_POST['caption'] ?? '', (int)$u['id']);
+        flash($msg !== '' ? $msg : 'You can only caption a photograph you uploaded yourself.');
+    } elseif ($act === 'claim_me') {
         if ($me === '') { te_set_user_pid($u['id'], $pid); flash('Thanks — your account is now connected to your place in the family tree.'); }
         else { flash('Your account is already connected to a person in the tree. Ask William if it needs changing.'); }
     } elseif ($act === 'suggest_edit') {
@@ -522,9 +566,21 @@ page_head($name);
     <div class="gallery">
       <?php foreach ($photos as $i => $ph): $isMain = ($i === 0);
             $inIt = logged_in() ? pp_people($ph['id']) : [];
-            $others = []; foreach ($inIt as $t) if ($t['pid'] !== $pid) $others[] = $t; ?>
+            $others = []; foreach ($inIt as $t) if ($t['pid'] !== $pid) $others[] = $t;
+            $capRaw = trim((string)$ph['caption']);
+            /* Most imported captions are the person's own name again, which
+               says nothing twice under their own photograph. wn_caption is the
+               test the What's New page already uses, so both agree on what
+               counts as a caption worth reading. */
+            list(, $capShow) = wn_caption(['caption' => $capRaw, 'name' => $name]);
+            $canCap = role_at_least('moderator')
+                   || (logged_in() && $ph['uploaded_by'] !== null
+                       && (int)$ph['uploaded_by'] === (int)current_user()['id']); ?>
         <div class="gphoto<?= $isMain ? ' is-main' : '' ?>">
-          <a href="#" onclick="lb('<?= e($ph['path']) ?>');return false"><img src="<?= e($ph['path']) ?>" alt="<?= e($ph['caption']) ?>"></a>
+          <a href="#" onclick="lb(<?= e(json_encode($ph['path'])) ?>,<?= e(json_encode($capShow)) ?>);return false"><img src="<?= e($ph['path']) ?>" alt="<?= e($ph['caption']) ?>"></a>
+          <?php /* Directly under its own picture — the delete and Set-as-main
+                   controls are absolutely positioned, so nothing moves. */ ?>
+          <?php if ($capShow !== ''): ?><p class="gcap"><?= e($capShow) ?></p><?php endif; ?>
           <?php if ($isMain && count($photos) > 1): ?><span class="gmain">&#9733; Main</span><?php endif; ?>
           <?php if (count($inIt) > 1): ?><span class="ggroup" title="<?= (int)count($inIt) ?> people are in this photograph"><?= (int)count($inIt) ?> people</span><?php endif; ?>
           <?php if (role_at_least('moderator')): ?>
@@ -560,6 +616,19 @@ page_head($name);
                   </form>
                 <?php endif; ?>
               </div>
+            </details>
+          <?php endif; ?>
+          <?php if ($canCap): ?>
+            <details class="capedit">
+              <summary><?= $capRaw === '' ? '&#9998; Add a caption' : '&#9998; Edit caption' ?></summary>
+              <form method="post">
+                <?= csrf_field() ?>
+                <input type="hidden" name="action" value="set_caption">
+                <input type="hidden" name="photo_id" value="<?= (int)$ph['id'] ?>">
+                <textarea name="caption" maxlength="500" rows="2"
+                  placeholder="Where and when was this taken? Who else is in it?"><?= e($capRaw) ?></textarea>
+                <button class="btn2" type="submit">Save caption</button>
+              </form>
             </details>
           <?php endif; ?>
         </div>
@@ -609,10 +678,20 @@ page_head($name);
 </div>
 <?php endif; ?>
 
-<div id="lightbox" onclick="closeLb()"><span class="x">×</span><img id="lightbox-img" onclick="event.stopPropagation()" src="" alt=""></div>
+<div id="lightbox" onclick="closeLb()"><span class="x">×</span><img id="lightbox-img" onclick="event.stopPropagation()" src="" alt=""><p id="lightbox-cap"></p></div>
 <script>
-function lb(src){document.getElementById('lightbox-img').src=src;document.getElementById('lightbox').classList.add('show');}
-function closeLb(){document.getElementById('lightbox').classList.remove('show');document.getElementById('lightbox-img').src='';}
+/* The caption travels with the picture into the lightbox, because full size is
+   where somebody actually reads "Gus and Angie's house on Freeman St." It is
+   set with textContent, never innerHTML — this text is typed by family. */
+function lb(src,cap){
+  document.getElementById('lightbox-img').src=src;
+  var c=document.getElementById('lightbox-cap');
+  c.textContent=cap||'';
+  c.style.display=cap?'block':'none';
+  document.getElementById('lightbox').classList.add('show');
+}
+function closeLb(){document.getElementById('lightbox').classList.remove('show');document.getElementById('lightbox-img').src='';
+  var c=document.getElementById('lightbox-cap');if(c){c.textContent='';c.style.display='none';}}
 window.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();});
 </script>
 <?php if ($photos && role_at_least('moderator')): ?>
