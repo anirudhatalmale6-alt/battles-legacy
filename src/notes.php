@@ -292,9 +292,18 @@ function note_draft($since = null) {
     }
 
     if ($new['news']) {
+        /* Each announcement gets its OWN address, the way the community posts
+           below already do. It used to list the titles and then point at
+           news.php, which is a list — so somebody told a relative had died
+           landed on a page of cards and had to go hunting for her. The title
+           alone is not the announcement; the words underneath it are. */
         $t = [];
-        foreach ($new['news'] as $n) $t[] = $n['title'];
-        $paras[] = "FAMILY NEWS\n\n" . implode("\n", $t) . "\n\n" . $base . '/news.php';
+        foreach ($new['news'] as $n) {
+            $t[] = trim((string)$n['title'])
+                 . "\n" . $base . '/news_view.php?id=' . (int)$n['id'];
+        }
+        $paras[] = "FAMILY NEWS\n\n" . implode("\n\n", $t)
+                 . "\n\nAll of it: " . $base . '/news.php';
     }
 
     if ($new['posts']) {
