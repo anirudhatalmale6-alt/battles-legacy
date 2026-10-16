@@ -23,7 +23,7 @@ $bytes = $have ? filesize(__DIR__ . '/' . $VIDEO) : 0;
 $ver   = $have ? '?v=' . filemtime(__DIR__ . '/' . $VIDEO) : '';
 $POSTER = 'assets/video/we-stand.jpg';
 $pver  = is_file(__DIR__ . '/' . $POSTER) ? '?v=' . filemtime(__DIR__ . '/' . $POSTER) : '';
-$SECS  = 70;
+$SECS  = 72;
 
 /* All fifteen, in the order the video shows them. The first version named
    eight, because I wrote it from a 10-frame sample before I knew there were
