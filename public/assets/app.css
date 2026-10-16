@@ -2942,3 +2942,11 @@ body.fvid .fvid-player{position:relative}
 #lightbox img{max-height:82vh}
 #lightbox-cap{display:none;max-width:92vw;max-width:min(92vw,760px);margin:14px 0 0;text-align:center;
   font-family:'EB Garamond',Georgia,serif;font-size:17px;line-height:1.4;color:#e8d5a8}
+
+/* A tall (9:16) video. .fvid-player was written for the square videos and makes
+   its video 100% wide, which for a phone-shaped video on a laptop is 814 x 1447
+   in an 800-high window - the bottom of the film is off the screen. This
+   variant lets the box shrink to the video and caps its height to the window.
+   A modifier, so the three square video pages are untouched. */
+.fvid-player.fvid-tall{width:-moz-fit-content;width:fit-content;max-width:100%;margin-left:auto;margin-right:auto}
+.fvid-player.fvid-tall video{width:auto;max-width:100%;max-height:80vh}
