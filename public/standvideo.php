@@ -23,12 +23,17 @@ $bytes = $have ? filesize(__DIR__ . '/' . $VIDEO) : 0;
 $ver   = $have ? '?v=' . filemtime(__DIR__ . '/' . $VIDEO) : '';
 $POSTER = 'assets/video/we-stand.jpg';
 $pver  = is_file(__DIR__ . '/' . $POSTER) ? '?v=' . filemtime(__DIR__ . '/' . $POSTER) : '';
-$SECS  = 66;
+$SECS  = 70;
 
+/* All fifteen, in the order the video shows them. The first version named
+   eight, because I wrote it from a 10-frame sample before I knew there were
+   fourteen people - and naming eight of them says the other six did not count.
+   Dr. Martin Luther King Jr. added 17 Oct, after Thurgood Marshall. */
 $POST = "They fought so we could vote.\n\n"
-      . "Frederick Douglass. Booker T. Washington. George Washington Carver. "
-      . "Dr. Daniel Hale Williams. Althea Gibson. Thurgood Marshall. Colin Powell. "
-      . "Dr. Mae Jemison.\n\n"
+      . "Frederick Douglass. Harriet Tubman. Booker T. Washington. George Washington Carver. "
+      . "Madam C. J. Walker. Dr. Daniel Hale Williams. Jackie Robinson. Althea Gibson. "
+      . "Muhammad Ali. Thurgood Marshall. Dr. Martin Luther King Jr. Shirley Chisholm. "
+      . "Colin Powell. Barack Obama. Dr. Mae Jemison.\n\n"
       . "We stand on their shoulders. This election matters.\n\n"
       . "Get out and vote. Tuesday, November 3.";
 
@@ -70,7 +75,7 @@ page_head('We Stand on Their Shoulders', ['body_class' => 'fvid']);
       <p class="muted" style="margin:0 0 10px">Yours to change. No links in it, as you asked &mdash;
         just the message.</p>
       <div class="bvid-post">
-        <textarea id="bvid-text" readonly rows="9"><?= e($POST) ?></textarea>
+        <textarea id="bvid-text" readonly rows="11"><?= e($POST) ?></textarea>
         <button type="button" class="btn2" id="bvid-copy">Copy these words</button>
       </div>
     </div>
