@@ -16,6 +16,13 @@ require __DIR__ . '/../src/bootstrap.php';
 $VIDEO = 'assets/video/we-stand.mp4';
 $have  = is_file(__DIR__ . '/' . $VIDEO);
 $bytes = $have ? filesize(__DIR__ . '/' . $VIDEO) : 0;
+/* Stamped with the file's own time. The video was replaced in place on 16 Oct
+   (portraits re-cropped) under the same name, and he had already played the
+   first version - without this his phone could go on showing him the old one
+   and he would see nothing changed. */
+$ver   = $have ? '?v=' . filemtime(__DIR__ . '/' . $VIDEO) : '';
+$POSTER = 'assets/video/we-stand.jpg';
+$pver  = is_file(__DIR__ . '/' . $POSTER) ? '?v=' . filemtime(__DIR__ . '/' . $POSTER) : '';
 $SECS  = 66;
 
 $POST = "They fought so we could vote.\n\n"
@@ -37,14 +44,14 @@ page_head('We Stand on Their Shoulders', ['body_class' => 'fvid']);
     <div class="panel"><p class="muted">The video isn&rsquo;t on the server yet.</p></div>
   <?php else: ?>
     <div class="fvid-player fvid-tall">
-      <video controls muted playsinline preload="metadata" poster="assets/video/we-stand.jpg">
-        <source src="<?= e($VIDEO) ?>" type="video/mp4">
+      <video controls muted playsinline preload="metadata" poster="<?= e($POSTER . $pver) ?>">
+        <source src="<?= e($VIDEO . $ver) ?>" type="video/mp4">
         Your browser can&rsquo;t play video &mdash; use the download button below.
       </video>
     </div>
 
     <div class="fvid-actions">
-      <a class="btn gold" href="<?= e($VIDEO) ?>" download="We-Stand-on-Their-Shoulders-Vote.mp4">&#11015; Download the video</a>
+      <a class="btn gold" href="<?= e($VIDEO . $ver) ?>" download="We-Stand-on-Their-Shoulders-Vote.mp4">&#11015; Download the video</a>
       <span class="fvid-size"><?= (int)$SECS ?> seconds &middot; <?= max(1, (int)round($bytes / 1048576)) ?> MB &middot; tall, for phones</span>
     </div>
 
