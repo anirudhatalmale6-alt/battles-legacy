@@ -8,3 +8,7 @@ public/assets/photos/
 public/assets/enterprise/uploads/
 public/assets/news/uploads/
 public/assets/faith/ministers/
+
+# Files William sends through sendfile.php. His family videos and photographs,
+# never source code - and never to be committed.
+inbox/
