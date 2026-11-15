@@ -22,6 +22,21 @@ $FILES = [
     'together-again.mp4' => ['video/mp4',  'Together-Again.mp4'],
     'together-again.jpg' => ['image/jpeg', 'Together-Again.jpg'],
 ];
+/* The reunion album: every file actually in private_media/reunion/ is allowed,
+   and nothing else. The request is matched against that directory listing - it
+   is compared, never joined onto a path - so "reunion/../config.php" is simply
+   not one of the names and gets a 404 like any other stranger. */
+$ALBUMS = ['reunion'];
+foreach ($ALBUMS as $album) {
+    $dir = dirname(__DIR__) . '/private_media/' . $album;
+    if (!is_dir($dir)) continue;
+    foreach (scandir($dir) as $name) {
+        if (preg_match('/^[a-z0-9_-]+\.jpg$/', $name)) {
+            $FILES[$album . '/' . $name] = ['image/jpeg', $name];
+        }
+    }
+}
+
 $f = (string)($_GET['f'] ?? '');
 if (!isset($FILES[$f])) { http_response_code(404); exit; }
 $path = dirname(__DIR__) . '/private_media/' . $f;
