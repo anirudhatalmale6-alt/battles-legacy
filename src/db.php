@@ -23,6 +23,15 @@ function db() {
     } else {
         $dsn = sprintf('mysql:host=%s;dbname=%s;charset=utf8mb4', config('db_host'), config('db_name'));
         $pdo = new PDO($dsn, config('db_user'), config('db_pass'));
+        /* The host drops a connection that sits idle for 20 seconds (measured:
+           @@wait_timeout = 20). Photos > Manage reads every photo file between
+           two queries, and on a cold cache on this throttled disk that takes
+           far longer - on 9 Nov 2026 the next query died with "MySQL server
+           has gone away". 120 s is longer than PHP's own 90 s limit, so no page
+           can outlive its connection. A session setting, allowed on shared
+           hosting; and if a host ever refused it, the page carries on exactly
+           as before rather than failing to connect. */
+        try { $pdo->exec('SET SESSION wait_timeout = 120'); } catch (\Throwable $e) {}
     }
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
