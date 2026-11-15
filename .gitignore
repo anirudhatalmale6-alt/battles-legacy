@@ -12,3 +12,7 @@ public/assets/faith/ministers/
 # Files William sends through sendfile.php. His family videos and photographs,
 # never source code - and never to be committed.
 inbox/
+
+# Videos/photos of LIVING relatives, served only through media.php to signed-in
+# family. Never in the repository.
+private_media/
