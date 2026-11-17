@@ -8,12 +8,8 @@ require_once __DIR__ . '/../src/photo_people.php';
 require_role('admin');
 pp_migrate();
 
-$SRC = rtrim(config('photo_src_dir') ?: (dirname(dirname(__DIR__)) . '/photos'), '/');
-if (!is_dir($SRC)) {
-    /* the app lives in .../legacy, the old library sits beside it in public_html */
-    $guess = dirname(dirname(dirname(__DIR__))) . '/photos';
-    if (is_dir($guess)) $SRC = $guess;
-}
+require_once __DIR__ . '/../src/photo_index.php';
+$SRC = pm_src_dir(__DIR__);
 $EXT = ['jpg','jpeg','png','gif','webp'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -75,6 +71,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+/* ---- this page used to read every photograph, on every visit ----
+   It fingerprinted ~800 site photos and the 1,345 files (67 MB) in the old
+   library each time it opened, and read the dimensions of all 800 again. On
+   this host's throttled disk a cold run takes minutes - past PHP's 90-second
+   limit - so the page never arrived ("it does nothing"), and because PHP held
+   William's session locked the whole time, every other page he opened queued
+   behind it ("it stops down everything"). Reported 17 Nov 2026.
+
+   Three changes:
+     1. A file's fingerprint and size are remembered (legacy/cache/, outside
+        the web root) against its path, byte size and modified time. A file is
+        read once, ever, until it changes.
+     2. Reading new files stops after a 15-second budget. Whatever is left is
+        picked up on the next visit, and the page says so instead of hanging.
+     3. The session lock is released before any of this, so even a slow visit
+        cannot freeze the rest of the site. */
+$__flash = flash();              // take them out now, so clearing them is saved...
+csrf_token();                    // ...make sure the form token exists before the session is written...
+session_write_close();           // ...stop holding the lock...
+$_SESSION['flash'] = $__flash;   // ...and hand them back, in memory only, for page_head to show.
+
+// PM_BUDGET exists only so a test can force the "still checking" path on a fast disk.
+$DEADLINE = microtime(true) + (getenv('PM_BUDGET') !== false ? (float)getenv('PM_BUDGET') : 15.0);
+pm_index_load(__DIR__);
+
 /* ---- which files in the old folder are still unplaced? ---- */
 $unplaced = [];
 if (is_dir($SRC)) {
@@ -91,15 +112,18 @@ if (is_dir($SRC)) {
        folder holds three copies of most pictures and there is no sense asking
        him to name the same face over and over. */
     $haveHash = [];
-    foreach (all("SELECT path FROM photos") as $r) {
-        $abs = __DIR__ . '/' . $r['path'];
-        if (is_file($abs)) $haveHash[md5_file($abs)] = true;
+    $sitePaths = all("SELECT path FROM photos");
+    foreach ($sitePaths as $r) {
+        $e = pm_info(__DIR__ . '/' . $r['path'], 'md5', $DEADLINE);
+        if ($e && !empty($e['md5'])) $haveHash[$e['md5']] = true;
     }
     foreach ($files as $f) {
         if (isset($known[$f])) continue;
-        $h = @md5_file($SRC . '/' . $f);
-        if ($h === false || isset($haveHash[$h])) continue;
-        $haveHash[$h] = true;                                // and only ask once per distinct picture
+        $e = pm_info($SRC . '/' . $f, 'md5', $DEADLINE);
+        /* Not fingerprinted yet: leave it off the list rather than guess. It
+           may well be a copy of a photo already on the site. */
+        if (!$e || empty($e['md5']) || isset($haveHash[$e['md5']])) continue;
+        $haveHash[$e['md5']] = true;                         // and only ask once per distinct picture
         $unplaced[] = $f;
     }
 }
@@ -108,12 +132,15 @@ if (is_dir($SRC)) {
 $small = []; $checked = 0;
 foreach (all("SELECT p.pid, p.path, p.caption, x.name FROM photos p LEFT JOIN persons x ON x.pid=p.pid ORDER BY x.name") as $r) {
     $abs = __DIR__ . '/' . $r['path'];
-    if (!is_file($abs)) continue;
+    $e = pm_info($abs, 'dim', $DEADLINE);
+    if (!$e || !array_key_exists('w', $e)) continue;
     $checked++;
-    $sz = @getimagesize($abs);
-    if (!$sz) continue;
-    if (max($sz[0], $sz[1]) < 600) $small[] = $r + ['w' => $sz[0], 'h' => $sz[1]];
+    if (!$e['w']) continue;
+    if (max($e['w'], $e['hh']) < 600) $small[] = $r + ['w' => $e['w'], 'h' => $e['hh']];
 }
+
+pm_index_save(__DIR__);
+$PENDING = $GLOBALS['PM_PENDING'];
 
 $people = all("SELECT pid,name,given,surname,sex,birth_date FROM persons WHERE name<>'' ORDER BY name");
 $byPid = []; foreach ($people as $pp) $byPid[$pp['pid']] = $pp;
@@ -133,11 +160,18 @@ page_head('Photographs');
 ?>
 <h1>Photographs</h1>
 <p class="lede">Everything still to do with the family picture library, in one place.</p>
+<?php if ($PENDING): ?>
+  <div class="flash">Still checking the photo library &mdash; <?= (int)$PENDING ?> picture<?= $PENDING === 1 ? '' : 's' ?>
+    to go. The lists below are what I&rsquo;ve checked so far. Open this page again in a minute and they&rsquo;ll be
+    complete; after the first time it opens straight away.</div>
+<?php endif; ?>
 
 <div class="panel" style="margin-top:20px">
   <h2>Pictures nobody has named yet (<?= count($unplaced) ?>)</h2>
   <?php if (!is_dir($SRC)): ?>
     <p class="muted">The old photo folder isn&rsquo;t where I expected it (<?= e($SRC) ?>).</p>
+  <?php elseif (!$unplaced && $PENDING): ?>
+    <p class="muted">Still checking &mdash; see the note above.</p>
   <?php elseif (!$unplaced): ?>
     <p class="muted">None left &mdash; every distinct picture in that folder is on somebody&rsquo;s page.</p>
   <?php else: ?>

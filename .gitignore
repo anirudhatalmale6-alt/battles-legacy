@@ -16,3 +16,6 @@ inbox/
 # Videos/photos of LIVING relatives, served only through media.php to signed-in
 # family. Never in the repository.
 private_media/
+
+# photos_manage fingerprint/size cache - rebuilt on demand, never committed
+cache/
